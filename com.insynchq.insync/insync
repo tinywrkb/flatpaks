@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /usr/lib/insync
+LC_TIME=C exec ./insync "$@"
