@@ -1,0 +1,50 @@
+app-id: org.dharkael.Flameshot
+runtime: org.kde.Platform
+runtime-version: '5.12'
+sdk: org.kde.Sdk
+command: flameshot
+rename-icon: flameshot  
+rename-appdata-file: flameshot.appdata.xml  
+rename-desktop-file: flameshot.desktop
+copy-icon: true
+finish-args:
+  # Wayland access
+  - --socket=wayland
+  # X11 + XShm access
+  - --socket=x11
+  - --share=ipc
+  # OpenGL access
+  - --device=dri
+  # Filesystem access
+  # for writing output files
+  - --filesystem=host
+
+  - --filesystem=xdg-config/kdeglobals:ro # gives application access to kdeglobals
+  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.Notifications
+  # Network access
+  - --share=network
+build-options:
+  cflags: -O2 -g -Wno-deprecated-declarations -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  cxxflags: -O2 -g -Wno-deprecated-declarations -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  ldflags: -fstack-protector-strong -Wl,-z,relro,-z,now
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /man
+  - /share/man
+  - '*.a'
+  - '*.la'
+cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
+  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
+
+modules:
+
+- name: flameshot 
+  buildsystem: qmake
+  config-opts: CONFIG+=packaging CONFIG-=debug CONFIG+=release
+  sources:
+    - type: git
+      url: https://github.com/lupoDharkael/flameshot.git
+      branch: master
