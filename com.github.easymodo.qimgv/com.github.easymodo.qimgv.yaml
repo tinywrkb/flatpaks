@@ -50,10 +50,10 @@ modules:
       sha256: 3dbcaf01fbc5b98d42f091d1ff0d4b6cd9750dc724de3d9c0d113948570b2934
 - name: qimgv 
   buildsystem: cmake
-  config-opts: [-DVIDEO_SUPPORT=OFF, -DOPENCV_SUPPORT=OFF, -DCMAKE_BUILD_TYPE=Release]
+  config-opts: [-DVIDEO_SUPPORT=OFF, -DOPENCV_SUPPORT=OFF, -DCMAKE_BUILD_TYPE=Release] 
   sources:
     - type: git
       url: https://github.com/easymodo/qimgv
-      tag: v0.8.9
+      tag: v0.9
     - type: patch
       path: fix_libstdc++fs.patch
