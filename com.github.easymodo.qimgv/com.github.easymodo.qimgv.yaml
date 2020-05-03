@@ -1,0 +1,57 @@
+app-id: com.github.easymodo.qimgv
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: qimgv
+rename-icon: qimgv
+rename-appdata-file: qimgv.appdata.xml  
+rename-desktop-file: qimgv.desktop
+copy-icon: true
+finish-args:
+  # Wayland access
+  - --socket=wayland
+  # X11 + XShm access
+  - --socket=x11
+  - --share=ipc
+  # OpenGL access
+  - --device=dri
+  # Filesystem access
+  # for writing output files
+  - --filesystem=host
+
+  - --filesystem=xdg-config/kdeglobals:ro # gives application access to kdeglobals
+  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.Notifications
+  # Network access
+  - --share=network
+build-options:
+  cflags: -O2 -g -Wno-deprecated-declarations -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  cxxflags: -O2 -g -Wno-deprecated-declarations -fstack-protector-strong -D_FORTIFY_SOURCE=2
+  ldflags: -fstack-protector-strong -Wl,-z,relro,-z,now
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /man
+  - /share/man
+  - '*.a'
+  - '*.la'
+cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
+  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
+
+modules:
+
+- name: exiv2
+  buildsystem: cmake
+  config-opts: [-DEXIV2_ENABLE_VIDEO=ON, -DEXIV2_BUILD_SAMPLES=OFF, -DEXIV2_ENABLE_NLS=ON]
+  sources:
+    - type: archive
+      url: https://github.com/Exiv2/exiv2/archive/v0.27.2.tar.gz
+      sha256: 3dbcaf01fbc5b98d42f091d1ff0d4b6cd9750dc724de3d9c0d113948570b2934
+- name: qimgv 
+  buildsystem: cmake
+  config-opts: [-DCMAKE_INSTALL_BINDIR=/bin, -DVIDEO_SUPPORT=OFF, -DOPENCV_SUPPORT=OFF, -DCMAKE_BUILD_TYPE=Release, -DCMAKE_INSTALL_PREFIX=/usr, -DCMAKE_INSTALL_LIBDIR=lib]
+  sources:
+    - type: git
+      url: https://github.com/easymodo/qimgv
+      tag: v0.8.9
