@@ -27,6 +27,7 @@ finish-args:
   - --share=network
 cleanup:
   - /include
+  - /lib/debug
   - /lib/pkgconfig
   - /man
   - /share/man
