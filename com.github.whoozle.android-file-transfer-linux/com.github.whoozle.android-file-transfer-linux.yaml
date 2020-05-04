@@ -32,6 +32,7 @@ finish-args:
   - --share=network
 cleanup:
   - /include
+  - /lib/debug
   - /lib/pkgconfig
   - /man
   - /share/man
@@ -48,7 +49,7 @@ modules:
     [
       "UDEV_RULES_PATH=/app/lib/udev/rules.d MOUNT_FUSE_PATH=/app/bin ./configure --prefix=/app --libdir=/app/lib --enable-lib --enable-util --disable-example",
       "make",
-      "make DESTDIR=/app install"
+      "make DESTDIR=/ install"
     ]
   sources:
     - type: archive
