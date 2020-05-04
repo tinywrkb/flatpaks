@@ -27,14 +27,12 @@ finish-args:
   - --share=network
 cleanup:
   - /include
+  - /lib/cmake
   - /lib/debug
   - /lib/pkgconfig
-  - /man
   - /share/man
+  - /share/runtime
   - '*.a'
-  - '*.la'
-cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
-  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
 
 modules:
 
