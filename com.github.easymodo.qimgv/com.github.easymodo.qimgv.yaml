@@ -38,14 +38,20 @@ modules:
 
 - name: exiv2
   buildsystem: cmake
-  config-opts: [-DEXIV2_ENABLE_VIDEO=ON, -DEXIV2_BUILD_SAMPLES=OFF, -DEXIV2_ENABLE_NLS=ON]
+  config-opts:
+    - -DEXIV2_ENABLE_VIDEO=ON
+    - -DEXIV2_BUILD_SAMPLES=OFF
+    - -DEXIV2_ENABLE_NLS=ON
   sources:
     - type: archive
       url: https://github.com/Exiv2/exiv2/archive/v0.27.2.tar.gz
       sha256: 3dbcaf01fbc5b98d42f091d1ff0d4b6cd9750dc724de3d9c0d113948570b2934
 - name: qimgv 
   buildsystem: cmake
-  config-opts: [-DVIDEO_SUPPORT=OFF, -DOPENCV_SUPPORT=OFF, -DCMAKE_BUILD_TYPE=Release] 
+  config-opts:
+    - -DVIDEO_SUPPORT=OFF
+    - -DOPENCV_SUPPORT=OFF
+    - -DCMAKE_BUILD_TYPE=Release
   sources:
     - type: git
       url: https://github.com/easymodo/qimgv
