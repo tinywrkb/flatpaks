@@ -2,6 +2,8 @@ app-id: com.github.easymodo.qimgv
 runtime: org.kde.Platform
 runtime-version: '5.14'
 sdk: org.kde.Sdk
+platform-extensions:
+  - org.freedesktop.Platform.ffmpeg-full
 command: qimgv
 rename-icon: qimgv
 rename-appdata-file: qimgv.appdata.xml  
@@ -26,16 +28,71 @@ finish-args:
   # Network access
   - --share=network
 cleanup:
+  - /bin/setup_vars_opencv4.sh
+  - /etc
   - /include
   - /lib/cmake
   - /lib/debug
   - /lib/pkgconfig
+  - /share/applications/mpv.desktop
+  - /share/bash-completion
+  - /share/doc
+  - /share/licenses
   - /share/man
+  - /share/opencv4
   - /share/runtime
+  - /share/zsh
   - '*.a'
+  - '*.la'
+  - 'mpv.png'
 
 modules:
 
+- name: opencv
+  buildsystem: cmake
+  builddir: true
+  config-opts:
+    - -DCMAKE_BUILD_TYPE=Release
+    - -DBUILD_TESTS=OFF
+    - -DBUILD_PERF_TESTS=OFF
+    - -DWITH_FFMPEG=OFF
+    - -DWITH_GTK=OFF
+    - -DWITH_GSTREAMER=OFF
+    - -DWITH_JASPER=OFF
+    - -DWITH_OPENEXR=OFF
+    - -DWITH_GDAL=OFF
+    - -DWITH_GDCM=OFF
+    - -DBUILD_opencv_apps=OFF
+    - -DCMAKE_INSTALL_LIBDIR=lib
+    - -DBUILD_LIST=imgproc,imgcodecs,objdetect,dnn
+  sources:
+    - type: archive
+      url: https://github.com/opencv/opencv/archive/4.3.0.tar.gz
+      sha256: 68bc40cbf47fdb8ee73dfaf0d9c6494cd095cf6294d99de445ab64cf853d278a
+- name: libass
+  buildsystem: simple
+  build-commands:
+    - ./configure --prefix=/app --enable-harfbuzz --enable-fontconfig
+    - make
+    - make install
+  sources:
+    - type: archive
+      url: https://github.com/libass/libass/releases/download/0.14.0/libass-0.14.0.tar.gz
+      sha256: 8d5a5c920b90b70a108007ffcd2289ac652c0e03fc88e6eecefa37df0f2e7fdf
+- name: mpv
+  buildsystem: simple
+  build-commands:
+    - python3 waf configure --prefix=/app --enable-libmpv-shared
+    - python3 waf build
+    - python3 waf install
+  sources:
+    - type: archive
+      url: https://github.com/mpv-player/mpv/archive/v0.32.0.tar.gz
+      sha256: 9163f64832226d22e24bbc4874ebd6ac02372cd717bef15c28a0aa858c5fe592
+    - type: file
+      url: http://www.freehackers.org/~tnagy/release/waf-2.0.9
+      sha256: 2a8e0816f023995e557f79ea8940d322bec18f286917c8f9a6fa2dc3875dfa48
+      dest-filename: waf
 - name: exiv2
   buildsystem: cmake
   config-opts:
@@ -49,8 +106,8 @@ modules:
 - name: qimgv 
   buildsystem: cmake
   config-opts:
-    - -DVIDEO_SUPPORT=OFF
-    - -DOPENCV_SUPPORT=OFF
+    - -DVIDEO_SUPPORT=ON
+    - -DOPENCV_SUPPORT=ON
     - -DCMAKE_BUILD_TYPE=Release
   sources:
     - type: git
