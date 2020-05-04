@@ -2,10 +2,10 @@ app-id: com.github.equalsraf.neovim-qt
 runtime: org.kde.Platform
 runtime-version: '5.14'
 sdk: org.kde.Sdk
-command: neovim-qt
-rename-icon: neovim-qt
-rename-appdata-file: neovim-qt.appdata.xml
-rename-desktop-file: neovim-qt.desktop
+command: nvim-qt
+rename-icon: nvim-qt
+rename-appdata-file: nvim-qt.appdata.xml
+rename-desktop-file: nvim-qt.desktop
 copy-icon: true
 finish-args:
   # Wayland access
@@ -254,6 +254,7 @@ modules:
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DUSE_SYSTEM_MSGPACK=on
+      - -GNinja
     sources:
       - type: git
         url: https://github.com/equalsraf/neovim-qt
