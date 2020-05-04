@@ -4,8 +4,8 @@ runtime-version: '5.14'
 sdk: org.kde.Sdk
 command: neovim-qt
 rename-icon: neovim-qt
-rename-appdata-file: sqlitebrowser.appdata.xml  
-rename-desktop-file: sqlitebrowser.desktop
+rename-appdata-file: neovim-qt.appdata.xml
+rename-desktop-file: neovim-qt.desktop
 copy-icon: true
 finish-args:
   # Wayland access
@@ -37,17 +37,224 @@ cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
 
 modules:
 
-- name: msgpack-c
-  buildsystem: cmake
-  config-opts: [ -DBUILD_SHARED_LIBS=ON, -DMSGPACK_ENABLE_STATIC=OFF, -DMSGPACK_CXX11=ON, -DMSGPACK_BUILD_EXAMPLES=OFF, -DMSGPACK_ENABLE_STATIC=OFF ]
-  sources:
-    - type: git
-      url: https://github.com/msgpack/msgpack-c
-      tag: cpp-3.2.1
-- name: neovim-qt
-  buildsystem: cmake
-  config-opts: [ -DCMAKE_BUILD_TYPE=Release , -DUSE_SYSTEM_MSGPACK=on ]
-  sources:
-    - type: git
-      url: https://github.com/equalsraf/neovim-qt
-      tag: v0.2.15
+  - name: libuv
+    sources:
+      - type: archive
+        url: https://github.com/libuv/libuv/archive/v1.35.0.tar.gz
+        sha256: ff84a26c79559e511f087aa67925c3b4e0f0aac60cd8039d4d38b292f208ff58
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - '*.a'
+      - '*.la'
+
+  - name: msgpack-c
+    buildsystem: cmake-ninja
+    sources:
+      - type: archive
+        url: https://github.com/msgpack/msgpack-c/releases/download/cpp-3.2.1/msgpack-3.2.1.tar.gz
+        sha256: 433cbcd741e1813db9ae4b2e192b83ac7b1d2dd7968a3e11470eacc6f4ab58d2
+    cleanup:
+      - /include
+      - /lib/cmake
+      - /lib/pkgconfig
+      - '*.a'
+
+  - name: LuaJIT
+    no-autogen: true
+    make-args:
+      - PREFIX=/app
+    make-install-args:
+      - PREFIX=/app
+    post-install:
+      # Beta version doesn’t link the executable
+      - ln -s luajit-2.1.0-beta3 /app/bin/luajit
+    sources:
+      - type: archive
+        url: https://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz
+        sha256: 1ad2e34b111c802f9d0cdf019e986909123237a28c746b21295b63c9e785d9c3
+    cleanup:
+      - /bin
+      - /include
+      - /lib/pkgconfig
+      - /share/man
+      - '*.a'
+
+  - name: libluv
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DBUILD_MODULE=OFF
+      - -DBUILD_SHARED_LIBS=ON
+      - -DWITH_SHARED_LIBUV=ON
+      - -DLUA_BUILD_TYPE=System
+    sources:
+      - type: archive
+        url: https://github.com/luvit/luv/releases/download/1.34.2-2/luv-1.34.2-2.tar.gz
+        sha256: 7aff212985527248522411c3830234fe7b5e98593a4cc439b962c17da46681d5
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+
+  - name: lpeg
+    no-autogen: true
+    no-make-install: true
+    make-args:
+      - LUADIR=/app/include/luajit-2.1/
+    post-install:
+      - install -Dm755 -t /app/lib/lua/5.1/ lpeg.so
+      - install -Dm644 -t /app/share/lua/5.1/ re.lua
+    sources:
+      - type: archive
+        url: http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.0.2.tar.gz
+        sha256: 48d66576051b6c78388faad09b70493093264588fcd0f258ddaab1cdd4a15ffe
+    cleanup:
+      - '*'
+
+  - name: mpack-lua
+    no-autogen: true
+    make-args:
+      - USE_SYSTEM_MPACK=yes
+      - LUA_INCLUDE=-I/app/include/luajit-2.1/
+    make-install-args:
+      - USE_SYSTEM_MPACK=yes
+    sources:
+      - type: archive
+        url: https://github.com/libmpack/libmpack-lua/archive/1.0.8.tar.gz
+        sha256: 6d84d272bff27800ba1d7b718d1005ac6bfe35c5f3a5bf5d07e6ffd7e341d560
+      - type: shell
+        commands:
+          - sed -i 's|/usr/lib|/app/lib|' ./Makefile
+    cleanup:
+      - '*'
+    modules:
+      - name: mpack
+        no-autogen: true
+        make-install-args:
+          - PREFIX=/app
+        sources:
+          - type: archive
+            url: https://github.com/libmpack/libmpack/archive/1.0.5.tar.gz
+            sha256: 4ce91395d81ccea97d3ad4cb962f8540d166e59d3e2ddce8a22979b49f108956
+        cleanup:
+          - '*'
+
+  - name: libvterm
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: https://github.com/neovim/libvterm/archive/65dbda3ed214f036ee799d18b2e693a833a0e591.tar.gz
+        sha256: 95d3c7e86336fbd40dfd7a0aa0a795320bb71bc957ea995ea0e549c96d20db3a
+    cleanup:
+      - /bin
+      - /include
+      - /lib/pkgconfig
+      - '*.a'
+      - '*.la'
+
+  - name: jemalloc
+    sources:
+      - type: archive
+        url: https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
+        sha256: 34330e5ce276099e2e8950d9335db5a875689a4c6a56751ef3b1d8c537f887f6
+    config-opts:
+      - --enable-autogen
+      - --disable-static
+    cleanup:
+      - /bin
+      - /include
+      - /lib/pkgconfig
+      - /share
+
+  - name: unibilium
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: https://github.com/neovim/unibilium/archive/v2.1.0.tar.gz
+        sha256: 05bf97e357615e218126f7ac086e7056a23dc013cfac71643b50a18ad390c7d4
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share/man
+      - '*.la'
+
+  - name: libtermkey
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: http://www.leonerd.org.uk/code/libtermkey/libtermkey-0.22.tar.gz
+        sha256: 6945bd3c4aaa83da83d80a045c5563da4edd7d0374c62c0d35aec09eb3014600
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share/man
+      - '*.la'
+
+  - name: wl-clipboard
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/bugaevc/wl-clipboard/archive/v2.0.0.tar.gz
+        sha256: 2c42f182432adabe56da0f1144d5fcc40b7aae3d8e14d2bc4dc4c3f91b51808d
+    cleanup:
+      - /share/man
+
+  - name: xclip
+    sources:
+      - type: archive
+        url: https://github.com/astrand/xclip/archive/0.13.tar.gz
+        sha256: ca5b8804e3c910a66423a882d79bf3c9450b875ac8528791fb60ec9de667f758
+    cleanup:
+      - /share/man
+      - /bin/xclip-*file
+    modules:
+      - name: libXmu
+        config-opts:
+          - --disable-static
+          - --disable-docs
+        sources:
+          - type: archive
+            url: https://www.x.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
+            sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+        cleanup:
+          - /include
+          - /lib/pkgconfig
+          - '*.la'
+
+  - name: neovim
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - -DUSE_BUNDLED=OFF
+    post-install:
+      # Install/fix AppData
+      - install -Dm644 ../runtime/nvim.appdata.xml /app/share/metainfo/$FLATPAK_ID.metainfo.xml
+      - sed -i "s|<id>nvim</id>|<id>$FLATPAK_ID</id>|" /app/share/metainfo/$FLATPAK_ID.metainfo.xml
+      # Install/fix icons
+      - mkdir -p /app/share/icons/hicolor/128x128
+      - mv /app/share/pixmaps /app/share/icons/hicolor/128x128/apps
+      - install -Dm644 ../neovim-mark.svg /app/share/icons/hicolor/scalable/apps/nvim.svg
+    sources:
+      - type: archive
+        url: https://github.com/neovim/neovim/archive/v0.4.3.tar.gz
+        sha256: 91a0b5d32204a821bf414690e6b48cf69224d1961d37158c2b383f6a6cf854d2
+      - type: archive
+        url: https://neovim.io/logos/neovim-logos.zip
+        sha256: c899d052fb8c31b124746fc33bde5a23ff8b02d323b42a0dd8dd66b57b81d20d
+
+  - name: neovim-qt
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DUSE_SYSTEM_MSGPACK=on
+    sources:
+      - type: git
+        url: https://github.com/equalsraf/neovim-qt
+        tag: v0.2.15
