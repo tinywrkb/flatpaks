@@ -1,0 +1,72 @@
+app-id: com.fcitx_im.fcitx
+# needed for notifications that are not working with the freedesktop runtime
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: fcitx
+finish-args:
+  - --socket=wayland
+  - --socket=x11
+  - --share=ipc
+  - --device=dri
+  - --filesystem=home
+  # workaround for the unix file socket
+  - --filesystem=/tmp
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --share=network
+  - --socket=session-bus
+
+modules:
+  - name: extra-cmake-modules
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_PREFIX=/app
+      - -DBUILD_HTML_DOCS=OFF
+      - -DBUILD_QTHELP_DOCS=OFF
+      - -DBUILD_TESTING=OFF
+    sources:
+      - type: archive
+        url: https://download.kde.org/stable/frameworks/5.69/extra-cmake-modules-5.69.0.tar.xz
+        sha256: dacc8e0be8605b6c609ea35bda2d87bf06e1d228bcbf8957b0f0230c4a888359
+  - name: json-c
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_PREFIX=/app
+      - -DCMAKE_BUILD_TYPE=None
+      - -DENABLE_THREADING=ON
+      - -DENABLE_RDRAND=OFF
+    sources:
+      - type: archive
+        url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
+        sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
+  - name: enchant
+    buildsystem: simple
+    build-commands:
+      - ./configure --prefix=/app --disable-static --disable-ispell --with-myspell-dir=/app/share/myspell
+      - make
+      - make install
+    sources:
+      - type: archive
+        url: https://github.com/AbiWord/enchant/releases/download/v2.2.8/enchant-2.2.8.tar.gz
+        sha256: c7b5e2853f0dd0b1aafea2f9e071941affeec3a76df8e3f6d67a718c89293555
+  - name: fcitx
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_PREFIX=/app
+      - -DSYSCONFDIR=/app/etc
+      - -DFORCE_OPENCC=ON
+      - -DFORCE_PRESAGE=ON
+      - -DFORCE_ENCHANT=ON
+      - -DENABLE_TEST=OFF
+      - -DENABLE_QT=OFF
+      - -DENABLE_GTK2_IM_MODULE=OFF
+      - -DENABLE_GTK3_IM_MODULE=ON
+      - -DENCHANT_INCLUDE_DIR=/app/include/enchant-2/
+      - -DENCHANT_LIBRARIES=/app/lib/libenchant-2.so
+      - -DENABLE_GIR=OFF
+      #- -DGOBJECT_INTROSPECTION_GIRDIR=/app/share/gir-1.0
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx/fcitx-4.2.9.7_dict.tar.xz
+        sha256: cf333b2a90be616ffed8b83438dfe3dc0e22ecf034b9f651167203ecbe3f6f8f
