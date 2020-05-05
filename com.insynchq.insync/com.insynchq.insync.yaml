@@ -28,9 +28,12 @@ finish-args:
   - --share=ipc
   - --device=dri
   - --filesystem=home
+  # workaround for the unix file socket
+  - --filesystem=/tmp
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   - --share=network
+  # workaround for the hardcoded ~/.config
   - --persist=.config/autostart
   - --persist=.config/Insync
 
