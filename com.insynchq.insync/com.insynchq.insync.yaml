@@ -5,7 +5,6 @@
 #     maybe create the socket somewhere with nc -lkU before startup and symlink it to /tmp
 #   Add an example extension for dolphin
 #   Clean the manifest
-#   Install desktop file
 
 app-id: com.insynchq.insync
 # needed for notifications that are not working with the freedesktop runtime
@@ -45,38 +44,13 @@ cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
   - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
 
 modules:
-
-- name: libbsd
-  buildsystem: simple
-  build-commands:
-    - './configure --prefix=/app'
-    - 'make'
-    - 'make install'
-  sources:
-    - type: archive
-      url: https://libbsd.freedesktop.org/releases/libbsd-0.10.0.tar.xz
-      sha256: 34b8adc726883d0e85b3118fa13605e179a62b31ba51f676136ecb2d0bc1a887
-- name: openbsd-netcat
-  buildsystem: simple
-  build-commands:
-    - ls -l
-    - 'for i in `cat patches/series`; do echo "** patch $i" 1>&2; cat "patches/$i"; done | patch -p1'
-    - 'make CFLAGS="$CFLAGS -I/app/include/libbsd" LDFLAGS="$LDFLAGS -lbsd"'
-    - 'install -Dm0755 nc /app/bin/nc'
-  sources:
-    - type: archive
-      url: http://ftp.debian.org/debian/pool/main/n/netcat-openbsd/netcat-openbsd_1.206.orig.tar.gz
-      sha256: 5153e19521b648657e1098641c86d4c02f92aff4a64d549ae328f0d738df03e7
-    - type: archive
-      url: http://ftp.debian.org/debian/pool/main/n/netcat-openbsd/netcat-openbsd_1.206-1.debian.tar.xz
-      sha256: 917e08ad15583a631a19841dcced69a4e43aa190bc4be93e93034bebd16fc51a
-
 - name: insync
   buildsystem: simple
   build-commands: [
       "install -D apply_extra /app/bin/apply_extra",
       "install -D insync /app/bin/insync",
       "install -D insync.svg /app/share/icons/hicolor/scalable/apps/com.insynchq.insync.svg",
+      "install -D com.insynchq.insync.desktop /app/share/applications/com.insynchq.insync.desktop",
       "install -D *insync-*.png -t /app/share/icons/hicolor/48x48/status",
       "cp /usr/bin/ar /app/bin",
       "mkdir -p /app/lib",
@@ -93,6 +67,7 @@ modules:
               "rm -f control.tar.gz data.tar.gz debian-binary",
               "mv usr/* .",
               "rmdir usr",
+              "rm -rf bin share/doc share/man",
               "install /app/share/icons/hicolor/48x48/status/com.insynchq.insync-*.png -t share/icons/hicolor/48x48/status"
               ]
     - type: file

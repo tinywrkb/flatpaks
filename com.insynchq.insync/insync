@@ -1,7 +1,3 @@
 #!/bin/bash
-nc -lkU "${XDG_CACHE_HOME}"/tmp/insync${UID}.sock &
-sleep 3
-kill -1 $!
-ln -sr "${XDG_CACHE_HOME}"/tmp/insync${UID}.sock /tmp/insync${UID}.sock
 cd /app/extra/lib/insync
 LC_TIME=C exec ./insync "$@"
