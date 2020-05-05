@@ -15,13 +15,14 @@ finish-args:
   - --share=ipc
   # OpenGL access
   - --device=dri
-  # Filesystem access
-  # for writing output files
-  - --filesystem=host
+
+  - --filesystem=home
 
   - --talk-name=org.freedesktop.Notifications
   # Network access
   - --share=network
+  - --persist=.config/autostart
+  - --persist=.config/Insync
 cleanup:
   - /include
   - /lib/pkgconfig
