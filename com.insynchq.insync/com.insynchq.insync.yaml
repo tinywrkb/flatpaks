@@ -4,6 +4,17 @@
 #   Somehow remap the socket /tmp/insync1000.sock
 #     maybe create the socket somewhere with nc -lkU before startup and symlink it to /tmp
 #   Add an example extension for dolphin
+#
+#   Insync bugs
+#     * ~/.config is hardcoded, not using XDG_CONFIG_HOME
+#     * /usr/share/icons/hicolor/48x48/status is hardcoded
+#       breaks status tray icon
+#       not using XDG_DATA_DIRS
+#       could also be relative to lib/insync/insync which will fix the status icon
+#     * using unix file socket at /tmp/insync${UID}.sock
+#       allowing mutliple instances of insync in the same ipc/namespace
+#       a linux named socket will allow sharing the socket between containers in the same network namespace
+#         and also be able to test if another instace of insync is running
 
 app-id: com.insynchq.insync
 # needed for notifications that are not working with the freedesktop runtime
