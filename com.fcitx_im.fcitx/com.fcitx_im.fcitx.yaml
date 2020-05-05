@@ -70,3 +70,34 @@ modules:
       - type: archive
         url: https://download.fcitx-im.org/fcitx/fcitx-4.2.9.7_dict.tar.xz
         sha256: cf333b2a90be616ffed8b83438dfe3dc0e22ecf034b9f651167203ecbe3f6f8f
+  - name: fcitx-configtool
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_PREFIX=/app
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-configtool/fcitx-configtool-0.4.10.tar.xz
+        sha512: 1c1267e9de694bbd5f258b5bba1e7514c4f8556cdc82a1cce5eafd8a4ec571955285dade0acd02f128eca01f867a30c5c6264ee7e91d32a333eba6e4d275fe8f
+  - name: intltool
+    sources:
+      - type: archive
+        url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
+        sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
+  - name: libgooglepinyin
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_PREFIX=/app
+      - -DENABLE_STATIC=OFF
+    sources:
+      - type: archive
+        url: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/libgooglepinyin/libgooglepinyin-0.1.2.tar.bz2
+        sha512: 5ead9008cf1b5fe86bb49f2e5caa7c9868b69033316863ac61c5799d860f5d55ccb65560f6f28254ae930afe12cc7df786668b09caa4e39b2752c0aa5f8a101d
+  - name: fcitx-googlepinyin
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_PREFIX=/app
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-googlepinyin/fcitx-googlepinyin-0.1.6.tar.xz
+        sha256: 29a5506ed45d26534f7bcbca1c56138984dcc7e99a42652c6a49fe20ec0da781
