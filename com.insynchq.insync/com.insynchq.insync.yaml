@@ -31,7 +31,6 @@ modules:
       - "install -D insync /app/bin/insync"
       - "install -D com.insynchq.insync.svg /app/share/icons/hicolor/scalable/apps/com.insynchq.insync.svg"
       - "install -D com.insynchq.insync.desktop /app/share/applications/com.insynchq.insync.desktop"
-      - "install -D *insync-*.png -t /app/share/icons/hicolor/48x48/status"
       - "install -D /usr/bin/ar /app/bin"
       - "mkdir -p /app/lib"
       - "ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib"
@@ -47,11 +46,8 @@ modules:
           - "mv usr/* ."
           - "rmdir usr"
           - "rm -rf bin share/doc share/man"
-          - "install /app/share/icons/hicolor/48x48/status/com.insynchq.insync-*.png -t share/icons/hicolor/48x48/status"
       - type: dir
         path: resources
-      - type: dir
-        path: status-icons
       - type: extra-data
         filename: insync.deb
         url: http://s.insynchq.com/builds/insync_3.1.5.40801-buster_amd64.deb
