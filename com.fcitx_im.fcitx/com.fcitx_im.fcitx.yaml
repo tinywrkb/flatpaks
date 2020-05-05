@@ -1,3 +1,7 @@
+# Bugs
+#   https://gitlab.com/fcitx/fcitx/-/issues/429
+#   https://github.com/flatpak/flatpak/issues/2031
+
 app-id: com.fcitx_im.fcitx
 # needed for notifications that are not working with the freedesktop runtime
 runtime: org.gnome.Platform
