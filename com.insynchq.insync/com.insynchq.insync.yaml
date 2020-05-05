@@ -37,9 +37,10 @@ modules:
 - name: insync
   buildsystem: simple
   build-commands: [
-      "mkdir /app/bin",
-      "install apply_extra /app/bin/apply_extra",
-      "install insync /app/bin/insync",
+      "install -D apply_extra /app/bin/apply_extra",
+      "install -D insync /app/bin/insync",
+      "install -D insync.svg /app/share/icons/hicolor/scalable/apps/com.insynchq.insync.svg",
+      "install -D *insync-*.png -t /app/share/icons/hicolor/48x48/status",
       "cp /usr/bin/ar /app/bin",
       "mkdir /app/lib",
       "ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib",
@@ -54,12 +55,16 @@ modules:
               "tar xf data.tar.gz",
               "rm -f control.tar.gz data.tar.gz debian-binary",
               "mv usr/* .",
-              "rmdir usr"
+              "rmdir usr",
               ]
     - type: file
       path: com.insynchq.insync.desktop
     - type: file
       path: insync
+    - type: file
+      path: insync.svg
+    - type: dir
+      path: status-icons
     - type: extra-data
       filename: insync.deb
       url: http://s.insynchq.com/builds/insync_3.1.5.40801-buster_amd64.deb
