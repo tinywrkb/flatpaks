@@ -1,8 +1,5 @@
 # TODO
 #   Fix tray icons
-#   Fix xdg-open, probably just need to set default file browser
-#   Somehow remap the socket /tmp/insync1000.sock
-#     maybe create the socket somewhere with nc -lkU before startup and symlink it to /tmp
 #   Add an example extension for dolphin
 #
 #   Insync bugs
