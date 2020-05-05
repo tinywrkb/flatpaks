@@ -1,0 +1,55 @@
+app-id: net.launchpad.qpdfview
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: qpdfview
+rename-icon: qpdfview
+rename-appdata-file: qpdfview.appdata.xml  
+rename-desktop-file: qpdfview.desktop
+copy-icon: true
+finish-args:
+  # Wayland access
+  - --socket=wayland
+  # X11 + XShm access
+  - --socket=x11
+  - --share=ipc
+  # OpenGL access
+  - --device=dri
+  # Filesystem access
+  # for writing output files
+  - --filesystem=host
+
+  - --filesystem=xdg-config/kdeglobals:ro # gives application access to kdeglobals
+  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.Notifications
+  # Network access
+  - --share=network
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /man
+  - /share/man
+  - '*.a'
+  - '*.la'
+cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
+  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
+
+modules:
+
+- name: qpdfview
+  buildsystem: qmake
+  config-opts:
+    - TARGET_INSTALL_PATH=/app/bin
+    - PLUGIN_INSTALL_PATH=/app/lib/qpdfview
+    - DATA_INSTALL_PATH=/app/share/qpdfview
+    - MANUAL_INSTALL_PATH = /app/share/man/man1
+    - ICON_INSTALL_PATH=/app/share/icons/hicolor/scalable/apps
+    - LAUNCHER_INSTALL_PATH=/app/share/applications
+    - APPDATA_INSTALL_PATH=/app/share/appdata
+  #make-install-args:
+    #- INSTALL_ROOT=/app
+  sources:
+    - type: archive
+      url: https://launchpad.net/qpdfview/trunk/0.4.18/+download/qpdfview-0.4.18.tar.gz
+      sha256: cc642e7fa74029373ca9b9fbc29adc4883f8b455130a78ad54746d6844a0396c
