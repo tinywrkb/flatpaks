@@ -8,22 +8,11 @@ rename-appdata-file: qtfm.appdata.xml
 rename-desktop-file: qtfm.desktop
 copy-icon: true
 finish-args:
-  # Wayland access
   - --socket=wayland
-  # X11 + XShm access
   - --socket=x11
   - --share=ipc
-  # OpenGL access
   - --device=dri
-  # Filesystem access
-  # for writing output files
-  - --filesystem=host
-
-  - --filesystem=xdg-config/kdeglobals:ro # gives application access to kdeglobals
-  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
-  - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.Notifications
-  # Network access
+  - --filesystem=home
   - --share=network
 cleanup:
   - /include
@@ -32,15 +21,13 @@ cleanup:
   - /share/man
   - '*.a'
   - '*.la'
-cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
-  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
-
 modules:
-
-- name: qtfm
-  buildsystem: qmake
-  config-opts: [CONFIG+=release, CONFIG+=no_tray]
-  sources:
-    - type: git
-      url: https://github.com/rodlie/qtfm
-      tag: 6.2.0
+  - name: qtfm
+    buildsystem: qmake
+    config-opts:
+      - CONFIG+=release
+      - CONFIG+=no_tray
+    sources:
+      - type: git
+        url: https://github.com/rodlie/qtfm
+        tag: 6.2.0
