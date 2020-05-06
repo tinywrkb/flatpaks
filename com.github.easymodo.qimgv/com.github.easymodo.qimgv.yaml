@@ -44,7 +44,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/easymodo/qimgv
-        tag: v0.9
+        tag: v0.9.1
       - type: patch
         path: fix_libstdc++fs.patch
     modules:
