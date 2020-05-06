@@ -4,61 +4,46 @@ runtime-version: '5.14'
 sdk: org.kde.Sdk
 command: android-file-transfer
 rename-icon: android-file-transfer
-rename-appdata-file: android-file-transfer.appdata.xml  
+#rename-appdata-file: android-file-transfer.appdata.xml
 rename-desktop-file: android-file-transfer.desktop
 copy-icon: true
 finish-args:
-  # Wayland access
-  - --socket=wayland
-  # X11 + XShm access
-  - --socket=x11
-  - --share=ipc
-  # OpenGL access
+  - --device=all
   - --device=dri
-  # Filesystem access
-  # for writing output files
-  - --filesystem=host
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
   # try to make mtp work
   - --filesystem=xdg-run/gvfs
   - --talk-name=org.gtk.vfs
   - --talk-name=org.gtk.vfs.*
-  - --device=all
-
-  - --filesystem=xdg-config/kdeglobals:ro # gives application access to kdeglobals
-  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
-  - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.Notifications
-  # Network access
-  - --share=network
+  - --socket=session-bus
 cleanup:
   - /include
   - /lib/debug
   - /lib/pkgconfig
-  - /man
   - /share/man
   - '*.a'
   - '*.la'
-cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
-  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
-
 modules:
-
-- name: libfuse2
-  buildsystem: simple
-  build-commands:
-    [
-      "UDEV_RULES_PATH=/app/lib/udev/rules.d MOUNT_FUSE_PATH=/app/bin ./configure --prefix=/app --libdir=/app/lib --enable-lib --enable-util --disable-example",
-      "make",
-      "make DESTDIR=/ install"
-    ]
-  sources:
-    - type: archive
-      url: https://github.com/libfuse/libfuse/releases/download/fuse-2.9.9/fuse-2.9.9.tar.gz
-      sha256: d0e69d5d608cc22ff4843791ad097f554dd32540ddc9bed7638cc6fea7c1b4b5
-- name: android-file-transfer-linux
-  buildsystem: cmake
-  config-opts: [ ]
-  sources:
-    - type: git
-      url: https://github.com/whoozle/android-file-transfer-linux
-      tag: v3.9
+  - name: android-file-transfer-linux
+    buildsystem: cmake
+    sources:
+      - type: git
+        url: https://github.com/whoozle/android-file-transfer-linux
+        tag: v3.9
+    modules:
+      - name: libfuse2
+        config-opts:
+          - UDEV_RULES_PATH=/app/lib/udev/rules.d
+          - MOUNT_FUSE_PATH=/app/bin
+          - --enable-util
+          - --enable-lib
+          - --disable-static
+          - --disable-example
+        sources:
+          - type: archive
+            url: https://github.com/libfuse/libfuse/releases/download/fuse-2.9.9/fuse-2.9.9.tar.gz
+            sha256: d0e69d5d608cc22ff4843791ad097f554dd32540ddc9bed7638cc6fea7c1b4b5
