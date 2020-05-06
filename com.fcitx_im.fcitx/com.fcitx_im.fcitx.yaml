@@ -1,6 +1,12 @@
 # Bugs
 #   https://gitlab.com/fcitx/fcitx/-/issues/429
 #   https://github.com/flatpak/flatpak/issues/2031
+#
+# Todo
+#   restrict permissions
+#   remove session bus access
+#   does it need notifications?
+#   move depends to shared modules
 
 app-id: com.fcitx_im.fcitx
 # needed for notifications that are not working with the freedesktop runtime
@@ -9,52 +15,26 @@ runtime-version: '3.36'
 sdk: org.gnome.Sdk
 command: fcitx
 finish-args:
-  - --socket=wayland
-  - --socket=x11
-  - --share=ipc
   - --device=dri
-  - --filesystem=home
   # workaround for the unix file socket
   - --filesystem=/tmp
+  - --share=ipc
+  - --socket=session-bus
+  - --socket=wayland
+  - --socket=x11
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
-  - --share=network
-  - --socket=session-bus
-
+cleanup:
+  - /include
+  - /lib/debug
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
 modules:
-  - name: extra-cmake-modules
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_INSTALL_PREFIX=/app
-      - -DBUILD_HTML_DOCS=OFF
-      - -DBUILD_QTHELP_DOCS=OFF
-      - -DBUILD_TESTING=OFF
-    sources:
-      - type: archive
-        url: https://download.kde.org/stable/frameworks/5.69/extra-cmake-modules-5.69.0.tar.xz
-        sha256: dacc8e0be8605b6c609ea35bda2d87bf06e1d228bcbf8957b0f0230c4a888359
-  - name: json-c
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_INSTALL_PREFIX=/app
-      - -DCMAKE_BUILD_TYPE=None
-      - -DENABLE_THREADING=ON
-      - -DENABLE_RDRAND=OFF
-    sources:
-      - type: archive
-        url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
-        sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
-  - name: enchant
-    buildsystem: simple
-    build-commands:
-      - ./configure --prefix=/app --disable-static --disable-ispell --with-myspell-dir=/app/share/myspell
-      - make
-      - make install
-    sources:
-      - type: archive
-        url: https://github.com/AbiWord/enchant/releases/download/v2.2.8/enchant-2.2.8.tar.gz
-        sha256: c7b5e2853f0dd0b1aafea2f9e071941affeec3a76df8e3f6d67a718c89293555
   - name: fcitx
+    cleanup:
+      - /share/cmake
     buildsystem: cmake
     config-opts:
       - -DCMAKE_INSTALL_PREFIX=/app
@@ -74,34 +54,67 @@ modules:
       - type: archive
         url: https://download.fcitx-im.org/fcitx/fcitx-4.2.9.7_dict.tar.xz
         sha256: cf333b2a90be616ffed8b83438dfe3dc0e22ecf034b9f651167203ecbe3f6f8f
+    modules:
+      - name: extra-cmake-modules
+        cleanup:
+          - '*'
+        buildsystem: cmake
+        config-opts:
+          - -DBUILD_HTML_DOCS=OFF
+          - -DBUILD_QTHELP_DOCS=OFF
+          - -DBUILD_TESTING=OFF
+        sources:
+          - type: archive
+            url: https://download.kde.org/stable/frameworks/5.69/extra-cmake-modules-5.69.0.tar.xz
+            sha256: dacc8e0be8605b6c609ea35bda2d87bf06e1d228bcbf8957b0f0230c4a888359
+      - name: json-c
+        cleanup:
+          - /lib/cmake
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=None
+          - -DENABLE_THREADING=ON
+          - -DENABLE_RDRAND=OFF
+        sources:
+          - type: archive
+            url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
+            sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
+      - name: enchant
+        config-opts:
+          - --disable-static
+          - --disable-ispell
+          - --with-myspell-dir=/app/share/myspell
+        sources:
+          - type: archive
+            url: https://github.com/AbiWord/enchant/releases/download/v2.2.8/enchant-2.2.8.tar.gz
+            sha256: c7b5e2853f0dd0b1aafea2f9e071941affeec3a76df8e3f6d67a718c89293555
   - name: fcitx-configtool
     buildsystem: cmake
-    config-opts:
-      - -DCMAKE_INSTALL_PREFIX=/app
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-configtool/fcitx-configtool-0.4.10.tar.xz
         sha512: 1c1267e9de694bbd5f258b5bba1e7514c4f8556cdc82a1cce5eafd8a4ec571955285dade0acd02f128eca01f867a30c5c6264ee7e91d32a333eba6e4d275fe8f
-  - name: intltool
-    sources:
-      - type: archive
-        url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
-        sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
-  - name: libgooglepinyin
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_INSTALL_PREFIX=/app
-      - -DENABLE_STATIC=OFF
-    sources:
-      - type: archive
-        url: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/libgooglepinyin/libgooglepinyin-0.1.2.tar.bz2
-        sha512: 5ead9008cf1b5fe86bb49f2e5caa7c9868b69033316863ac61c5799d860f5d55ccb65560f6f28254ae930afe12cc7df786668b09caa4e39b2752c0aa5f8a101d
   - name: fcitx-googlepinyin
     buildsystem: cmake
     config-opts:
-      - -DCMAKE_INSTALL_PREFIX=/app
       - -DCMAKE_BUILD_TYPE=Release
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-googlepinyin/fcitx-googlepinyin-0.1.6.tar.xz
         sha256: 29a5506ed45d26534f7bcbca1c56138984dcc7e99a42652c6a49fe20ec0da781
+    modules:
+      - name: libgooglepinyin
+        buildsystem: cmake
+        config-opts:
+          - -DENABLE_STATIC=OFF
+        sources:
+          - type: archive
+            url: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/libgooglepinyin/libgooglepinyin-0.1.2.tar.bz2
+            sha512: 5ead9008cf1b5fe86bb49f2e5caa7c9868b69033316863ac61c5799d860f5d55ccb65560f6f28254ae930afe12cc7df786668b09caa4e39b2752c0aa5f8a101d
+      - name: intltool
+        cleanup:
+          - '*'
+        sources:
+          - type: archive
+            url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
+            sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
