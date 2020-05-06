@@ -25,13 +25,15 @@ finish-args:
   - --talk-name=org.freedesktop.Notifications
   # Network access
   - --share=network
-#cleanup:
-#  - /include
-#  - /lib/pkgconfig
-#  - /man
-#  - /share/man
-#  - '*.a'
-#  - '*.la'
+cleanup:
+  - /include
+  - /lib/debug
+  - /lib/openjpeg-*
+  - /lib/pkgconfig
+  - /share/doc
+  - /share/man
+  - '*.a'
+  - '*.la'
 
 modules:
 
@@ -67,10 +69,6 @@ modules:
       - so
     make-install-args:
       - soinstall
-#    cleanup:
-#      - /bin
-#      - /share/man
-#      - /share/doc
     sources:
       - type: archive
         url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs952/ghostscript-9.52.tar.xz
