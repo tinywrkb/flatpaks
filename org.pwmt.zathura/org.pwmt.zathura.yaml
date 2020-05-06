@@ -1,0 +1,63 @@
+app-id: org.pwmt.zathura
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: zathura
+finish-args:
+  - --socket=wayland
+  - --socket=x11
+  - --share=ipc
+  - --device=dri
+  - --filesystem=home
+#cleanup:
+#  - /include
+#  - /lib/pkgconfig
+#  - /man
+#  - /share/man
+#  - '*.a'
+#  - '*.la'
+
+modules:
+
+  - name: girara
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://pwmt.org/projects/girara/download/girara-0.3.4.tar.xz
+        sha256: 51fcda5a50a68fabd461fb4e467a1defd531dafca4f47f6851a9eb56756cb232
+  - name: zathura
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/pwmt/zathura/archive/0.4.5.tar.gz
+        sha256: 317882fc4e05104591c011c237b2ba6bf0b3978c189f5cdf3c978cb333ee04fe
+  - name: zathura-pdf-poppler
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/pwmt/zathura-pdf-poppler/archive/0.3.0.tar.gz
+        sha256: 2034f70a936d458ddc9276f769e77ff308ba3bb1b7a7cdc87bab8b9ef7ade84a
+    modules:
+      - name: openjpeg2
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=Release
+          - -DCMAKE_INSTALL_PREFIX=/app
+          - -DBUILD_SHARED_LIBS=ON
+          - -DBUILD_STATIC_LIBS=OFF=ON
+        sources:
+          - type: archive
+            url: https://github.com/uclouvain/openjpeg/archive/v2.3.1.tar.gz
+            sha256: 63f5a4713ecafc86de51bfad89cc07bb788e9bba24ebbf0c4ca637621aadb6a9
+      - name: poppler
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=Release
+          - -DCMAKE_INSTALL_PREFIX:PATH=/app
+          - -DCMAKE_INSTALL_LIBDIR=/app/lib
+          - -DENABLE_UNSTABLE_API_ABI_HEADERS=ON
+          - -DENABLE_GLIB=ON
+        sources:
+          - type: archive
+            url: https://poppler.freedesktop.org/poppler-0.88.0.tar.xz
+            sha256: b4453804e9a5a519e6ceee0ac8f5efc229e3b0bf70419263c239124474d256c7
