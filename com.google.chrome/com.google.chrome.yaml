@@ -1,0 +1,54 @@
+app-id: com.google.chrome
+# needed for notifications that are not working with the freedesktop runtime
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: com.google.chrome
+finish-args:
+  - --socket=wayland
+  - --socket=x11
+  - --share=ipc
+  - --device=dri
+  - --filesystem=home
+  # workaround for the unix file socket
+  - --filesystem=/tmp
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --share=network
+
+modules:
+  - name: chrome
+    buildsystem: simple
+    build-commands:
+      - "install -D apply_extra /app/bin/apply_extra"
+      - "install -D com.google.chrome /app/bin/com.google.chrome"
+      - "install -D com.google.chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome.svg"
+      - "install -D com.google.chrome.desktop /app/share/applications/com.google.chrome.desktop"
+      - "install -D /usr/bin/ar /app/bin"
+      - "mkdir -p /app/lib"
+      - "ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib"
+      - "ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4"
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - "ar x google-chrome-stable_current_amd64.deb"
+          - "rm -f google-chrome-stable_current_amd64.deb"
+          - "tar xJf data.tar.xz"
+          - "rm -f control.tar.xz data.tar.xz debian-binary"
+          - "mv usr/* ."
+          - "rmdir usr"
+          - "rm -rf bin etc share/doc share/man"
+      - type: dir
+        path: resources
+      - type: extra-data
+        filename: google-chrome-stable_current_amd64.deb
+        url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sha256: 9d13d41d79ce1f04d1f150b5d22fffd31779224cc7d8274f8479b06bcfe6846a
+        size: 66985784
+    modules:
+      - name: zypak
+        sources:
+          - type: git
+            url: https://github.com/refi64/zypak
+            tag: v2020.02
