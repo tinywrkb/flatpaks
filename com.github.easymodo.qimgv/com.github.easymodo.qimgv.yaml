@@ -10,23 +10,12 @@ rename-appdata-file: qimgv.appdata.xml
 rename-desktop-file: qimgv.desktop
 copy-icon: true
 finish-args:
-  # Wayland access
-  - --socket=wayland
-  # X11 + XShm access
-  - --socket=x11
-  - --share=ipc
-  # OpenGL access
   - --device=dri
-  # Filesystem access
-  # for writing output files
-  - --filesystem=host
-
-  - --filesystem=xdg-config/kdeglobals:ro # gives application access to kdeglobals
-  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
-  - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.Notifications
-  # Network access
-  - --share=network
+  - --filesystem=home
+  - --share=ipc
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=x11
 cleanup:
   - /bin/setup_vars_opencv4.sh
   - /etc
@@ -45,9 +34,7 @@ cleanup:
   - '*.a'
   - '*.la'
   - 'mpv.png'
-
 modules:
-
   - name: qimgv
     buildsystem: cmake
     config-opts:
@@ -108,11 +95,10 @@ modules:
             dest-filename: waf
         modules:
           - name: libass
-            buildsystem: simple
-            build-commands:
-              - ./configure --prefix=/app --enable-harfbuzz --enable-fontconfig
-              - make
-              - make install
+            config-opts:
+              - --prefix=/app
+              - --enable-harfbuzz
+              - --enable-fontconfig
             sources:
               - type: archive
                 url: https://github.com/libass/libass/releases/download/0.14.0/libass-0.14.0.tar.gz
