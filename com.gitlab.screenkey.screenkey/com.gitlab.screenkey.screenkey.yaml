@@ -3,68 +3,40 @@ runtime: org.gnome.Platform
 runtime-version: '3.36'
 sdk: org.gnome.Sdk
 command: screenkey
-#rename-icon: screenkey
-#rename-appdata-file: screenkey.appdata.xml  
-#rename-desktop-file: screenkey.desktop
-#copy-icon: true
 finish-args:
-  # Wayland access
-  - --socket=wayland
-  # X11 + XShm access
-  - --socket=x11
-  - --share=ipc
-  # OpenGL access
   - --device=dri
-  # Filesystem access
-  # for writing output files
-  - --filesystem=host
-
-  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
-  - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.Notifications
-  # Network access
-  - --share=network
-cleanup:
-  - /include
-  - /lib/pkgconfig
-  - /man
-  - /share/man
-  - '*.a'
-  - '*.la'
-cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
-  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
-
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
 modules:
-
-- name: intltool
-  sources:
-    - type: archive
-      url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
-      sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
-- name: python-distutils-extra
-  buildsystem: simple
-  build-commands:
-    [
-      "python3 setup.py install --prefix=/app"
-    ]
-  sources:
-    - type: archive
-      url: https://launchpad.net/python-distutils-extra/trunk/2.39/+download/python-distutils-extra-2.39.tar.gz
-      sha256: 723f24f4d65fc8d99b33a002fbbb3771d4cc9d664c97085bf37f3997ae8063af
-- name: screenkey
-  buildsystem: simple
-  ensure-writable:
-    [
-      "/lib/python3.7/site-packages/easy-install.pth"
-    ]
-  build-commands:
-    [
-      "python3 setup.py build",
-      "python3 setup.py install --skip-build --prefix=/app"
-
-    ]
-  config-opts: [ ]
-  sources:
-    - type: git
-      url: https://gitlab.com/screenkey/screenkey
-      branch: master
+  - name: screenkey
+    buildsystem: simple
+    ensure-writable:
+      - /lib/python3.7/site-packages/easy-install.pth
+    build-commands:
+      - python3 setup.py build
+      - python3 setup.py install --skip-build --prefix=/app
+    sources:
+      - type: git
+        url: https://gitlab.com/screenkey/screenkey
+        branch: master
+    modules:
+      - name: python-distutils-extra
+        cleanup:
+          - '*'
+        buildsystem: simple
+        build-commands:
+          - python3 setup.py install --prefix=/app
+        sources:
+          - type: archive
+            url: https://launchpad.net/python-distutils-extra/trunk/2.39/+download/python-distutils-extra-2.39.tar.gz
+            sha256: 723f24f4d65fc8d99b33a002fbbb3771d4cc9d664c97085bf37f3997ae8063af
+        modules:
+          - name: intltool
+            cleanup:
+              - '*'
+            sources:
+              - type: archive
+                url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
+                sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
