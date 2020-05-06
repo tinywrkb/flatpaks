@@ -1,3 +1,8 @@
+# TODO
+#   more cleanup
+#   minimal build
+#   move dependencies to shared modules?
+
 app-id: net.launchpad.qpdfview
 runtime: org.kde.Platform
 runtime-version: '5.14'
@@ -8,23 +13,11 @@ rename-appdata-file: qpdfview.appdata.xml
 rename-desktop-file: qpdfview.desktop
 copy-icon: true
 finish-args:
-  # Wayland access
-  - --socket=wayland
-  # X11 + XShm access
-  - --socket=x11
-  - --share=ipc
-  # OpenGL access
   - --device=dri
-  # Filesystem access
-  # for writing output files
-  - --filesystem=host
-
-  - --filesystem=xdg-config/kdeglobals:ro # gives application access to kdeglobals
-  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
-  - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.Notifications
-  # Network access
-  - --share=network
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/debug
@@ -34,74 +27,7 @@ cleanup:
   - /share/man
   - '*.a'
   - '*.la'
-
 modules:
-
-  - name: openjpeg2
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DCMAKE_INSTALL_PREFIX=/app
-      - -DBUILD_SHARED_LIBS=ON
-      - -DBUILD_STATIC_LIBS=OFF=ON
-    sources:
-      - type: archive
-        url: https://github.com/uclouvain/openjpeg/archive/v2.3.1.tar.gz
-        sha256: 63f5a4713ecafc86de51bfad89cc07bb788e9bba24ebbf0c4ca637621aadb6a9
-  - name: poppler
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DCMAKE_INSTALL_PREFIX:PATH=/app
-      - -DCMAKE_INSTALL_LIBDIR=/app/lib
-      - -DENABLE_UNSTABLE_API_ABI_HEADERS=ON
-      - -DENABLE_QT5=ON
-      - -DENABLE_GLIB=ON
-    sources:
-      - type: archive
-        url: https://poppler.freedesktop.org/poppler-0.88.0.tar.xz
-        sha256: b4453804e9a5a519e6ceee0ac8f5efc229e3b0bf70419263c239124474d256c7
-
-  - name: ghostscript
-    config-opts:
-      - --disable-cups
-    make-args:
-      - so
-    make-install-args:
-      - soinstall
-    sources:
-      - type: archive
-        url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs952/ghostscript-9.52.tar.xz
-        sha512: 4c4a33884e1138bad553eee61fac1a72158297ad5c2ce46a4b36150848dea8158affaf2b902f4ff03e4f72ebc8154c198b618112624f409230a610b7648faa67
-      - type: shell
-        commands:
-          - cp -p /usr/share/automake-*/config.{sub,guess} freetype/builds/unix/
-          - cp -p /usr/share/automake-*/config.{sub,guess} ijs/
-          - cp -p /usr/share/automake-*/config.{sub,guess} jpeg/
-          - cp -p /usr/share/automake-*/config.{sub,guess} libpng/
-          - cp -p /usr/share/automake-*/config.{sub,guess} lcms2mt/
-          - cp -p /usr/share/automake-*/config.{sub,guess} tiff/config/
-
-  - name: libspectre
-    buildsystem: simple
-    build-commands:
-      - ./configure --prefix=/app --disable-static
-      - make
-      - make install
-    sources:
-      - type: archive
-        url: https://libspectre.freedesktop.org/releases/libspectre-0.2.8.tar.gz
-        sha256: 65256af389823bbc4ee4d25bfd1cc19023ffc29ae9f9677f2d200fa6e98bc7a8
-
-
-  - name: djvulibre
-    config-opts:
-      - --disable-desktopfiles
-    sources:
-      - type: archive
-        url: https://downloads.sourceforge.net/djvu/djvulibre-3.5.27.tar.gz
-        sha256: e69668252565603875fb88500cde02bf93d12d48a3884e472696c896e81f505f
-
   - name: qpdfview
     buildsystem: qmake
     config-opts:
@@ -113,9 +39,68 @@ modules:
       - LAUNCHER_INSTALL_PATH=/app/share/applications
       - APPDATA_INSTALL_PATH=/app/share/appdata
       - qpdfview.pro
-    #make-install-args:
-      #- INSTALL_ROOT=/app
     sources:
       - type: archive
         url: https://launchpad.net/qpdfview/trunk/0.4.18/+download/qpdfview-0.4.18.tar.gz
         sha256: cc642e7fa74029373ca9b9fbc29adc4883f8b455130a78ad54746d6844a0396c
+    modules:
+      - name: poppler
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=Release
+          - -DCMAKE_INSTALL_PREFIX:PATH=/app
+          - -DCMAKE_INSTALL_LIBDIR=/app/lib
+          - -DENABLE_UNSTABLE_API_ABI_HEADERS=ON
+          - -DENABLE_QT5=ON
+          - -DENABLE_GLIB=ON
+        sources:
+          - type: archive
+            url: https://poppler.freedesktop.org/poppler-0.88.0.tar.xz
+            sha256: b4453804e9a5a519e6ceee0ac8f5efc229e3b0bf70419263c239124474d256c7
+        modules:
+          - name: openjpeg2
+            buildsystem: cmake
+            config-opts:
+              - -DCMAKE_BUILD_TYPE=Release
+              - -DCMAKE_INSTALL_PREFIX=/app
+              - -DBUILD_SHARED_LIBS=ON
+              - -DBUILD_STATIC_LIBS=OFF=ON
+            sources:
+              - type: archive
+                url: https://github.com/uclouvain/openjpeg/archive/v2.3.1.tar.gz
+                sha256: 63f5a4713ecafc86de51bfad89cc07bb788e9bba24ebbf0c4ca637621aadb6a9
+      - name: libspectre
+        config-opts:
+          - --prefix=/app
+          - --disable-static
+        sources:
+          - type: archive
+            url: https://libspectre.freedesktop.org/releases/libspectre-0.2.8.tar.gz
+            sha256: 65256af389823bbc4ee4d25bfd1cc19023ffc29ae9f9677f2d200fa6e98bc7a8
+        modules:
+          - name: ghostscript
+            config-opts:
+              - --disable-cups
+            make-args:
+              - so
+            make-install-args:
+              - soinstall
+            sources:
+              - type: archive
+                url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs952/ghostscript-9.52.tar.xz
+                sha512: 4c4a33884e1138bad553eee61fac1a72158297ad5c2ce46a4b36150848dea8158affaf2b902f4ff03e4f72ebc8154c198b618112624f409230a610b7648faa67
+              - type: shell
+                commands:
+                  - cp -p /usr/share/automake-*/config.{sub,guess} freetype/builds/unix/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} ijs/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} jpeg/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} libpng/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} lcms2mt/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} tiff/config/
+      - name: djvulibre
+        config-opts:
+          - --disable-desktopfiles
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/djvu/djvulibre-3.5.27.tar.gz
+            sha256: e69668252565603875fb88500cde02bf93d12d48a3884e472696c896e81f505f
