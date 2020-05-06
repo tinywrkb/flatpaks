@@ -3,54 +3,30 @@ runtime: org.kde.Platform
 runtime-version: '5.14'
 sdk: org.kde.Sdk
 command: pavucontrol-qt 
-#rename-icon: pavucontrol-qt 
-rename-appdata-file: pavucontrol-qt.appdata.xml  
 rename-desktop-file: pavucontrol-qt.desktop
-copy-icon: true
 finish-args:
-  # Wayland access
-  - --socket=wayland
-  # X11 + XShm access
-  - --socket=x11
-  - --share=ipc
-  # OpenGL access
   - --device=dri
+  - --share=ipc
   - --socket=pulseaudio
-  # Filesystem access
-  # for writing output files
-  - --filesystem=host
-
-  - --filesystem=xdg-config/kdeglobals:ro # gives application access to kdeglobals
-  - --talk-name=com.canonical.AppMenu.Registrar # gives application access to dbus menu
-  - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.Notifications
-  # Network access
-  - --share=network
+  - --socket=wayland
+  - --socket=x11
 cleanup:
-  - /include
-  - /lib/pkgconfig
-  - /man
-  - /share/man
-  - '*.a'
-  - '*.la'
-cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
-  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
-
+  - /bin/lxqt-transupdate
+  - /lib
+  - /share/cmake
 modules:
-
-- name: lxqt-build-tools
-  buildsystem: cmake
-  builddir: true
-  config-opts: [ ]
-  sources:
-    - type: git
-      url: https://github.com/lxde/lxqt-build-tools
-      tag: 0.7.0
-- name: pavucontrol-qt
-  buildsystem: cmake
-  builddir: true
-  config-opts: [ ]
-  sources:
-    - type: git
-      url: https://github.com/lxde/pavucontrol-qt
-      tag: 0.15.0
+  - name: pavucontrol-qt
+    buildsystem: cmake
+    builddir: true
+    sources:
+      - type: git
+        url: https://github.com/lxde/pavucontrol-qt
+        tag: 0.15.0
+    modules:
+      - name: lxqt-build-tools
+        buildsystem: cmake
+        builddir: true
+        sources:
+          - type: git
+            url: https://github.com/lxde/lxqt-build-tools
+            tag: 0.7.0
