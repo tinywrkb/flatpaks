@@ -18,19 +18,10 @@ finish-args:
 cleanup:
   - /include
   - /lib/debug
-  - /lib/openjpeg-*
   - /lib/pkgconfig
   - /share/man
   - '*.a'
   - '*.la'
-# quick workarounds
-  - /bin/mupdf*
-  - /bin/muraster
-  - /bin/mutool
-  - /bin/gs
-  - /lib/cmake
-  - /share/doc
-  - /share/ghostscript
 modules:
   - name: zathura
     buildsystem: meson
@@ -38,6 +29,10 @@ modules:
       - type: archive
         url: https://github.com/pwmt/zathura/archive/0.4.5.tar.gz
         sha256: 317882fc4e05104591c011c237b2ba6bf0b3978c189f5cdf3c978cb333ee04fe
+    cleanup:
+      - /share/bash-completion
+      - /share/fish
+      - /share/zsh
     modules:
       - name: girara
         buildsystem: meson
@@ -63,6 +58,9 @@ modules:
           - type: archive
             url: https://github.com/uclouvain/openjpeg/archive/v2.3.1.tar.gz
             sha256: 63f5a4713ecafc86de51bfad89cc07bb788e9bba24ebbf0c4ca637621aadb6a9
+        cleanup:
+          - /bin
+          - /lib/openjpeg-*
       - name: poppler
         buildsystem: cmake
         config-opts:
@@ -75,6 +73,10 @@ modules:
           - type: archive
             url: https://poppler.freedesktop.org/poppler-0.88.0.tar.xz
             sha256: b4453804e9a5a519e6ceee0ac8f5efc229e3b0bf70419263c239124474d256c7
+        cleanup:
+          - /bin
+          - /lib/girepository-1.0
+          - /share
   - name: zathura-pdf-djvu
     buildsystem: meson
     sources:
@@ -89,6 +91,9 @@ modules:
           - type: archive
             url: https://downloads.sourceforge.net/djvu/djvulibre-3.5.27.tar.gz
             sha256: e69668252565603875fb88500cde02bf93d12d48a3884e472696c896e81f505f
+        cleanup:
+          - /bin
+          - /share
   - name: zathura-pdf-ps
     buildsystem: meson
     sources:
@@ -108,6 +113,8 @@ modules:
           - name: ghostscript
             config-opts:
               - --disable-cups
+              - --with-drivers=FILES
+              - --disable-gtk
             make-args:
               - so
             make-install-args:
@@ -124,6 +131,9 @@ modules:
                   - cp -p /usr/share/automake-*/config.{sub,guess} libpng/
                   - cp -p /usr/share/automake-*/config.{sub,guess} lcms2mt/
                   - cp -p /usr/share/automake-*/config.{sub,guess} tiff/config/
+            cleanup:
+              - /bin
+              - /share
   - name: zathura-pdf-cb
     buildsystem: meson
     sources:
@@ -142,21 +152,26 @@ modules:
       - name: libmupdf
         no-autogen: true
         build-options:
-            cflags: -fPIC
-            cxxflags: -fPIC
+          cflags: -fPIC
+          cxxflags: -fPIC
+          env:
+            USE_SYSTEM_LIBS: yes
         make-args:
-          #- USE_SYSTEM_LIBS=yes
           - build=release
           - libs
-          - prefix=/app
         make-install-args:
           - build=release
-          - libs
           - prefix=/app
         sources:
           - type: archive
             url: https://mupdf.com/downloads/archive/mupdf-1.16.1-source.tar.xz
             sha256: 6fe78184bd5208f9595e4d7f92bc8df50af30fbe8e2c1298b581c84945f2f5da
+          - type: shell
+            commands:
+              - rm -rf thirdparty/{freeglut,freetype,harfbuzz,jbig2dec,libjpeg,openjpeg,zlib}
+        cleanup:
+          - /bin
+          - /share
         modules:
           - name: freeglut
             buildsystem: cmake
@@ -167,6 +182,8 @@ modules:
               - type: archive
                 url: https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz
                 sha256: d4000e02102acaf259998c870e25214739d1f16f67f99cb35e4f46841399da68
+            cleanup:
+              - /lib/cmake
             modules:
               - name: glu
                 config-opts:
@@ -183,3 +200,5 @@ modules:
               - type: shell
                 commands:
                   - autoreconf -vfi
+            cleanup:
+              - /bin
