@@ -1,3 +1,16 @@
+# TODO
+#   check for missing libs and add
+#     gtk3-print-backends
+#     libcups
+#     libxss
+#     libxtst
+#     nss
+#
+# Related bugs
+#   https://github.com/flatpak/flatpak/issues/3029
+#   https://github.com/flatpak/flatpak/issues/3365
+#   https://github.com/moonlight-stream/moonlight-qt/issues/362
+
 app-id: com.google.chrome
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
@@ -25,25 +38,27 @@ modules:
   - name: chrome
     buildsystem: simple
     build-commands:
-      - "install -D apply_extra /app/bin/apply_extra"
-      - "install -D com.google.chrome /app/bin/com.google.chrome"
-      - "install -D com.google.chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome.svg"
-      - "install -D com.google.chrome.desktop /app/share/applications/com.google.chrome.desktop"
-      - "install -D /usr/bin/ar /app/bin"
-      - "mkdir -p /app/lib"
-      - "ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib"
-      - "ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4"
+      - install -D apply_extra /app/bin/apply_extra
+      - install -D com.google.chrome /app/bin/com.google.chrome
+      - install -D com.google.chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome.svg
+      - install -D com.google.chrome.desktop /app/share/applications/com.google.chrome.desktop
+      - install -D /usr/bin/ar /app/bin
+      - mkdir -p /app/lib
+      - ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib
+      - ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4
     sources:
       - type: script
         dest-filename: apply_extra
         commands:
-          - "ar x google-chrome-stable_current_amd64.deb"
-          - "rm -f google-chrome-stable_current_amd64.deb"
-          - "tar xJf data.tar.xz"
-          - "rm -f control.tar.xz data.tar.xz debian-binary"
-          - "mv usr/* ."
-          - "rmdir usr"
-          - "rm -rf bin etc share/doc share/man"
+          - ar x google-chrome-stable_current_amd64.deb
+          - rm -f google-chrome-stable_current_amd64.deb
+          - tar xJf data.tar.xz
+          - rm -f control.tar.xz data.tar.xz debian-binary
+          - mv usr/* .
+          - rmdir usr
+          - rm -rf bin etc share/doc share/man
+          - rm opt/google/chrome/product_logo_*.png
+          - rm -r opt/google/chrome/cron
       - type: dir
         path: resources
       - type: extra-data
