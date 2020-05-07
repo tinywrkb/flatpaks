@@ -23,6 +23,14 @@ cleanup:
   - /share/man
   - '*.a'
   - '*.la'
+# quick workarounds
+  - /bin/mupdf*
+  - /bin/muraster
+  - /bin/mutool
+  - /bin/gs
+  - /lib/cmake
+  - /share/doc
+  - /share/ghostscript
 modules:
   - name: zathura
     buildsystem: meson
