@@ -1,3 +1,9 @@
+# TODO
+#   add libsynctex and texlive
+#   add sqlite
+#   libmupdf: use system libs
+#   lot's of cleanup
+
 app-id: org.pwmt.zathura
 runtime: org.gnome.Platform
 runtime-version: '3.36'
@@ -9,28 +15,28 @@ finish-args:
   - --share=ipc
   - --device=dri
   - --filesystem=home
-#cleanup:
-#  - /include
-#  - /lib/pkgconfig
-#  - /man
-#  - /share/man
-#  - '*.a'
-#  - '*.la'
-
+cleanup:
+  - /include
+  - /lib/debug
+  - /lib/openjpeg-*
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
 modules:
-
-  - name: girara
-    buildsystem: meson
-    sources:
-      - type: archive
-        url: https://pwmt.org/projects/girara/download/girara-0.3.4.tar.xz
-        sha256: 51fcda5a50a68fabd461fb4e467a1defd531dafca4f47f6851a9eb56756cb232
   - name: zathura
     buildsystem: meson
     sources:
       - type: archive
         url: https://github.com/pwmt/zathura/archive/0.4.5.tar.gz
         sha256: 317882fc4e05104591c011c237b2ba6bf0b3978c189f5cdf3c978cb333ee04fe
+    modules:
+      - name: girara
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://pwmt.org/projects/girara/download/girara-0.3.4.tar.xz
+            sha256: 51fcda5a50a68fabd461fb4e467a1defd531dafca4f47f6851a9eb56756cb232
   - name: zathura-pdf-poppler
     buildsystem: meson
     sources:
@@ -61,3 +67,111 @@ modules:
           - type: archive
             url: https://poppler.freedesktop.org/poppler-0.88.0.tar.xz
             sha256: b4453804e9a5a519e6ceee0ac8f5efc229e3b0bf70419263c239124474d256c7
+  - name: zathura-pdf-djvu
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/pwmt/zathura-djvu/archive/0.2.9.tar.gz
+        sha256: 84fae6da42e7cdc2e49ed4cd4f0315ac09716e95358b9c7487803a2cff47dbca
+    modules:
+      - name: djvulibre
+        config-opts:
+          - --disable-desktopfiles
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/djvu/djvulibre-3.5.27.tar.gz
+            sha256: e69668252565603875fb88500cde02bf93d12d48a3884e472696c896e81f505f
+  - name: zathura-pdf-ps
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/pwmt/zathura-ps/archive/0.2.6.tar.gz
+        sha256: 08c1927bfb8a40e201fa3638f9523d4b6d70e3444ef070bd4aa8a869b6574567
+    modules:
+      - name: libspectre
+        config-opts:
+          - --prefix=/app
+          - --disable-static
+        sources:
+          - type: archive
+            url: https://libspectre.freedesktop.org/releases/libspectre-0.2.8.tar.gz
+            sha256: 65256af389823bbc4ee4d25bfd1cc19023ffc29ae9f9677f2d200fa6e98bc7a8
+        modules:
+          - name: ghostscript
+            config-opts:
+              - --disable-cups
+            make-args:
+              - so
+            make-install-args:
+              - soinstall
+            sources:
+              - type: archive
+                url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs952/ghostscript-9.52.tar.xz
+                sha512: 4c4a33884e1138bad553eee61fac1a72158297ad5c2ce46a4b36150848dea8158affaf2b902f4ff03e4f72ebc8154c198b618112624f409230a610b7648faa67
+              - type: shell
+                commands:
+                  - cp -p /usr/share/automake-*/config.{sub,guess} freetype/builds/unix/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} ijs/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} jpeg/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} libpng/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} lcms2mt/
+                  - cp -p /usr/share/automake-*/config.{sub,guess} tiff/config/
+  - name: zathura-pdf-cb
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/pwmt/zathura-cb/archive/0.1.8.tar.gz
+        sha256: 67206011fc375cd2f3d0bc0d7a36b182c10eb3c41961963910992393c34aa5d5
+  - name: zathura-pdf-mupdf
+    buildsystem: meson
+    config-opts:
+      - -Dlink-external=true
+    sources:
+      - type: archive
+        url: https://github.com/pwmt/zathura-pdf-mupdf/archive/0.3.5.tar.gz
+        sha256: 6344acda225ca637fc72788cacce7448cd2e69ac13f19429726786a0b62cd7e3
+    modules:
+      - name: libmupdf
+        no-autogen: true
+        build-options:
+            cflags: -fPIC
+            cxxflags: -fPIC
+        make-args:
+          #- USE_SYSTEM_LIBS=yes
+          - build=release
+          - libs
+          - prefix=/app
+        make-install-args:
+          - build=release
+          - libs
+          - prefix=/app
+        sources:
+          - type: archive
+            url: https://mupdf.com/downloads/archive/mupdf-1.16.1-source.tar.xz
+            sha256: 6fe78184bd5208f9595e4d7f92bc8df50af30fbe8e2c1298b581c84945f2f5da
+        modules:
+          - name: freeglut
+            buildsystem: cmake
+            config-opts:
+              - -DFREEGLUT_BUILD_STATIC_LIBS=OFF
+              - -DCMAKE_BUILD_TYPE=None
+            sources:
+              - type: archive
+                url: https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz
+                sha256: d4000e02102acaf259998c870e25214739d1f16f67f99cb35e4f46841399da68
+            modules:
+              - name: glu
+                config-opts:
+                  - --disable-static
+                sources:
+                  - type: archive
+                    url: https://mesa.freedesktop.org/archive/glu/glu-9.0.1.tar.xz
+                    sha256: fb5a4c2dd6ba6d1c21ab7c05129b0769544e1d68e1e3b0ffecb18e73c93055bc
+          - name: jbig2dec
+            sources:
+              - type: archive
+                url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs951/jbig2dec-0.18.tar.gz
+                sha256: 9e19775237350e299c422b7b91b0c045e90ffa4ba66abf28c8fb5eb005772f5e
+              - type: shell
+                commands:
+                  - autoreconf -vfi
