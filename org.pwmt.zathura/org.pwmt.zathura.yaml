@@ -1,13 +1,10 @@
-# TODO
-#   add libsynctex and texlive
-#   add sqlite
-#   libmupdf: use system libs
-#   lot's of cleanup
-
 app-id: org.pwmt.zathura
 runtime: org.gnome.Platform
 runtime-version: '3.36'
 sdk: org.gnome.Sdk
+# for synctex
+#sdk-extensions:
+#  - org.freedesktop.Sdk.Extension.texlive
 command: zathura
 finish-args:
   - --socket=wayland
@@ -25,6 +22,8 @@ cleanup:
 modules:
   - name: zathura
     buildsystem: meson
+#    config-opts:
+#      - -Dsynctex=enabled
     sources:
       - type: archive
         url: https://github.com/pwmt/zathura/archive/0.4.5.tar.gz
@@ -40,6 +39,23 @@ modules:
           - type: archive
             url: https://pwmt.org/projects/girara/download/girara-0.3.4.tar.xz
             sha256: 51fcda5a50a68fabd461fb4e467a1defd531dafca4f47f6851a9eb56756cb232
+        modules:
+          - name: json-c
+            buildsystem: cmake
+            config-opts:
+              - -DCMAKE_BUILD_TYPE=None
+              - -DENABLE_THREADING=ON
+              - -DENABLE_RDRAND=OFF
+            sources:
+              - type: archive
+                url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
+                sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
+            cleanup:
+              - /lib/cmake
+#      - name: libsynctex.so
+#        buildsystem: simple
+#        build-commands:
+#          - install -d /usr/lib/sdk/texlive/libsynctex.so* -t /app/lib
   - name: zathura-pdf-poppler
     buildsystem: meson
     sources:
