@@ -13,6 +13,9 @@
 #           (copy to XDG_DATA_HOME/flatpak/exports, install something, and run $ string icon-theme-cache|grep insync)
 #       also having the icons installed on the host (original names) didn't help
 #       and of course I tried also to package and export them by flatpak with the com.insynchq.insync prefix
+#       maybe insync intentionally ignores icons from flatpak
+#         https://forums.insynchq.com/t/no-tray-icon-in-lastest-version/6073/11
+#         https://forums.insynchq.com/t/ubuntu-16-10-with-xfce-no-tray-icon/7619
 #     * using unix file socket at /tmp/insync${UID}.sock
 #       allowing mutliple instances of insync in the same ipc/namespace
 #       a linux named socket will allow sharing the socket between containers in the same network namespace
