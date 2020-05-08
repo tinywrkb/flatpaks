@@ -64,7 +64,7 @@ modules:
               - -DCMAKE_BUILD_TYPE=Release
               - -DCMAKE_INSTALL_PREFIX=/app
               - -DBUILD_SHARED_LIBS=ON
-              - -DBUILD_STATIC_LIBS=OFF=ON
+              - -DBUILD_STATIC_LIBS=OFF
             sources:
               - type: archive
                 url: https://github.com/uclouvain/openjpeg/archive/v2.3.1.tar.gz
