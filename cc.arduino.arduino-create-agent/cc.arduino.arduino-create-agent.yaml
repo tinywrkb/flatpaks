@@ -1,5 +1,3 @@
-# WARNING: does NOT work currently
-
 app-id: cc.arduino.arduino-create-agent
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
