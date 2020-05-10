@@ -1,15 +1,8 @@
-# TODO
-#   check for missing libs and add
-#     gtk3-print-backends
-#     libcups
-#     libxss
-#     libxtst
-#     nss
-#
 # Related bugs
 #   https://github.com/flatpak/flatpak/issues/3029
 #   https://github.com/flatpak/flatpak/issues/3365
 #   https://github.com/moonlight-stream/moonlight-qt/issues/362
+#   https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
 
 app-id: com.google.chrome
 runtime: org.freedesktop.Platform
@@ -27,13 +20,13 @@ finish-args:
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   # testing
-  - --device=all
-  - --device=kvm
-  - --device=shm
+# - --device=all
+# - --device=kvm
+# - --device=shm
   - --socket=cups
-  - --socket=pcsc
-  - --socket=session-bus
-  - --socket=system-bus
+# - --socket=pcsc
+# - --socket=session-bus
+# - --socket=system-bus
 modules:
   - name: chrome
     buildsystem: simple
