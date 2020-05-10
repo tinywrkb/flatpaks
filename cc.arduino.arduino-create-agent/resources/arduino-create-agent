@@ -1,3 +1,11 @@
 #!/bin/bash
 
-echo just empty file
+cp -u /app/lib/arduino-create-agent/arduino_create_bridge "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge
+cp -u /app/lib/arduino-create-agent/arduino_create_bridge_cli "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge_cli
+cp -u /app/share/arduino-create-agent/config.ini "$XDG_CONFIG_HOME"/arduino-create-agent/config.ini
+
+if [[ "$1" == gui ]]; then
+  "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge
+else
+  "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge_cli
+fi

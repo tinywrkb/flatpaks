@@ -5,6 +5,9 @@ runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
 command: arduino-create-agent
+rename-desktop-file: arduino-create-agent.desktop
+rename-icon: arduino-create-agent
+copy-icon: true
 finish-args:
   - --device=dri
   - --device=all
@@ -14,6 +17,7 @@ finish-args:
   - --socket=pulseaudio
   - --socket=wayland
   - --socket=x11
+  - --persist=.arduino-create
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   # testing
@@ -22,19 +26,23 @@ finish-args:
 modules:
   - name: arduino-create-agent
     buildsystem: simple
+    build-options:
+      build-args:
+        - --persist=ArduinoCreateAgent-1.1
     build-commands:
       - install -Dm755 arduino-create-agent /app/bin/arduino-create-agent
-      - install -D linux-amd64/Arduino_Create_Bridge /app/lib/arduino-create-agent/arduino_create_bridge
-      - install -D linux-amd64/Arduino_Create_Bridge_cli /app/lib/arduino-create-agent/arduino_create_bridge_cli
       - install -D config.ini /app/share/arduino-create-agent/config.ini
-     #- install -D arduino-create-agent.svg /app/share/icons/hicolor/scalable/apps/arduino-create-agent.svg
-     #- install -D arduino-create-agent.desktop /app/share/applications/arduino-create-agent.desktop
+      - install -D arduino-create-agent.svg /app/share/icons/hicolor/scalable/apps/arduino-create-agent.svg
+      - install -D arduino-create-agent.desktop /app/share/applications/arduino-create-agent.desktop
+      - tar xf ArduinoCreateAgent-1.1-linux-x64-installer-chrome.tar.gz
+      - ./ArduinoCreateAgent-1.1-linux-x64.run --mode unattended 2>/dev/null
+      - install -D $HOME/ArduinoCreateAgent-1.1/Arduino_Create_Bridge /app/lib/arduino-create-agent/arduino_create_bridge
+      - install -D $HOME/ArduinoCreateAgent-1.1/Arduino_Create_Bridge_cli /app/lib/arduino-create-agent/arduino_create_bridge_cli
     sources:
-      - type: archive
-        url: https://github.com/arduino/arduino-create-agent/releases/download/1.1.60/Arduino_Create_Bridge-ArduinoCreateAgent-1.1.60.tar.gz
-        sha256: f43b02e1d365f79cfc8c8e983b436ba85c2250b0dff82db1affcd0d3d82cc010
+      - type: file
+        url: https://downloads.arduino.cc/CreateBridgeStable/ArduinoCreateAgent-1.1-linux-x64-installer-chrome.tar.gz
+        sha256: 97d2c900584451ef7afc4515c42dbddf9410f5c3f451d2173c5bef2d1f2cd843
       - type: dir
         path: resources
     modules:
-      - name: libappindicator-gtk3
-          - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
