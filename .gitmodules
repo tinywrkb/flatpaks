@@ -1,0 +1,3 @@
+[submodule "cc.arduino.arduino-create-agent/shared-modules"]
+	path = cc.arduino.arduino-create-agent/shared-modules
+	url = https://github.com/flathub/shared-modules
