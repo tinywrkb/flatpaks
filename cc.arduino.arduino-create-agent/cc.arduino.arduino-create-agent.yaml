@@ -1,0 +1,96 @@
+# WARNING: does NOT work currently
+
+app-id: cc.arduino.arduino-create-agent
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: arduino-create-agent
+finish-args:
+  - --device=dri
+  - --device=all
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=x11
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  # testing
+  - --socket=session-bus
+  - --socket=system-bus
+modules:
+  - name: arduino-create-agent
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 arduino-create-agent /app/bin/arduino-create-agent
+      - install -D linux-amd64/Arduino_Create_Bridge /app/lib/arduino-create-agent/arduino_create_bridge
+      - install -D linux-amd64/Arduino_Create_Bridge_cli /app/lib/arduino-create-agent/arduino_create_bridge_cli
+      - install -D config.ini /app/share/arduino-create-agent/config.ini
+     #- install -D arduino-create-agent.svg /app/share/icons/hicolor/scalable/apps/arduino-create-agent.svg
+     #- install -D arduino-create-agent.desktop /app/share/applications/arduino-create-agent.desktop
+    sources:
+      - type: archive
+        url: https://github.com/arduino/arduino-create-agent/releases/download/1.1.60/Arduino_Create_Bridge-ArduinoCreateAgent-1.1.60.tar.gz
+        sha256: f43b02e1d365f79cfc8c8e983b436ba85c2250b0dff82db1affcd0d3d82cc010
+      - type: dir
+        path: resources
+    modules:
+      - name: libappindicator
+        config-opts:
+          - --with-gtk=3
+        sources:
+          - type: archive
+            url: http://launchpad.net/libappindicator/12.10/12.10.0/+download/libappindicator-12.10.0.tar.gz
+            sha256: d5907c1f98084acf28fd19593cb70672caa0ca1cf82d747ba6f4830d4cc3b49f
+          - type: patch
+            path: no-python.patch
+          - type: shell
+            commands:
+              - sed -i 's/-Werror//' src/Makefile.am
+        modules:
+          - name: libindicator
+            no-autogen: true
+            config-opts:
+              - --with-gtk=3
+              - --disable-tests
+            sources:
+              - type: archive
+                url: https://launchpad.net/libindicator/12.10/12.10.1/+download/libindicator-12.10.1.tar.gz
+                sha256: b2d2e44c10313d5c9cd60db455d520f80b36dc39562df079a3f29495e8f9447f
+              - type: shell
+                commands:
+                  - sed -i 's/-Werror//' {libindicator,tools}/Makefile.am
+                  - autoreconf -fi
+          - name: libdbusmenu
+            no-autogen: true
+            config-opts:
+              - --with-gtk=3
+              - --disable-tests
+              - --disable-dumper
+              - --enable-introspection=no
+              - --disable-vala
+            build-options:
+              env:
+                HAVE_VALGRIND_TRUE: '#'
+                HAVE_VALGRIND_FALSE: ''
+            sources:
+              - type: archive
+                url: https://launchpad.net/libdbusmenu/16.04/16.04.0/+download/libdbusmenu-16.04.0.tar.gz
+                sha256: b9cc4a2acd74509435892823607d966d424bd9ad5d0b00938f27240a1bfa878a
+              - type: shell
+                commands:
+                  - sed -i 's/-Werror//' libdbusmenu-*/Makefile.{am,in}
+            modules:
+              - name: intltool
+                cleanup:
+                  - '*'
+                sources:
+                  - type: archive
+                    url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
+                    sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
+          - name: dbug-glib
+            sources:
+              - type: archive
+                url: https://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-0.110.tar.gz
+                sha256: 7ce4760cf66c69148f6bd6c92feaabb8812dee30846b24cd0f7395c436d7e825
