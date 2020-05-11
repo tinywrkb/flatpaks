@@ -1,0 +1,173 @@
+app-id: org.qutebrowser.qutebrowser
+runtime: org.kde.Platform
+runtime-version: '5.12'
+sdk: org.kde.Sdk
+command: qutebrowser
+rename-icon: qutebrowser
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --filesystem=xdg-download
+  - --device=dri
+modules:
+  - name: qutebrowser
+    buildsystem: simple
+    build-options:
+      build-args:
+        - --share=network
+    build-commands:
+      - make --file misc/Makefile install PREFIX=/app
+    sources:
+      - type: archive
+        url: https://github.com/qutebrowser/qutebrowser/archive/v1.11.1.tar.gz
+        sha256: 30902291d3d9b50a1dd2049446827fd3e5ea52f4b582a68680cdccdf5cd9d864
+    cleanup:
+      - /share/man
+    modules:
+      - name: asciidoc
+        sources:
+          - type: archive
+            url: https://github.com/asciidoc/asciidoc/archive/8.6.10.tar.gz
+            sha256: 9e52f8578d891beaef25730a92a6e723596ddbd07bfe0d2a56486fcf63a0b983
+          - type: shell
+            commands:
+              - autoconf
+              - ./configure
+        cleanup:
+          - '*'
+      - name: python-attrs
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+        build-commands:
+          - pip3 install --prefix=${FLATPAK_DEST} attrs==19.3.0
+      - name: python-jinja2
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+        build-commands:
+          - pip3 install --prefix=${FLATPAK_DEST} jinja2==2.11.2
+      - name: python-markupsafe
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+        build-commands:
+          - pip3 install --prefix=${FLATPAK_DEST} markupsafe==1.1.1
+      - name: python-pygments
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+        build-commands:
+          - pip3 install --prefix=${FLATPAK_DEST} pygments==2.6.1
+        cleanup:
+          - '/bin'
+      - name: python-pypeg2
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+        build-commands:
+          - pip3 install --prefix=${FLATPAK_DEST} pypeg2==2.15.2
+      - name: python-pyaml
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+        build-commands:
+          - pip3 install --prefix=${FLATPAK_DEST} pyaml==20.4.0
+      - name: sip
+        config-opts:
+          - --no-dist-info
+          - --no-stubs
+          - --bindir=/app/bin
+          - --destdir=/app/lib/python3.7/site-packages
+          - --incdir=/app/include
+          - --pyidir=/app/lib/python3.7/site-packages
+          - --sipdir=/app/share/sip
+          - --sip-module PyQt5.sip
+        sources:
+          - type: archive
+            url: https://www.riverbankcomputing.com/static/Downloads/sip/4.19.22/sip-4.19.22.tar.gz
+            sha256: e1b768824ec1a2ee38dd536b6b6b3d06de27b00a2f5f55470d1b512306e3be45
+          - type: script
+            commands:
+              - processed=`sed -e 's|--prefix=/app||' <<< $@`
+              - python3 configure.py $processed
+            dest-filename: configure
+        cleanup:
+          - /bin
+          - /include
+      - name: pyqt5
+        config-opts:
+          - --assume-shared
+          - --concatenate
+          - --confirm-license
+          - --enable=QtCore
+          - --enable=QtGui
+          - --enable=QtNetwork
+          - --enable=QtOpenGL
+          - --enable=QtPrintSupport
+          - --enable=QtQml
+          - --enable=QtQuick
+          - --enable=QtSql
+          - --enable=QtWebChannel
+          - --enable=QtWidgets
+          - --no-designer-plugin
+          - --no-dist-info
+          - --no-docstrings
+          - --no-qml-plugin
+          - --no-qsci-api
+          - --no-stubs
+          - --no-tools
+          - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.7m/'
+          - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.7m/'
+        sources:
+          - type: archive
+            url: https://pypi.python.org/packages/source/P/PyQt5/PyQt5-5.14.2.tar.gz
+            sha256: bd230c6fd699eabf1ceb51e13a8b79b74c00a80272c622427b80141a22269eb0
+          - type: script
+            commands:
+            - processed=`sed -e 's|prefix|sysroot|' <<< $@`
+            - python3 configure.py $processed
+            dest-filename: configure
+        cleanup:
+          - /lib/debug
+          - /share/sip
+      - name: pyqt5-webengine
+        config-opts:
+          - --concatenate
+          - --no-dist-info
+          - --no-docstrings
+          - --no-qsci-api
+          - --no-sip-files
+          - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.7m/'
+          - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.7m/'
+        sources:
+          - type: archive
+            url: https://pypi.python.org/packages/source/P/PyQtWebEngine/PyQtWebEngine-5.14.0.tar.gz
+            sha256: e11595051f8bfbfa49175d899b2c8c2eea3a3deac4141edf4db68c3555221c92
+          - type: script
+            commands:
+              - processed=`sed -e 's|prefix|sysroot|' <<< $@`
+              - python3 configure.py $processed
+            dest-filename: configure
+        cleanup:
+          - /lib/debug
+      - name: pdfjs
+        buildsystem: simple
+        build-commands:
+          - unzip pdfjs-*.zip
+          - mkdir /app/share/pdf.js
+          - cp -R {LICENSE,build,web} /app/share/pdf.js
+          - find /app/share/pdf.js -type f -exec chmod 644 {} \;
+        sources:
+          - type: file
+            url: https://github.com/mozilla/pdf.js/releases/download/v2.4.456/pdfjs-2.4.456-dist.zip
+            sha256: bd0c36f90130150898890a9972b053601c743ba782543df498a862266f5a7077
