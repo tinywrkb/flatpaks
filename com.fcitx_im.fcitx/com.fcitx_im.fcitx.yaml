@@ -7,6 +7,7 @@
 #   remove session bus access
 #   does it need notifications?
 #   move depends to shared modules
+#   check what extra settings windows available with qt5
 
 app-id: com.fcitx_im.fcitx
 # needed for notifications that are not working with the freedesktop runtime
