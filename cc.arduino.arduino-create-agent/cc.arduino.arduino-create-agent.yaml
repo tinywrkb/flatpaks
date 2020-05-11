@@ -34,8 +34,8 @@ modules:
       - install -D arduino-create-agent.desktop /app/share/applications/arduino-create-agent.desktop
       - tar xf ArduinoCreateAgent-1.1-linux-x64-installer-chrome.tar.gz
       - ./ArduinoCreateAgent-1.1-linux-x64.run --mode unattended 2>/dev/null
-      - install -D $HOME/ArduinoCreateAgent-1.1/Arduino_Create_Bridge /app/lib/arduino-create-agent/arduino_create_bridge
-      - install -D $HOME/ArduinoCreateAgent-1.1/Arduino_Create_Bridge_cli /app/lib/arduino-create-agent/arduino_create_bridge_cli
+      - install -D "$HOME"/ArduinoCreateAgent-1.1/Arduino_Create_Bridge /app/lib/arduino-create-agent/arduino_create_bridge
+      - install -D "$HOME"/ArduinoCreateAgent-1.1/Arduino_Create_Bridge_cli /app/lib/arduino-create-agent/arduino_create_bridge_cli
     sources:
       - type: file
         url: https://downloads.arduino.cc/CreateBridgeStable/ArduinoCreateAgent-1.1-linux-x64-installer-chrome.tar.gz
