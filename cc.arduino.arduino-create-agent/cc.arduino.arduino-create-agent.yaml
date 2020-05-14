@@ -7,19 +7,19 @@ rename-desktop-file: arduino-create-agent.desktop
 rename-icon: arduino-create-agent
 copy-icon: true
 finish-args:
-  - --device=dri
   - --device=all
+  - --device=dri
   - --filesystem=home
+  - --persist=.arduino-create
   - --share=ipc
   - --share=network
   - --socket=wayland
   - --socket=x11
-  - --persist=.arduino-create
-  - --talk-name=org.freedesktop.Notifications
-  - --talk-name=org.kde.StatusNotifierWatcher
   # testing
-  - --socket=session-bus
-  - --socket=system-bus
+  #- --talk-name=org.freedesktop.Notifications
+  #- --talk-name=org.kde.StatusNotifierWatcher
+  #- --socket=session-bus
+  #- --socket=system-bus
 modules:
   - name: arduino-create-agent
     buildsystem: simple
