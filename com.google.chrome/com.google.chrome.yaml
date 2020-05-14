@@ -3,6 +3,8 @@
 #          With --disable-seccomp-filter-sandbox it's possible to run Chrome without the seccomp sanbox,
 #            but this doesn't solve all of the issues with this Flatpak, and at least extensions are
 #            still crashing at startup.
+#          The extensions instability seems to be solved with this PR:
+#              https://github.com/flatpak/flatpak/pull/3617
 #
 # Related bugs
 #   https://github.com/flatpak/flatpak/issues/3029
