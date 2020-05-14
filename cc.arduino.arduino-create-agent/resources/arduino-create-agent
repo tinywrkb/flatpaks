@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir -p "$XDG_CONFIG_HOME"/arduino-create-agent
 cp -u /app/lib/arduino-create-agent/arduino_create_bridge "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge
 cp -u /app/lib/arduino-create-agent/arduino_create_bridge_cli "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge_cli
 cp -u /app/share/arduino-create-agent/config.ini "$XDG_CONFIG_HOME"/arduino-create-agent/config.ini
