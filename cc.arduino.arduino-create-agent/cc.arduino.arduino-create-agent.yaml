@@ -5,7 +5,6 @@ sdk: org.freedesktop.Sdk
 command: arduino-create-agent
 rename-desktop-file: arduino-create-agent.desktop
 rename-icon: arduino-create-agent
-copy-icon: true
 finish-args:
   - --device=all
   - --device=dri
