@@ -1,3 +1,6 @@
+# Related issues
+#   * https://github.com/arduino/arduino-create-agent/issues/554
+
 app-id: cc.arduino.arduino-create-agent
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
