@@ -1,19 +1,15 @@
 # TODO
-#   Fix tray icons
+#   Fix tray icons, ld_preload?
 #   Add an example extension for dolphin
+#   Safer workaround for the Unix file socket which could be shared with other Flatpak apps
 #
 #   Insync bugs
 #     * ~/.config is hardcoded, not using XDG_CONFIG_HOME
-#     * /usr/share/icons/hicolor/48x48/status might be hardcoded
-#       breaks status tray icon
-#       insync not using XDG_DATA_DIRS?
-#       will a relative path to the executable lib/insync/insync will fix the status icon?
-#       after looking at strace I gather it might be related to icon-theme.cache but not quite sure,
-#         forcing flatpak to export the icons in their original names didn't help
-#           (copy to XDG_DATA_HOME/flatpak/exports, install something, and run $ string icon-theme-cache|grep insync)
-#       also having the icons installed on the host (original names) didn't help
-#       and of course I tried also to package and export them by flatpak with the com.insynchq.insync prefix
-#       maybe insync intentionally ignores icons from flatpak
+#     * /usr/share/icons/hicolor/48x48/status is hardcoded and breaks the status tray icon
+#       apparently insync intentionally ignoring other icons sources and not using XDG_DATA_DIRS
+#       this can be confirmed by copying the icons to flatpak runtime which is mounted in the
+#       contained app to /usr and running gtk-update-icon-cache to update icon-theme.cache.
+#       maybe this can be overrided with an ld_preload and catch the openat syscall.
 #         https://forums.insynchq.com/t/no-tray-icon-in-lastest-version/6073/11
 #         https://forums.insynchq.com/t/ubuntu-16-10-with-xfce-no-tray-icon/7619
 #     * using unix file socket at /tmp/insync${UID}.sock
