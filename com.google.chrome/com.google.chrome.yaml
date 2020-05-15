@@ -2,17 +2,17 @@
 #
 # Known issues
 #   * Chrome does not work well with current zypak version.
-#       zypak seems to have trouble setting the seccomp sandbox
-#       so some things do not work or crashing like the built-in Pepper API PDF plugin.
-#     With --disable-seccomp-filter-sandbox it's possible to run Chrome without the seccomp sanbox,
+#       zypak seems to have trouble setting the seccomp sandbox so some things do not work or crashing
+#       like the built-in Pepper API PDF plugin.
+#     With --disable-seccomp-filter-sandbox it's possible to run Chrome without the seccomp support.
 #   * Extensions are crashing on startup.
 #     This extension instability seems to be solved with this PR:
 #       https://github.com/flatpak/flatpak/pull/3617
 #   * Chrome failing to access gnome-keyring / secret service.
 #   * No access to user's certificates.
-#     I didn't test it but considering there's no access to ~/.pkg/nssdb from the host the it won't work.
-#     Right now it not even set as persist.
-#   * Hardware security token do not work. I haven't put any effort in this expect trying my Yubikey.
+#     I didn't test it but considering there's no access to ~/.pkg/nssdb from the host then it won't work.
+#     Right now it's not even set as persist.
+#   * Hardware security token do not work. I haven't put any effort in this except trying my Yubikey.
 #   * Probably others things that I haven't checked.
 #
 # Related bugs
