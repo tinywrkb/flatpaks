@@ -1,16 +1,25 @@
 # WARNING: This is not ready for everyday use.
-#          Chrome does not work well with current zypak version.
-#          With --disable-seccomp-filter-sandbox it's possible to run Chrome without the seccomp sanbox,
-#            but this doesn't solve all of the issues with this Flatpak, and at least extensions are
-#            still crashing at startup.
-#          The extensions instability seems to be solved with this PR:
-#              https://github.com/flatpak/flatpak/pull/3617
+#
+# Known issues
+#   * Chrome does not work well with current zypak version.
+#       zypak seems to have trouble setting the seccomp sandbox
+#       so some things do not work or crashing like the built-in Pepper API PDF plugin.
+#     With --disable-seccomp-filter-sandbox it's possible to run Chrome without the seccomp sanbox,
+#   * Extensions are crashing on startup.
+#     This extension instability seems to be solved with this PR:
+#       https://github.com/flatpak/flatpak/pull/3617
+#   * Chrome failing to access gnome-keyring / secret service.
+#   * No access to user's certificates.
+#     I didn't test it but considering there's no access to ~/.pkg/nssdb from the host the it won't work.
+#     Right now it not even set as persist.
+#   * Hardware security token do not work. I haven't put any effort in this expect trying my Yubikey.
+#   * Probably others things that I haven't checked.
 #
 # Related bugs
-#   https://github.com/flatpak/flatpak/issues/3029
-#   https://github.com/flatpak/flatpak/issues/3365
-#   https://github.com/moonlight-stream/moonlight-qt/issues/362
-#   https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
+#   * https://github.com/flatpak/flatpak/issues/3029
+#   * https://github.com/flatpak/flatpak/issues/3365
+#   * https://github.com/moonlight-stream/moonlight-qt/issues/362
+#   * https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
 
 app-id: com.google.chrome
 runtime: org.freedesktop.Platform
