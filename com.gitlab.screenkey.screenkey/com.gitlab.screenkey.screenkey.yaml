@@ -3,6 +3,7 @@ runtime: org.gnome.Platform
 runtime-version: '3.36'
 sdk: org.gnome.Sdk
 command: screenkey
+rename-desktop-file: screenkey.desktop
 finish-args:
   - --device=dri
   - --share=ipc
@@ -16,6 +17,7 @@ modules:
     build-commands:
       - python3 setup.py build
       - python3 setup.py install --skip-build --prefix=/app
+      - install -D data/screenkey.desktop /app/share/applications/screenkey.desktop
     sources:
       - type: git
         url: https://gitlab.com/screenkey/screenkey
