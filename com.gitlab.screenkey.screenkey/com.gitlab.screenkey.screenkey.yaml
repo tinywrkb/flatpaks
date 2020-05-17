@@ -21,7 +21,7 @@ modules:
     sources:
       - type: git
         url: https://gitlab.com/screenkey/screenkey
-        branch: master
+        tag: v0.10rc1
     modules:
       - name: python-distutils-extra
         cleanup:
