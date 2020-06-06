@@ -19,9 +19,9 @@ modules:
       - python3 setup.py install --skip-build --prefix=/app
       - install -D data/screenkey.desktop /app/share/applications/screenkey.desktop
     sources:
-      - type: git
-        url: https://gitlab.com/screenkey/screenkey
-        tag: v0.10rc1
+      - type: archive
+        url: https://gitlab.com/screenkey/screenkey/-/archive/v1.1/screenkey-v1.1.tar.gz
+        sha256: 305db12333f45f318152bb808bd032a6becf5233fa1a0ee019c9ae1ed4ca6be0
     modules:
       - name: python-distutils-extra
         cleanup:
@@ -35,3 +35,18 @@ modules:
             sha256: 723f24f4d65fc8d99b33a002fbbb3771d4cc9d664c97085bf37f3997ae8063af
         modules:
           - shared-modules/intltool/intltool-0.51.json
+      - name: slop
+        buildsystem: cmake
+        config-opts:
+          - -DGLM_INCLUDE_DIR=glm
+        sources:
+          - type: archive
+            url: https://github.com/naelstrof/slop/archive/v7.5.tar.gz
+            sha256: 94d8b6270217cd7f56ce7d4a9a75069025262830a2f91c3239b7fc07da5ea8da
+          - type: archive
+            url: https://github.com/g-truc/glm/releases/download/0.9.9.8/glm-0.9.9.8.zip
+            sha256: 37e2a3d62ea3322e43593c34bae29f57e3e251ea89f4067506c94043769ade4c
+            dest: glm
+        modules:
+          - shared-modules/glew/glew.json
+          - shared-modules/glu/glu-9.json
