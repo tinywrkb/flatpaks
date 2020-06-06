@@ -2,8 +2,6 @@ app-id: com.github.easymodo.qimgv
 runtime: org.kde.Platform
 runtime-version: '5.14'
 sdk: org.kde.Sdk
-platform-extensions:
-  - org.freedesktop.Platform.ffmpeg-full
 command: qimgv
 rename-icon: qimgv
 rename-appdata-file: qimgv.appdata.xml  
