@@ -1,0 +1,199 @@
+app-id: nz.mega.megasync
+runtime: org.kde.Platform
+runtime-version: '5.12' # latest runtime with python2, needed for building pdfium
+sdk: org.kde.Sdk
+command: megasync
+rename-desktop-file: megasync.desktop
+rename-icon: mega
+copy-icon: true
+finish-args:
+  - --socket=wayland
+  - --socket=x11
+  - --share=ipc
+  - --device=dri
+  - --filesystem=home
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --share=network
+modules:
+  - name: megasync
+    buildsystem: simple
+    build-options:
+      env:
+        DESKTOP_DESTDIR: /
+        PREFIX: /
+    subdir: src
+    build-commands:
+      - cd MEGASync/mega && sed "s/usr/app/g" -i ../../../pdfium.patch && patch -Np1 -i ../../../pdfium.patch
+      - cd MEGASync && patch -Np1 -i ../../add-missing-include.patch
+      - cd MEGASync/mega && ./autogen.sh
+      - cd MEGASync/mega && ./configure --disable-shared --enable-static --disable-silent-rules --disable-curl-checks --disable-megaapi --with-cryptopp --with-sodium --with-zlib --with-sqlite --with-cares --with-curl --without-freeimage --with-libuv --disable-posix-threads --disable-examples --with-libzen --with-libmediainfo --prefix=${PWD}/bindings/qt/3rdparty
+      - sed '/.*isEmpty(PREFIX).*/i \\tPREFIX = $$(PREFIX)' -i MEGASync/platform/platform.pri && qmake "CONFIG+=FULLREQUIREMENTS" "QMAKE_LIBDIR=/app/lib" MEGA.pro
+      - lrelease MEGASync/MEGASync.pro
+      - make
+      - mkdir -pm 755 /app/bin
+      - make INSTALL_ROOT="/app" TARGET=/app/bin/megasync install
+      - install -Dm 755 MEGASync/megasync /app/bin/megasync
+    sources:
+      - type: git
+        url: https://github.com/meganz/MEGAsync.git
+        tag: v4.3.1.0_Linux
+      - type: file
+        url: https://aur.archlinux.org/cgit/aur.git/plain/pdfium.patch?h=megasync
+        sha256: f913ff490771e170610829f42f9285412ed8f4e7343f5dd7cb33e3bda4175aba
+        dest-filename: pdfium.patch
+      - type: file
+        url: https://aur.archlinux.org/cgit/aur.git/plain/add-missing-include.patch?h=megasync
+        sha256: c4fa2f7c9e17c205bf009bc601b974ad6ac380e73238849b0be01d855a805e3f
+        dest-filename: add-missing-include.patch
+    modules:
+      - name: crypto
+        # TODO: follow Arch package: https://git.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/crypto%2b%2b
+        #       add cve patch
+        #       build opts
+        #       clean
+        no-autogen: true
+        make-install-args:
+                - PREFIX=/app
+        sources:
+          - type: archive
+            url: https://github.com/weidai11/cryptopp/archive/CRYPTOPP_8_2_0.tar.gz
+            sha256: e3bcd48a62739ad179ad8064b523346abb53767bcbefc01fe37303412292343e
+      - name: c-ares
+        config-opts:
+          - --enable-shared
+        sources:
+          - type: archive
+            url: https://c-ares.haxx.se/download/c-ares-1.16.1.tar.gz
+            sha256: d08312d0ecc3bd48eee0a4cc0d2137c9f194e0a28de2028928c0f6cae85f86ce
+      - name: libsodium
+        sources:
+          - type: archive
+            url: https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
+            sha256: 6f504490b342a4f8a4c4a02fc9b866cbef8622d5df4e5452b46be121e46636c1
+      - name: libuv
+        sources:
+          - type: archive
+            url: https://github.com/libuv/libuv/archive/v1.38.0/libuv-1.38.0.tar.gz
+            sha256: 2cd9a757fe6c512440933e2bdcab21143d4aa6249b2541399908ce038b756c9d
+      - name: libmediainfo
+        subdir: Project/GNU/Library
+        config-opts:
+          - --enable-shared
+          - --disable-static
+          - --with-libcurl
+          - --with-libmms
+        sources:
+          - type: archive
+            url: https://mediaarea.net/download/source/libmediainfo/20.03/libmediainfo_20.03.tar.xz
+            sha256: 6848310eb7050efe7f90f18191dacfcc220c924390b8088fdf0d553274917f72
+        modules:
+          - name: libzen
+            config-opts:
+              - --enable-shared
+            subdir: Project/GNU/Library
+            sources:
+              - type: archive
+                url: https://mediaarea.net/download/source/libzen/0.4.38/libzen_0.4.38.tar.bz2
+                sha256: 594e07bb4a0472cd9da258b3c4e050e9a37a39cccd85e3d8b5bf597d027b7eda
+          - name: libmms
+            config-opts:
+              - --disable-static
+            sources:
+              - type: archive
+                url: https://download.sourceforge.net/libmms/libmms-0.6.4.tar.gz
+                sha256: 3c05e05aebcbfcc044d9e8c2d4646cd8359be39a3f0ba8ce4e72a9094bee704f
+      - name: libpdfium-nojs
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+        build-commands:
+         #- cd build && awk '/build_revision/ {print substr($2,2,40)}' ../DEPS # enable to find build source commit sha
+          - mkdir -p third_party/icu
+          - ln -sf ../../build/linux/unbundle/icu.gn third_party/icu/BUILD.gn
+          - mkdir -p tools/generate_shim_headers && curl 'https://chromium.googlesource.com/chromium/src/+/master/tools/generate_shim_headers/generate_shim_headers.py?format=TEXT' | base64 --decode > tools/generate_shim_headers/generate_shim_headers.py
+          - gn gen out/Release --script-executable=/usr/bin/python2 --args='is_clang=false use_sysroot=false is_debug=false symbol_level=0 pdf_enable_v8=false pdf_enable_xfa=false treat_warnings_as_errors=false use_system_libjpeg=true use_system_zlib=true pdf_bundle_freetype=false use_system_freetype=true use_system_lcms2=true use_system_libpng=true use_custom_libcxx=false pdf_is_standalone=true use_system_libopenjpeg2=true is_component_build=true'
+          - ninja -C out/Release pdfium
+          - sed "s/@VERSION@/master.r0.8d477f73b/g" -i libpdfium.pc
+          - install -D public/*.h --target-directory="/app/include/pdfium"
+          - install -D public/cpp/* --target-directory="/app/include/pdfium/cpp"
+          - install -Dm755 out/Release/libpdfium.so --target-directory="/app/lib"
+          - install -Dm644 libpdfium.pc --target-directory=/app/lib/pkgconfig
+        sources:
+          - type: git
+            url: https://pdfium.googlesource.com/pdfium
+            branch: chromium/4103 # git checkout "chromium/$(curl https://omahaproxy.appspot.com/linux?channel=stable | cut -d'.' -f 3)"
+          - type: git
+            url: https://chromium.googlesource.com/chromium/src/build.git
+            commit: 36cc563890d733d7aefa52bd27fcd49bcb37b030
+            #branch: master # enable to find commit sha
+            dest: build
+          - type: file
+            url: https://aur.archlinux.org/cgit/aur.git/plain/libpdfium.pc?h=libpdfium-nojs
+            sha256: 4e8cf32c09568ae4c59244f0a221eee8f87ea4a31ddb31f796a1d818c967d477
+        modules:
+          - shared-modules/openjpeg/openjpeg.json
+#         - name: gn
+#           buildsystem: simple
+#           build-commands:
+#             - python3 build/gen.py
+#             - ninja -C out
+#             - install -D out/gn /app/bin/gn
+#           sources:
+#             - type: git
+#               url: https://gn.googlesource.com/gn
+#               commit: 5ed3c9cc67b090d5e311e4bd2aba072173e82db9
+          - name: gn
+            buildsystem: simple
+            build-commands:
+              - install -Dm755 gn /app/bin/gn
+            sources:
+              - type: archive
+                url: https://chrome-infra-packages.appspot.com/dl/gn/gn/linux-amd64/+/latest
+                sha256: 1c559f17e03bef2a1e32b153115eb6d50dcab30475d2d1d7cdf43b0db950dd89
+                dest-filename: gn-linux-amd64.zip
+          - name: libraw
+            sources:
+              - type: archive
+                url: https://github.com/LibRaw/LibRaw/archive/0.19.5.tar.gz
+                sha256: 9a2a40418e4fb0ab908f6d384ff6f9075f4431f8e3d79a0e44e5a6ea9e75abdc
+              - type: shell
+                commands:
+                  - ./mkdist.sh
+            modules:
+              - name: jasper
+                buildsystem: cmake
+                builddir: true
+                config-opts:
+                  - -DCMAKE_BUILD_TYPE=Release
+                  - -DJAS_ENABLE_OPENGL=ON
+                  - -DJAS_ENABLE_LIBJPEG=ON
+                  - -DJAS_ENABLE_AUTOMATIC_DEPENDENCIES=OFF
+                  - -DCMAKE_SKIP_RPATH=ON
+                sources:
+                  - type: archive
+                    url: https://github.com/mdadams/jasper/archive/version-2.0.16.tar.gz
+                    sha256: f1d8b90f231184d99968f361884e2054a1714fdbbd9944ba1ae4ebdcc9bbfdb1
+                modules:
+                  - name: freeglut
+                    buildsystem: cmake
+                    config-opts:
+                      - -DFREEGLUT_BUILD_STATIC_LIBS=OFF
+                      - -DCMAKE_BUILD_TYPE=None
+                    sources:
+                      - type: archive
+                        url: https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz
+                        sha256: d4000e02102acaf259998c870e25214739d1f16f67f99cb35e4f46841399da68
+                    cleanup:
+                      - /lib/cmake
+                    modules:
+                      - shared-modules/glu/glu-9.json
+                  - name: libxmu
+                    config-opts:
+                      - --disable-static
+                      - --disable-docs
+                    sources:
+                      - type: archive
+                        url: https://www.x.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
+                        sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
