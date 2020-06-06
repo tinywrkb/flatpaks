@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2020 Yuri D'Elia -->
+<component type="desktop-application">
+  <id>com-gitlab-screenkey-screenkey.desktop</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>Screenkey</name>
+  <summary>Screencast your keys</summary>
+  <description>
+    <p>
+      A screencast tool to display your keys, inspired by Screenflick.
+      This is an almost-complete rewrite of screenkey 0.2, featuring:
+    </p>
+    <ul>
+      <li>Several keyboard translation methods</li>
+      <li>Key composition/input method support</li>
+      <li>Configurable font/size/position</li>
+      <li>Highlighting of recent keystrokes</li>
+      <li>Improved backspace processing</li>
+      <li>Normal/Emacs/Mac caps modes</li>
+      <li>Multi-monitor support</li>
+      <li>Dynamic recording control</li>
+      <li>Switch for visible shift and modifier sequences only</li>
+      <li>Repeats compression</li>
+      <li>Countless bug fixes</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">com.gitlab.screenkey.screenkey.desktop</launchable>
+  <url type="homepage">https://www.thregr.org/~wavexx/software/screenkey/</url>
+  <provides>
+    <binary>screenkey</binary>
+  </provides>
+  <releases>
+    <release version="1.1" date="2020-05-28">
+      <description>
+        <ul>
+          <li>Fix PyGI warning during startup when using AppIndicator</li>
+          <li>Fix running with GTK versions older than 3.23</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+</component>

@@ -18,10 +18,13 @@ modules:
       - python3 setup.py build
       - python3 setup.py install --skip-build --prefix=/app
       - install -D data/screenkey.desktop /app/share/applications/screenkey.desktop
+      - install -D com.gitlab.screenkey.screenkey.appdata.xml /app/share/appdata/com.gitlab.screenkey.screenkey.appdata.xml
     sources:
       - type: archive
         url: https://gitlab.com/screenkey/screenkey/-/archive/v1.1/screenkey-v1.1.tar.gz
         sha256: 305db12333f45f318152bb808bd032a6becf5233fa1a0ee019c9ae1ed4ca6be0
+      - type: dir
+        path: resources
     modules:
       - name: python-distutils-extra
         buildsystem: simple
