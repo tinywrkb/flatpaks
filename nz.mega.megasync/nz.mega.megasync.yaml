@@ -1,3 +1,8 @@
+# TODO
+#   monitor dbus
+#   selecting folders
+#   clean
+#   revisit build configs
 app-id: nz.mega.megasync
 runtime: org.kde.Platform
 runtime-version: '5.12' # latest runtime with python2, needed for building pdfium
@@ -15,6 +20,14 @@ finish-args:
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   - --share=network
+  # testing
+  - --device=all
+# - --device=kvm
+  - --device=shm
+  - --socket=cups
+# - --socket=pcsc
+  - --socket=session-bus
+  - --socket=system-bus
 modules:
   - name: megasync
     buildsystem: simple
@@ -197,3 +210,10 @@ modules:
                       - type: archive
                         url: https://www.x.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
                         sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+  - name: xorg-xrdb
+    config-opts:
+      - --with-cpp=/usr/bin/cpp,/usr/bin/mcpp
+    sources:
+      - type: archive
+        url: https://xorg.freedesktop.org/archive/individual/app/xrdb-1.2.0.tar.bz2
+        sha256: f23a65cfa1f7126040d68b6cf1e4567523edac10f8dc06f23d840d330c7c6946
