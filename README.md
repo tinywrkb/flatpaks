@@ -16,6 +16,7 @@ Packaging adapted mainly from the Flatpaks of Spotify and Flameshot, and Arch Li
 * fcitx5
 * joplin
 * termite
+* virt-viewer
 
 ### How to build
 
