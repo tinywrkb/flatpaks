@@ -37,6 +37,7 @@ modules:
         PREFIX: /
     subdir: src
     build-commands:
+      # https://docs.flatpak.org/en/latest/portals-qt.html
       - sed 's/DontUseNativeDialog, false/DontUseNativeDialog, true/g' -i MEGASync/gui/MultiQFileDialog.cpp
       - sed 's/DontUseNativeDialog, false/DontUseNativeDialog, true/g' -i MEGASync/MegaApplication.cpp
       - cd MEGASync/mega && sed "s/usr/app/g" -i ../../../pdfium.patch && patch -Np1 -i ../../../pdfium.patch
