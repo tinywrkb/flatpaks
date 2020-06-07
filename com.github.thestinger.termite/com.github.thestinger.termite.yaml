@@ -1,0 +1,65 @@
+app-id: com.github.thestinger.termite
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: termite
+#rename-icon: termite
+rename-desktop-file: termite.desktop
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+build-options:
+  strip: true
+  no-debuginfo: true
+modules:
+  - name: termite
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: git
+        url: https://github.com/thestinger/termite.git
+        tag: v15
+      - type: shell
+        commands:
+          - sed 's#etc/xdg#share#' -i Makefile
+    modules:
+      - name: vte-ng
+        config-opts:
+          - --enable-static
+          - --disable-shared
+          - enable_introspection=no
+          - enable_vala=no
+          - --disable-gtk-doc
+          - --disable-glade-catalogue
+        sources:
+          - type: archive
+            url: https://github.com/thestinger/vte-ng/archive/0.56.2.a.tar.gz
+            sha256: 28162f4318cb51a74070dbcc57b6900f7a1de2616cab843a2431fd5cb67fccb3
+        cleanup:
+          - '*'
+        modules:
+          - shared-modules/intltool/intltool-0.51.json
+#     - name: vte3
+#       buildsystem: meson
+#       build-options:
+#         env:
+#           - CXXFLAGS=-fno-exceptions
+#       sources:
+#         - type: archive
+#           url: https://download.gnome.org/sources/vte/0.60/vte-0.60.0.tar.xz
+#           sha256: 72d1955eb40b4475b858892813a79545cee34409bac2af470606fb4b4d193a1b
+#       cleanup:
+#         - /bin
+#         - /etc
+#         - /include
+#         - /lib/pkgconfig
+#         - /lib/systemd
+#         - /libexec
+#         - /share/gir-1.0
+#         - /share/vala
