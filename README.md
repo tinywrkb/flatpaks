@@ -6,7 +6,6 @@ Packaging adapted mainly from the Flatpaks of Spotify and Flameshot, and Arch Li
 ### Not usable or too buggy ATM
 
 * Android File Tranfer
-* MEGASync
 
 ### Next to package
 
