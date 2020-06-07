@@ -13,6 +13,10 @@
 #     I didn't test it but considering there's no access to ~/.pkg/nssdb from the host then it won't work.
 #     Right now it's not even set as persist.
 #   * Hardware security token do not work. I haven't put any effort in this except trying my Yubikey.
+#   * fail to be set as default browser on host, need to check appid in mime/.desktop
+#   * doesn't use the default mimelist apps from the host, dialog box requesting to select xdg-open
+#   * added latency for page refresh/new tab, maybe non-issue and related to local dns settings
+#   * new background tab fails to load page or partially loads, same issue as above?
 #   * Probably others things that I haven't checked.
 #
 # Related bugs
