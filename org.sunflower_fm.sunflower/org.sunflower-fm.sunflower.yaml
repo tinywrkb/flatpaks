@@ -23,7 +23,6 @@ modules:
     buildsystem: simple
     ensure-writable:
       - /lib/python3.7/site-packages/easy-install.pth
-      - /app/lib/python3.7/site-packages/easy-install.pth
     build-commands:
       - python3 setup.py build
       - python3 setup.py install --skip-build --prefix=/app
