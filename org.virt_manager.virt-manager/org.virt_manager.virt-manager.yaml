@@ -1,0 +1,257 @@
+app-id: org.virt_manager.virt-manager
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: virt-manager
+rename-icon: virt-manager
+rename-desktop-file: virt-manager.desktop
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --own-name=org.virt-manager.virt-manager
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+# - --talk-name=org.freedesktop.Notifications
+# - --talk-name=org.kde.StatusNotifierWatcher
+#build-options:
+#  strip: true
+#  no-debuginfo: true
+cleanup:
+  - /share/bash-completion
+  - /share/man
+modules:
+  - name: virt-manager
+    buildsystem: simple
+#   ensure-writable:
+#     - /lib/python3.7/site-packages/easy-install.pth
+#     - /app/lib/python3.7/site-packages/easy-install.pth
+    build-commands:
+      - python3 setup.py configure --prefix=/app
+      - python3 setup.py build
+      - python3 setup.py install --root /
+#     - python3 setup.py --no-update-icon-cache --no-compile-schemas install --root /
+#     - python3 -m compileall /app/share/virt-manager
+#     - python3 -O -m compileall /app/share/virt-manager
+    sources:
+      - type: archive
+        url: https://virt-manager.org/download/sources/virt-manager/virt-manager-2.2.1.tar.gz
+        sha256: cfd88d66e834513e067b4d3501217e21352fadb673103bacb9e646da9f029a1b
+    modules:
+      # build depends
+      - shared-modules/intltool/intltool-0.51.json
+      # runtime depends: compiled
+      - name: gtk-vnc
+        buildsystem: meson
+        sources:
+          - type: git
+            url: https://gitlab.gnome.org/GNOME/gtk-vnc.git
+            tag: v1.0.0
+        cleanup:
+          - /bin
+          - /include
+          - /lib/pkgconfig
+          - /share/vala
+        #modules:
+        #  - name: perl-text-csv
+      - name: libosinfo
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://releases.pagure.org/libosinfo/libosinfo-1.7.1.tar.xz
+            sha256: bb26106ad4a9f8523f81b332d2aedb717cdcb0500b3f68ba7c6ff945c4d627e9
+        cleanup:
+          - /include
+          - /lib/pkgconfig
+          - /share/gtk-doc
+          - /share/vala
+        modules:
+          - name: osinfo-db
+            buildsystem: simple
+            build-commands:
+              - osinfo-db-import --system osinfo-db.tar.xz
+            sources:
+              - type: file
+                url: https://releases.pagure.org/libosinfo/osinfo-db-20200515.tar.xz
+                sha256: 92e9373505b8ece6ccf8f626e592ad094819aa78f6d17429114eeab06a6d31d5
+                dest-filename: osinfo-db.tar.xz
+            modules:
+              - name: osinfo-db-tools
+                buildsystem: meson
+                sources:
+                  - type: archive
+                    url: https://releases.pagure.org/libosinfo/osinfo-db-tools-1.7.0.tar.xz
+                    sha256: 4bddbec5f407436e0b62f0d7657e866adc980709acf5321aa0d4c3eb54aea823
+                cleanup:
+                  - '*'
+          #- name: check
+      - name: libvirt-glib
+        sources:
+          - type: archive
+            url: https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
+            sha256: 7fff8ca9a2b723dbfd04223b1c7624251c8bf79eb57ec27362a7301b2dd9ebfe
+        modules:
+          - name: libcap-ng
+            sources:
+              - type: archive
+                url: https://github.com/stevegrubb/libcap-ng/archive/v0.7.10.tar.gz
+                sha256: c3c156a215e5be5430b2f3b8717bbd1afdabe458b6068a8d163e71cefe98fc32
+          - name: libvirt
+            builddir: true
+            config-opts:
+              #- with_macvtap=no
+              #- with_remote=no
+              #- with_network=no
+              - --prefix=/app
+              - --libexec=/app/lib/libvirt
+              - --sbindir=/app/bin
+              - --with-runstatedir=/run
+              - --with-qemu-group=kvm
+              - with_storage_mpath=no
+              - CFLAGS=-I/app/include/tirpc
+            sources:
+              - type: archive
+                url: https://libvirt.org/sources/libvirt-6.4.0.tar.xz
+                sha256: 586ebcf220369d08a07c6cc17035e8a91bb3741e4300199459904e9e02478be7
+#             - type: shell
+#               commands:
+#                 - sed '/case $lv_cv_xdr_cflags in/i     lv_cv_xdr_cflags=-I/app/include/tirpc' -i configure
+            modules:
+              - name: libnl
+                sources:
+                  - type: archive
+                    url: https://github.com/thom311/libnl/releases/download/libnl3_5_0/libnl-3.5.0.tar.gz
+                    sha256: 352133ec9545da76f77e70ccb48c9d7e5324d67f6474744647a7ed382b5e05fa
+                cleanup:
+                  - /include
+              - name: python-docutils
+                buildsystem: simple
+                build-commands:
+                  - python3 setup.py build
+                  - python3 setup.py install --root=/ --prefix=app/
+                sources:
+                  - type: archive
+                    url: http://downloads.sourceforge.net/docutils/docutils-0.16.tar.gz
+                    sha256: 7d4e999cca74a52611773a42912088078363a30912e8822f7a3d38043b767573
+              - name: rpcsvc-proto
+                sources:
+                  - type: archive
+                    url: https://github.com/thkukuk/rpcsvc-proto/archive/v1.4.1.tar.gz
+                    sha256: 750f7e57b81407a25b707867e90d7ee80aeb53bf515b114fc218f3c78dc9a6e8
+                cleanup:
+                  - '*'
+              - name: libtirpc
+#               post-install:
+#                 - ln -s tirpc/rpc /app/include/rpc
+                sources:
+                  - type: archive
+                    url: https://downloads.sourceforge.net/sourceforge/libtirpc/libtirpc-1.2.6.tar.bz2
+                    sha256: 4278e9a5181d5af9cd7885322fdecebc444f9a3da87c526e7d47f7a12a37d1cc
+      - name: spice-gtk
+        buildsystem: meson
+        config-opts:
+          - -Dcelt051=disabled
+        sources:
+          - type: archive
+            url: https://www.spice-space.org/download/gtk/spice-gtk-0.38.tar.xz
+            sha256: 5ae974731baf2b41316d4f0b3ae0c2e47f00bff91a5a617e189cd3dedcd96d8e
+        modules:
+          - name: python-pyparsing
+            buildsystem: simple
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --root=/ --prefix=app/
+            sources:
+              - type: archive
+                url: https://github.com/pyparsing/pyparsing/archive/pyparsing_2.4.7.tar.gz
+                sha256: 6deecf4b95a49a5a9c89b4a4b1fcb73c1cba0e3265ec7b858adffcced229ba05
+#         - name: libcacard
+#         - name: libjpeg-turbo?
+#         - name: phodav
+#         - name: usbredir
+          - name: spice-protocol
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.1/spice-protocol-v0.14.1.tar.gz
+                sha256: 67d8842de66f02dfa7ec512d607dc99164b465ee6772d48782f1de935cb19ee6
+#         - name: usbutils
+      - name: vte3
+        buildsystem: meson
+        build-options:
+          env:
+            - CXXFLAGS=-fno-exceptions
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/vte/0.60/vte-0.60.0.tar.xz
+            sha256: 72d1955eb40b4475b858892813a79545cee34409bac2af470606fb4b4d193a1b
+        cleanup:
+          - /bin
+          - /etc
+          - /include
+          - /lib/pkgconfig
+          - /lib/systemd
+          - /libexec
+          - /share/gir-1.0
+          - /share/vala
+      # runtime depends: python
+      - name: libvirt-python
+        buildsystem: simple
+        build-commands:
+          - python3 setup.py clean
+          - python3 setup.py install --root=/ --prefix=app/
+        sources:
+          - type: archive
+            url: https://libvirt.org/sources/python/libvirt-python-6.4.0.tar.gz
+            sha256: b13e6dddea8876a7a6c43482d275a84f082d72427302ecb76683c1279b865cec
+      - name: python-requests
+        buildsystem: simple
+        build-commands:
+          - python3 setup.py build
+          - python3 setup.py install --root=/ --prefix=app/
+        sources:
+          - type: archive
+            url: https://github.com/psf/requests/archive/v2.23.0.tar.gz
+            sha256: bf063ded6c5c3f238f89189a791df4a22270d1ccd88b1a21687ecb6a9c6b1335
+        modules:
+      # available in the runtime
+          - name: python-urllib3
+            buildsystem: simple
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --root=/ --prefix=app/
+            sources:
+              - type: archive
+                url: https://github.com/shazow/urllib3/archive/1.25.9.tar.gz
+                sha256: 1f1bef30176d8361ba8ae0728316e76f5ec8fc1f336c5352165211b2cb0a53f7
+          - name: python-chardet
+            buildsystem: simple
+            ensure-writable:
+              - /lib/python3.7/site-packages/easy-install.pth
+            build-commands:
+              - python3 setup.py install --prefix=/app
+            sources:
+              - type: archive
+                url: https://pypi.io/packages/source/c/chardet/chardet-3.0.4.tar.gz
+                sha256: 84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae
+            cleanup:
+              - /bin
+          - name: python-certifi
+            buildsystem: simple
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --root=/ --prefix=app/
+            sources:
+              - type: archive
+                url: https://pypi.io/packages/source/c/certifi/certifi-2019.11.28.tar.gz
+                sha256: 25b64c7da4cd7479594d035c08c2d809eb4aab3a26e5a990ea98cc450c320f1f
+          - name: python-idna
+            buildsystem: simple
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --root=/ --prefix=app/
+            sources:
+              - type: archive
+                url: https://pypi.io/packages/source/i/idna/idna-2.9.tar.gz
+                sha256: 7588d1c14ae4c77d74036e8c22ff447b26d0fde8f007354fd48a7814db15b7cb

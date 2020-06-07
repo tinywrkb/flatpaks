@@ -10,3 +10,6 @@
 [submodule "nz.mega.megasync/shared-modules"]
 	path = nz.mega.megasync/shared-modules
 	url = https://github.com/flathub/shared-modules.git
+[submodule "org.virt_manager.virt-manager/shared-modules"]
+	path = org.virt_manager.virt-manager/shared-modules
+	url = https://github.com/flathub/shared-modules.git
