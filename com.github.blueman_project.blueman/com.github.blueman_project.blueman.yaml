@@ -2,23 +2,22 @@ app-id: com.github.blueman_project.blueman
 runtime: org.gnome.Platform
 runtime-version: '3.36'
 sdk: org.gnome.Sdk
-command: blueman-manager
+command: blueman-applet
 rename-icon: blueman
 rename-desktop-file: blueman-manager.desktop
 finish-args:
+  - --allow=bluetooth
   - --device=dri
   - --filesystem=home
+  - --own-name=org.blueman.*
   - --share=ipc
   - --socket=wayland
-  - --allow=bluetooth
   - --socket=x11
+  - --system-talk-name=org.bluez.*
+  - --talk-name=org.bluez
+  - --talk-name=org.bluez.*
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
-# temp
-  - --device=all
-  - --filesystem=host
-  - --socket=session-bus
-  - --socket=system-bus
 build-options:
   strip: true
   no-debuginfo: true
