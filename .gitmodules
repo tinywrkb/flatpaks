@@ -16,3 +16,6 @@
 [submodule "com.github.thestinger.termite/shared-modules"]
 	path = com.github.thestinger.termite/shared-modules
 	url = https://github.com/flathub/shared-modules.git
+[submodule "com.github.blueman_project.blueman/shared-modules"]
+	path = com.github.blueman_project.blueman/shared-modules
+	url = https://github.com/flathub/shared-modules.git
