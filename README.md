@@ -6,11 +6,9 @@ Packaging adapted mainly from the Flatpaks of Spotify and Flameshot, and Arch Li
 ### Not usable or too buggy ATM
 
 * Android File Tranfer
-* Blueman
 
 ### Next to package
 
-* blueman
 * bootnote
 * caja with insync extension
 * fcitx5
