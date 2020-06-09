@@ -10,19 +10,8 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --share=network
-  - --socket=pulseaudio
   - --socket=wayland
   - --socket=x11
-  - --talk-name=org.freedesktop.Notifications
-  - --talk-name=org.kde.StatusNotifierWatcher
-  # testing
-  - --device=all
-# - --device=kvm
-  - --device=shm
-  - --socket=cups
-# - --socket=pcsc
-  - --socket=session-bus
-  - --socket=system-bus
 modules:
   - name: boostnote
     buildsystem: simple
