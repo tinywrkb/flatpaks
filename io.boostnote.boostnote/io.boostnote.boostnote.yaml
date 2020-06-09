@@ -54,9 +54,3 @@ modules:
         url: https://github.com/BoostIO/boost-releases/releases/download/v0.15.3/boostnote_0.15.3_amd64.deb
         sha256: fc29d2afadad8d908c422b11ebffb48e360614c6082f76c5dd27e116ab197a1f
         size: 75929568
-    modules:
-      - name: zypak
-        sources:
-          - type: git
-            url: https://github.com/refi64/zypak
-            tag: v2020.02
