@@ -19,3 +19,6 @@
 [submodule "com.github.blueman_project.blueman/shared-modules"]
 	path = com.github.blueman_project.blueman/shared-modules
 	url = https://github.com/flathub/shared-modules.git
+[submodule "org.virt_manager.virt-viewer/shared-modules"]
+	path = org.virt_manager.virt-viewer/shared-modules
+	url = https://github.com/flathub/shared-modules.git

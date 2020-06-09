@@ -1,0 +1,139 @@
+app-id: org.virt_manager.virt-viewer
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: virt-viewer
+rename-icon: virt-viewer
+rename-desktop-file: remote-viewer.desktop
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+# - --talk-name=org.freedesktop.Notifications
+# - --talk-name=org.kde.StatusNotifierWatcher
+#build-options:
+#  strip: true
+#  no-debuginfo: true
+cleanup:
+  - /share/bash-completion
+  - /share/man
+modules:
+  - name: virt-viewer
+    sources:
+      - type: archive
+        url: https://virt-manager.org/download/sources/virt-viewer/virt-viewer-8.0.tar.gz
+        sha256: dcf358ed5d7a4900215133135a6492c04311d84332816d930df9a89d6195b6ed
+    modules:
+      # build depends
+      - shared-modules/intltool/intltool-0.51.json
+      # runtime depends: compiled
+      - name: gtk-vnc
+        buildsystem: meson
+        sources:
+          - type: git
+            url: https://gitlab.gnome.org/GNOME/gtk-vnc.git
+            tag: v1.0.0
+        cleanup:
+          - /bin
+          - /include
+          - /lib/pkgconfig
+          - /share/vala
+      - name: libvirt-glib
+        sources:
+          - type: archive
+            url: https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
+            sha256: 7fff8ca9a2b723dbfd04223b1c7624251c8bf79eb57ec27362a7301b2dd9ebfe
+        modules:
+          - name: libcap-ng
+            sources:
+              - type: archive
+                url: https://github.com/stevegrubb/libcap-ng/archive/v0.7.10.tar.gz
+                sha256: c3c156a215e5be5430b2f3b8717bbd1afdabe458b6068a8d163e71cefe98fc32
+          - name: libvirt
+            builddir: true
+            config-opts:
+              #- with_macvtap=no
+              #- with_remote=no
+              #- with_network=no
+              - --prefix=/app
+              - --libexec=/app/lib/libvirt
+              - --sbindir=/app/bin
+              - --with-runstatedir=/run
+              - --with-qemu-group=kvm
+              - with_storage_mpath=no
+              - CFLAGS=-I/app/include/tirpc
+            sources:
+              - type: archive
+                url: https://libvirt.org/sources/libvirt-6.4.0.tar.xz
+                sha256: 586ebcf220369d08a07c6cc17035e8a91bb3741e4300199459904e9e02478be7
+#             - type: shell
+#               commands:
+#                 - sed '/case $lv_cv_xdr_cflags in/i     lv_cv_xdr_cflags=-I/app/include/tirpc' -i configure
+            modules:
+              - name: libnl
+                sources:
+                  - type: archive
+                    url: https://github.com/thom311/libnl/releases/download/libnl3_5_0/libnl-3.5.0.tar.gz
+                    sha256: 352133ec9545da76f77e70ccb48c9d7e5324d67f6474744647a7ed382b5e05fa
+                cleanup:
+                  - /include
+              - name: python-docutils
+                buildsystem: simple
+                build-commands:
+                  - python3 setup.py build
+                  - python3 setup.py install --root=/ --prefix=app/
+                sources:
+                  - type: archive
+                    url: http://downloads.sourceforge.net/docutils/docutils-0.16.tar.gz
+                    sha256: 7d4e999cca74a52611773a42912088078363a30912e8822f7a3d38043b767573
+              - name: rpcsvc-proto
+                sources:
+                  - type: archive
+                    url: https://github.com/thkukuk/rpcsvc-proto/archive/v1.4.1.tar.gz
+                    sha256: 750f7e57b81407a25b707867e90d7ee80aeb53bf515b114fc218f3c78dc9a6e8
+                cleanup:
+                  - '*'
+              - name: libtirpc
+#               post-install:
+#                 - ln -s tirpc/rpc /app/include/rpc
+                sources:
+                  - type: archive
+                    url: https://downloads.sourceforge.net/sourceforge/libtirpc/libtirpc-1.2.6.tar.bz2
+                    sha256: 4278e9a5181d5af9cd7885322fdecebc444f9a3da87c526e7d47f7a12a37d1cc
+      - name: spice-gtk
+        buildsystem: meson
+        config-opts:
+          - -Dcelt051=disabled
+        sources:
+          - type: archive
+            url: https://www.spice-space.org/download/gtk/spice-gtk-0.38.tar.xz
+            sha256: 5ae974731baf2b41316d4f0b3ae0c2e47f00bff91a5a617e189cd3dedcd96d8e
+        modules:
+          - name: python-pyparsing
+            buildsystem: simple
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --root=/ --prefix=app/
+            sources:
+              - type: archive
+                url: https://github.com/pyparsing/pyparsing/archive/pyparsing_2.4.7.tar.gz
+                sha256: 6deecf4b95a49a5a9c89b4a4b1fcb73c1cba0e3265ec7b858adffcced229ba05
+#         - name: libcacard
+#         - name: libjpeg-turbo?
+#         - name: phodav
+#         - name: usbredir
+          - name: spice-protocol
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.1/spice-protocol-v0.14.1.tar.gz
+                sha256: 67d8842de66f02dfa7ec512d607dc99164b465ee6772d48782f1de935cb19ee6
+#         - name: usbutils
+#     - name: libgovirt
+#       sources:
+#         - type: archive
+#           url: https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.7/libgovirt-v0.3.7.tar.gz
+#           sha256: c7311f8c4518fe8407bfe5bf7de3d84a548ddb41943cc64670821abfaec98fd8
