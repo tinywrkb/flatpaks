@@ -1,0 +1,51 @@
+app-id: io.boostnote.boostnote_next
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: boostnote
+rename-desktop-file: boostnote.desktop
+rename-icon: boostnote
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: boostnote
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -D boostnote /app/bin/boostnote
+      - install -D boostnote_512.png /app/share/icons/hicolor/512x512/apps/boostnote.png
+      - install -D boostnote.desktop /app/share/applications/boostnote.desktop
+      - install -D /usr/bin/ar /app/bin
+      - mkdir -p /app/lib
+      - ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib
+      - ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - ar x boostnote_amd64.deb
+          - rm -f boostnote_amd64.deb
+          - tar xJf data.tar.xz
+          - rm -f control.tar.xz data.tar.xz debian-binary
+          - mv usr/* .
+          - install -d opt/boostnote
+          - mv opt/"Boost Note"/* opt/boostnote/
+          - rmdir usr opt/"Boost Note"
+      - type: dir
+        path: resources
+      - type: extra-data
+        filename: boostnote_amd64.deb
+        url: https://github.com/BoostIO/BoostNote.next/releases/download/v0.6.1/boost-note-linux.deb
+        sha256: b3e6bd180bde28ca2e5ff671b4eb9c7d3185c02d6f660d508c56ca06686829cb
+        size: 51419330
+    modules:
+      - name: zypak
+        sources:
+          - type: git
+            url: https://github.com/refi64/zypak
+            tag: v2020.02

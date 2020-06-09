@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Boostnote
+Comment=Boostnote
+GenericName=Boostnote
+Exec=boostnote %U
+Icon=boostnote
+Type=Application
+StartupNotify=true
+Categories=Development;Utility;
+
