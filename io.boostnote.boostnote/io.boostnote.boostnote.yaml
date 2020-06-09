@@ -18,8 +18,6 @@ modules:
     build-commands:
       - install -D apply_extra /app/bin/apply_extra
       - install -D boostnote /app/bin/boostnote
-      #- install -D boostnote.png /app/share/pixmaps/boostnote.png
-      #- ffmpeg -i boostnote.png  -vf scale=512:512 boostnote_512.png
       - install -D boostnote_512.png /app/share/icons/hicolor/512x512/apps/boostnote.png
       - install -D boostnote.desktop /app/share/applications/boostnote.desktop
       - install -D /usr/bin/ar /app/bin
