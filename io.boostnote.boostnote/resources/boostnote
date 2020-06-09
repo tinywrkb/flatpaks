@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Launch
+exec zypak-wrapper /app/extra/bin/boostnote "$@"

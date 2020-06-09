@@ -9,7 +9,6 @@ Packaging adapted mainly from the Flatpaks of Spotify and Flameshot, and Arch Li
 
 ### Next to package
 
-* bootnote
 * caja with insync extension
 * fcitx5
 * joplin
