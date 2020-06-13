@@ -8,6 +8,10 @@ rename-desktop-file: virt-manager.desktop
 finish-args:
   - --device=dri
   - --filesystem=home
+  # unix socket access
+  - --filesystem=/run/libvirt
+  # ssh-agent pid and socket
+  #- --filesystem=xdg-run/ssh
   - --own-name=org.virt-manager.virt-manager
   - --share=ipc
   - --share=network
@@ -31,6 +35,7 @@ modules:
       - python3 setup.py configure --prefix=/app
       - python3 setup.py build
       - python3 setup.py install --root /
+      - ln -s ../../var/run /app/var/run
 #     - python3 setup.py --no-update-icon-cache --no-compile-schemas install --root /
 #     - python3 -m compileall /app/share/virt-manager
 #     - python3 -O -m compileall /app/share/virt-manager
