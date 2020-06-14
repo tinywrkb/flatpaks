@@ -116,10 +116,6 @@ modules:
           - name: libvirt
             builddir: true
             config-opts:
-              #- with_macvtap=no
-              #- with_remote=no
-              #- with_network=no
-              - --prefix=/app
               - --libexec=/app/lib/libvirt
               - --sbindir=/app/bin
               - --with-runstatedir=/run
