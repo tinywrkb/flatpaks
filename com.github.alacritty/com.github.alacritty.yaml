@@ -2,8 +2,6 @@ app-id: com.github.alacritty
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
-sdk-extensions:
-  - org.freedesktop.Sdk.Extension.rust-stable
 command: alacritty
 rename-desktop-file: Alacritty.desktop
 rename-icon: Alacritty
@@ -21,11 +19,6 @@ modules:
     build-options:
       build-args:
         - --share=network
-      env:
-        - CARGO_INCREMENTAL: 0
-      append-path: /usr/lib/sdk/rust-stable/bin
-      env:
-        - CARGO_HOME: /run/build/quickstart/cargo
     build-commands:
       - cargo build --release --locked
       - install -D -m755 target/release/alacritty /app/bin/alacritty
@@ -40,4 +33,16 @@ modules:
     sources:
       - type: git
         url: https://github.com/alacritty/alacritty
-        tag: v0.4.2
+        branch: master
+    modules:
+      - name: rust
+        buildsystem: simple
+        build-commands:
+          - ./install.sh --components=rustc,cargo,rust-std-x86_64-unknown-linux-gnu --prefix=/app
+        sources:
+          - type: archive
+            url: https://static.rust-lang.org/dist/rust-1.44.0-x86_64-unknown-linux-gnu.tar.gz
+            sha256: eaa34271b4ac4d2c281831117d4d335eed0b37fe7a34477d9855a6f1d930a624
+            dest-filename: rust-x86_64-unknown-linux-gnu.tar.gz
+        cleanup:
+          - '*'
