@@ -24,13 +24,14 @@ modules:
       - rm -f Joplin.AppImage
       - install -d /app/joplin
       - rm -f squashfs-root/{.DirIcon,AppRun,joplin.desktop,joplin.png}
-      - mv squashfs-root/usr/share /app/share
       - rm -rf squashfs-root/usr
       - mv squashfs-root/* /app/joplin/
       - rmdir squashfs-root
       - install -Dm755 joplin /app/bin/joplin
-#     - install -D joplin.png /app/share/icons/hicolor/512x512/apps/joplin.png
       - install -D joplin.desktop /app/share/applications/joplin.desktop
+      - for s in 16 24 32 48 72 97 128 144 256 512; do
+        install -D /app/joplin/resources/build/icons/${s}x${s}.png /app/share/icons/hicolor/${s}x${s}/apps/joplin.png;
+        done
     sources:
       - type: file
         url: https://github.com/laurent22/joplin/releases/download/v1.0.220/Joplin-1.0.220.AppImage
