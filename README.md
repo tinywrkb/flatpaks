@@ -7,11 +7,6 @@ Packaging adapted mainly from the Flatpaks of Spotify and Flameshot, and Arch Li
 
 * Android File Tranfer
 
-### Next to package
-
-* caja with insync extension
-* fcitx5
-
 ### How to build
 
 1. Install flatpak-builder
