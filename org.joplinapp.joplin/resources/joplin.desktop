@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Joplin
+Exec=joplin %U
+Terminal=false
+Type=Application
+Icon=joplin
+StartupWMClass=Joplin
+Comment=Joplin for Desktop
+Categories=Office;
