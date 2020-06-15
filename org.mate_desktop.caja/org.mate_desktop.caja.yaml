@@ -8,6 +8,8 @@ rename-desktop-file: caja.desktop
 finish-args:
   - --device=dri
   - --filesystem=home
+  # insync socket workaround
+  - --filesystem=/tmp
   - --own-name=org.mate.Caja
   - --share=ipc
   - --share=network
@@ -56,3 +58,26 @@ modules:
 #         - intltool
 #         - name: iso-codes
 #         - name: startup-notification
+  - name: python-caja
+    sources:
+      - type: archive
+        url: http://pub.mate-desktop.org/releases/1.24/python-caja-1.24.0.tar.xz
+        sha256: efe1910938f016e72b8806d5b222e5074d998da42cdad1bc1ef93f460c0ee6f2
+    modules:
+      - name: mate-common
+        sources:
+          - type: archive
+            url: https://pub.mate-desktop.org/releases/1.24/mate-common-1.24.0.tar.xz
+            sha256: e7ef908d7955cf7252330c87f6416b3fdcb833bb682b7bf9b42e1f2e662d821b
+  - name: insync-caja
+    buildsystem: simple
+    build-commands:
+      - ar x insync-caja.deb
+      - rm -f insync-caja.deb
+      - tar xf data.tar.gz
+      - cp -R usr/* /app/
+    sources:
+      - type: file
+        url: http://s.insynchq.com/builds/insync-caja_3.0.13.40201_all.deb
+        sha256: 3d909a7c811cffa07d795bdf9cd45ecce9ba20f5fd70d08cb17b27ffddc417fa
+        dest-filename: insync-caja.deb
