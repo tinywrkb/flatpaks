@@ -31,7 +31,6 @@ modules:
       - install -Dm755 joplin /app/bin/joplin
 #     - install -D joplin.png /app/share/icons/hicolor/512x512/apps/joplin.png
       - install -D joplin.desktop /app/share/applications/joplin.desktop
-
     sources:
       - type: file
         url: https://github.com/laurent22/joplin/releases/download/v1.0.220/Joplin-1.0.220.AppImage
