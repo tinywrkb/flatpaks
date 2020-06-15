@@ -1,10 +1,6 @@
-# TODO
-#   figure out what to do with the dbus interface definition
-#   change session-bus access to a more specific address
-
-app-id: org.dharkael.Flameshot
+app-id: org.dharkael.flameshot
 runtime: org.kde.Platform
-runtime-version: '5.12'
+runtime-version: '5.14'
 sdk: org.kde.Sdk
 command: flameshot
 rename-icon: flameshot  
@@ -14,8 +10,8 @@ copy-icon: true
 finish-args:
   - --device=dri
   - --filesystem=home
+  - --own-name=org.dharkael.Flameshot
   - --share=ipc
-  - --socket=session-bus
   - --socket=wayland
   - --socket=x11
 modules:
