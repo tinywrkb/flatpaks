@@ -11,7 +11,6 @@ Packaging adapted mainly from the Flatpaks of Spotify and Flameshot, and Arch Li
 
 * caja with insync extension
 * fcitx5
-* joplin
 
 ### How to build
 
