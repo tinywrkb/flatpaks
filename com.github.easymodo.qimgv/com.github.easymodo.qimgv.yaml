@@ -7,6 +7,9 @@ rename-icon: qimgv
 rename-appdata-file: qimgv.appdata.xml  
 rename-desktop-file: qimgv.desktop
 copy-icon: true
+build-options:
+  strip: true
+  no-debuginfo: true
 finish-args:
   - --device=dri
   - --filesystem=home
@@ -15,23 +18,9 @@ finish-args:
   - --socket=wayland
   - --socket=x11
 cleanup:
-  - /bin/setup_vars_opencv4.sh
-  - /etc
-  - /include
-  - /lib/cmake
-  - /lib/debug
   - /lib/pkgconfig
-  - /share/applications/mpv.desktop
-  - /share/bash-completion
-  - /share/doc
-  - /share/licenses
-  - /share/man
-  - /share/opencv4
-  - /share/runtime
-  - /share/zsh
   - '*.a'
   - '*.la'
-  - 'mpv.png'
 modules:
   - name: qimgv
     buildsystem: cmake
@@ -56,6 +45,11 @@ modules:
           - type: archive
             url: https://github.com/Exiv2/exiv2/archive/v0.27.2.tar.gz
             sha256: 3dbcaf01fbc5b98d42f091d1ff0d4b6cd9750dc724de3d9c0d113948570b2934
+        cleanup:
+          - /bin
+          - /include
+          - /lib/cmake
+          - /share/man
       - name: opencv
         buildsystem: cmake
         builddir: true
@@ -77,6 +71,12 @@ modules:
           - type: archive
             url: https://github.com/opencv/opencv/archive/4.3.0.tar.gz
             sha256: 68bc40cbf47fdb8ee73dfaf0d9c6494cd095cf6294d99de445ab64cf853d278a
+        cleanup:
+          - /bin/setup_vars_opencv4.sh
+          - /include
+          - /lib/cmake
+          - /share/licenses
+          - /share/opencv4
       - name: mpv
         buildsystem: simple
         build-commands:
@@ -91,6 +91,14 @@ modules:
             url: http://www.freehackers.org/~tnagy/release/waf-2.0.9
             sha256: 2a8e0816f023995e557f79ea8940d322bec18f286917c8f9a6fa2dc3875dfa48
             dest-filename: waf
+        cleanup:
+          - /etc
+          - /include
+          - /share/applications/mpv.desktop
+          - /share/bash-completion
+          - /share/doc
+          - /share/icons
+          - /share/zsh
         modules:
           - name: libass
             config-opts:
@@ -101,3 +109,5 @@ modules:
               - type: archive
                 url: https://github.com/libass/libass/releases/download/0.14.0/libass-0.14.0.tar.gz
                 sha256: 8d5a5c920b90b70a108007ffcd2289ac652c0e03fc88e6eecefa37df0f2e7fdf
+            cleanup:
+              - /include
