@@ -38,7 +38,9 @@ finish-args:
   - --socket=pulseaudio
   - --socket=wayland
   - --socket=x11
+  - --system-talk-name=org.freedesktop.UPower
   - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.secrets
   - --talk-name=org.kde.StatusNotifierWatcher
   # testing
   - --device=all
@@ -46,8 +48,8 @@ finish-args:
   - --device=shm
   - --socket=cups
 # - --socket=pcsc
-  - --socket=session-bus
-  - --socket=system-bus
+# - --socket=session-bus
+# - --socket=system-bus
 modules:
   - name: chrome
     buildsystem: simple
