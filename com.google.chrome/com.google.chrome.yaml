@@ -5,7 +5,11 @@
 #       zypak seems to have trouble setting the seccomp sandbox so some things do not work or crashing
 #       like the built-in Pepper API PDF plugin.
 #     With --disable-seccomp-filter-sandbox it's possible to run Chrome without the seccomp support.
-#   * Chrome failing to access gnome-keyring / secret service.
+#   * When using gnome-keyring, Chrome creates its own default.keyring file in xdg-data/keyrings even
+#       though it keeps its safe storage key in the user's login keyring from the host.
+#     default.keyring is probably used for passwords but I didn't confirm it as apperently there's no tool
+#       for importing a keyring file or displaying its content, and creating a new keyring in seahore and
+#       replacing its its file doesn't work.
 #   * No access to user's certificates.
 #     I didn't test it but considering there's no access to ~/.pkg/nssdb from the host then it won't work.
 #     Right now it's not even set as persist.
@@ -22,6 +26,8 @@ runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
 command: com.google.chrome
+cleanup:
+  - /lib/pkgconfig
 finish-args:
   - --device=dri
   - --filesystem=home
@@ -80,13 +86,18 @@ modules:
           - type: git
             url: https://github.com/refi64/zypak
             tag: v2020.02
-#     - name: libsecret
-#       buildsystem: meson
-#       config-opts:
-#         - -Dvapi=false
-#         - -Dmanpage=false
-#         - -Dgtk_doc=false
-#       sources:
-#         - type: archive
-#           url: https://gitlab.gnome.org/GNOME/libsecret/-/archive/0.20.3/libsecret-0.20.3.tar.gz
-#           sha256: 9a90f733d4cac1c5a937af1fc44ddfc52458a4bcb015891247ca75037f446f6d
+      - name: libsecret
+        buildsystem: meson
+        config-opts:
+          - -Dvapi=false
+          - -Dmanpage=false
+          - -Dgtk_doc=false
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/libsecret/-/archive/0.20.3/libsecret-0.20.3.tar.gz
+            sha256: 9a90f733d4cac1c5a937af1fc44ddfc52458a4bcb015891247ca75037f446f6d
+        cleanup:
+          - /bin
+          - /include
+          - /lib/girepository-1.0
+          - /share/gir-1.0
