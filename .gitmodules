@@ -22,3 +22,6 @@
 [submodule "org.virt_manager.virt-viewer/shared-modules"]
 	path = org.virt_manager.virt-viewer/shared-modules
 	url = https://github.com/flathub/shared-modules.git
+[submodule "org.joplinapp.joplin/shared-modules"]
+	path = org.joplinapp.joplin/shared-modules
+	url = https://github.com/flathub/shared-modules.git

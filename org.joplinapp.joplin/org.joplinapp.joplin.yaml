@@ -5,6 +5,9 @@ sdk: org.freedesktop.Sdk
 command: joplin
 rename-desktop-file: joplin.desktop
 rename-icon: joplin
+build-options:
+  strip: true
+  no-debuginfo: true
 finish-args:
   - --device=dri
   - --filesystem=home
@@ -45,3 +48,17 @@ modules:
           - type: git
             url: https://github.com/refi64/zypak
             tag: v2020.02
+      - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      # can switch to gnome runtime instead
+      - name: libnotify
+        buildsystem: meson
+        config-opts:
+          - -Dtests=false
+          - -Dintrospection=disabled
+          - -Dman=false
+          - -Dgtk_doc=false
+          - -Ddocbook_docs=disabled
+        sources:
+          - type: git
+            url: https://gitlab.gnome.org/GNOME/libnotify.git
+            tag: 98a4bf483a69c6436311bcb9834d9d93235c96b7
