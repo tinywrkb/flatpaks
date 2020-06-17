@@ -81,6 +81,10 @@ modules:
           - cd src/MEGASync &&
             patch -Np1 -i ../../add-missing-include.patch
           - sed '/.*isEmpty(PREFIX).*/i \\tPREFIX = $$(PREFIX)' -i src/MEGASync/platform/platform.pri
+          # Using the types and functions in <filesystem> does not require linking with -lstdc++fs now.
+          # https://gcc.gnu.org/gcc-9/changes.html
+          # https://gitlab.kitware.com/cmake/cmake/-/issues/17834#note_390300
+          - sed 's/lessThan(GCC_VERSION, 5)/& | !lessThan(GCC_VERSION, 9)/' -i src/MEGASync/MEGASync.pro
     modules:
       - name: cryptopp
         no-autogen: true
