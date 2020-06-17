@@ -6,6 +6,8 @@ Packaging was adapted mainly from the Flatpaks of Spotify and Flameshot, and Arc
 ### Not usable or too buggy
 
 * Android File Tranfer
+* Blueman
+* Virt-Viewer
 
 ### How to build
 
