@@ -18,10 +18,11 @@
 #         and also be able to test if another instace of insync is running
 
 app-id: com.insynchq.insync
-# needed for notifications that are not working with the freedesktop runtime
-runtime: org.gnome.Platform
-runtime-version: '3.36'
-sdk: org.gnome.Sdk
+base: io.qt.qtwebengine.BaseApp
+base-version: '5.14'
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
 command: insync
 finish-args:
   - --socket=wayland
@@ -58,6 +59,7 @@ modules:
           - "rm -f insync.deb"
           - "tar xf data.tar.gz"
           - "rm -f control.tar.gz data.tar.gz debian-binary"
+          - "mkdir keep && mv usr/lib/insync/lib{curl,icu,pyside2,shiboken2,python3}*.so* keep/ && rm -f usr/lib/insync/lib*.so* && mv keep/* usr/lib/insync/ && rmdir keep"
           - "mv usr/* ."
           - "rmdir usr"
           - "rm -rf bin share/doc share/man"
