@@ -54,7 +54,7 @@ modules:
       - python3 setup.py configure --prefix=/app
       - python3 setup.py build
       - python3 setup.py install --root /
-      - ln -s ../../var/run /app/var/run
+#     - ln -s ../../var/run /app/var/run
 #     - python3 setup.py --no-update-icon-cache --no-compile-schemas install --root /
 #     - python3 -m compileall /app/share/virt-manager
 #     - python3 -O -m compileall /app/share/virt-manager
@@ -138,15 +138,20 @@ modules:
               - --libexec=/app/lib/libvirt
               - --sbindir=/app/bin
               - --with-runstatedir=/run
+              - --localstatedir=/var
               - --with-qemu-group=kvm
               - with_storage_mpath=no
               - CFLAGS=-I/app/include/tirpc
+#           post-install:
+#             - exit 1
             sources:
               - type: archive
                 url: https://libvirt.org/sources/libvirt-6.4.0.tar.xz
                 sha256: 586ebcf220369d08a07c6cc17035e8a91bb3741e4300199459904e9e02478be7
-#             - type: shell
-#               commands:
+              - type: shell
+                commands:
+                  - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(localstatedir).*/d' {} \;
+                  - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(runstatedir).*/d' {} \;
 #                 - sed '/case $lv_cv_xdr_cflags in/i     lv_cv_xdr_cflags=-I/app/include/tirpc' -i configure
             modules:
               - name: libnl
