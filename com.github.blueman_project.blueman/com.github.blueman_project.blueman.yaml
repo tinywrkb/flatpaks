@@ -109,6 +109,11 @@ modules:
         modules:
           - name: libical
             buildsystem: cmake
+            config-opts:
+              - -DENABLE_GTK_DOC=false
+              - -DICAL_BUILD_DOCS=false
+              - -DLIBICAL_BUILD_TESTING=false
+              - -DSHARED_ONLY=true
             sources:
               - type: archive
                 url: https://github.com/libical/libical/archive/v3.0.8.tar.gz
