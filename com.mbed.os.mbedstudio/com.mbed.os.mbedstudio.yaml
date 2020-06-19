@@ -26,6 +26,7 @@ modules:
     build-commands:
       - install -D apply_extra /app/bin/apply_extra
       - install -D MbedStudio /app/bin/MbedStudio
+      # TODO: more icons or replace with scalable
       - install -D MbedStudio.png /app/share/icons/hicolor/512x512/apps/MbedStudio.png
       - install -D MbedStudio.desktop /app/share/applications/MbedStudio.desktop
     sources:
@@ -74,3 +75,7 @@ modules:
           - /include
           - /lib/girepository-1.0
           - /share/gir-1.0
+      # TODO: replace embedded modules with built from source and remove embedded with init script
+#     - name: libappindicator
+#     - name: libnotify
+#     - name: libgconf
