@@ -1,19 +1,11 @@
 # Known issues:
-#  * libvirt's runstatedir defaults to /app/var/run instead of using the configured value
-#      from --with-runstatedir=value.
-#    this means the socket path needed to be supplied in the connection uri,
-#      e.g. qemu+ssh://user@host/system?socket=/run/libvirt/libvirt-sock.
-#    i might be doing somthing wrong but this seems to create another issue, not being able to access
-#      the console or spice display.
-#    for the time being a symlink from /app/var/run to /var/run solves the problem for accessing
-#      the host with the default qemu:///system uri but doesn't help for remote connections.
 #  * ~/.ssh is not saved between running sessions
-#    you might need to override it by yourself with:
+#    you might need to override it with:
 #      --filesystem=~/.ssh which bind mount the folder from the host to the container
 #    or with:
 #      --persist=.ssh which saves the folder content between running sessions.
 #    i prefer the latter as on my host i use a patched openssh build with the user dir at ~/.config/ssh,
-#    and instead of giving direct access to my ssh key files, i'm sharing the ssh-agent pid and socket
+#    and instead of giving direct access to my ssh key files  i'm sharing the ssh-agent pid and socket
 #    with the container by bind mounting xdg-run/ssh.
 #  * i haven't tested much of the features of virt-manager yet so there might be other issues.
 
