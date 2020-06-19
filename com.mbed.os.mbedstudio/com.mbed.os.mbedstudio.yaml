@@ -10,13 +10,16 @@ cleanup:
 finish-args:
   - --device=all
   - --device=dri
+  # workaround for chromium's process singleton
+  - --filesystem=/tmp
   - --filesystem=home
-  - --share=ipc
   - --persist=.config/Mbed Studio
+  - --share=ipc
   - --share=network
-  - --socket=pulseaudio
   - --socket=wayland
   - --socket=x11
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
 modules:
   - name: mbedstudio
     buildsystem: simple
