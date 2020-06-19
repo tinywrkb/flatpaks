@@ -1,0 +1,73 @@
+app-id: com.mbed.os.mbedstudio
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: MbedStudio
+rename-desktop-file: MbedStudio.desktop
+rename-icon: MbedStudio
+cleanup:
+  - /lib/pkgconfig
+finish-args:
+  - --device=all
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --persist=.config/Mbed Studio
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: mbedstudio
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -D MbedStudio /app/bin/MbedStudio
+      - install -D MbedStudio.png /app/share/icons/hicolor/512x512/apps/MbedStudio.png
+      - install -D MbedStudio.desktop /app/share/applications/MbedStudio.desktop
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - tar -xf MbedStudio.tar.gz
+          - rm -f MbedStudio.tar.gz
+          - mkdir -p MbedStudio/mbed-studio-tools/clangd
+          - unzip clangd.zip -d MbedStudio/mbed-studio-tools/clangd/
+          - rm -f clangd.zip
+          - rm -f MbedStudio/{install.sh,mbed-studio-uninstall.sh,mbed-studio.desktop.template,README.md}
+          - mv MbedStudio/tools.json MbedStudio/mbed-studio-tools/
+          - echo 1.0.0.24701316 > MbedStudio/release_version
+          - cp MbedStudio/release_version MbedStudio/mbed-studio-tools/release_version
+      - type: dir
+        path: resources
+      - type: extra-data
+        filename: MbedStudio.tar.gz
+        url: https://studio.mbed.com/installers/release-1.0.0/1.0.0.24701316/linux/MbedStudio.tar.gz
+        sha256: 450a2fc20ddbd435c317dd5eab64e8caed507eea34b5b2cb21ed17d686cbaf9c
+        size: 1270977845
+      - type: extra-data
+        filename: clangd.zip
+        url: https://studio.mbed.com/tools/linux/clangd-ubuntu-18/clangd-8.0.1.zip
+        sha256: 4072de1f85704d9d7011228efa121098ee2ff56c54ee608d66b24fde19e9be11
+        size: 43134134
+    modules:
+#     - name: zypak
+#       sources:
+#         - type: git
+#           url: https://github.com/refi64/zypak
+#           tag: v2020.02
+      - name: libsecret
+        buildsystem: meson
+        config-opts:
+          - -Dvapi=false
+          - -Dmanpage=false
+          - -Dgtk_doc=false
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/libsecret/-/archive/0.20.3/libsecret-0.20.3.tar.gz
+            sha256: 9a90f733d4cac1c5a937af1fc44ddfc52458a4bcb015891247ca75037f446f6d
+        cleanup:
+          - /bin
+          - /include
+          - /lib/girepository-1.0
+          - /share/gir-1.0
