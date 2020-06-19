@@ -8,14 +8,15 @@
 #   * When using gnome-keyring, Chrome creates its own default.keyring file in xdg-data/keyrings even
 #       though it keeps its safe storage key in the user's login keyring from the host.
 #     default.keyring is probably used for passwords but I didn't confirm it as apperently there's no tool
-#       for importing a keyring file or displaying its content, and creating a new keyring in seahore and
-#       replacing its its file doesn't work.
-#   * No access to the user's certificates.
-#     If you need it then you bind mount ~/.pki with a filesystem overrride.
+#       for importing a keyring file or displaying its content, and creating a new keyring in seahorse and
+#       replacing its file doesn't make the content of default.keyring accessible via seahorse.
+#   * No access to the user's certificates from the host.
+#     If you need it then bind mount with --filesystem=~/.pki override.
 #   * Hardware security tokens do not work. Only a Yubikey was tested.
 #   * Some performance issues, like:
-#       Added latency for page refresh/new tab, maybe non-issue and related to local dns settings
-#       New background tab fails to load the page or partially loads it.
+#       Added latency for page refresh/new tab, maybe a non-issue and related to my local dns settings
+#         but I didn't investigate it further.
+#       New background tab fails to load the page or partially loads.
 #
 # Related bugs
 #   * https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
