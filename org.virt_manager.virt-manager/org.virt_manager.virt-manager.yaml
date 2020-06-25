@@ -141,9 +141,9 @@ modules:
                 url: https://libvirt.org/sources/libvirt-6.4.0.tar.xz
                 sha256: 586ebcf220369d08a07c6cc17035e8a91bb3741e4300199459904e9e02478be7
               - type: shell
-                commands:
-                  - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(localstatedir).*/d' {} \;
-                  - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(runstatedir).*/d' {} \;
+#               commands:
+#                 - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(localstatedir).*/d' {} \;
+#                 - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(runstatedir).*/d' {} \;
 #                 - sed '/case $lv_cv_xdr_cflags in/i     lv_cv_xdr_cflags=-I/app/include/tirpc' -i configure
             modules:
               - name: libnl
