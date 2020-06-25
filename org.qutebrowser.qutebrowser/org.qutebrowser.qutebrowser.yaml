@@ -23,7 +23,7 @@ modules:
     sources:
       - type: archive
         url: https://github.com/qutebrowser/qutebrowser/archive/v1.12.0.tar.gz
-        sha256: 41bbd5ede2ba74dc691e0e3b59aad59dd5a7426e39bf82ecedd59b4d22f4dc5f
+        sha256: 465a78beefea3bb7bd721609c6f6048e5e38b36518372be157508cd317fbe50e
     cleanup:
       - /share/man
     modules:
