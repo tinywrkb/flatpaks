@@ -48,6 +48,7 @@ else
   update_tools
 fi
 
+export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
 
 #exec /app/extra/MbedStudio/MbedStudio "$@"
 exec "$STUDIO_PATH"/MbedStudio "$@"

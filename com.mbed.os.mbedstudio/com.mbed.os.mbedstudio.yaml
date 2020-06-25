@@ -10,8 +10,6 @@ cleanup:
 finish-args:
   - --device=all
   - --device=dri
-  # workaround for chromium's process singleton
-  - --filesystem=/tmp
   - --filesystem=home
   - --persist=.config/Mbed Studio
   - --share=ipc
