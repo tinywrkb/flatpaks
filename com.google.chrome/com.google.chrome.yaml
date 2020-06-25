@@ -31,8 +31,6 @@ cleanup:
 finish-args:
   - --device=dri
   - --filesystem=home
-  # workaround for chrome's process singleton
-  - --filesystem=/tmp
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
