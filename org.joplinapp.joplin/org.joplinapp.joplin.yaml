@@ -22,24 +22,29 @@ modules:
   - name: joplin
     buildsystem: simple
     build-commands:
-      - chmod +x Joplin.AppImage
-      - ./Joplin.AppImage --appimage-extract
-      - rm -f Joplin.AppImage
-      - install -d /app/joplin
-      - rm -f squashfs-root/{.DirIcon,AppRun,joplin.desktop,joplin.png}
-      - rm -rf squashfs-root/usr
-      - mv squashfs-root/* /app/joplin/
-      - rmdir squashfs-root
+      - install -D apply_extra /app/bin/apply_extra
       - install -Dm755 joplin /app/bin/joplin
       - install -D joplin.desktop /app/share/applications/joplin.desktop
-      - for s in 16 24 32 48 72 97 128 144 256 512; do
-        install -D /app/joplin/resources/build/icons/${s}x${s}.png /app/share/icons/hicolor/${s}x${s}/apps/joplin.png;
+      - for s in 16 24 32 48 72 96 128 144 256 512; do
+        install -D ${s}x${s}.png /app/share/icons/hicolor/${s}x${s}/apps/joplin.png;
         done
     sources:
-      - type: file
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - mkdir -p /proc/self
+          - ln -s /app/extra/appimage /proc/self/exe
+          - chmod +x appimage
+          - ./appimage --appimage-extract
+          - rm -f appimage
+          - rm -f squashfs-root/{.DirIcon,AppRun,joplin.desktop,joplin.png}
+          - rm -rf squashfs-root/usr
+          - mv squashfs-root joplin
+      - type: extra-data
+        filename: appimage
         url: https://github.com/laurent22/joplin/releases/download/v1.0.220/Joplin-1.0.220.AppImage
         sha256: 8ef087d3a4f02c00566e0e712f12e934cb1c003866b096db4705e9a937e4898c
-        dest-filename: Joplin.AppImage
+        size: 119470046
       - type: dir
         path: resources
     modules:
