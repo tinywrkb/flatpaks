@@ -8,6 +8,11 @@ rename-icon: joplin
 build-options:
   strip: true
   no-debuginfo: true
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 finish-args:
   - --device=dri
   - --filesystem=home
