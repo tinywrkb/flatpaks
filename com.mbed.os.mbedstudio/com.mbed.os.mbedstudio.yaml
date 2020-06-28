@@ -47,6 +47,7 @@ modules:
           - rmdir squashfs-root
       - type: dir
         path: resources
+        # curl -s https://studio.mbed.com/installers/latest/linux/MbedStudio.sh|egrep 'DOMAIN=|ARCHIVE_PATH=|CLANGD_FILENAME='
       - type: extra-data
         filename: MbedStudio.tar.gz
         url: https://studio.mbed.com/installers/release-1.0.0/1.0.0.24701316/linux/MbedStudio.tar.gz
