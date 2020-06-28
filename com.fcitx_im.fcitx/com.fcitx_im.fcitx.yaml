@@ -3,8 +3,6 @@
 #   https://github.com/flatpak/flatpak/issues/2031
 #
 # Todo
-#   restrict permissions
-#   remove session bus access
 #   does it need notifications?
 #   move depends to shared modules
 #   check what extra settings windows available with qt5
@@ -17,10 +15,9 @@ sdk: org.gnome.Sdk
 command: fcitx
 finish-args:
   - --device=dri
-  # workaround for the unix file socket
-  - --filesystem=/tmp
+  - --own-name=org.fcitx.*
+  - --own-name=org.freedesktop.portal.Fcitx
   - --share=ipc
-  - --socket=session-bus
   - --socket=wayland
   - --socket=x11
   - --talk-name=org.freedesktop.Notifications
