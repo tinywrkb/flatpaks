@@ -40,6 +40,11 @@ modules:
           - mv MbedStudio/tools.json MbedStudio/mbed-studio-tools/
           - echo 1.0.0.24701316 > MbedStudio/release_version
           - cp MbedStudio/release_version MbedStudio/mbed-studio-tools/release_version
+          - unappimage MbedStudio/mbed-studio
+          - rm -f MbedStudio/mbed-studio
+          - rm -f squashfs-root/{AppRun,MbedStudio.desktop,MbedStudio.png}
+          - mv squashfs-root/* MbedStudio/
+          - rmdir squashfs-root
       - type: dir
         path: resources
       - type: extra-data
@@ -53,6 +58,15 @@ modules:
         sha256: 4072de1f85704d9d7011228efa121098ee2ff56c54ee608d66b24fde19e9be11
         size: 43134134
     modules:
+      - name: unappimage
+        no-autogen: true
+        subdir: squashfs-tools
+        make-install-args:
+          - INSTALL_DIR=/app/bin
+        sources:
+          - type: git
+            url: https://github.com/refi64/unappimage
+            branch: master
 #     - name: zypak
 #       sources:
 #         - type: git

@@ -5,38 +5,12 @@ set -o errexit
 CONFIG_PATH="$HOME"/.config
 TOOLS_PATH="$HOME"/.config/"Mbed Studio"/mbed-studio-tools
 TOOLS_SRC=/app/extra/MbedStudio/mbed-studio-tools
-STUDIO_PATH="$XDG_DATA_HOME"/mbed-studio
-STUDIO_SRC=/app/extra/MbedStudio
 
 update_tools() {
   rm -rf "$TOOLS_PATH" "$TOOLS_PATH".tmp
   cp -r $TOOLS_SRC "$TOOLS_PATH".tmp
   mv "$TOOLS_PATH".tmp "$TOOLS_PATH"
 }
-
-update_studio() {
-  rm -rf "$STUDIO_PATH" "$STUDIO_PATH".tmp
-  mkdir "$STUDIO_PATH".tmp
-  cd "$STUDIO_PATH".tmp
-  $STUDIO_SRC/mbed-studio --appimage-extract
-  mv squashfs-root/* ./
-  rmdir squashfs-root
-  rm -f AppRun MbedStudio.desktop MbedStudio.png
-  #rm -rf usr
-  cp $STUDIO_SRC/release_version ./
-  cd ..
-  mv "$STUDIO_PATH".tmp "$STUDIO_PATH"
-}
-
-if [ -f "$STUDIO_PATH"/release_version ]; then
-  if diff "$STUDIO_PATH"/release_version $STUDIO_SRC/release_version; then
-    :
-  else
-    update_studio
-  fi
-else
-  update_studio
-fi
 
 if [ -f "$TOOLS_PATH"/release_version ]; then
   if diff "$TOOLS_PATH"/release_version $TOOLS_SRC/release_version; then
@@ -50,5 +24,4 @@ fi
 
 export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
 
-#exec /app/extra/MbedStudio/MbedStudio "$@"
-exec "$STUDIO_PATH"/MbedStudio "$@"
+exec /app/extra/MbedStudio/MbedStudio "$@"
