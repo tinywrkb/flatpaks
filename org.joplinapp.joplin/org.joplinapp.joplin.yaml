@@ -32,10 +32,7 @@ modules:
       - type: script
         dest-filename: apply_extra
         commands:
-          - mkdir -p /proc/self
-          - ln -s /app/extra/appimage /proc/self/exe
-          - chmod +x appimage
-          - ./appimage --appimage-extract
+          - unappimage appimage
           - rm -f appimage
           - rm -f squashfs-root/{.DirIcon,AppRun,joplin.desktop,joplin.png}
           - rm -rf squashfs-root/usr
@@ -48,6 +45,15 @@ modules:
       - type: dir
         path: resources
     modules:
+      - name: unappimage
+        no-autogen: true
+        subdir: squashfs-tools
+        make-install-args:
+          - INSTALL_DIR=/app/bin
+        sources:
+          - type: git
+            url: https://github.com/refi64/unappimage
+            branch: master
       - name: zypak
         sources:
           - type: git
