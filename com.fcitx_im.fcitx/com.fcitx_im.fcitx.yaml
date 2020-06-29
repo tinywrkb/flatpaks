@@ -6,6 +6,8 @@
 #   does it need notifications?
 #   move depends to shared modules
 #   check what extra settings windows available with qt5
+#   more skins
+#   add missing modules
 
 app-id: com.fcitx_im.fcitx
 # needed for notifications that are not working with the freedesktop runtime
@@ -116,3 +118,242 @@ modules:
           - type: archive
             url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
             sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
+  - name: fcitx-cloudpinyin
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-cloudpinyin/fcitx-cloudpinyin-0.3.7.tar.xz
+        sha256: a097f75a7eeadb33705f9d8871ca9c026efeaf6c30490017fbb2e1b1f921232a
+  # missing qt5, qt5-webengine for dictmanager interface
+  - name: fcitx-libpinyin
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_QT=Off
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-libpinyin/fcitx-libpinyin-0.5.3.tar.xz
+        sha256: 46ca8cc970622665d4e46b69c99c9e37a729871d96cce9d4ee63c5c99210cca4
+      - type: file
+        url: https://download.fcitx-im.org/data/model.text.20161206.tar.gz
+        sha256: 5c7024e5735389c471f54b867eda0d98c5a40a5e5e75333a9febac107508f704
+        dest-filename: data/model.text.20161206.tar.gz
+    modules:
+      - name: libpinyin
+        config-opts:
+          - --with-dbm=KyotoCabinet
+          - --enable-libzhuyin
+        sources:
+          - type: archive
+            url: https://github.com/libpinyin/libpinyin/archive/2.3.0.tar.gz
+            sha256: 00cb09f267031fb528bebc4621268037fca64677040123ebb184a50afcb43430
+          - type: file
+            url: https://downloads.sourceforge.net/libpinyin/model17.text.tar.gz
+            sha256: e017278ab022bca065a744ccbbede94db8932ec3fb64592a1693627db9b662cd
+            dest-filename: data/model17.text.tar.gz
+          - type: shell
+            commands:
+              - sed -i "/wget.*/d" data/Makefile.am
+        modules:
+          - name: kyotocabinet
+            config-opts:
+              - --disable-opt
+            sources:
+              - type: archive
+                url: https://fallabs.com/kyotocabinet/pkg/kyotocabinet-1.2.77.tar.gz
+                sha256: 56899329384cc6f0f1f8aa3f1b41001071ca99c1d79225086a7f3575c0209de6
+  - name: fcitx-anthy
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-anthy/fcitx-anthy-0.2.3.tar.xz
+        sha256: ed9b4956356ca68e5f7bdd46492873ebebc921a6cf713d7fc62e5680393f5d06
+    modules:
+      - name: anthy
+        config-opts:
+          - --sysconfdir=/app/etc
+        sources:
+          - type: archive
+            url: http://dl.sourceforge.jp/anthy/37536/anthy-9100h.tar.gz
+            sha256: d256f075f018b4a3cb0d165ed6151fda4ba7db1621727e0eb54569b6e2275547
+  - name: fcitx-chewing
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=None
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-chewing/fcitx-chewing-0.2.3.tar.xz
+        sha256: b313c7134eb173668f42535b0eb6e985eb94fdf5d2fe705940a6cbfdcbadbaf0
+    modules:
+      - name: libchewing
+        sources:
+          - type: archive
+            url: https://github.com/chewing/libchewing/releases/download/v0.5.1/libchewing-0.5.1.tar.bz2
+            sha256: 9708c63415fa6034435c0f38100e7d30d0e1bac927f67bec6dfeb3fef016172b
+        #modules:
+        #  - name: chewing-editor
+# - name: fcitx-hangul
+#   buildsystem: cmake
+#   config-opts:
+#     - -DCMAKE_BUILD_TYPE=Release
+#   sources:
+#     - type: archive
+#       url: https://download.fcitx-im.org/fcitx-hangul/fcitx-hangul-0.3.1.tar.xz
+#       sha256: 6dd5fd5956924c85af92ebefaef1e113e38fa814355fbb0f07c26049c3014437
+#   modules:
+#     - name: libhangul
+#       sources:
+#         - type: archive
+#           url: https://github.com/libhangul/libhangul/archive/libhangul-0.1.0.tar.gz
+#           sha256: e2a81ef159ed098d3cc1a20377dba6204821b7ce2bc24cfb2f2543adf3bc5830
+  - name: fcitx-sayura
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-sayura/fcitx-sayura-0.1.2.tar.xz
+        sha256: 4cf1c26625efbcae05e6a741b6f955d85c4d4970ab0642fd9ecdb1ac6d757f74
+# - name: fcitx-sunpinyin
+#   buildsystem: cmake
+#   config-opts:
+#     - -DCMAKE_BUILD_TYPE=Release
+#   sources:
+#     - type: archive
+#       url: https://download.fcitx-im.org/fcitx-sunpinyin/fcitx-sunpinyin-0.4.2.tar.xz
+#       sha256: 0bf2d72d77732f06e7f04c119507c08b9618b21c4027e3997186bd7e4d0788c4
+#   modules:
+#     - name: sunpinyin
+#       sources:
+#         - type: git
+#           url: https://github.com/sunpinyin/sunpinyin
+#           tag: v3.0.0-rc1
+#         - type: file
+#           url: https://git.archlinux.org/svntogit/community.git/plain/trunk/scons-python3.patch?h=packages/sunpinyin&id=909bf778a17f1b82c4ad972fd8286f145dc2d64c
+#           sha256: 5939d55658e8b0a75618fa88636f1ba4cb4ca0fda481655f660ca1e70dc0e8f6
+#           dest-filename: scons-python3.patch
+#         - type: shell
+#           commands:
+#             - patch -p1 -i scons-python3.patch
+          # sunpinyin-data
+#         - type: archive
+#           url: https://downloads.sourceforge.net/project/open-gram/lm_sc.3gm.arpa-20140820.tar.bz2
+#           sha256: 9708c63415fa6034435c0f38100e7d30d0e1bac927f67bec6dfeb3fef016172b
+#           dest-filename: lm_sc.3gm.arpa
+#         - type: archive
+#           url: https://downloads.sourceforge.net/project/open-gram/dict.utf8-20131214.tar.bz2
+#           sha256: 9708c63415fa6034435c0f38100e7d30d0e1bac927f67bec6dfeb3fef016172b
+#           dest-filename: dict.utf8
+            #modules:
+            #  - name: scons
+            #  - name: python2
+#     - name: sunpinyin-data
+#       sources:
+#         - type: archive
+#           url: https://downloads.sourceforge.net/project/open-gram/lm_sc.3gm.arpa-20140820.tar.bz2
+#           sha256: 9708c63415fa6034435c0f38100e7d30d0e1bac927f67bec6dfeb3fef016172b
+#           dest-filename: lm_sc.3gm.arpa
+#         - type: archive
+#           url: https://downloads.sourceforge.net/project/open-gram/dict.utf8-20131214.tar.bz2
+#           sha256: 9708c63415fa6034435c0f38100e7d30d0e1bac927f67bec6dfeb3fef016172b
+#           dest-filename: dict.utf8
+  - name: fcitx-table-extra
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-table-extra/fcitx-table-extra-0.3.8.tar.xz
+        sha256: c91bb19c1a7b53c5339bf2f75ae83839020d337990f237a8b9bc0f4416c120ef
+  - name: fcitx-table-other
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-table-other/fcitx-table-other-0.2.4.tar.xz
+        sha256: 18bae7020704b43d00b23a7b75a30753c88428042cfb1179d362166a320526b6
+  - name: fcitx-unikey
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_QT=Off
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-unikey/fcitx-unikey-0.2.7.tar.xz
+        sha256: e750774b73b08e51148b963736d8207e50c3973e5456b6569cb7ad86831e0e59
+  - name: fcitx-skk
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_QT=Off
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-skk/fcitx-skk-0.1.4.tar.xz
+        sha256: 17fe59f23da7721d43bfa5a06cb2bc09214f3b9aecef257ee385d802c7f3a732
+    modules:
+      - name: libskk
+        sources:
+          - type: archive
+            url: https://github.com/ueno/libskk/archive/1.0.5.tar.gz
+            sha256: a298e9726b784dd9a6ce8dcb76ff8fbe633037756795d75cfd77d3aeab4f50ed
+# - name: fcitx-rime
+#   buildsystem: cmake
+#   build-options:
+#     cxxflags: '-DNDEBUG'
+#   config-opts:
+#     - -DCMAKE_BUILD_TYPE=Release
+#     - -DENABLE_QT=Off
+#   sources:
+#     - type: archive
+#       url: https://download.fcitx-im.org/fcitx-rime/fcitx-rime-0.3.2.tar.xz
+#       sha256: f97ea6f515fcc5f526cc25dce3d4ba05fa1c83001f68502d6c284ba39cd5a82d
+#   modules:
+#     - name: librime
+#       buildsystem: cmake
+#       config-opts:
+#         - -DBUILD_MERGED_PLUGINS=Off
+#       sources:
+#         - type: archive
+#           url: https://github.com/rime/librime/archive/1.5.3.tar.gz
+#           sha256: df4279df6bc0419c18d9325e7d76dfdab8f91f0ee00a954f19a27f66dd99f503
+#         - type: file
+#           url: https://github.com/lotem/librime-octagram/archive/3664bc9d0426397541e6dcfb7c3c7d6aaad73b2e/librime-octagram-3664bc9d0426397541e6dcfb7c3c7d6aaad73b2e.tar.gz
+#           sha256: something
+#           dest-filename: librime-octagram
+#         - type: file
+#           url: https://github.com/hchunhui/librime-lua/archive/d284336635330c2cba499d4ece7445cfd4928370/librime-lua-d284336635330c2cba499d4ece7445cfd4928370.tar.gz
+#           sha256: something
+#           dest-filename: librime-lua
+#         - type: file
+#           url: https://github.com/rime/librime/commit/beae5b1d4e990aeb05eb86db5eefec50fa03750b.patch
+#           sha256: something
+#           dest-filename: librime-opencc-1.1.patch
+#         - type: shell
+#           commands:
+#             - patch -p1 -i librime-opencc-1.1.patch
+#       modules:
+#         - name: librime-data
+#         - name: boost-libs
+#         - type: opencc
+#         - type: yaml-cpp
+#         - type: leveldb
+#         - type: lua
+#         - type: google-glog
+#         - type: marisa
+# - name: fcitx-mozc
+# - name: fcitx-m17n
+# - name: fcitx-kkc
+  - name: fcitx-skin-material
+    buildsystem: simple
+    build-commands:
+      - install -d /app/share/fcitx/skin/material
+      - install -m644 material/* /app/share/fcitx/skin/material/
+    sources:
+      - type: archive
+        url: https://github.com/hrko99/fcitx-skin-material/archive/v0.5.tar.gz
+        sha256: f2819f2053d8f1cceeb6b7fb917d11494ea962a9370fe095a580d7c41b1e40bb
