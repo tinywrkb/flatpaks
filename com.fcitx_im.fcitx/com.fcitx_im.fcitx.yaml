@@ -20,6 +20,7 @@ finish-args:
   - --own-name=org.fcitx.*
   - --own-name=org.freedesktop.portal.Fcitx
   - --share=ipc
+  - --share=network
   - --socket=wayland
   - --socket=x11
   - --talk-name=org.freedesktop.Notifications
