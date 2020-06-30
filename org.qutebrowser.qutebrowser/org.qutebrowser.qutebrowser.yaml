@@ -22,8 +22,8 @@ modules:
       - make --file misc/Makefile install PREFIX=/app
     sources:
       - type: archive
-        url: https://github.com/qutebrowser/qutebrowser/archive/v1.12.0.tar.gz
-        sha256: 465a78beefea3bb7bd721609c6f6048e5e38b36518372be157508cd317fbe50e
+        url: https://github.com/qutebrowser/qutebrowser/archive/v1.13.0.tar.gz
+        sha256: 68de36b7e9743828984f841dc49fbf5f145d32d965f0db007051430422bc5f74
     cleanup:
       - /share/man
     modules:
