@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Logisim Evolution
+GenericName=Logisim Evolution
+Exec=logisim-evolution %U
+Type=Application
+StartupNotify=true
+Categories=Development

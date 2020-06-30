@@ -1,0 +1,41 @@
+app-id: com.github.reds_heig.logisim-evolution
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk
+command: logisim-evolution
+rename-desktop-file: logisim-evolution.desktop
+build-options:
+  strip: true
+  no-debuginfo: true
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --device=dri
+  - --env=PATH=/app/bin:/app/jre/bin:/usr/bin
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk/install.sh
+  - name: logisim-evolution
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 logisim-evolution.jar /app/logisim-evolution/logisim-evolution.jar
+      - install -Dm755 logisim-evolution /app/bin/logisim-evolution
+      - install -Dm644 logisim-evolution.desktop /app/share/applications/logisim-evolution.desktop
+    sources:
+      - type: file
+        url: https://github.com/reds-heig/logisim-evolution/releases/download/v3.3.4/logisim-evolution-3.3.4-all.jar
+        sha256: b04e666ed0b74126dfc8c2ce6ae0d425ad5bb39c2d77ef214158b6dfc67f8b0d
+        dest-filename: logisim-evolution.jar
+      - type: dir
+        path: resources
