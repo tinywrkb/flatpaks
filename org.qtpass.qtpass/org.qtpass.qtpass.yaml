@@ -1,0 +1,82 @@
+app-id: org.qtpass.qtpass
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: qtpass
+rename-icon: qtpass
+rename-desktop-file: qtpass.desktop
+rename-appdata-file: qtpass.appdata.xml
+build-options:
+  strip: false
+  no-debuginfo: true
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: qtpass
+    buildsystem: qmake
+    post-install:
+      - install -Dm644 qtpass.desktop /app/share/applications/qtpass.desktop
+      - install -Dm644 qtpass.appdata.xml /app/share/appdata/qtpass.appdata.xml
+      - install -Dm644 artwork/icon.svg /app/share/icons/hicolor/scalable/apps/qtpass.svg
+    sources:
+      - type: archive
+        url: https://github.com/IJHack/qtpass/archive/v1.3.2.tar.gz
+        sha256: 7a68e1afe68462c878c212a79c40ade5ba14b72710c5e62450cf54c7b5621254
+  - name: pass
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: https://git.zx2c4.com/password-store/snapshot/password-store-1.7.2.tar.xz
+        sha256: 4768c5e1965c4d2aeb28818681e484fb105b6f46cbd75a97608615c4ec6980ea
+    cleanup:
+      - /share/man
+    modules:
+      - name: tree
+        no-autogen: true
+        make-install-args:
+          - prefix=/app
+        sources:
+          - type: archive
+            url: http://deb.debian.org/debian/pool/main/t/tree/tree_1.8.0.orig.tar.gz
+            sha256: 715d5d4b434321ce74706d0dd067505bb60c5ea83b5f0b3655dae40aa6f9b7c2
+        cleanup:
+          - /man
+      - name: xclip
+        sources:
+          - type: archive
+            url: https://github.com/astrand/xclip/archive/9aa7090c3b8b437c6489edca32ae43d82e0c1281.tar.gz
+            sha256: 2e1166522b953979f45db9c74ab3b1e1bce07bc5efb23d97db95955772fec356
+          - type: shell
+            commands:
+              - ./bootstrap
+        cleanup:
+          - /share/man
+        modules:
+          - name: libxmu
+            config-opts:
+              - --sysconfdir=/app/etc
+            sources:
+              - type: archive
+                url: https://xorg.freedesktop.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
+                sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+            cleanup:
+              - /include
+              - /share/doc
+#      - name: qrencode
+  - name: pwgen
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/sourceforge/pwgen/pwgen-2.08.tar.gz
+        sha256: dab03dd30ad5a58e578c5581241a6e87e184a18eb2c3b2e0fffa8a9cf105c97b
+    cleanup:
+      - /share/man
