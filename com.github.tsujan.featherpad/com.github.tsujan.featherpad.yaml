@@ -1,0 +1,27 @@
+app-id: com.github.tsujan.featherpad
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: featherpad
+rename-icon: featherpad
+rename-desktop-file: featherpad.desktop
+build-options:
+  strip: true
+  no-debuginfo: true
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: featherpad
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://github.com/tsujan/FeatherPad/releases/download/V0.14.2/FeatherPad-0.14.2.tar.xz
+        sha256: a1b028291848fc35d90d87df4b7f0107f2d7a29e9e78399456318ac429cb7346
