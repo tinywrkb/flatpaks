@@ -1,0 +1,72 @@
+# TODO
+# * python2 cleanup
+#
+# Known issues:
+#   * No access to help, /usr/share/doc hardcoded
+#   * Build fails if stripping is enabled for python2 module
+#     maybe the same as https://github.com/flatpak/flatpak-builder/issues/317
+#   * App is complaining about timezone on startup
+
+app-id: com.hopperapp.hopper
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: hopper
+rename-icon: hopper
+rename-desktop-file: hopper.desktop
+build-options:
+  strip: false
+  no-debuginfo: true
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: python2
+    config-opts:
+      - --enable-shared
+    sources:
+      - type: archive
+        url: https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
+        sha256: b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
+    cleanup:
+      - /include
+      - /share/man
+  - name: libbsd
+    sources:
+      - type: archive
+        url: https://libbsd.freedesktop.org/releases/libbsd-0.10.0.tar.xz
+        sha256: 34b8adc726883d0e85b3118fa13605e179a62b31ba51f676136ecb2d0bc1a887
+    cleanup:
+      - /include
+      - /share/man
+  - name: hopper
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -Dm755 hopper /app/bin/hopper
+      - install -Dm644 hopper.desktop /app/share/applications/hopper.desktop
+      - for s in 16 24 32 48 64 128 256 512; do
+          install -Dm644 ${s}.png /app/share/icons/hicolor/${s}x${s}/apps/hopper.png;
+        done
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - tar xf hopper.tar.xz --strip=2
+          - rm -f hopper.tar.xz
+          - mv hopper-v4 hopper
+          - rm -rf applications icons
+      - type: dir
+        path: resources
+      - type: extra-data
+        filename: hopper.tar.xz
+        url: https://d2ap6ypl1xbe4k.cloudfront.net/Hopper-v4-4.5.29-Linux.pkg.tar.xz
+        sha256: f01b1439f4561bb18dc49804ebe3df56b6b6859eed529b379c81ece88a7337ec
+        size: 17943744
