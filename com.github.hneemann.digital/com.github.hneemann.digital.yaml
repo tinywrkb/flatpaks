@@ -1,0 +1,41 @@
+app-id: com.github.hneemann.digital
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk
+command: digital
+rename-desktop-file: digital.desktop
+build-options:
+  strip: true
+  no-debuginfo: true
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --device=dri
+  - --env=PATH=/app/bin:/app/jre/bin:/usr/bin
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk/install.sh
+  - name: digital
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 Digital.jar /app/digital/digital.jar
+      - mv examples /app/digital/examples
+      - install -Dm755 digital /app/bin/digital
+      - install -Dm644 digital.desktop /app/share/applications/digital.desktop
+    sources:
+      - type: archive
+        url: https://github.com/hneemann/Digital/releases/download/v0.24/Digital.zip
+        sha256: 1b268332eced5db19c9028d0bf75b97e94aa35777248b44f546739c2215976cb
+      - type: dir
+        path: resources
