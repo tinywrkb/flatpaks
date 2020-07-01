@@ -8,7 +8,6 @@ Packaging was adapted mainly from the Flatpaks of Spotify and Flameshot, and Arc
 * Android File Tranfer
 * Blueman
 * QtPass
-* Virt-Viewer
 
 ### How to build
 

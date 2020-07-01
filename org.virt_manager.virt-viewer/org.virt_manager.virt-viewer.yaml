@@ -8,6 +8,10 @@ rename-desktop-file: remote-viewer.desktop
 finish-args:
   - --device=dri
   - --filesystem=home
+  # unix socket access
+  - --filesystem=/run/libvirt
+  # ssh-agent pid and socket
+  #- --filesystem=xdg-run/ssh
   - --share=ipc
   - --share=network
   - --socket=wayland
@@ -41,6 +45,8 @@ modules:
           - /include
           - /lib/pkgconfig
           - /share/vala
+        #modules:
+        #  - name: perl-text-csv
       - name: libvirt-glib
         sources:
           - type: archive
@@ -55,13 +61,10 @@ modules:
           - name: libvirt
             builddir: true
             config-opts:
-              #- with_macvtap=no
-              #- with_remote=no
-              #- with_network=no
-              - --prefix=/app
               - --libexec=/app/lib/libvirt
               - --sbindir=/app/bin
               - --with-runstatedir=/run
+              - --localstatedir=/var
               - --with-qemu-group=kvm
               - with_storage_mpath=no
               - CFLAGS=-I/app/include/tirpc
@@ -69,8 +72,10 @@ modules:
               - type: archive
                 url: https://libvirt.org/sources/libvirt-6.4.0.tar.xz
                 sha256: 586ebcf220369d08a07c6cc17035e8a91bb3741e4300199459904e9e02478be7
-#             - type: shell
+              - type: shell
 #               commands:
+#                 - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(localstatedir).*/d' {} \;
+#                 - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(runstatedir).*/d' {} \;
 #                 - sed '/case $lv_cv_xdr_cflags in/i     lv_cv_xdr_cflags=-I/app/include/tirpc' -i configure
             modules:
               - name: libnl
