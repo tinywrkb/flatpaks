@@ -1,0 +1,47 @@
+app-id: org.pdfsam.pdfsam
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk
+command: pdfsam
+rename-desktop-file: pdfsam.desktop
+rename-icon: pdfsam
+build-options:
+  strip: true
+  no-debuginfo: true
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --device=dri
+  - --env=PATH=/app/bin:/app/jre/bin:/usr/bin
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk/install.sh
+  - name: pdfsam
+    buildsystem: simple
+    build-commands:
+      - mv pdfsam-basic-4.1.3.jar pdfsam.jar
+      - install -Dm644 pdfsam.jar /app/pdfsam/pdfsam.jar
+      - install -Dm644 lib/*.jar -t /app/pdfsam/lib/
+      - install -Dm755 pdfsam /app/bin/pdfsam
+      - install -Dm644 pdfsam.desktop /app/share/applications/pdfsam.desktop
+      - bsdtar -xf pdfsam.jar --strip=2 images/basic
+      - for s in 16 24 32 48 64 96 128 256 512; do
+          install -Dm644 ${s}x${s}.png /app/share/icons/hicolor/${s}x${s}/apps/pdfsam.png;
+        done
+    sources:
+      - type: archive
+        url: https://github.com/torakiki/pdfsam/releases/download/v4.1.3/pdfsam-4.1.3-linux.zip
+        sha256: c59ee9492522058d4c0cd892afb58ceb206c1d0cac5b7e4e945af5af46dade84
+      - type: dir
+        path: resources

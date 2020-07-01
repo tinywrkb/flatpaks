@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=PDFsam
+Comment=pdfsam
+Exec=pdfsam
+Icon=pdfsam
+Terminal=false
+StartupNotify=false
+Categories=Office;
