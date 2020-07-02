@@ -41,7 +41,7 @@ modules:
           - rm -f squashfs-root/{AppRun,Icestudio.desktop}
           - mv squashfs-root/usr/bin icestudio
           - rm -rf squashfs-root
-          - touch icestudio/chrome-sandbox && chmod +x icestudio/chrome-sandbox
+          #- touch icestudio/chrome-sandbox && chmod +x icestudio/chrome-sandbox
       - type: extra-data
         filename: appimage
         url: https://github.com/FPGAwars/icestudio/releases/download/v0.5.0/icestudio-0.5.0-linux64.AppImage
@@ -101,8 +101,8 @@ modules:
     cleanup:
       - /include
       - /share/man
-  - name: zypak
-    sources:
-      - type: git
-        url: https://github.com/refi64/zypak
-        tag: v2020.02
+# - name: zypak
+#   sources:
+#     - type: git
+#       url: https://github.com/refi64/zypak
+#       tag: v2020.02
