@@ -8,4 +8,4 @@ if [[ -f $XDG_CONFIG_HOME/chrome-flags.conf ]]; then
 fi
 
 # Launch
-exec zypak-wrapper /app/extra/opt/google/chrome/google-chrome $CHROME_USER_FLAGS "$@"
+exec zypak-wrapper.sh /app/extra/opt/google/chrome/google-chrome $CHROME_USER_FLAGS "$@"

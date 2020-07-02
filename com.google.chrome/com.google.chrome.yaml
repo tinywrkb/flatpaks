@@ -1,10 +1,6 @@
 # WARNING: This is not ready for everyday use.
 #
 # Known issues
-#   * Chrome does not work well with current zypak version.
-#       zypak seems to have trouble setting the seccomp sandbox so some things do not work or crashing
-#       like the built-in Pepper API PDF plugin.
-#     With --disable-seccomp-filter-sandbox it's possible to run Chrome without the seccomp support.
 #   * When using gnome-keyring, Chrome creates its own default.keyring file in xdg-data/keyrings even
 #       though it keeps its safe storage key in the user's login keyring from the host.
 #     default.keyring is probably used for passwords but I didn't confirm it as apperently there's no tool
@@ -25,7 +21,7 @@ app-id: com.google.chrome
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
-command: com.google.chrome
+command: chrome
 cleanup:
   - /lib/pkgconfig
 finish-args:
@@ -40,7 +36,7 @@ finish-args:
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.secrets
   # testing
-  - --device=all
+#  - --device=all # doesn't work with new zypak version
 # - --device=kvm
   - --device=shm
   - --socket=cups
@@ -52,10 +48,11 @@ modules:
     buildsystem: simple
     build-commands:
       - install -D apply_extra /app/bin/apply_extra
-      - install -D com.google.chrome /app/bin/com.google.chrome
-      - install -D com.google.chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome.svg
-      - install -D com.google.chrome.desktop /app/share/applications/com.google.chrome.desktop
-      - install -D /usr/bin/ar /app/bin
+      - install -Dm755 chrome /app/bin/chrome
+      - install -Dm755 stub_sandbox /app/bin/stub_sandbox
+      - install -Dm644 com.google.chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome.svg
+      - install -Dm644 com.google.chrome.desktop /app/share/applications/com.google.chrome.desktop
+      - install -Dm755 /usr/bin/ar /app/bin
       - mkdir -p /app/lib
       - ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib
       - ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4
@@ -72,6 +69,7 @@ modules:
           - rm -rf bin etc share/doc share/man
           - rm opt/google/chrome/product_logo_*.png
           - rm -r opt/google/chrome/cron
+          - cp /app/bin/stub_sandbox opt/google/chrome/chrome-sandbox
       - type: dir
         path: resources
       - type: extra-data
@@ -84,7 +82,7 @@ modules:
         sources:
           - type: git
             url: https://github.com/refi64/zypak
-            tag: v2020.02
+            commit: 0c58167d2feb1e8065eafa3df06e7f63043a8a15
       - name: libsecret
         buildsystem: meson
         config-opts:
