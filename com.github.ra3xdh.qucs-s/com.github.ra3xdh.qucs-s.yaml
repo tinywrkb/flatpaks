@@ -1,0 +1,250 @@
+app-id: com.github.ra3xdh.qucs-s
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: qucs-s
+rename-desktop-file: qucs-s.desktop
+rename-icon: qucs-s
+build-options:
+  # TODO: better workaround for the strip issue?
+  # https://github.com/flatpak/flatpak-builder/issues/317
+# strip: false
+  no-debuginfo: true
+cleanup:
+  # TODO: more cleanup
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=x11
+modules:
+  - name: qucs-s
+    buildsystem: cmake
+    build-options:
+      strip: true
+    sources:
+      - type: archive
+        url: https://github.com/ra3xdh/qucs_s/releases/download/0.0.22/qucs-s-0.0.22.tar.gz
+        sha256: 907a58e973e1851a356f726849560c2d6371d4e5108194f9470aa08c664d0ef5
+    modules:
+      - qt4/qt4-4.8.7-minimal.json
+  - name: ngspice
+    build-options:
+      strip: true
+    # TODO: add ngspice shared lib
+    config-opts:
+      - --enable-xspice
+      - --enable-cider
+      - --enable-oldapps
+      - --enable-openmp
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/project/ngspice/ng-spice-rework/32/ngspice-32.tar.gz
+        sha256: 3cd90c4e94516d87c5b4d02a3a6405b1136b25d05c871d4fee1fd7c4c0d03ef2
+    modules:
+      - name: libxaw
+        config-opts:
+          - --sysconfdir=/app/etc
+        sources:
+          - type: archive
+            url: https://xorg.freedesktop.org/releases/individual/lib/libXaw-1.0.13.tar.bz2
+            sha256: 8ef8067312571292ccc2bbe94c41109dcf022ea5a4ec71656a83d8cce9edb0cd
+        modules:
+          - name: libxmu
+            config-opts:
+              - --sysconfdir=/app/etc
+            sources:
+              - type: archive
+                url: https://xorg.freedesktop.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
+                sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+      - name: libedit
+        sources:
+          - type: archive
+            url: https://thrysoee.dk/editline/libedit-20191231-3.1.tar.gz
+            sha256: dbb82cb7e116a5f8025d35ef5b4f7d4a3cdd0a3909a146a39112095a2d229071
+  - name: asco
+    buildsystem: simple
+    build-commands:
+      - make
+      - install -Dm755 asco /app/bin/asco
+    sources:
+      - type: archive
+        url: http://downloads.sourceforge.net/sourceforge/asco/ASCO-0.4.10.tar.gz
+        sha256: 54f769909157c358055b21ff48abac7eff6cc10651bee977e7bf23d6045b3985
+  - name: freehdl
+    build-options:
+      strip: true
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/qucs/freehdl-0.0.8.tar.gz
+        sha256: 7f0978f8252329450de43e98c04c15fdd8a3f2bdc5ca91f75f8f5dd280c6ed84
+      - type: file
+        url: https://git.archlinux.org/svntogit/community.git/plain/trunk/build-fix.patch?h=packages/freehdl&id=3bb90d64dfe6883e26083cd1fa96226d0d59175a
+        sha256: 08d49fc621d48099afcbe42c99ba25474409dbe5c16748a1cd01f50c0e1bae25
+        dest-filename: build-fix.patch
+      - type: shell
+        commands:
+          - patch -p1 -i build-fix.patch
+    # TODO gtkwave module?
+  - name: qucs
+    build-options:
+      strip: true
+    # TODO: maybe qt4 interface can be disabled?
+    config-opts:
+      - --disable-doc
+    sources:
+      - type: archive
+        url: http://downloads.sourceforge.net/project/qucs/qucs/0.0.20/qucs-0.0.20-rc2.tar.gz
+        sha256: 66cfa0b9f8baa8468feb81b3a15f165e1946511893fa9cfee7009167daa04d19
+    modules:
+      - name: adms
+        config-opts:
+         - --enable-maintainer-mode
+         - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0
+        make-args:
+         - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0
+        sources:
+         - type: archive
+           url: https://github.com/Qucs/ADMS/archive/release-2.3.6.tar.gz
+           sha256: aaf3f635aae41e1c11913e09b8e1bc5eea64256dcec70f3f60d1b9a794af6053
+        modules:
+          - name: perl-xml-libxml
+            no-autogen: true
+            ensure-writable:
+              - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+            make-install-args:
+              - pure_install
+              - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0
+            sources:
+              - type: archive
+                url: https://www.cpan.org/authors/id/S/SH/SHLOMIF/XML-LibXML-2.0205.tar.gz
+                sha256: 3a25002714b13f192d0baef5dc25ad2fbf09f8ec4ad1f793dec8fe6e2f5b2278
+              - type: shell
+                commands:
+                  - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+            modules:
+              - name: perl-alien-libxml2
+                no-autogen: true
+                ensure-writable:
+                  - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                make-args:
+                  - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0
+                make-install-args:
+                  - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0
+                sources:
+                  - type: archive
+                    url: https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Libxml2-0.16.tar.gz
+                    sha256: 56f06a58054f788dcef8d3b6669fb47d172e9ca0b7a12d0241d9cf7835a53b97
+                  - type: shell
+                    commands:
+                      - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+                modules:
+                  - name: perl-alien-build
+                    no-autogen: true
+                    ensure-writable:
+                      - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                    sources:
+                      - type: archive
+                        url: https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Build-2.26.tar.gz
+                        sha256: b104566f2c82e12913a276f1485270bb5f5b6bcb6ff9dbe3d098e99d8d74cf71
+                      - type: shell
+                        commands:
+                          - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+                    modules:
+                      - name: perl-file-which
+                        no-autogen: true
+                        ensure-writable:
+                          - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                        sources:
+                          - type: archive
+                            url: https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/File-Which-1.23.tar.gz
+                            sha256: b79dc2244b2d97b6f27167fc3b7799ef61a179040f3abd76ce1e0a3b0bc4e078
+                          - type: shell
+                            commands:
+                              - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+                      - name: perl-capture-tiny
+                        no-autogen: true
+                        ensure-writable:
+                          - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                        sources:
+                          - type: archive
+                            url: https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/Capture-Tiny-0.48.tar.gz
+                            sha256: 6c23113e87bad393308c90a207013e505f659274736638d8c79bac9c67cc3e19
+                          - type: shell
+                            commands:
+                              - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+                      - name: perl-path-tiny
+                        no-autogen: true
+                        ensure-writable:
+                          - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                        sources:
+                          - type: archive
+                            url: https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/Path-Tiny-0.112.tar.gz
+                            sha256: 813df2d140c65f795daefd8eca18e61194ecac7050c5406a069db86dea31cc3a
+                          - type: shell
+                            commands:
+                              - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+                      - name: perl-file-chdir
+                        no-autogen: true
+                        ensure-writable:
+                          - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                        sources:
+                          - type: archive
+                            url: https://www.cpan.org/authors/id/D/DA/DAGOLDEN/File-chdir-0.1011.tar.gz
+                            sha256: 31ebf912df48d5d681def74b9880d78b1f3aca4351a0ed1fe3570b8e03af6c79
+                          - type: shell
+                            commands:
+                              - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+                      - name: perl-ffi-checklib
+                        no-autogen: true
+                        ensure-writable:
+                          - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                        sources:
+                          - type: archive
+                            url: https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/FFI-CheckLib-0.27.tar.gz
+                            sha256: 8d442747c24fcd8560107ed9deb98265838f17bc850cb7237f8b6d4821992d74
+                          - type: shell
+                            commands:
+                              - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+              - name: perl-xml-sax
+                no-autogen: true
+                ensure-writable:
+                  - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                make-install-args:
+                  - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0
+                sources:
+                  - type: archive
+                    url: https://www.cpan.org/authors/id/G/GR/GRANTM/XML-SAX-1.02.tar.gz
+                    sha256: 4506c387043aa6a77b455f00f57409f3720aa7e553495ab2535263b4ed1ea12a
+                  - type: shell
+                    commands:
+                      - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+                modules:
+                  - name: perl-xml-sax-base
+                    no-autogen: true
+                    ensure-writable:
+                      - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                    sources:
+                      - type: archive
+                        url: https://www.cpan.org/authors/id/G/GR/GRANTM/XML-SAX-Base-1.09.tar.gz
+                        sha256: 66cb355ba4ef47c10ca738bd35999723644386ac853abbeb5132841f5e8a2ad0
+                      - type: shell
+                        commands:
+                          - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
+                  - name: perl-xml-namespacesupport
+                    no-autogen: true
+                    ensure-writable:
+                      - /lib/perl5/5.30.0/x86_64-linux/perllocal.pod
+                    sources:
+                      - type: archive
+                        url: https://www.cpan.org/authors/id/P/PE/PERIGRIN/XML-NamespaceSupport-1.12.tar.gz
+                        sha256: 47e995859f8dd0413aa3f22d350c4a62da652e854267aa0586ae544ae2bae5ef
+                      - type: shell
+                        commands:
+                          - PERL5LIB=/app/lib/perl5/vendor_perl/5.30.0 perl Makefile.PL PREFIX=/app INSTALLDIRS=vendor
