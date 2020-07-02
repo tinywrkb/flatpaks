@@ -96,15 +96,6 @@ modules:
                     sha256: 4bddbec5f407436e0b62f0d7657e866adc980709acf5321aa0d4c3eb54aea823
                 cleanup:
                   - '*'
-          #- name: check
-          - name: hwids
-            buildsystem: simple
-            build-commands:
-              - for ids in pci.ids usb.ids; do install -Dm644 "$ids" /app/share/hwdata/${ids}; done
-            sources:
-              - type: git
-                url: https://github.com/gentoo/hwids.git
-                tag: hwids-20200306
       - name: vte3
         buildsystem: meson
         build-options:
@@ -124,15 +115,6 @@ modules:
           - /share/gir-1.0
           - /share/vala
       # runtime depends: python
-      - name: libvirt-python
-        buildsystem: simple
-        build-commands:
-          - python3 setup.py clean
-          - python3 setup.py install --root=/ --prefix=app/
-        sources:
-          - type: archive
-            url: https://libvirt.org/sources/python/libvirt-python-6.4.0.tar.gz
-            sha256: b13e6dddea8876a7a6c43482d275a84f082d72427302ecb76683c1279b865cec
       - name: python-requests
         buildsystem: simple
         build-commands:
