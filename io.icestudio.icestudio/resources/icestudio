@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+
+# Launch
+exec zypak-wrapper /app/extra/icestudio/icestudio "$@"

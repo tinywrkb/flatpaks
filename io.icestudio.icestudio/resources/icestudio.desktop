@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Icestudio
+Comment=Visual editor for open FPGA boards
+Exec=icestudio %U
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Development

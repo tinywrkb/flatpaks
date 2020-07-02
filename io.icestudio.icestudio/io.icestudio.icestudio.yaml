@@ -1,0 +1,108 @@
+# TODO
+#   mimetypes
+#   add icestorm?
+app-id: io.icestudio.icestudio
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: icestudio
+rename-desktop-file: icestudio.desktop
+rename-icon: icestudio
+build-options:
+  strip: true
+  no-debuginfo: true
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --persist=.icestudio
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: icestudio
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -Dm755 icestudio /app/bin/icestudio
+      - install -Dm644 icestudio.desktop /app/share/applications/icestudio.desktop
+      - install -Dm644 icestudio.svg /app/share/icons/hicolor/scalable/apps/icestudio.svg
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - unappimage appimage
+          - rm -f appimage
+          - rm -f squashfs-root/{AppRun,Icestudio.desktop}
+          - mv squashfs-root/usr/bin icestudio
+          - rm -rf squashfs-root
+          - touch icestudio/chrome-sandbox && chmod +x icestudio/chrome-sandbox
+      - type: extra-data
+        filename: appimage
+        url: https://github.com/FPGAwars/icestudio/releases/download/v0.5.0/icestudio-0.5.0-linux64.AppImage
+        sha256: 89da2050cc89f780abfda3e504aee028dc94c9499412628ad444c969f129a8e3
+        size: 115401648
+      - type: dir
+        path: resources
+  - name: unappimage
+    no-autogen: true
+    subdir: squashfs-tools
+    make-install-args:
+      - INSTALL_DIR=/app/bin
+    sources:
+      - type: git
+        url: https://github.com/refi64/unappimage
+        branch: master
+  - name: gconf
+    build-options:
+      env:
+        - NOCONFIGURE: 1
+    config-opts:
+      - --disable-static
+      - --enable-gtk-doc=no
+      - --enable-gtk-doc-html=no
+      - --disable-orbit
+    sources:
+      - type: archive
+        url: https://gitlab.gnome.org/Archive/gconf/-/archive/3.2.6/gconf-3.2.6.tar.gz
+        sha256: d73497412da91896a110853b5fc62f906211d0e0e61a5e535a34e55e0d445e78
+    modules:
+      - name: gnome-common
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/gnome-common/3.18/gnome-common-3.18.0.tar.xz
+            sha256: 22569e370ae755e04527b76328befc4c73b62bfd4a572499fde116b8318af8cf
+        modules:
+          - shared-modules/intltool/intltool-0.51.json
+      - shared-modules/dbus-glib/dbus-glib-0.110.json
+  - shared-modules/gtk2/gtk2.json
+  - name: libnotify
+    buildsystem: meson
+    config-opts:
+      - -Dtests=false
+      - -Dintrospection=disabled
+      - -Dman=false
+      - -Dgtk_doc=false
+      - -Ddocbook_docs=disabled
+    sources:
+      - type: git
+        url: https://gitlab.gnome.org/GNOME/libnotify.git
+        tag: 98a4bf483a69c6436311bcb9834d9d93235c96b7
+  - name: python2
+    sources:
+      - type: archive
+        url: https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
+        sha256: b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
+    cleanup:
+      - /include
+      - /share/man
+  - name: zypak
+    sources:
+      - type: git
+        url: https://github.com/refi64/zypak
+        tag: v2020.02

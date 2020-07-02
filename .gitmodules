@@ -25,3 +25,6 @@
 [submodule "org.joplinapp.joplin/shared-modules"]
 	path = org.joplinapp.joplin/shared-modules
 	url = https://github.com/flathub/shared-modules.git
+[submodule "io.icestudio.icestudio/shared-modules"]
+	path = io.icestudio.icestudio/shared-modules
+	url = https://github.com/flathub/shared-modules.git
