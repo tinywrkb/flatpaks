@@ -65,6 +65,6 @@ modules:
         path: resources
       - type: extra-data
         filename: insync.deb
-        url: http://s.insynchq.com/builds/insync_3.2.0.40833-buster_amd64.deb
-        sha256: da2ccd04fc91150d5f6eee2fe3e5b38ceebd8ab17df9f130fc346611726f77c2
-        size: 143110334
+        url: http://s.insynchq.com/builds/insync_3.2.1.40839-buster_amd64.deb
+        sha256: df371a88085feb2a0a750e7966b70cacc5a998964430c902760206ecc2fe847d
+        size: 143110568
