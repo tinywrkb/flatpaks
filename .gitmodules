@@ -31,3 +31,6 @@
 [submodule "com.github.ra3xdh.qucs-s/shared-modules"]
 	path = com.github.ra3xdh.qucs-s/shared-modules
 	url = https://github.com/flathub/shared-modules.git
+[submodule "com.github.qucs.qucs.BaseApp/shared-modules"]
+	path = com.github.qucs.qucs.BaseApp/shared-modules
+	url = https://github.com/flathub/shared-modules.git
