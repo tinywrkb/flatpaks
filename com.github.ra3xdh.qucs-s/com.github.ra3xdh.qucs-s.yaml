@@ -91,11 +91,23 @@ modules:
       - type: shell
         commands:
           - patch -p1 -i build-fix.patch
-    # TODO gtkwave module?
+    modules:
+      - name: gtkwave
+        build-options:
+          strip: true
+        config-opts:
+          - --disable-tcl
+          - --with-gsettings
+          - --disable-mime-update
+        sources:
+          - type: archive
+            url: http://gtkwave.sourceforge.net/gtkwave-3.3.104.tar.gz
+            sha256: d20dd1a9307b908439c68122a9f81d3ff434a6bfa5439f0cb01398fec650894f
+        modules:
+          - shared-modules/gtk2/gtk2.json
   - name: qucs
     build-options:
       strip: true
-    # TODO: maybe qt4 interface can be disabled?
     config-opts:
       - --disable-doc
     sources:
