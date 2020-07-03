@@ -25,6 +25,7 @@ command: chrome
 cleanup:
   - /lib/pkgconfig
 finish-args:
+  - --device=all
   - --device=dri
   - --filesystem=home
   - --share=ipc
@@ -36,10 +37,9 @@ finish-args:
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.secrets
   # testing
-#  - --device=all # doesn't work with new zypak version
 # - --device=kvm
-  - --device=shm
-  - --socket=cups
+# - --device=shm
+# - --socket=cups
 # - --socket=pcsc
 # - --socket=session-bus
 # - --socket=system-bus
