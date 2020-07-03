@@ -20,6 +20,7 @@ cleanup:
 finish-args:
   - --device=dri
   - --filesystem=home
+  - --persist=.qucs
   - --share=ipc
   - --share=network
   - --socket=x11
