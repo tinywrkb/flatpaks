@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Code Composer Studio
+Comment=Code Composer Studio
+Exec=ccstudio %U
+Terminal=false
+Type=Application
+Icon=ccstudio
+Categories=Development;

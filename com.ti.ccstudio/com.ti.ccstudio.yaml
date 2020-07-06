@@ -1,0 +1,135 @@
+app-id: com.ti.ccstudio
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Compat.i386
+add-extensions:
+  org.freedesktop.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: '19.08'
+command: ccstudio
+rename-desktop-file: ccstudio.desktop
+rename-icon: ccstudio
+cleanup:
+  - /lib/pkgconfig
+finish-args:
+  - --allow=multiarch
+  - --device=all
+  - --device=dri
+  - --filesystem=home
+# - --own-name=org.eclipse.swt
+# - --own-name=org.eclipse.swt.*
+# - --persist=.java  # java/fonts/1.8.0_112/fcinfo-1-{nodename}-{kernel-name}-{kernel-release}-en.properties
+# - --persist=.pki/nssdb
+# - --persist=.oracle_jre_usage
+# - --persist=.swt
+# - --persist=.profile
+  - --persist=.ti
+  - --persist=ccs
+  - --persist=ti
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+# - --talk-name=org.freedesktop.Notifications
+# - --talk-name=org.kde.StatusNotifierWatcher
+modules:
+  - name: ccstudio
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -D ccstudio /app/bin/ccstudio
+      - install -D ccstudio.png /app/share/icons/hicolor/256x256/apps/ccstudio.png
+      - install -D ccstudio.desktop /app/share/applications/ccstudio.desktop
+      - mkdir -p /app/lib/i386-linux-gnu
+      - install -Dm644 ld.so.conf -t /app/etc/
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - mkdir ccs_installer
+          - tar -xf ccstudio.tar.gz --strip=1 -C ccs_installer
+          - rm -f ccstudio.tar.gz
+          - echo "10.1.0.00010" > ccs_installer/release_version
+      - type: dir
+        path: resources
+      - type: extra-data
+        filename: ccstudio.tar.gz
+        url: https://software-dl.ti.com/ccs/esd/CCSv10/CCS_10_1_0/exports/CCS10.1.0.00010_linux-x64.tar.gz
+        sha256: 668aead487405161fc76be22ecd3247f53b5f07a31669dbe62c6fc87ff142a84
+        size: 1009450727
+    modules:
+      - ../flathub-shared-modules/libsecret/libsecret.json
+      - ../flathub-shared-modules/gtk2/gtk2.json
+      - ../flathub-shared-modules/python2.7/python-2.7.json
+      - ../flathub-shared-modules/libusb/libusb.json
+      - name: libusb-compat
+        config-opts:
+          - --disable-static
+        sources:
+          - type: archive
+            url: https://github.com/libusb/libusb-compat-0.1/releases/download/v0.1.7/libusb-compat-0.1.7.tar.gz
+            sha256: 0679ce38aa02498c1eea9c13398a0d2356883d574632a59c1e25274ed4925cf8
+      - name: libcanberra
+        config-opts:
+          - --disable-gtk-doc
+          - --disable-oss
+          - --disable-static
+          - --disable-udev
+          - --enable-alsa
+          - --enable-gstreamer
+          - --enable-null
+          - --enable-pulse
+          - --localstatedir=/var
+          - --sysconfdir=/app/etc
+          - --with-builtin=dso
+          - --with-systemdsystemunitdir=/app/lib/systemd/system
+        sources:
+          - type: git
+            url: http://git.0pointer.net/clone/libcanberra.git
+            commit: c0620e432650e81062c1967cc669829dbd29b310
+            disable-shallow-clone: true
+      - name: ncurses5-compat-libs
+        config-opts:
+          - --disable-pc-files
+          - --enable-widec
+          - --with-abi-version=5
+          - --with-cxx-binding
+          - --with-cxx-shared
+          - --with-normal
+          - --with-shared
+          - --with-versioned-syms
+          - --without-ada
+          - --without-debug
+        post-install:
+          - for lib in ncurses ncurses++ form panel menu; do ln -s /app/lib/lib${lib}w.so.5 /app/lib/lib${lib}.so.5; done
+          - ln -s /app/lib/libncurses.so.5 /app/lib/libtinfo.so.5
+          - ln -s /app/lib/libncurses.so.5 /app/lib/libtic.so.5
+        sources:
+          - type: archive
+            url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.2.tar.gz
+            sha256: 30306e0c76e0f9f1f0de987cf1c82a5c21e1ce6568b9227f7da5b71cbea86c9d
+      - name: gconf
+        build-options:
+          env:
+            - NOCONFIGURE: 1
+        config-opts:
+          - --disable-static
+          - --enable-gtk-doc=no
+          - --enable-gtk-doc-html=no
+          - --disable-orbit
+          - --enable-shared
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/Archive/gconf/-/archive/3.2.6/gconf-3.2.6.tar.gz
+            sha256: d73497412da91896a110853b5fc62f906211d0e0e61a5e535a34e55e0d445e78
+        modules:
+          - name: gnome-common
+            sources:
+              - type: archive
+                url: https://download.gnome.org/sources/gnome-common/3.18/gnome-common-3.18.0.tar.xz
+                sha256: 22569e370ae755e04527b76328befc4c73b62bfd4a572499fde116b8318af8cf
+            modules:
+              - ../flathub-shared-modules/intltool/intltool-0.51.json
+          - ../flathub-shared-modules/dbus-glib/dbus-glib-0.110.json

@@ -1,0 +1,74 @@
+#!/bin/bash
+
+ccs_installer_dir=/app/extra/ccs_installer
+ccsver=$(cat ${ccs_installer_dir}/release_version)
+APP_RUNTIME_DIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+installer_lock=$APP_RUNTIME_DIR/install.lock
+ccs_installer=${ccs_installer_dir}/ccs_setup_${ccsver}.run
+ccs_dir="${HOME}"/ccs
+ccs_exe="${ccs_dir}"/ccs/eclipse/ccstudio
+
+run_ccs_install() {
+  mkdir -p $APP_RUNTIME_DIR
+  [ -d "$APP_RUNTIME_DIR" ] || exit 1
+  mkdir -p "$ccs_dir"
+  [ -d "$ccs_dir" ] || exit 1
+
+  # create the installer lock
+  date +'%FT%T' > $installer_lock
+
+  # check for user-defined ccs components
+  if [ -f "${ccs_dir}/ccs_components" ]; then
+    ccs_components=$(head -1 "${ccs_dir}"/ccs_components)
+  else
+    ccs_components='PF_MSP430,PF_MSP432,PF_CC2X,PF_CC3X,PF_CC2538,PF_C28,PF_TM4C,PF_HERCULES,PF_SITARA,PF_OMAPL,PF_DAVINCI,PF_OMAP,PF_TDA_DRA,PF_C55,PF_C6000SC,PF_C66AK_KEYSTONE,PF_MMWAVE,PF_C64MC,PF_DIGITAL_POWER,PF_PGA'
+  fi
+
+  # run the installer
+  $ccs_installer \
+    --mode unattended \
+    --prefix "$ccs_dir" \
+    --install-BlackHawk false --install-Segger false \
+    --enable-components "$ccs_components"
+  RET=$?
+
+  # remove the installer lock
+  rm -f $installer_lock
+
+  # exit if the installer terminated with an error or the app wasn't installed correctly
+  if [ $RET -eq 1 ] || [ ! -f "$ccs_exe" ]; then
+    zenity --error --text 'Something went wrong during the installation of Code Studio! You might need to remove the current installation from ~/.var/app/com.ti.ccstudio/ccs. Exiting now...'
+    exit 1
+  fi
+
+  # if the app was installed correctly then copy release_version
+  cp ${ccs_installer_dir}/release_version ${ccs_dir}/release_version
+}
+
+if [ -f "$installer_lock" ]; then
+  zenity --question --text "Code Composer Studio installer is running. Do you wish to remove the lock and proceed as usual? Answer yes only if you are sure the installer is not running."
+  if [ $? -eq 0 ]; then
+      rm -f $installer_lock
+  else
+      exit 1
+  fi
+fi
+
+if [ -f "$ccs_exe" ] && [ -f "${ccs_dir}"/release_version ]; then
+  diff ${ccs_installer_dir}/release_version ${ccs_dir}/release_version
+  if [ ! $? -eq  0 ] ; then
+    zenity --question --text 'Code Studio installer was updated. Do you wish to upgrade now?'
+    if [ $? -eq 0 ]; then
+      run_ccs_install
+    else
+      zenity --question --text 'Do you wish to ignore this update?'
+      [ $? -eq 0 ] && cp ${ccs_installer_dir}/release_version ${ccs_dir}/release_version
+    fi
+  fi
+else
+  zenity --question --text 'Code Studio will be installed now, the full installation needs over 4GiB of storage. Do you wish to continue?'
+  [ $? -eq 1 ] && exit 1
+  run_ccs_install
+fi
+
+exec "$ccs_exe" "$@"
