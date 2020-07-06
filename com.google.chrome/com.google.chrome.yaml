@@ -28,6 +28,7 @@ finish-args:
   - --device=all
   - --device=dri
   - --filesystem=home
+  - --own-name=org.mpris.MediaPlayer2.chrome.*
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
@@ -36,6 +37,7 @@ finish-args:
   - --system-talk-name=org.freedesktop.UPower
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.secrets
+# - --talk-name org.mpris.MediaPlayer2.*
   # testing
 # - --device=kvm
 # - --device=shm
