@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# workaround for .modelsim config file ~/.modelsim
+[ -f "$XDG_CONFIG_HOME"/modelsim.ini ] && \
+  cp -u "$XDG_CONFIG_HOME"/modelsim.ini "$HOME"/.modelsim
+[ -f "$XDG_CONFIG_HOME"/modelsim.ini.bak ] && \
+  cp -u "$XDG_CONFIG_HOME"/modelsim.ini.bak "$HOME"/.modelsim.bak
+
+# start app with few default options
+#   redirect simulation log to /dev/null instead of writing to ~/transcript
+#   open the main window on startup instead of loading a design
+# for more options start the app with '-help all'
+/app/extra/modelsim/bin/vsim -gui -l /dev/null "$@"
+
+[ -f "$HOME"/.modelsim ] && \
+  cp -u "$HOME"/.modelsim "$XDG_CONFIG_HOME"/modelsim.ini
+[ -f "$HOME"/.modelsim.bak ] && \
+  cp -u "$HOME"/.modelsim.bak "$XDG_CONFIG_HOME"/modelsim.ini.bak

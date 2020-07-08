@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=ModelSim Intel FPGA Starter Edition
+Comment=ModelSim simulation software for Intel FPGAs
+Exec=modelsim %U
+Terminal=false
+Type=Application
+Icon=modelsim
+Categories=Development;
