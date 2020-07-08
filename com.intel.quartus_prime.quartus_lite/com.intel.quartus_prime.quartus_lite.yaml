@@ -1,0 +1,223 @@
+app-id: com.intel.quartus_prime.quartus_lite
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Compat.i386
+  - org.freedesktop.Sdk.Extension.toolchain-i386
+add-extensions:
+  org.freedesktop.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: '19.08'
+  org.freedesktop.Platform.Compat.i386.Debug:
+    directory: lib/debug/lib/i386-linux-gnu
+    version: '19.08'
+    no-autodownload: true
+x-compat-i386-opts: &compat_i386_opts
+  prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
+  ldflags: -L/app/lib32
+  prepend-path: /usr/lib/sdk/toolchain-i386/bin
+  env:
+    CC: i686-unknown-linux-gnu-gcc
+    CXX: i686-unknown-linux-gnu-g++
+  libdir: /app/lib32
+command: quartus
+rename-desktop-file: quartus.desktop
+rename-icon: quartus
+build-options:
+  strip: true
+  no-debuginfo: true
+cleanup:
+  - /lib*/pkgconfig
+  - '*.la'
+finish-args:
+  - --allow=multiarch
+  - --device=all
+  - --device=dri
+  - --env=PATH=/app/bin:/usr/bin:/app/extra/quartus/quartus/bin
+  - --env=QUARTUS_64BIT=1
+  - --filesystem=home
+  - --persist=.altera.quartus
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: quartus
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -Dm755 quartus /app/bin/quartus
+      - install -Dm644 quartus.png /app/share/icons/hicolor/256x256/apps/quartus.png
+      - install -Dm644 quartus.desktop /app/share/applications/quartus.desktop
+      - mkdir -p /app/lib/i386-linux-gnu
+      - mkdir -p /app/lib/debug/lib/i386-linux-gnu
+      - install -Dm644 ld.so.conf -t /app/etc/
+      - install -Dm644 51-usbblaster.rules -t /app/docs/udev_rules/
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - mkdir -p quartus
+          - chmod +x installer.run
+          - ./installer.run
+              --disable-components quartus_help,devinfo,modelsim_ase,modelsim_ae
+              --mode unattended
+              --unattendedmodeui none
+              --accept_eula 1
+              --installdir /app/extra/quartus
+          - rm -rf installer.run quartus/{logs,uninstall}
+          - find quartus/ \( -name "unzip" -or -name "unzip32" \) -delete
+          - rm -rf quartus/quartus/common/help/webhelp
+            # patchelf workaround
+          - patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 quartus/quartus/linux64/lmutil
+          - patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 quartus/quartus/linux64/lmgrd
+          - find quartus \! -perm /o+rwx -exec chmod o=g {} \;
+            # maybe not needed as the installer target was not moved
+#         - sed -i "s#/app/extra/quartus/##g" quartus/quartus/sopc_builder/.sopc_builder
+            # extension mount points
+#         - mkdir -p quartus/quartus/common/help/{tutorial,webhelp,mega_help_links.lst}
+#         - mkdir -p quartus/quartus/common/devinfo/arriaii
+#         - mkdir -p quartus/quartus/common/devinfo/{cycloneive,cycloneivgx}
+#         - mkdir -p quartus/quartus/common/devinfo/cyclone10lp
+#         - mkdir -p quartus/quartus/common/devinfo/cyclonev
+#         - mkdir -p quartus/quartus/common/devinfo/max{ii,v}
+#         - mkdir -p quartus/quartus/common/devinfo/55nm
+      - type: dir
+        path: resources
+      - type: extra-data
+        filename: installer.run
+        url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/QuartusLiteSetup-20.1.0.711-linux.run
+        sha256: e58793a4de11bcd815c6ee851ab81ae1f7420f2416a0d60d554c4d74d1ce5a1f
+        size: 2114215146
+      - type: file
+        url: https://aur.archlinux.org/cgit/aur.git/plain/51-usbblaster.rules?h=quartus-free&id=a9d0da90286dd239403158fa9e2757a9951f4a13
+        sha256: dd9d33fa2698a0ec11ae86f4508f77e2e12bf4a21224f5b16640bc41d6c0999b
+        dest-filename: 51-usbblaster.rules
+    modules:
+      - name: lib32-libcanberra
+        build-options:
+          arch:
+            x86_64: *compat_i386_opts
+        config-opts:
+          - --disable-gtk-doc
+          - --disable-oss
+          - --disable-static
+          - --disable-udev
+          - --enable-alsa
+          - --enable-gstreamer
+          - --enable-null
+          - --enable-pulse
+          - --localstatedir=/var
+          - --sysconfdir=/app/etc
+          - --with-builtin=dso
+          - --with-systemdsystemunitdir=/app/lib/systemd/system
+        sources:
+          - type: git
+            url: http://git.0pointer.net/clone/libcanberra.git
+            commit: c0620e432650e81062c1967cc669829dbd29b310
+            disable-shallow-clone: true
+        cleanup:
+          - /bin
+          - /include
+          - /lib32/gnome-settings-daemon-3.0
+          - /share/gdm
+          - /share/gnome
+          - /share/vala
+      - name: lib32-ncurses5-compat-libs
+        build-options:
+          arch:
+            x86_64: *compat_i386_opts
+        config-opts:
+          - --disable-pc-files
+          - --enable-widec
+          - --with-abi-version=5
+          - --with-cxx-binding
+          - --with-cxx-shared
+          - --with-normal
+          - --with-shared
+          - --with-versioned-syms
+          - --without-ada
+          - --without-debug
+        post-install:
+          - for lib in ncurses ncurses++ form panel menu; do ln -s lib${lib}w.so.5 /app/lib32/lib${lib}.so.5; done
+          - ln -s libncurses.so.5 /app/lib32/libtinfo.so.5
+          - ln -s libncurses.so.5 /app/lib32/libtic.so.5
+        sources:
+          - type: archive
+            url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.2.tar.gz
+            sha256: 30306e0c76e0f9f1f0de987cf1c82a5c21e1ce6568b9227f7da5b71cbea86c9d
+        cleanup:
+          - /bin
+          - /include
+          - /lib32/*.a
+          - /share/man
+      - name: lib32-gtk2
+        build-options:
+          arch:
+            x86_64: *compat_i386_opts
+        config-opts:
+          - --disable-dependency-tracking
+          - --disable-gtk-doc-html
+          - --disable-introspection
+          - --with-xinput=xfree
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz
+            sha256: b6c8a93ddda5eabe3bfee1eb39636c9a03d2a56c7b62828b359bf197943c582e
+        cleanup:
+          - /bin
+          - /etc
+          - /include
+          - /lib32/gtk-2.0/include
+          - /share/aclocal
+          - /share/gtk-2.0
+          - /share/gtk-doc
+        modules:
+          - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - name: patchelf
+        sources:
+          - type: archive
+            url: https://github.com/NixOS/patchelf/archive/0.9.tar.gz
+            sha256: cf0693e794229e19edcf2299427b5a352e0f4d4f06f9d3856e30ddb0344d5ce8
+        cleanup:
+          - /share/doc
+          - /share/man
+          - /share/aclocal
+# extension:
+# - name: devinfo-arria_lite
+#   sources:
+#     - type: script
+#       dest-filename: apply_extra
+#       commands:
+#         - mkdir -p quartus
+#         - bsdtar -xf devinfo.qdz -C quartus
+#     - type: extra-data
+#       filename: devinfo.qdz
+#       url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/arria_lite-20.1.0.711.qdz
+#       sha256: 2027ed7e5935612a38c3f7b751b6bd23cfb5b06d1a1e5f34907bc021b09de225
+#       size: 523360406
+# - name: devinfo-cyclone
+# - name: devinfo-cyclone10lp
+# - name: devinfo-cyclonev
+# - name: devinfo-max
+# - name: devinfo-max10
+# - name: help
+#   sources:
+#     - type: script
+#       dest-filename: apply_extra
+#       commands:
+#         - mkdir -p quartus
+#         - chmod +x installer.run
+#         - ./installer.run
+#             --mode unattended
+#             --unattendedmodeui none
+#             --accept_eula 1
+#             --installdir /app/extra/quartus
+#         - bsdtar -xf devinfo.qdz -C quartus
+#         - rm -rf installer.run quartus/{logs,uninstall}
+#     - type: extra-data
+#       filename: installer.run
+#       url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/QuartusLiteSetup-20.1.0.711-linux.run
+#       sha256: e58793a4de11bcd815c6ee851ab81ae1f7420f2416a0d60d554c4d74d1ce5a1f
+#       size: 2114215146

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Quartus Prime Lite Edition
+Comment=Quartus Prime Lite Edition Design Software for Intel FPGAs
+Exec=quartus %U
+Terminal=false
+Type=Application
+Icon=quartus
+Categories=Development;

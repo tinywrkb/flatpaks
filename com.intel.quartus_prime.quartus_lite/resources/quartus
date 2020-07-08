@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec /app/extra/quartus/quartus/bin/quartus --64bit "$@"
