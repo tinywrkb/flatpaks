@@ -1,0 +1,47 @@
+app-id: com.autodesk.eagle
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: eagle
+rename-desktop-file: eagle.desktop
+rename-icon: eagle
+cleanup:
+  - /lib/pkgconfig
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: eagle
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -Dm755 eagle /app/bin/eagle
+      - install -Dm644 eagle.png /app/share/icons/hicolor/128x128/apps/eagle.png
+      - install -Dm644 eagle.desktop /app/share/applications/eagle.desktop
+      - install -Dm644 eagle.xml /app/share/mime/packages/com.autodesk.eagle.xml
+      - install -Dm644 ld.so.conf -t /app/etc/
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - mkdir -p eagle
+          - tar -xf eagle.tar.gz --strip=1 -C eagle/
+          - rm -f eagle.tar.gz
+            # remove xorg libs
+          - rm -f eagle/lib/lib{x,X}*
+            # fix permissions
+          - find eagle -perm 750 -exec chmod 755 {} \;
+          - find eagle -perm 700 -exec chmod 755 {} \;
+          - find eagle -perm 640 -exec chmod 644 {} \;
+          - find eagle -perm 600 -exec chmod 644 {} \;
+      - type: dir
+        path: resources
+      - type: extra-data
+        filename: eagle.tar.gz
+        url: https://trial2.autodesk.com/NET17SWDLD/2017/EGLPRM/ESD/Autodesk_EAGLE_9.6.2_English_Linux_64bit.tar.gz
+        sha256: 0086b3fddcd9eaeead0f30f814b868a9e0ef75fbdf6185ec3448d0a9edf35ea3
+        size: 171780187

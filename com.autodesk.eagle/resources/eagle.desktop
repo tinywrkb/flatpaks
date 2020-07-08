@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Autodesk EAGLE
+Exec=eagle %U
+Terminal=false
+Type=Application
+Icon=eagle
+Categories=Development;
+MimeType=application/x-eagle-schematic;application/x-eagle-board;application/x-eagle-project;application/x-eagle-library;
