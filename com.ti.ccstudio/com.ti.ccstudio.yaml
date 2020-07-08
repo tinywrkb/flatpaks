@@ -103,9 +103,9 @@ modules:
           - --without-ada
           - --without-debug
         post-install:
-          - for lib in ncurses ncurses++ form panel menu; do ln -s /app/lib/lib${lib}w.so.5 /app/lib/lib${lib}.so.5; done
-          - ln -s /app/lib/libncurses.so.5 /app/lib/libtinfo.so.5
-          - ln -s /app/lib/libncurses.so.5 /app/lib/libtic.so.5
+          - for lib in ncurses ncurses++ form panel menu; do ln -s lib${lib}w.so.5 /app/lib/lib${lib}.so.5; done
+          - ln -s libncurses.so.5 /app/lib/libtinfo.so.5
+          - ln -s libncurses.so.5 /app/lib/libtic.so.5
         sources:
           - type: archive
             url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.2.tar.gz
