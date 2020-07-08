@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=MCUXpresso IDE
+Comment=NXP MCUXpresso IDE
+Exec=mcuxpressoide %U
+Path=/app/extra/mcuxpressoide/ide
+Terminal=false
+Type=Application
+Icon=mcuxpressoide
+Categories=Development;
