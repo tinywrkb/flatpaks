@@ -34,6 +34,7 @@ finish-args:
   - --allow=multiarch
   - --device=all
   - --device=dri
+  - --env=PATH=/app/bin:/usr/bin:/app/extra/modelsim/bin
   - --filesystem=home
   - --share=ipc
   - --share=network
