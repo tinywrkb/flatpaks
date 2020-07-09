@@ -198,10 +198,40 @@ modules:
 #       sha256: 2027ed7e5935612a38c3f7b751b6bd23cfb5b06d1a1e5f34907bc021b09de225
 #       size: 523360406
 # - name: devinfo-cyclone
+#   sources:
+#     - type: extra-data
+#       filename: devinfo.qdz
+#       url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/cyclone-20.1.0.711.qdz
+#       sha256: ff69937d5c3e19e6b864974a7b7b4772b3da97624b97f11b9f65e5bf35b779f4
+#       size: 488608584
 # - name: devinfo-cyclone10lp
+#   sources:
+#     - type: extra-data
+#       filename: devinfo.qdz
+#       url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/cyclone10lp-20.1.0.711.qdz
+#       sha256: 4a326e1ce6b72b938928a29bd4218c265b85d42e3cf7d8d57fb29e642a24cdf4
+#       size: 278612382
 # - name: devinfo-cyclonev
+#   sources:
+#     - type: extra-data
+#       filename: devinfo.qdz
+#       url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/cyclonev-20.1.0.711.qdz
+#       sha256: ea52a58c3d6b10f365692b3e1541677dfbee5cbb1a99d7613fcb79adb4bf1916
+#       size: 1446097745
 # - name: devinfo-max
+#   sources:
+#     - type: extra-data
+#       filename: devinfo.qdz
+#       url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/max-20.1.0.711.qdz
+#       sha256: ea52a58c3d6b10f365692b3e1541677dfbee5cbb1a99d7613fcb79adb4bf1916
+#       size: 11923394
 # - name: devinfo-max10
+#   sources:
+#     - type: extra-data
+#       filename: devinfo.qdz
+#       url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/max10-20.1.0.711.qdz
+#       sha256: e8942734169f29419409786d538aa6f7c2f0f1ecca4935568844e17a13050415
+#       size: 299221998
 # - name: help
 #   sources:
 #     - type: script
