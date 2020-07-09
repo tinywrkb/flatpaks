@@ -60,8 +60,6 @@ modules:
           - type: shell
             commands:
               - find . -name Makefile.am -exec sed -i "/@CODE_COVERAGE_RULES@/d" {} +
-# TODO: add spice3 module, is it berkeley spice 3?
-# - name: spice3
   - name: ngspice
     build-options:
       strip: true
@@ -101,6 +99,17 @@ modules:
           - type: archive
             url: https://thrysoee.dk/editline/libedit-20191231-3.1.tar.gz
             sha256: dbb82cb7e116a5f8025d35ef5b4f7d4a3cdd0a3909a146a39112095a2d229071
+  - name: spice3
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://ptolemy.berkeley.edu/projects/embedded/pubs/downloads/spice/spice3f5.tar.gz
+        sha256: cac11fe2a761241e6b6c9eaa31b938c7ffa76aeaecac09809609d3a4125cd269
+      - type: patch
+        path: spice3-0001-cmake-changes-from-github.com-hedhyw-spice3f5.patch
+      - type: shell
+        commands:
+          - find ./ -name "CMakeLists.txt" -exec sed -i "s#usr/local#app#g" {} \;
   - name: gnucap
     sources:
       - type: archive
