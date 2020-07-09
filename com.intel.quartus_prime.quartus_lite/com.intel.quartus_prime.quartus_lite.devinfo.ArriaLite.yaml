@@ -1,0 +1,23 @@
+app-id: com.intel.quartus_prime.quartus_lite.devinfo.ArriaLite
+runtime: com.intel.quartus_prime.quartus_lite
+sdk: org.freedesktop.Sdk//19.08
+build-extension: true
+separate-locales: false
+#appstream-compose: false
+modules:
+  - name: devinfo-arria_lite
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra $FLATPAK_DEST/bin/apply_extra
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - bsdtar -xf devinfo.qdz
+          - mv quartus/common/devinfo/* ./
+          - rm -rf quartus devinfo.qdz
+      - type: extra-data
+        filename: devinfo.qdz
+        url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/arria_lite-20.1.0.711.qdz
+        sha256: 2027ed7e5935612a38c3f7b751b6bd23cfb5b06d1a1e5f34907bc021b09de225
+        size: 523360406

@@ -1,0 +1,23 @@
+app-id: com.intel.quartus_prime.quartus_lite.devinfo.Max10
+runtime: com.intel.quartus_prime.quartus_lite
+sdk: org.freedesktop.Sdk//19.08
+build-extension: true
+separate-locales: false
+#appstream-compose: false
+modules:
+  - name: devinfo-max10
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra $FLATPAK_DEST/bin/apply_extra
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - bsdtar -xf devinfo.qdz
+          - mv quartus/common/devinfo/* ./
+          - rm -rf quartus devinfo.qdz
+      - type: extra-data
+        filename: devinfo.qdz
+        url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/max10-20.1.0.711.qdz
+        sha256: e8942734169f29419409786d538aa6f7c2f0f1ecca4935568844e17a13050415
+        size: 299221998
