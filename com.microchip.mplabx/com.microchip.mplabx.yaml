@@ -1,3 +1,8 @@
+#
+# WARNING: This will not be installed correctly without patching Flatpak to enable
+#          multiarch when running apply_extra during the installation.
+#          See example patch: https://github.com/flatpak/flatpak/issues/3742
+
 app-id: com.microchip.mplabx
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
@@ -6,14 +11,14 @@ sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
   - org.freedesktop.Sdk.Extension.openjdk8
   - org.freedesktop.Sdk.Extension.toolchain-i386
-add-extensions:
-  org.freedesktop.Platform.Compat.i386:
-    directory: lib/i386-linux-gnu
-    version: '19.08'
-  org.freedesktop.Platform.Compat.i386.Debug:
-    directory: lib/debug/lib/i386-linux-gnu
-    version: '19.08'
-    no-autodownload: true
+#add-extensions:
+#  org.freedesktop.Platform.Compat.i386:
+#    directory: lib/i386-linux-gnu
+#    version: '19.08'
+#  org.freedesktop.Platform.Compat.i386.Debug:
+#    directory: lib/debug/lib/i386-linux-gnu
+#    version: '19.08'
+#    no-autodownload: true
 x-compat-i386-opts: &compat_i386_opts
   prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
   ldflags: -L/app/lib32
@@ -46,7 +51,7 @@ modules:
     build-commands:
       - mkdir -p /app/mnt
       - mkdir -p /app/lib
-      - mkdir -p /app/lib/debug/lib/i386-linux-gnu
+#     - mkdir -p /app/lib/debug/lib/i386-linux-gnu
       - mkdir -p /app/lib/i386-linux-gnu
       - mkdir -p /app/lib32
       - install -Dm644 ld.so.conf -t /app/etc/
@@ -65,6 +70,8 @@ modules:
       - mkdir -p /app/docs
       - install -Dm644 mplabx-override.conf /app/docs/systemd_overrides/mplabx-override.conf
       - ln -s ../extra/docs/udev_rules /app/docs/udev_rules
+        # workaround for flatpak not being able to mount extensions during apply_extra
+      - cp -r /usr/lib/i386-linux-gnu/* /app/lib/i386-linux-gnu/
     sources:
       - type: dir
         path: resources
