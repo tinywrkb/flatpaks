@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=MPLAB IDE
+Comment=IDE for Microchip PIC and dsPIC development
+Exec=mplab_ide
+Icon=com.microchip.mplabx
+Terminal=false
+Type=Application
+Categories=Development
+StartupNotify=true
+StartupWMClass=MPLAB X IDE

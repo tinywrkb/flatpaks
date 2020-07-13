@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=MPLAB IPE
+Comment=IPE for Microchip PIC and dsPIC programming
+Exec=mplab_ipe
+Icon=com.microchip.mplabx.mplab_ipe
+Terminal=false
+Type=Application
+Categories=Development
+StartupNotify=true
+StartupWMClass=com-microchip-ipe-ui-ProdProgrammerApp
