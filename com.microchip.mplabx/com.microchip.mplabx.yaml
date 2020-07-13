@@ -100,8 +100,7 @@ modules:
             #- ln -s /app/extra/installer.run tmproot/tmp/installer.run
           - mv installer.run tmproot/tmp/
             # run installer in fakechroot
-            #- fakechroot chroot tmproot/ tmp/mplabx-install.sh
-          - fakechroot chroot tmproot/ tmp/installer.run --mode unattended
+          - fakechroot chroot tmproot/ tmp/mplabx-install.sh
             # run mplabcomm installer again with the app jre? might need to be run in fakechroot
             # tmproot/opt/microchip/mplabx/MPLABCOMM-3.35.24-linux-installer.run --jrebinary /app/jre/jre/bin/java
             # move app: etc/
