@@ -114,7 +114,7 @@ modules:
           - mkdir -p docs/udev_rules
           - mv tmproot/etc/udev/rules.d/* docs/udev_rules/
             # more docs
-          - ln -s ../../systemd_overrides docs/systemd_overrides
+          - ln -s ../../docs/systemd_overrides docs/systemd_overrides
             # move app: lib/ prepare
           - mkdir -p lib
             # move app: usr/local/lib
