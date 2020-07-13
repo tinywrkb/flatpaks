@@ -42,6 +42,7 @@ finish-args:
   - --device=dri
   - --env=JAVA_HOME=/app/jre
   - --env=PATH=/app/bin:/usr/bin:/app/jre/bin:/app/extra/mplabx/mplab_platform/bin
+  - --filesystem=home
   - --persist=.cache/mplab_ide
   - --persist=.java
   - --persist=.mplab_ide
@@ -57,7 +58,6 @@ modules:
   - name: mplabx
     buildsystem: simple
     build-commands:
-      - mkdir -p /app/mnt
       - mkdir -p /app/lib
 #     - mkdir -p /app/lib/debug/lib/i386-linux-gnu
       - mkdir -p /app/lib/i386-linux-gnu
