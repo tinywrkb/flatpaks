@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Lattice Diamond
+Comment=Lattice Diamond Design Software
+Exec=diamond %U
+Terminal=false
+Type=Application
+Icon=diamond
+Categories=Development

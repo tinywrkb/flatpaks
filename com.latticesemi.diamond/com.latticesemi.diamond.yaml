@@ -1,0 +1,63 @@
+app-id: com.latticesemi.diamond
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: diamond
+rename-desktop-file: diamond.desktop
+rename-icon: diamond
+finish-args:
+  - --device=all
+  - --device=dri
+  # it would be nice to be able to keep the file ~/.flexlmrc around but persist only works on folders
+  - --persist=.config/LatticeSemi
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: diamond
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra /app/bin/apply_extra
+      - install -Dm755 diamond /app/bin/diamond
+      - install -Dm644 diamond.desktop /app/share/applications/diamond.desktop
+      - install -Dm644 diamond.png /app/share/icons/hicolor/256x256/apps/diamond.png
+    sources:
+      - type: dir
+        path: resources
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - mkdir -p diamond
+          - rpmextract.sh diamond.rpm
+          - rm -f diamond.rpm
+          - mv usr/local/diamond/*/* diamond/
+          - rm -rf usr
+          - |
+              for f in bin cae_library data embedded_source examples ispfpga synpbase tcltk; do
+                tar -xf diamond/${f}/${f}.tar.gz -C diamond/${f}/
+                rm -f diamond/${f}/${f}.tar.gz
+              done
+      - type: extra-data
+        url: http://files.latticesemi.com/Diamond/3.11/diamond_3_11-base_x64-396-4-x86_64-linux.rpm
+        sha256: 6a5654c95fd0c12387dc417ca6631036fafc8a8bc16f3a4bcc48bc88033733de
+        size: 1291068060
+        filename: diamond.rpm
+        # TODO handle service pack
+#     - type: extra-data
+#       url: http://files.latticesemi.com/Diamond/3.11.2/diamond_3_11-sp2_x64-446-3-x86_64-linux.rpm
+#       sha256: 37e54234b259c78923fd6d8a7999b18c3a763f69ecdef8801539d039d4af1eaf
+#       size: 75751048
+#       filename: diamond-update.rpm
+    modules:
+      - name: rpmextract
+        buildsystem: simple
+        build-commands:
+          - install -Dm755 rpmextract.sh /app/bin/rpmextract.sh
+          - install -Dm755 rpm2cpio /app/bin/rpm2cpio
+        sources:
+          - type: archive
+            url: https://archive.archlinux.org/packages/r/rpmextract/rpmextract-1.0-8-any.pkg.tar.xz
+            sha256: 1b6d5b08c4cffbe8db2289ad3ae99cff2c0d93b04eb730322bc813cc946b535e
+            strip-components: 2
