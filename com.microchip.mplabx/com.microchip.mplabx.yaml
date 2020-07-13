@@ -154,9 +154,9 @@ modules:
           - rm -rf tmproot
       - type: extra-data
         filename: installer.tar
-        url: http://ww1.microchip.com/downloads/en/DeviceDoc/MPLABX-v5.35-linux-installer.tar
-        sha256: acd6a709ece1693500cee971357443ca6cf7d6131d73cbce71825339c0419c27
-        size: 1004523520
+        url: http://ww1.microchip.com/downloads/en/DeviceDoc/MPLABX-v5.40-linux-installer.tar
+        sha256: 17f04a312a3720782c8130296eb3d3fd705ba76cf4cb6e2471c5af05ee466d79
+        size: 931123200
     modules:
       - name: fakeroot
         config-opts:
