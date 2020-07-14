@@ -115,9 +115,9 @@ modules:
           - mkdir -p etc/mplab_ide
           - rm -f tmproot/etc/.mplab_ide/mchplinusbmonitor
           - mv tmproot/etc/.mplab_ide/* etc/mplab_ide/
-          - ln -s ../mplabcomm/lib/mchplinusbmonitor etc/mplab_ide/mchplinusbmonitor
+          - ln -s ../../mplabcomm/lib/mchplinusbmonitor etc/mplab_ide/mchplinusbmonitor
             # why? why missing?
-          - ln -s ../mplabcomm/lib/mchplinusbdevice etc/mplab_ide/mchplinusbdevice
+          - ln -s ../../mplabcomm/lib/mchplinusbdevice etc/mplab_ide/mchplinusbdevice
             # udev rules
           - mkdir -p docs/udev_rules
           - mv tmproot/etc/udev/rules.d/* docs/udev_rules/
@@ -148,8 +148,8 @@ modules:
                 sed -i 's#/etc/.mplab_ide#/app/extra/etc/'${app}'#g' mplabx/mplab_platform/bin/${app}
                 # mchpsegusbmonitor does not exist, comment it out
                 sed -i 's;^\(.*mchpsegusbmonitor.*\);#\1;g' mplabx/mplab_platform/bin/${app}
-                sed -i 's#^progdir=.*#progdir=/app/extra/mplabx/mplab_platform/bin#g' mplabx/mplab_platform/bin/${app}
-                sed -i 's#^APPNAME=.*#APPNAME='${app}'#g' mplabx/mplab_platform/bin/${app}
+                #sed -i 's#^progdir=.*#progdir=/app/extra/mplabx/mplab_platform/bin#g' mplabx/mplab_platform/bin/${app}
+                #sed -i 's#^APPNAME=.*#APPNAME='${app}'#g' mplabx/mplab_platform/bin/${app}
               done
             # set jdkhome
           - |
