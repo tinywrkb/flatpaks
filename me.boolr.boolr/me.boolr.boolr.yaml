@@ -1,0 +1,78 @@
+# TODO: build from source and master branch
+# Known issues
+#   * no access to fllesystem
+#   * can't save new boards, need to go through "sandbox mode"
+app-id: me.boolr.boolr
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: boolr
+rename-desktop-file: boolr.desktop
+rename-icon: boolr
+separate-locales: false
+build-options:
+  strip: true
+  no-debuginfo: true
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: boolr
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -Dm755 boolr /app/bin/boolr
+      - install -Dm644 boolr.desktop /app/share/applications/boolr.desktop
+      - install -Dm644 boolr.png /app/share/icons/hicolor/128x128/apps/boolr.png
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - unzip boolr.zip
+          - rm -f boolr.zip
+          - mv BOOLR-linux-x64 boolr
+          - rm -f boolr/boolr.desktop
+      - type: extra-data
+        filename: boolr.zip
+        url: https://github.com/GGBRW/BOOLR/releases/download/v1.0.3/BOOLR-v1.0.3-linux-x86_64.zip
+        sha256: 94fa88d65442687aa6aa4ac2d3f5a0c76ed13d45adf98bcc6609f3118c90bb29
+        size: 48267385
+      - type: dir
+        path: resources
+  - ../flathub-shared-modules/gtk2/gtk2.json
+  - name: gconf
+    build-options:
+      env:
+        - NOCONFIGURE: 1
+    config-opts:
+      - --disable-static
+      - --enable-gtk-doc=no
+      - --enable-gtk-doc-html=no
+      - --disable-orbit
+    sources:
+      - type: archive
+        url: https://gitlab.gnome.org/Archive/gconf/-/archive/3.2.6/gconf-3.2.6.tar.gz
+        sha256: d73497412da91896a110853b5fc62f906211d0e0e61a5e535a34e55e0d445e78
+    modules:
+      - name: gnome-common
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/gnome-common/3.18/gnome-common-3.18.0.tar.xz
+            sha256: 22569e370ae755e04527b76328befc4c73b62bfd4a572499fde116b8318af8cf
+        modules:
+          - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - ../flathub-shared-modules/dbus-glib/dbus-glib-0.110.json
+  - name: pango-1_42
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://gitlab.gnome.org/GNOME/pango.git
+        commit: a6a89818246b0b14c0fe3d00d6120929fc0a11d9

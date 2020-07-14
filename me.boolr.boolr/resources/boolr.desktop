@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=BOOLR
+Comment=A digital logic simulator
+Exec=boolr %U
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Development
