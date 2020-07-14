@@ -1,0 +1,58 @@
+app-id: org.qelectrotech.qelectrotech
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: qelectrotech
+rename-desktop-file: qelectrotech.desktop
+rename-icon: qelectrotech
+build-options:
+  strip: false
+  no-debuginfo: true
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --persist=.qet
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /man
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: qelectrotech
+    buildsystem: qmake
+    sources:
+      - type: archive
+        url: https://github.com/qelectrotech/qelectrotech-source-mirror/archive/0.7.0.tar.gz
+        sha256: c3ae0672e81dbf3d77a9ed4984490b1bea7a3243ca2aeb0a4e8ef14d255d6b41
+      - type: shell
+        commands:
+          - sed -i "s#/usr/local/#/app/#g" qelectrotech.pro
+    modules:
+      - name: tk
+        subdir: unix
+        config-opts:
+          - --enable-threads
+          - --disable-rpath
+          - --enable-64bit
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/sourceforge/tcl/tk8.6.10-src.tar.gz
+            sha256: 63df418a859d0a463347f95ded5cd88a3dd3aaa1ceecaeee362194bc30f3e386
+        modules:
+          - name: tcl
+            subdir: unix
+            config-opts:
+              - --enable-threads
+              - --enable-64bit
+            sources:
+              - type: archive
+                url: https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.10-src.tar.gz
+                sha256: 5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed
+              - type: shell
+                commands:
+                  -  rm -rf pkgs/sqlite3*
