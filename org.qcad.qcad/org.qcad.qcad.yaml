@@ -1,0 +1,51 @@
+app-id: org.qcad.qcad
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: qcad
+rename-desktop-file: qcad.desktop
+rename-icon: qcad
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: qcad
+    buildsystem: qmake
+    config-opts:
+      - QMAKE_LIBDIR+=/app/lib
+    post-install:
+      - mkdir -p /app/lib/qcad
+      - cp -r examples fonts libraries linetypes patterns scripts themes ts
+          release/{*.so,qcad-bin}
+          plugins platforminputcontexts platforms xcbglintegrations
+          /app/lib/qcad/
+      - find /app/lib/qcad \( 
+          -name '*.pri' -or
+          -name '.pro' -or
+          -name '*.ts' -or
+          -name 'Makefile' -or
+          -name '.gitignore'
+        \) -delete
+      - install -Dm644 qcad.desktop /app/share/applications/qcad.desktop
+      - install -Dm644 qcad.svg /app/share/icons/hicolor/scalable/apps/qcad.svg
+      - install -Dm644 qcad.png /app/share/icons/hicolor/256x256/apps/qcad.png
+      - install -Dm644 ld.so.conf /app/etc/ld.so.conf
+      - install -Dm755 qcad /app/bin/qcad
+    sources:
+      - type: archive
+        url: https://github.com/qcad/qcad/archive/v3.24.3.8.tar.gz
+        sha256: 51403535329bdfe1f7e722eda53ce69896de4e0aee534f209ea597deac8eeb91
+      - type: dir
+        path: resources
+    modules:
+      - ../flathub-shared-modules/glu/glu-9.json
