@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=PTGui
+Comment=Create high quality panoramas
+Exec=ptgui %U
+Terminal=false
+Type=Application
+Icon=ptgui
+Categories=Graphics

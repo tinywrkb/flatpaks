@@ -1,0 +1,41 @@
+# TODO:
+#   * import icons from windows app
+#   * improve desktop files
+#   * mimetypes for desktop files
+#   * package also or switch to pro version?
+#   * opencl?
+app-id: com.ptgui.ptgui
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: ptgui
+rename-icon: ptgui
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-pictures
+  - --persist=.PTGui
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: ptgui
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra /app/bin/apply_extra
+      - install -Dm755 ptgui ptguiviewer -t /app/bin/
+      - install -Dm644 ptgui.desktop /app/share/applications/com.ptgui.ptgui.desktop
+      - install -Dm644 ptguiviewer.desktop /app/share/applications/com.ptgui.ptgui.ptguiviewer.desktop
+      - install -Dm644 ptgui.png /app/share/icons/hicolor/128x128/apps/ptgui.png
+    sources:
+      - type: dir
+        path: resources
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - tar -xf ptgui.tar.gz
+          - rm -f ptgui.tar.gz
+      - type: extra-data
+        url: https://www.ptgui.com/downloads/118909/trial/linux/standard/18457/6e8548e3382f135e1929a754a099ef31f4067f4ce2d5b878dd32a7fcd33266ff/PTGui_12_beta_9_trial.tar.gz
+        sha256: 0a38ec72829da766fc1c528db326a7ff0a9f6c30deade9de6146af65bf7ca7ea
+        size: 29476344
+        filename: ptgui.tar.gz

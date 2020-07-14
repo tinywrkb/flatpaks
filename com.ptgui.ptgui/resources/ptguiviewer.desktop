@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=PTGuiViewer
+Comment=PTGuiViewer
+Exec=ptguiviewer %U
+Terminal=false
+Type=Application
+Icon=ptgui
+Categories=Graphics
