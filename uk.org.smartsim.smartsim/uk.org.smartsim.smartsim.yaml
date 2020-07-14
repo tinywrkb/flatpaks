@@ -1,0 +1,30 @@
+app-id: uk.org.smartsim.smartsim
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: smartsim
+rename-desktop-file: smartsim.desktop
+rename-icon: smartsim
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: smartsim
+    post-install:
+      - install -Dm644 smartsim.desktop /app/share/applications/smartsim.desktop
+      - install -Dm644 smartsim.png /app/share/icons/hicolor/64x64/apps/smartsim.png
+    sources:
+      - type: git
+        url: https://github.com/ashleynewson/SmartSim.git
+        branch: master
+      - type: dir
+        path: resources
