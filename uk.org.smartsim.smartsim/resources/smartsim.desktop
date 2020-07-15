@@ -2,6 +2,7 @@
 Name=SmartSim
 Comment=Design and simulate digital logic circuits of varying complexity
 Exec=smartsim %U
+Icon=smartsim
 Terminal=false
 Type=Application
 StartupNotify=true
