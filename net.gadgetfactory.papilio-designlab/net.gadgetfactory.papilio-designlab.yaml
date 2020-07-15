@@ -1,0 +1,52 @@
+app-id: net.gadgetfactory.papilio-designlab
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk8
+command: designlab
+rename-desktop-file: designlab.desktop
+rename-icon: designlab
+finish-args:
+  - --device=all
+  - --device=dri
+  - --env=PATH=/app/bin:/usr/bin:/app/jre/bin
+# - --filesystem=~/DesignLab
+  - --filesystem=home
+  - --persist=.designlab
+# - --persist=DesignLab
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk8/install.sh
+  - name: designlab
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra /app/bin/apply_extra
+      - install -Dm755 designlab /app/bin/designlab
+      - install -Dm644 designlab.desktop /app/share/applications/designlab.desktop
+      - install -Dm644 designlab.png /app/share/icons/hicolor/256x256/apps/designlab.png
+      - install -Dm644 udev.rules /app/docs/udev_rules/papilio.rules
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - tar -xf designlab.tar.gz --strip=1
+          - rm -f designlab.tar.gz
+      - type: extra-data
+        url: http://www.gadgetfactory.net/download/DesignLab/DesignLab-1.0.8-linux64.tgz
+        sha256: a6b17263d3c798935501c4e9697605200a8064fedd4777c9bf0f3cad84cfda49
+        size: 183205579
+        filename: designlab.tar.gz
+      - type: dir
+        path: resources

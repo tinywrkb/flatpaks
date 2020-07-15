@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Papilio DesignLab IDE
+Comment=Make custom SOC designs for Papilo FPGA's boards
+Exec=designlab %U
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Development
