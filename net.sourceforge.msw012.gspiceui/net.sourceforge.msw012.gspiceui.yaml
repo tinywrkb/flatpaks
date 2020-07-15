@@ -1,0 +1,107 @@
+# TODO: test if wxgtk2, layout is wrong  with wxgtk3
+# TODO: app tries to access dbus, check if still true with gtk2
+# TODO: test if need to switch to gtk2 gaw
+# TODO: consider merging with geda
+# TODO: export also gaw desktop?
+# TODO: cleaning
+# TODO: what to do with ~/.gspiceui.conf? maybe patch in different path for it?
+app-id: net.sourceforge.msw012.gspiceui
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: gspiceui
+rename-desktop-file: gspiceui.desktop
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --persist=.gaw
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: gspiceui
+    no-autogen: true
+    make-install-args:
+      - DESTDIR=/app
+    post-install:
+      - install -Dm644 gspiceui.desktop /app/share/applications/gspiceui.desktop
+    sources:
+      - type: archive
+        url: http://downloads.sourceforge.net/sourceforge/gspiceui/gspiceui-v1.2.36.tar.gz
+        sha256: 62d90cdf30aa787c98004cd82c805046492ce6910a16e824cfdd9418d07843fb
+      - type: dir
+        path: resources
+      - type: shell
+        commands:
+          - sed -i 's#WXCFG  = /usr/bin/wx-config#WXCFG  = /app/bin/wx-config#' src/Makefile
+    modules:
+      - name: wxgtk
+        config-opts:
+          - --disable-precomp-headers
+          - --enable-graphics_ctx
+          - --enable-mediactrl
+          - --enable-unicode
+          - --enable-webview
+          - --with-gtk=3
+          - --with-libjpeg=sys
+          - --with-libpng=sys
+          - --with-libtiff=sys
+          - --with-libxpm=sys
+          - --with-opengl
+          - --with-regex=builtin
+        sources:
+          - type: archive
+            url: https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.5.1/wxWidgets-3.0.5.1.tar.bz2
+            sha256: 440f6e73cf5afb2cbf9af10cec8da6cdd3d3998d527598a53db87099524ac807
+        modules:
+          - ../flathub-shared-modules/glu/glu-9.json
+  - name: gaw3
+    sources:
+      - type: archive
+        url: http://download.tuxfamily.org/gaw/download/gaw3-20190716.tar.gz
+        sha256: 890a4c01d7987c504f653cfc87cfaee655fa72e7e801fb7d83e6f2ee35f10568
+  - name: ngspice
+    build-options:
+      strip: true
+    config-opts:
+      - --enable-xspice
+      - --enable-cider
+      - --enable-oldapps
+      - --enable-openmp
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/project/ngspice/ng-spice-rework/32/ngspice-32.tar.gz
+        sha256: 3cd90c4e94516d87c5b4d02a3a6405b1136b25d05c871d4fee1fd7c4c0d03ef2
+    cleanup:
+      - /share/man
+    modules:
+      - name: libxaw
+        config-opts:
+          - --sysconfdir=/app/etc
+        sources:
+          - type: archive
+            url: https://xorg.freedesktop.org/releases/individual/lib/libXaw-1.0.13.tar.bz2
+            sha256: 8ef8067312571292ccc2bbe94c41109dcf022ea5a4ec71656a83d8cce9edb0cd
+        cleanup:
+          - /share/doc
+        modules:
+          - name: libxmu
+            config-opts:
+              - --sysconfdir=/app/etc
+            sources:
+              - type: archive
+                url: https://xorg.freedesktop.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
+                sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+            cleanup:
+              - /share/doc
+  - name: gnucap
+    sources:
+      - type: archive
+        url: http://git.savannah.gnu.org/cgit/gnucap.git/snapshot/gnucap-20171003.tar.gz
+        sha256: 2facf5e945cf253727bef9b8e2602767599ea77a6c0d8c5d91101764544fa09a
