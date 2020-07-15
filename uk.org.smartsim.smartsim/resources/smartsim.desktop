@@ -4,5 +4,5 @@ Comment=Design and simulate digital logic circuits of varying complexity
 Exec=smartsim %U
 Terminal=false
 Type=Application
-StrartupNotify=true
+StartupNotify=true
 Categories=Development
