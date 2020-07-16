@@ -1,0 +1,31 @@
+# TODO: patch in different config file location than ~/.pdfpcrc?
+# TODO: add desktop file with mimetypes? or maybe avoid the desktop file and just add mimetypes?
+app-id: com.github.pdfpc.pdfpc
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: pdfpc
+build-options:
+  no-debuginfo: true
+  strip: true
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: pdfpc
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://github.com/pdfpc/pdfpc/archive/v4.4.0.tar.gz
+        sha256: 5fc457b081cdf02708436bb708940fd6b689e03fc336d3faab652f0b85592c00
+    modules:
+      - ../shared-modules/poppler/poppler.json
