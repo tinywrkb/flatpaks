@@ -1,0 +1,216 @@
+# TODO: export desktop files
+# TODO: go through dependency tree
+# TODO: cleaning
+app-id: org.geda_project.geda
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+#command:
+build-options:
+  no-debuginfo: true
+  strip: false
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: geda-gaf
+    config-opts:
+      - --disable-update-xdg-database
+      - --without-libfam
+    sources:
+      - type: archive
+        url: http://ftp.geda-project.org/geda-gaf/stable/v1.10/1.10.0/geda-gaf-1.10.0.tar.gz
+        sha256: 5eb7a619f9d9cbcfa895468d6eae888d7e1d519dfff717b9f8f22fbeb37a3b1a
+      - type: shell
+        commands:
+          - sed -i 's|^.*<fam.h>|//&|' gschem/src/gschem_change_notification.c
+          - sed -i 's| enum FAMCodes | int |' gschem/src/gschem_change_notification.c
+    modules:
+    - ../flathub-shared-modules/gtk2/gtk2.json
+    - ../flathub-shared-modules/python2.7/python-2.7.json
+    - name: guile
+      config-opts:
+        - --disable-static
+        - --disable-error-on-warning
+      sources:
+        - type: archive
+          url: https://ftp.gnu.org/pub/gnu/guile/guile-2.2.6.tar.gz
+          sha256: 08c0e7487777740b61cdd97949b69e8a5e2997d8c2fe6c7e175819eb18444506
+      modules:
+        - name: gc
+          config-opts:
+            - --enable-cplusplus
+            - --disable-static
+          sources:
+            - type: archive
+              url: https://github.com/ivmai/bdwgc/releases/download/v8.0.4/gc-8.0.4.tar.gz
+              sha256: 436a0ddc67b1ac0b0405b61a9675bca9e075c8156f4debd1d06f3a56c7cd289d
+    - name: guile2.0
+      config-opts:
+        - --disable-static
+        - --disable-error-on-warning
+        - --program-suffix=2.0
+      sources:
+        - type: archive
+          url: https://ftp.gnu.org/pub/gnu/guile/guile-2.0.14.tar.gz
+          sha256: 8aeb2f353881282fe01694cce76bb72f7ffdd296a12c7a1a39255c27b0dfe5f1
+    - name: libstroke
+      sources:
+        - type: archive
+          url: https://sources.archlinux.org/other/packages/libstroke/libstroke-0.5.1.tar.gz
+          sha256: 0da9f5fde66feaf6697ba069baced8fb3772c3ddc609f39861f92788f5c7772d
+        - type: patch
+          path: libgstroke-Makefile.am.patch
+        - type: patch
+          path: libstroke-Makefile.am.patch
+        - type: patch
+          path: libstroke-0.5.1-m4_syntax.patch
+        - type: patch
+          path: libstroke-0.5.1-no_gtk1.patch
+        - type: shell
+          commands:
+            - autoreconf --force --install
+#   - perl-xml-parser
+  - name: graphviz
+    config-opts:
+      - --enable-python3=yes
+      - --disable-python
+    sources:
+      - type: archive
+        url: https://www2.graphviz.org/Packages/stable/portable_source/graphviz-2.44.1.tar.gz
+        sha256: 8e1b34763254935243ccdb83c6ce108f531876d7a5dfd443f255e6418b8ea313
+    modules:
+      - name: ghostscript
+        sources:
+          - type: archive
+            url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs952/ghostpdl-9.52.tar.xz
+            sha256: 33dd239a61bac154de123b6f8a28ebf3d8d9d462ac282065a1c389f96d92c0f3
+  - name: imagemagick
+    sources:
+      - type: archive
+        url: https://imagemagick.org/download/ImageMagick-7.0.10-23.tar.xz
+        sha256: 882cecda27265526eb4e7ce7e2cf6f74c018bcbbd34bc9ddd3c67fb3e9184103
+  - name: pcb
+    config-opts:
+      - --enable-dbus
+      - --disable-update-mime-database
+      - --disable-update-desktop-database
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/pcb/pcb-4.2.2.tar.gz
+        sha256: 1ceeaf1bdbe0508b9b140ca421eb600836579114c04dee939341c5d594f36e5d
+    modules:
+      - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - ../flathub-shared-modules/glu/glu-9.json
+      - name: gd
+        sources:
+          - type: archive
+            url: https://github.com/libgd/libgd/releases/download/gd-2.3.0/libgd-2.3.0.tar.xz
+            sha256: ecd9155b9a417fb3f837f29e5966323796de247789163761dd72dbf83bfcac58
+      - name: tk
+        subdir: unix
+        config-opts:
+          - --enable-threads
+          - --disable-rpath
+          - --enable-64bit
+        post-install:
+          - ln -s wish8.6 /app/bin/wish
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/sourceforge/tcl/tk8.6.10-src.tar.gz
+            sha256: 63df418a859d0a463347f95ded5cd88a3dd3aaa1ceecaeee362194bc30f3e386
+        modules:
+          - name: tcl
+            subdir: unix
+            build-options:
+              strip: false
+            config-opts:
+              - --enable-threads
+              - --enable-64bit
+            post-install:
+              - ln -s tclsh8.6 /app/bin/tclsh
+            sources:
+              - type: archive
+                url: https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.10-src.tar.gz
+                sha256: 5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed
+              - type: shell
+                commands:
+                  -  rm -rf pkgs/sqlite3*
+          - name: gtkglext
+            config-opts:
+              - --disable-static
+            sources:
+              - type: archive
+                url: https://downloads.sourceforge.net/sourceforge/gtkglext/gtkglext-1.2.0.tar.bz2
+                sha256: 16bd736074f6b14180f206b7e91263fc721b49912ea3258ab5f094cfa5497f51
+              - type: patch
+                path: gtkglext-kill-pangox.patch
+              - type: patch
+                path: gtkglext-gtk2.20.patch
+              - type: patch
+                path: gtkglext-gcc8.patch
+              - type: shell
+                commands:
+                  - sed '/AC_PATH_XTRA/d' -i configure.in
+                  - autoreconf -vi
+  - name: gerbv
+    config-opts:
+      - --disable-update-desktop-database
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/gerbv/gerbv-2.7.0.tar.gz
+        sha256: c5ee808c4230ce6be3ad10ab63c547098386d43022704de25ddb9378e62053b4
+#   modules:
+#     - name: dconf
+  - name: gtkwave
+    build-options:
+      strip: true
+    config-opts:
+      - --disable-tcl
+      - --with-gsettings
+      - --disable-mime-update
+    sources:
+      - type: archive
+        url: http://gtkwave.sourceforge.net/gtkwave-3.3.104.tar.gz
+        sha256: d20dd1a9307b908439c68122a9f81d3ff434a6bfa5439f0cb01398fec650894f
+  - name: iverilog
+    sources:
+      - type: archive
+        url: https://github.com/steveicarus/iverilog/archive/v10_3.tar.gz
+        sha256: 4b884261645a73b37467242d6ae69264fdde2e7c4c15b245d902531efaaeb234
+      - type: shell
+        commands:
+          - aclocal
+          - autoconf
+  - name: gwave
+    sources:
+      - type: archive
+        url: https://sourceforge.net/projects/gwave/files/gwave3/gwave-20190116.tar.gz
+        sha256: e7c96e4620960ace8f55de8fabffd2fe929c9560014448299cf18c8a88ebae7c
+  - name: xcircuit
+    make-args:
+      - ACLOCAL=aclocal
+      - AUTOMAKE=automake
+    config-opts:
+      - --with-cairo
+      - --with-tcl=/app/lib
+      - --with-tk=/app/lib
+    sources:
+      - type: archive
+        url: http://opencircuitdesign.com/xcircuit/archive/xcircuit-3.10.28.tgz
+        sha256: 402fc70b4b22bb4204313356886d193ead672123fe30c17c128c86ba18dfd157
+    modules:
+      - name: chrpath
+        sources:
+          - type: archive
+            url: http://ftp.debian.org/debian/pool/main/c/chrpath/chrpath_0.16.orig.tar.gz
+            sha256: bb0d4c54bac2990e1bdf8132f2c9477ae752859d523e141e72b3b11a12c26e7b
