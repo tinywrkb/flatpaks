@@ -1,0 +1,75 @@
+app-id: pl.sqlitestudio.sqlitestudio
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: sqlitestudio
+rename-desktop-file: sqlitestudio.desktop
+rename-icon: sqlitestudio
+build-options:
+  no-debuginfo: true
+  strip: false
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /man
+  - /share/man
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --device=dri
+  - --persist=.config/sqlitestudio
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: sqlitestudio
+    config-opts:
+      - BINDIR=/app/bin
+      - LIBDIR=/app/lib
+#     - SUBDIRS+=../Plugins
+    buildsystem: qmake
+    subdir: SQLiteStudio3
+    post-install:
+      - cd ../Plugins && qmake LIBS+=-L/app/lib LIBDIR=/app/lib && make && make install
+      - install -Dm644 ../sqlitestudio.desktop /app/share/applications/sqlitestudio.desktop
+      - |
+          for s in 16 32 64 128 256 512; do
+            install -Dm644 ../sqlitestudio_${s}.png /app/share/icons/hicolor/${s}x${s}/apps/sqlitestudio.png
+          done
+    sources:
+      - type: archive
+        url: https://github.com/pawelsalawa/sqlitestudio/archive/3.2.1.tar.gz
+        sha256: 1599046368ab0f11974d9fc7f10cdfc30ca08a7dc6767610b5aa0be26715dc1d
+      - type: dir
+        path: resources
+    modules:
+      - name: sqlite2
+        sources:
+          - type: archive
+            url: https://www.sqlite.org/sqlite-2.8.17.tar.gz
+            sha256: 3f35ebfb67867fb5b583a03e480f900206af637efe7179b32294a6a0cf806f37
+      - name: chrpath
+        sources:
+          - type: archive
+            url: http://ftp.debian.org/debian/pool/main/c/chrpath/chrpath_0.16.orig.tar.gz
+            sha256: bb0d4c54bac2990e1bdf8132f2c9477ae752859d523e141e72b3b11a12c26e7b
+        cleanup:
+          - '*'
+      - name: tcl
+        subdir: unix
+        build-options:
+          strip: false
+        config-opts:
+          - --enable-threads
+          - --enable-64bit
+        post-install:
+          - ln -s tclsh8.6 /app/bin/tclsh
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.10-src.tar.gz
+            sha256: 5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed
+          - type: shell
+            commands:
+              -  rm -rf pkgs/sqlite3*
+#     - name: termcap

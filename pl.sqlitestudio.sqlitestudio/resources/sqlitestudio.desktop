@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=SQLiteStudio
+Comment=SQLite database manager
+Type=Application
+Exec=sqlitestudio %U
+Icon=sqlitestudio
+Terminal=false
+Categories=Development
