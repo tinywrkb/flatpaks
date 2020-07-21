@@ -101,7 +101,7 @@ modules:
 #                  - name: fltk
 #                  - name: chrpath
 #                  - name: freeglut
-#                  - name: python-numpy 
+#                  - name: python-numpy
           - name: gsl
             sources:
               - type: archive
