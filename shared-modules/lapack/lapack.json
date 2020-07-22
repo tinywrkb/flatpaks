@@ -1,0 +1,25 @@
+{
+  "name": "lapack",
+  "buildsystem": "cmake",
+  "config-opts": [
+    "-DBUILD_DEPRECATED=ON",
+    "-DBUILD_SHARED_LIBS=ON",
+    "-DBUILD_TESTING=OFF",
+    "-DCBLAS=ON",
+    "-DCMAKE_Fortran_COMPILER=gfortran",
+    "-DCMAKE_SKIP_RPATH=ON",
+    "-DLAPACKE_WITH_TMG=ON"
+  ],
+  "builddir": true,
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/Reference-LAPACK/lapack/archive/v3.9.0.tar.gz",
+      "sha256": "106087f1bb5f46afdfba7f569d0cbe23dacb9a07cd24733765a0e89dbe1ad573"
+    },
+    {
+      "type": "patch",
+      "path": "lapack-missing-symbols.patch"
+    }
+  ]
+}
