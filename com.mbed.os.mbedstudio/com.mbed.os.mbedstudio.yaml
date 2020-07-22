@@ -50,14 +50,14 @@ modules:
         # curl -s https://studio.mbed.com/installers/latest/linux/MbedStudio.sh|egrep 'DOMAIN=|ARCHIVE_PATH=|CLANGD_FILENAME='
       - type: extra-data
         filename: MbedStudio.tar.gz
-        url: https://studio.mbed.com/installers/release-1.0.0/1.0.0.24701316/linux/MbedStudio.tar.gz
-        sha256: 450a2fc20ddbd435c317dd5eab64e8caed507eea34b5b2cb21ed17d686cbaf9c
-        size: 1270977845
+        url: https://studio.mbed.com/installers/release-1.1.0/1.1.0.c6d10c8c/linux/MbedStudio.tar.gz
+        sha256: be1a3c7ea38215d748478b7092d36cb5eb30dcdebfce19429eee4d733f6f80c9
+        size: 1282305193
       - type: extra-data
         filename: clangd.zip
-        url: https://studio.mbed.com/tools/linux/clangd-ubuntu-18/clangd-8.0.1.zip
-        sha256: 4072de1f85704d9d7011228efa121098ee2ff56c54ee608d66b24fde19e9be11
-        size: 43134134
+        url: https://studio.mbed.com/tools/linux/clangd-ubuntu-18/clangd-8.0.2.zip
+        sha256: 99ecf7e3d3e3873fe2cf6b8a4f5f4dd2d060e00e7b8dde18def65aa2138ab6c5
+        size: 43134135
     modules:
       - name: unappimage
         no-autogen: true
