@@ -1,0 +1,354 @@
+app-id: org.gnuradio.gnuradio
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: gnuradio-companion
+rename-desktop-file: gnuradio-grc.desktop
+rename-icon: gnuradio-grc
+finish-args:
+  - --device=all
+  - --device=dri
+  - --filesystem=home
+  - --persist=.cache/grc_gnuradio
+  - --persist=.gnuradio
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: gnuradio
+    buildsystem: cmake
+    builddir: true
+    post-install:
+      - install -Dm644 ../grc/scripts/freedesktop/gnuradio_logo_icon-square.svg /app/share/icons/hicolor/scalable/apps/gnuradio-grc.svg
+      - mv /app/share/mime/packages/gnuradio-grc.xml /app/share/mime/packages/org.gnuradio.gnuradio.xml
+#     - install -Dm644 ../21-fcd.rules /app/docs/udev_rules/21-fcd.rules
+    sources:
+      - type: archive
+        url:  https://github.com/gnuradio/gnuradio/releases/download/v3.8.1.0/gnuradio-3.8.1.0.tar.gz
+        sha256: e15311e7da9fe2bb790cc36321d7eb2d93b9dfa0c1552fa5d534dd99d22873be
+    modules:
+      - ../flathub-shared-modules/glu/glu-9.json
+      - ../shared-modules/boost/boost.json
+      - ../shared-modules/lapack/lapack.json
+      - ../shared-modules/swig/swig.json
+      - name: qwt
+        build-options:
+          env:
+            - QT_INSTALL_PREFIX=/app
+        buildsystem: qmake
+        config-opts:
+          - QT_INSTALL_PREFIX=/app
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/qwt/qwt-6.1.5.tar.bz2
+            sha256: 4076de63ec2b5e84379ddfebf27c7b29b8dc9074f3db7e2ca61d11a1d8adc041
+          - type: shell
+            commands:
+              - sed -i "/QWT_INSTALL_PREFIX    =.*/d" qwtconfig.pri
+              - sed -i "s#QWT_INSTALL_PREFIX =.*#QWT_INSTALL_PREFIX = /app#" qwtconfig.pri
+      - name: codec2
+        buildsystem: cmake
+        builddir: true
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=Release
+        sources:
+          - type: archive
+            url: https://github.com/drowe67/codec2/archive/v0.9.2.tar.gz
+            sha256: 19181a446f4df3e6d616b50cabdac4485abb9cd3242cf312a0785f892ed4c76c
+      - name: gsl
+        sources:
+          - type: archive
+            url: https://ftp.gnu.org/gnu/gsl/gsl-2.6.tar.gz
+            sha256: b782339fc7a38fe17689cb39966c4d821236c28018b6593ddb6fd59ee40786a8
+      - name: log4cpp
+        config-opts:
+          - --disable-doxygen
+          - --disable-dot
+          - --without-idsa
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/log4cpp/log4cpp-1.1.3.tar.gz
+            sha256: 2cbbea55a5d6895c9f0116a9a9ce3afb86df383cd05c9d6c1a4238e5e5c8f51d
+            strip-components: 2
+      - name: libuhd
+        buildsystem: cmake
+        subdir: host
+        config-opts:
+          - -DENABLE_E100=ON
+          - -DENABLE_E300=ON
+          - -DENABLE_EXAMPLES=OFF
+          - -DENABLE_TESTS=OFF
+          - -DENABLE_UTILS=OFF
+#       post-install:
+#         - install -Dm644 utils/uhd-usrp.rules /app/docs/udev_rules/10-uhd-usrp.rules
+        sources:
+          - type: archive
+            url: https://github.com/EttusResearch/uhd/archive/v3.15.0.0.tar.gz
+            sha256: eed4a77d75faafff56be78985950039f8d9d1eb9fcbd58b8862e481dd49825cd
+        modules:
+#         - boost
+          - ../flathub-shared-modules/libusb/libusb.json
+          - name: orc
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: https://gitlab.freedesktop.org/gstreamer/orc/-/archive/0.4.31/orc-0.4.31.tar.gz
+                sha256: f729fbbcc73aeb4579e7ade1dfc8d44b82d1e4d52dc419255ee4ade99109ec1d
+#         - name: python-mako
+      - name: python-opengl
+        buildsystem: simple
+        ensure-writable:
+          - /lib/python3.7/site-packages/easy-install.pth
+        build-commands:
+          - python3 setup.py build
+          - python3 setup.py install --skip-build --prefix=/app
+        sources:
+          - type: archive
+            url: https://pypi.python.org/packages/source/P/PyOpenGL/PyOpenGL-3.1.5.tar.gz
+            sha256: 4107ba0d0390da5766a08c242cf0cf3404c377ed293c5f6d701e457c57ba3424
+        modules:
+          - name: freeglut
+            buildsystem: cmake
+            config-opts:
+              - -DFREEGLUT_BUILD_STATIC_LIBS=OFF
+              - -DCMAKE_BUILD_TYPE=None
+            sources:
+              - type: archive
+                url: https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz
+                sha256: d4000e02102acaf259998c870e25214739d1f16f67f99cb35e4f46841399da68
+            cleanup:
+              - /include
+              - /lib/cmake
+#           modules:
+#             - shared-modules/glu/glu-9.json
+      - name: python-pyqt5
+        config-opts:
+          - --assume-shared
+          - --concatenate
+          - --confirm-license
+          - --no-designer-plugin
+          - --no-dist-info
+          - --no-docstrings
+          - --no-qml-plugin
+          - --no-stubs
+          - --no-tools
+          - --disable=QtQuick
+          - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.7m'
+          - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.7m'
+          - --qsci-api
+          - --qsci-api-destdir=/app/share/qt/qsci
+        sources:
+          - type: archive
+            url: https://pypi.python.org/packages/source/P/PyQt5/PyQt5-5.15.0.tar.gz
+            sha256: c6f75488ffd5365a65893bc64ea82a6957db126fbfe33654bcd43ae1c30c52f9
+          - type: script
+            commands:
+            - processed=`sed -e 's|prefix|sysroot|' <<< $@`
+            - python3 configure.py $processed
+            dest-filename: configure
+        cleanup:
+          - /lib/debug
+          - /share/sip
+        modules:
+          - name: sip5
+            buildsystem: simple
+            ensure-writable:
+              - /lib/python3.7/site-packages/easy-install.pth
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --skip-build --prefix=/app
+            sources:
+              - type: archive
+                url: https://pypi.python.org/packages/source/s/sip/sip-5.3.0.tar.gz
+                sha256: 03a44e20b252ef03ca2891e9439d238af3fd8245f65cdcff238a843d4f455b80
+#           cleanup:
+#             - /bin
+#             - /include
+            modules:
+              - name: python-toml
+                buildsystem: simple
+                ensure-writable:
+                  - /lib/python3.7/site-packages/easy-install.pth
+                build-commands:
+                  - python3 setup.py build
+                  - python3 setup.py install --skip-build --prefix=/app
+                sources:
+                  - type: archive
+                    url: https://files.pythonhosted.org/packages/source/t/toml/toml-0.10.1.tar.gz
+                    sha256: 926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f
+              - name: python-packaging
+                buildsystem: simple
+                ensure-writable:
+                  - /lib/python3.7/site-packages/easy-install.pth
+                build-commands:
+                  - python3 setup.py build
+                  - python3 setup.py install --skip-build --prefix=/app
+                sources:
+                  - type: archive
+                    url: https://pypi.io/packages/source/p/packaging/packaging-20.4.tar.gz
+                    sha256: 4357f74f47b9c12db93624a82154e9b120fa8293699949152b22065d556079f8
+                modules:
+                  - name: python-pyparsing
+                    buildsystem: simple
+                    ensure-writable:
+                      - /lib/python3.7/site-packages/easy-install.pth
+                    build-commands:
+                      - python3 setup.py build
+                      - python3 setup.py install --skip-build --prefix=/app
+                    sources:
+                      - type: archive
+                        url: https://github.com/pyparsing/pyparsing/archive/pyparsing_2.4.7.tar.gz
+                        sha256: 6deecf4b95a49a5a9c89b4a4b1fcb73c1cba0e3265ec7b858adffcced229ba05
+          - name: pyqt-builder
+            buildsystem: simple
+            ensure-writable:
+              - /lib/python3.7/site-packages/easy-install.pth
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --skip-build --prefix=/app
+            sources:
+              - type: archive
+                url: https://pypi.io/packages/source/P/PyQt-builder/PyQt-builder-1.4.0.tar.gz
+                sha256: be7fb8436e6ffb21b7e42266f0fa4776b7d62b0c7e06c63f8a066ff90554fcdc
+          - name: python-pyqt5-sip
+            buildsystem: simple
+            ensure-writable:
+              - /lib/python3.7/site-packages/easy-install.pth
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --skip-build --prefix=/app
+            sources:
+              - type: archive
+                url: https://pypi.python.org/packages/source/P/PyQt5-sip/PyQt5_sip-12.8.0.tar.gz
+                sha256: 0a34b6596bdd28d52da3a51fa8d9bb0b287bcb605c2512aa3251b9028cc71f4d
+      - name: python-gobject
+        buildsystem: meson
+        build-options:
+          env:
+            - PYTHONPATH=/app/lib/python3.7/site-packages
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/pygobject/-/archive/3.36.1/pygobject-3.36.1.tar.gz
+            sha256: 7bd7f8796bf3bd2561af4bda2006c74c83674490a6f598603c116262dc3f47db
+        modules:
+          - name: python-cairo
+            buildsystem: simple
+            ensure-writable:
+              - /lib/python3.7/site-packages/easy-install.pth
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+            sources:
+              - type: archive
+                url: https://github.com/pygobject/pycairo/releases/download/v1.19.1/pycairo-1.19.1.tar.gz
+                sha256: 2c143183280feb67f5beb4e543fd49990c28e7df427301ede04fc550d3562e84
+      - name: python-yaml
+        buildsystem: simple
+        ensure-writable:
+          - /lib/python3.7/site-packages/easy-install.pth
+        build-commands:
+          - python3 setup.py --with-libyaml build
+          - python3 setup.py --with-libyaml install --skip-build --prefix=/app
+        sources:
+          - type: archive
+            url: https://pyyaml.org/download/pyyaml/PyYAML-5.3.1.tar.gz
+            sha256: b8eac752c5e14d3eca0e6dd9199cd627518cb5ec06add0de9d32baeee6fe645d
+        modules:
+          - name: libyaml
+            sources:
+              - type: archive
+                url: https://pyyaml.org/download/libyaml/yaml-0.2.5.tar.gz
+                sha256: c642ae9b75fee120b2d96c712538bd2cf283228d2337df2cf2988e3c02678ef4
+      - name: python-numpy
+        buildsystem: simple
+        ensure-writable:
+          - /lib/python3.7/site-packages/easy-install.pth
+        build-commands:
+          - python3 setup.py build
+          - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+        sources:
+          - type: archive
+            url: https://github.com/numpy/numpy/archive/v1.19.1.tar.gz
+            sha256: 65123e53a00b84d03a5a18ae049f4647d1fd100c9010ca1fdf997900ee13875d
+        modules:
+          - name: cython
+            buildsystem: simple
+            ensure-writable:
+              - /lib/python3.7/site-packages/easy-install.pth
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --skip-build --prefix=/app
+            sources:
+              - type: archive
+                url: https://github.com/cython/cython/archive/0.29.21.tar.gz
+                sha256: e2e38e1f0572ca54d6085df3dec8b607d20e81515fb80215aed19c81e8fe2079
+            cleanup:
+              - '*'
+#         - name: python-nose
+#         - name: openblas
+#         - name: lapack
+      - name: zeromq
+        sources:
+          - type: archive
+            url: https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.tar.gz
+            sha256: ebd7b5c830d6428956b67a0454a7f8cbed1de74b3b01e5c33c5378e22740f763
+        modules:
+          - name: libsodium
+            sources:
+              - type: archive
+                url: https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
+                sha256: 6f504490b342a4f8a4c4a02fc9b866cbef8622d5df4e5452b46be121e46636c1
+          - name: libgpm
+            sources:
+              - type: archive
+                url: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/openpgm/libpgm-5.2.122.tar.gz
+                sha256: 6b895f550b95284dcde7189b01e04a9a1c1f94579af31b1eebd32c2207a1ba2c
+                strip-components: 3
+              - type: patch
+                path: libpgm-pkgconfig.patch
+              - type: shell
+                commands:
+                  - 2to3 -wn version_generator.py
+                  - sed -i "s#\#!/usr/bin/python#\#!/usr/bin/python3#" version_generator.py
+      - name: portaudio
+        config-opts:
+          - --enable-cxx
+        make-args:
+          - -j1
+        sources:
+          - type: archive
+            url: http://www.portaudio.com/archives/pa_stable_v190600_20161030.tgz
+            sha256: f5a21d7dcd6ee84397446fa1fa1a0675bb2e8a4a6dceb4305a8404698d8d1513
+#       modules:
+#         - name: jack
+#     - name: gsm
+#       build-options:
+#         env:
+#           - cflags: -fPIC
+#       no-autogen: true
+#       make-install-args:
+#         - -j1
+#         - INSTALL_ROOT=/app
+#         - GSM_INSTALL_INC=/app/include
+#       sources:
+#         - type: archive
+#           url: http://www.quut.com/gsm/gsm-1.0.19.tar.gz
+#           sha256: 4903652f68a8c04d0041f0d19b1eb713ddcd2aa011c5e595b3b8bca2755270f6
+#         - type: patch
+#           path: gsm-shared_lib.patch
+#     - name: python-lxml
+#     - name: python-depends
+#         - name: python-click-plugins
+#         - name: python-mako
+#     - name: libvolk // using internal volk instead
+#       modules:
+#         - name: orc
+#         - name: python-six
+#         - name: python-mako
