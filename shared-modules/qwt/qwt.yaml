@@ -13,4 +13,3 @@
       commands:
         - sed -i "/QWT_INSTALL_PREFIX    =.*/d" qwtconfig.pri
         - sed -i "s#QWT_INSTALL_PREFIX =.*#QWT_INSTALL_PREFIX = /app#" qwtconfig.pri
-
