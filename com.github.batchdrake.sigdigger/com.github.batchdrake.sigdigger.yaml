@@ -9,6 +9,7 @@ finish-args:
   - --device=all
   - --device=dri
   - --filesystem=home
+  - --persist=.suscan
   - --share=ipc
   - --share=network
   - --socket=wayland
