@@ -1,4 +1,5 @@
 # TODO: desktop files and icons
+# TODO: switch to extra-data
 app-id: com.airspy.sdrsharp
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
