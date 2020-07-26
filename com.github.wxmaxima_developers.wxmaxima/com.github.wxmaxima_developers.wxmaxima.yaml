@@ -1,0 +1,171 @@
+# TODO ~/.wxMaxima config workaround
+app-id: com.github.wxmaxima_developers.wxmaxima
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: wxmaxima
+rename-desktop-file: io.github.wxmaxima_developers.wxMaxima.desktop
+rename-icon: io.github.wxmaxima_developers.wxMaxima
+#build-options:
+#  no-debuginfo: true
+#  # tcl workaround
+#  strip: false
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --persist=.maxima
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: wxmaxima
+    buildsystem: cmake
+    config-opts:
+      - -DwxWidgets_CONFIG_EXECUTABLE=/app/bin/wx-config
+    post-install:
+      - install -Dm644 /app/share/pixmaps/io.github.wxmaxima_developers.wxMaxima.png -t /app/share/icons/hicolor/128x128/apps/
+      - install -Dm644 /app/share/pixmaps/io.github.wxmaxima_developers.wxMaxima.svg -t /app/share/icons/hicolor/scalable/apps/
+    sources:
+      - type: archive
+        url: https://github.com/wxMaxima-developers/wxmaxima/archive/Version-20.07.0.tar.gz
+        sha256: 0ab31006eb00e978ba8ecc840097272b401c294c0dbf69919ec8d6c02558e6f0
+    modules:
+      - name: wxgtk
+        config-opts:
+          - --disable-precomp-headers
+          - --enable-graphics_ctx
+          - --enable-mediactrl
+          - --enable-unicode
+          - --enable-webview
+          - --with-gtk=3
+          - --with-libjpeg=sys
+          - --with-libpng=sys
+          - --with-libtiff=sys
+          - --with-libxpm=sys
+          - --with-opengl
+          - --with-regex=builtin
+        sources:
+          - type: archive
+            url: https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.5.1/wxWidgets-3.0.5.1.tar.bz2
+            sha256: 440f6e73cf5afb2cbf9af10cec8da6cdd3d3998d527598a53db87099524ac807
+        modules:
+          - ../flathub-shared-modules/glu/glu-9.json
+      - name: maxima
+#       config-opts:
+#         - --libexecdir=/app/lib
+#         - --enable-sbcl
+#         - --with-default-lisp=sbcl
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/sourceforge/maxima/maxima-5.44.0.tar.gz
+            sha256: d93f5e48c4daf8f085d609cb3c7b0bdf342c667fd04cf750c846426874c9d2ec
+        modules:
+          - name: sbcl-bin
+            buildsystem: simple
+            build-commands:
+              - INSTALL_ROOT=/app sh install.sh
+            sources:
+              - type: archive
+                url: http://prdownloads.sourceforge.net/sbcl/sbcl-2.0.6-x86-64-linux-binary.tar.bz2
+                sha256: 0abe511b860ed2a26e61a50c50e0fc50f0060b72a26441cbb344801b8621d34e
+            # TODO: build sbcl from source
+#         - name: sbcl
+#           # https://common-lisp.net/project/ecl/posts/ECL-Quarterly-Volume-IV.html#orgheadline31
+#           sources:
+#             - type: archive
+#               url: https://downloads.sourceforge.net/project/sbcl/sbcl/2.0.5/sbcl-2.0.5-source.tar.bz2
+#               sha256: 0050f88dd12893c90f03e7b6c3b998929dcd08e7bb0ca5c4003be6110337e2cb
+#             - type: shell
+#               commands:
+#                 - sh make.sh clisp --prefix=/app
+#           modules:
+#             - name: clisp
+#               sources:
+#                 - type: git
+#                   url: https://gitlab.com/gnu-clisp/clisp.git
+#                   tag: clisp-2.49.92-2018-02-18
+#               cleanup:
+#                 - '*'
+#               modules:
+#                 - name: libsigsegv
+#                   config-opts:
+#                     - --enable-shared
+#                   sources:
+#                     - type: archive
+#                       url: https://ftp.gnu.org/gnu/libsigsegv/libsigsegv-2.12.tar.gz
+#                       sha256: 3ae1af359eebaa4ffc5896a1aee3568c052c99879316a1ab57f8fe1789c390b6
+#                   cleanup:
+#                     - '*'
+#         - name: emacs
+#         - name: gnuplot
+#           config-opts:
+#             - WX_CONFIG=/app/bin/wx-config
+#             - --libexecdir=/app/bin
+#             - --with-gihdir=/app/share/gnuplot
+#             - --with-readline=gnu
+#             - --with-bitmap-terminals
+#             - --with-wx-single-threaded
+#             - --with-texdir=/app/share/texmf/tex/latex/gnuplot
+#           make-args:
+#             - pkglibexecdir=/app/bin
+#           make-install-args:
+#             - pkglibexecdir=/app/bin
+#           sources:
+#             - type: archive
+#               url: https://downloads.sourceforge.net/sourceforge/gnuplot/gnuplot-5.4.0.tar.gz
+#               sha256: b4660dff7d047a453c55fd77faba11f63bb2d5ed
+#           modules:
+#             - name: gd
+#               sources:
+#                 - type: archive
+#                   url: https://github.com/libgd/libgd/releases/download/gd-2.3.0/libgd-2.3.0.tar.xz
+#                   sha256: ecd9155b9a417fb3f837f29e5966323796de247789163761dd72dbf83bfcac58
+#             - name: libcerf
+#             - name: lua
+#             - name: emacs
+#             - name: texlive
+#             - name: wxgtk
+#             - name: qt5-svg
+#         - name: rlwrap
+#           sources:
+#             - type: archive
+#               url: https://github.com/hanslub42/rlwrap/archive/v0.43.tar.gz
+#               sha256: sdfasfdsdf
+#             - type: shell
+#               commands:
+#                 - autoreconf -vi
+#         - name: tk
+#           subdir: unix
+#           config-opts:
+#             - --enable-threads
+#             - --disable-rpath
+#             - --enable-64bit
+#           post-install:
+#             - ln -s wish8.6 /app/bin/wish
+#           sources:
+#             - type: archive
+#               url: https://downloads.sourceforge.net/sourceforge/tcl/tk8.6.10-src.tar.gz
+#               sha256: 63df418a859d0a463347f95ded5cd88a3dd3aaa1ceecaeee362194bc30f3e386
+#           modules:
+#             - name: tcl
+#               subdir: unix
+#               build-options:
+#                 strip: false
+#               config-opts:
+#                 - --enable-threads
+#                 - --enable-64bit
+#               post-install:
+#                 - ln -s tclsh8.6 /app/bin/tclsh
+#               sources:
+#                 - type: archive
+#                   url: https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.10-src.tar.gz
+#                   sha256: 5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed
+#                 - type: shell
+#                   commands:
+#                     -  rm -rf pkgs/sqlite3*
