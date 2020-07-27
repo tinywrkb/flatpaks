@@ -41,9 +41,9 @@ modules:
         path: resources
       - type: extra-data
         filename: boostnote_amd64.deb
-        url: https://github.com/BoostIO/BoostNote.next/releases/download/v0.8.0/boost-note-linux.deb
-        sha256: f16c430eb1f8c8767e9bdc3c435cbe2d843e5c5649bc68ea02b055eec3a1696b
-        size: 51462358
+        url: https://github.com/BoostIO/BoostNote.next/releases/download/v0.8.2/boost-note-linux.deb
+        sha256: 59ba6e671b4f200d26ccee9e4cc4d393b34d869c898e83ae7534ca58f8678427
+        size: 51445978
     modules:
       - name: zypak
         sources:

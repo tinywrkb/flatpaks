@@ -1,7 +1,5 @@
 [Desktop Entry]
-Name=Boostnote
-Comment=Boostnote
-GenericName=Boostnote
+Name=Boostnote Next
 Exec=boostnote %U
 Icon=boostnote
 Type=Application
