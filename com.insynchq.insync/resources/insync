@@ -1,3 +1,9 @@
-#!/bin/bash
+#!/bin/sh
+
 cd /app/extra/lib/insync
-LC_TIME=C exec ./insync "$@"
+
+if [ $# -eq 0 ]; then
+  LC_TIME=C exec ./insync start
+else
+  LC_TIME=C exec ./insync "$@"
+fi

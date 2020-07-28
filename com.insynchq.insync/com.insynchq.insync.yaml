@@ -42,14 +42,16 @@ modules:
   - name: insync
     buildsystem: simple
     build-commands:
-      - "install -D apply_extra /app/bin/apply_extra"
-      - "install -D insync /app/bin/insync"
-      - "install -D com.insynchq.insync.svg /app/share/icons/hicolor/scalable/apps/com.insynchq.insync.svg"
-      - "install -D com.insynchq.insync.desktop /app/share/applications/com.insynchq.insync.desktop"
-      - "install -D /usr/bin/ar /app/bin"
-      - "mkdir -p /app/lib"
-      - "ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib"
-      - "ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4"
+      -  install -Dm755 apply_extra /app/bin/apply_extra
+      -  install -Dm755 insync /app/bin/insync
+      -  install -Dm644 com.insynchq.insync.svg /app/share/icons/hicolor/scalable/apps/com.insynchq.insync.svg
+      -  install -Dm644 com.insynchq.insync.desktop /app/share/applications/com.insynchq.insync.desktop
+      -  install -Dm644 insync-helper.desktop /app/share/applications/com.insynchq.insync.insync-helper.desktop
+      -  install -Dm644 insync-helper.xml /app/share/mime/packages/com.insynchq.insync.insync-helper.xml
+      -  install -Dm755 /usr/bin/ar /app/bin
+      -  mkdir -p /app/lib
+      -  ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib/
+      -  ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4
     sources:
       - type: script
         dest-filename: apply_extra

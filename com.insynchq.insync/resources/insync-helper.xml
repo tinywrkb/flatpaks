@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+  <mime-type type="application/vnd.insync.link.drive.doc">
+    <comment>Google Document</comment>
+    <glob pattern="*.gddoc"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.draw">
+    <comment>Google Drawing</comment>
+    <glob pattern="*.gddraw"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.form">
+    <comment>Google Form</comment>
+    <glob pattern="*.gdform"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.link">
+    <comment>Google Drive link</comment>
+    <glob pattern="*.gdlink"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.map">
+    <comment>Google My Maps</comment>
+    <glob pattern="*.gdmap"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.note">
+    <comment>Google Keep note</comment>
+    <glob pattern="*.gdnote"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.script">
+    <comment>Google Apps Script</comment>
+    <glob pattern="*.gdscript"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.sheet">
+    <comment>Google Spreadsheet</comment>
+    <glob pattern="*.gdsheet"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.slides">
+    <comment>Google Presentation</comment>
+    <glob pattern="*.gdslides"/>
+  </mime-type>
+  <mime-type type="application/vnd.insync.link.drive.table">
+    <comment>Google Fusion Table</comment>
+    <glob pattern="*.gdtable"/>
+  </mime-type>
+</mime-info>
