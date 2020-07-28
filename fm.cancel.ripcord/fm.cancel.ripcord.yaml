@@ -3,6 +3,8 @@ runtime: org.kde.Platform
 runtime-version: '5.14'
 sdk: org.kde.Sdk
 command: ripcord
+rename-desktop-file: ripcord.desktop
+rename-icon: ripcord
 cleanup:
   - /include
   - /lib/pkgconfig
