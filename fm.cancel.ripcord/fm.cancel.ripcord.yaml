@@ -1,0 +1,69 @@
+app-id: fm.cancel.ripcord
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: ripcord
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --device=dri
+  - --env=QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/plugins
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: ripcord
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra /app/bin/apply_extra
+      - install -Dm755 ripcord /app/bin/ripcord
+      - install -Dm644 ripcord.desktop /app/share/applications/ripcord.desktop
+      - install -Dm644 ripcord.png /app/share/icons/hicolor/512x512/apps/ripcord.png
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - unappimage appimage
+          - rm -f appimage
+          - rm -f squashfs-root/{.DirIcon,AppRun,*.desktop,*.png,qt.conf,additional_license_information.txt}
+          - rm -rf squashfs-root/{doc,lib,plugins}
+          - patchelf --replace-needed libsodium.so.18 libsodium.so squashfs-root/Ripcord
+          - mv squashfs-root/* ./
+          - rmdir squashfs-root
+      - type: extra-data
+        filename: appimage
+        url: https://cancel.fm/dl/Ripcord-0.4.26-x86_64.AppImage
+        sha256: 784602ca1d8f86f7e8bb01603bc31682ad8d2c8be6e26fa33a423dec5f103445
+        size: 33697696
+      - type: dir
+        path: resources
+    modules:
+      - name: unappimage
+        no-autogen: true
+        subdir: squashfs-tools
+        make-install-args:
+          - INSTALL_DIR=/app/bin
+        sources:
+          - type: git
+            url: https://github.com/refi64/unappimage
+            branch: master
+      - name: patchelf
+        sources:
+          - type: archive
+            url: https://github.com/NixOS/patchelf/archive/0.9.tar.gz
+            sha256: cf0693e794229e19edcf2299427b5a352e0f4d4f06f9d3856e30ddb0344d5ce8
+        cleanup:
+          - /share/doc
+          - /share/man
+          - /share/aclocal
+      - name: libsodium
+        sources:
+          - type: archive
+            url: https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
+            sha256: 6f504490b342a4f8a4c4a02fc9b866cbef8622d5df4e5452b46be121e46636c1
