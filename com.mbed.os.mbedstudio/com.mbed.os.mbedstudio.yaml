@@ -38,7 +38,7 @@ modules:
           - rm -f clangd.zip
           - rm -f MbedStudio/{install.sh,mbed-studio-uninstall.sh,mbed-studio.desktop.template,README.md}
           - mv MbedStudio/tools.json MbedStudio/mbed-studio-tools/
-          - echo 1.0.0.24701316 > MbedStudio/release_version
+          - echo 1.1.0.c6d10c8c > MbedStudio/release_version
           - cp MbedStudio/release_version MbedStudio/mbed-studio-tools/release_version
           - unappimage MbedStudio/mbed-studio
           - rm -f MbedStudio/mbed-studio
