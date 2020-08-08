@@ -1,9 +1,6 @@
 [submodule "cc.arduino.arduino-create-agent/shared-modules"]
 	path = cc.arduino.arduino-create-agent/shared-modules
 	url = https://github.com/flathub/shared-modules
-[submodule "com.gitlab.screenkey.screenkey/shared-modules"]
-	path = com.gitlab.screenkey.screenkey/shared-modules
-	url = https://github.com/flathub/shared-modules
 [submodule "org.sunflower_fm.sunflower/shared-modules"]
 	path = org.sunflower_fm.sunflower/shared-modules
 	url = https://github.com/flathub/shared-modules.git
