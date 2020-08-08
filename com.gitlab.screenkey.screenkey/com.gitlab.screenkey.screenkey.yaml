@@ -22,8 +22,8 @@ modules:
       - install -D com.gitlab.screenkey.screenkey.appdata.xml /app/share/appdata/com.gitlab.screenkey.screenkey.appdata.xml
     sources:
       - type: archive
-        url: https://gitlab.com/screenkey/screenkey/-/archive/v1.1/screenkey-v1.1.tar.gz
-        sha256: 305db12333f45f318152bb808bd032a6becf5233fa1a0ee019c9ae1ed4ca6be0
+        url: https://gitlab.com/screenkey/screenkey/-/archive/v1.2/screenkey-v1.2.tar.gz
+        sha256: cac76751981857cb65ae3e892285ca8f01e7905e1279327cf2bcf1fec0f0fb69
       - type: dir
         path: resources
     modules:
@@ -38,7 +38,7 @@ modules:
         cleanup:
           - '*'
         modules:
-          - shared-modules/intltool/intltool-0.51.json
+          - ../flathub-shared-modules/intltool/intltool-0.51.json
       - name: slop
         buildsystem: cmake
         config-opts:
@@ -55,5 +55,5 @@ modules:
           - /include
           - /share
         modules:
-          - shared-modules/glew/glew.json
-          - shared-modules/glu/glu-9.json
+          - ../flathub-shared-modules/glew/glew.json
+          - ../flathub-shared-modules/glu/glu-9.json
