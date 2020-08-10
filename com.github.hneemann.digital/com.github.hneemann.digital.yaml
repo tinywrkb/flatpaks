@@ -1,3 +1,4 @@
+# TODO: switch release source to extra-data
 app-id: com.github.hneemann.digital
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
