@@ -35,7 +35,7 @@ modules:
       - install -Dm644 digital.desktop /app/share/applications/digital.desktop
     sources:
       - type: archive
-        url: https://github.com/hneemann/Digital/releases/download/v0.24/Digital.zip
-        sha256: 1b268332eced5db19c9028d0bf75b97e94aa35777248b44f546739c2215976cb
+        url: https://github.com/hneemann/Digital/releases/download/v0.25/Digital.zip
+        sha256: 855670949e09443fa550e0c82230f8c2b42c8e6dbdc7e0b4914fbc412a6555c1
       - type: dir
         path: resources
