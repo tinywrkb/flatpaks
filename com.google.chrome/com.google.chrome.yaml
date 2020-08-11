@@ -36,6 +36,7 @@ finish-args:
   - --socket=x11
   - --system-talk-name=org.freedesktop.UPower
   - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.ScreenSaver
   - --talk-name=org.freedesktop.secrets
 # - --talk-name org.mpris.MediaPlayer2.*
   # testing
