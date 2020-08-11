@@ -1,5 +1,6 @@
 # TODO: desktop files and icons
 # TODO: switch to extra-data
+# TODO: bump to mono6
 app-id: com.airspy.sdrsharp
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
