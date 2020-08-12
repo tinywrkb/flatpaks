@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created using Karbon, part of Calligra: http://www.calligra.org/karbon -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="102.4pt" height="102.4pt">
+<defs>
+  <linearGradient id="gradient0" gradientTransform="translate(-72.7198, -35.7286)" gradientUnits="objectBoundingBox" x1="2.10267000000" y1="1.53425000000" x2="3.10267000000" y2="1.53425000000" spreadMethod="pad">
+   <stop stop-color="#ffffff" offset="0.00000000000" stop-opacity="1.00000000000"/>
+   <stop stop-color="#ffffff" offset="0.82000000000" stop-opacity="0.71372549020"/>
+   <stop stop-color="#ffffff" offset="1.00000000000" stop-opacity="1.00000000000"/>
+  </linearGradient>
+ </defs>
+<g id="layer1">
+  <path id="path4715" transform="translate(68.1194, 30.0448)" fill="#000000" fill-opacity="0.31372549020" d="M22.5 0C10.1032 0 0 10.1032 0 22.5C0 34.8968 10.1032 45 22.5 45C34.8968 45 45 34.8968 45 22.5C45 10.1032 34.8968 0 22.5 0Z"/>
+  <path id="path5271" transform="translate(19.612, 32.0448)" fill="none" stroke="#000000" stroke-opacity="0.28627450980" stroke-width="5.00000000000" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="2.00000000000" d="M5.00209 70C25.9787 62.2447 40.5976 45.2634 40.0167 20M40.0167 20C40.0167 31.0457 31.0587 40 20.0084 40C8.95805 40 0 31.0457 0 20C0 8.9543 8.95805 0 20.0084 0C31.0587 0 40.0167 8.9543 40.0167 20Z"/>
+  <path id="path5287" transform="translate(22.3318, 34.7734)" fill="url(#gradient0)" opacity="0.70000000000" d="M14.0324 33.9289C8.23177 32.7066 4.01035 29.3855 1.52478 24.0889C0.3677 21.6233 -0.0216641 19.7787 0.000921509 16.8695C0.0376107 12.1438 1.60382 8.45161 5.03181 5.0098C6.7286 3.30617 7.57719 2.67204 9.27399 1.83977C11.9086 0.547459 14.2263 0 17.0624 0C20.052 0 21.7289 0.380668 24.3712 1.65911C30.2935 4.52466 33.799 9.75093 34.1495 16.2374C34.5689 23.9992 29.5406 31.0781 21.8965 33.4869C20.1435 34.0392 15.7325 34.2872 14.0324 33.9289Z"/>
+ </g>
+</svg>

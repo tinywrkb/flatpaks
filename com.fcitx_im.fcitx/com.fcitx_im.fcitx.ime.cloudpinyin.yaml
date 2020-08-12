@@ -1,0 +1,19 @@
+app-id: com.fcitx_im.fcitx.ime.cloudpinyin
+runtime: com.fcitx_im.fcitx
+sdk: org.gnome.Sdk//3.36
+build-extension: true
+separate-locales: false
+build-options:
+  prefix: /app/ime/cloudpinyin
+  append-pkg-config-path: /app/ime/cloudpinyin/lib/pkgconfig
+  cflags: -I${FLATPAK_DEST}/include
+  cxxflags: -I${FLATPAK_DEST}/include
+modules:
+  - name: fcitx-cloudpinyin
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-cloudpinyin/fcitx-cloudpinyin-0.3.7.tar.xz
+        sha256: a097f75a7eeadb33705f9d8871ca9c026efeaf6c30490017fbb2e1b1f921232a

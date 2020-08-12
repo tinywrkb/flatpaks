@@ -14,9 +14,17 @@ app-id: com.fcitx_im.fcitx
 runtime: org.gnome.Platform
 runtime-version: '3.36'
 sdk: org.gnome.Sdk
+add-extensions:
+  com.fcitx_im.fcitx.ime:
+    directory: ime
+    merge-dirs: bin;lib/fcitx;share/fcitx/addon;share/fcitx/configdesc;share/fcitx/inputmethod
+    subdirectories: true
+    no-autodownload: true
+    add-ld-path: lib
 command: fcitx
 finish-args:
   - --device=dri
+  - --env=PATH=/app/ime/bin:/app/bin:/usr/bin
   - --own-name=org.fcitx.*
   - --own-name=org.freedesktop.portal.Fcitx
   - --own-name=org.kde.*
@@ -27,16 +35,15 @@ finish-args:
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
 cleanup:
-  - /include
-  - /lib/debug
-  - /lib/pkgconfig
+# - /include
+# - /lib/pkgconfig
   - /share/man
   - '*.a'
   - '*.la'
 modules:
   - name: fcitx
-    cleanup:
-      - /share/cmake
+#   cleanup:
+#     - /share/cmake
     buildsystem: cmake
     config-opts:
       - -DCMAKE_INSTALL_PREFIX=/app
@@ -53,7 +60,82 @@ modules:
       - -DENABLE_GIR=OFF
       #- -DGOBJECT_INTROSPECTION_GIRDIR=/app/share/gir-1.0
     post-install:
+      - mkdir -p /app/ime
       - ./rename_icons
+      - |
+          sed -i '$a\
+          \
+          SET(FCITX4_ADDON_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/fcitx/addon)\
+          SET(FCITX4_INPUTMETHOD_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/fcitx/inputmethod)\
+          SET(FCITX4_ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib/fcitx)\
+          SET(FCITX4_CONFIGDESC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/fcitx/configdesc)' \
+          /app/share/cmake/fcitx/FcitxConfig.cmake
+      - |
+          # TODO: better error handling
+          for i in libpinyin cloudpinyin googlepinyin anthy chewing hangul sayura sunpinyin skk m17n unikey kkc mozc rime; do
+            ln -s -t /app/lib/fcitx/ /app/ime/lib/fcitx/fcitx-${i}.so
+            ln -s -t /app/share/fcitx/addon/ /app/ime/share/fcitx/addon/fcitx-${i}.conf
+            [ "$i" != "googlepinyin" ] &&
+            [ "$i" != "sayura" ] &&
+            [ "$i" != "mozc" ] &&
+            [ "$i" != "rime" ] &&
+              ln -s -t /app/share/fcitx/configdesc/ /app/ime/share/fcitx/configdesc/fcitx-${i}.desc
+            [ "$i" != "libpinyin" ] &&
+            [ "$i" != "cloudpinyin" ] &&
+            [ "$i" != "m17n" ] &&
+              ln -s -t /app/share/fcitx/inputmethod/ /app/ime/share/fcitx/inputmethod/${i}.conf
+          done
+          # TODO: add share/fcitx/{imicon,skin} symlinks
+          # TODO: handle share/locale?
+          exit 0
+        # googlepinyin
+      - ln -s -t /app/lib/ /app/ime/googlepinyin/lib/googlepinyin
+        # libpinyin
+      - ln -s -t /app/lib/ /app/ime/libpinyin/lib/libpinyin
+      - ln -s -t /app/share/fcitx/inputmethod/ /app/ime/share/fcitx/inputmethod/{pinyin,shuangpin,zhuyin}-libpinyin.conf
+      - ln -s -t /app/share/fcitx/ /app/ime/libpinyin/share/fcitx/libpinyin
+        # anthy
+      - ln -s -t /app/share/ /app/ime/anthy/share/anthy
+        # chewing
+      - ln -s -t /app/share/ /app/ime/chewing/share/libchewing
+        # hangul
+      - ln -s -t /app/share/ /app/ime/hangul/share/libhangul
+      - ln -s -t /app/share/fcitx/ /app/ime/hangul/share/fcitx/hangul
+        # sunpiyin
+          # TODO: lib/scons symlink?
+      - ln -s -t /app/share/ /app/ime/sunpinyin/share/sunpinyin
+        # skk
+          # TODO: lib/girepository-1.0 symlink?
+          # TODO: share/gir-1.0 symlink?
+      - ln -s -t /app/share/fcitx /app/ime/skk/share/fcitx/skk
+      - ln -s -t /app/share/ /app/ime/skk/share/libskk
+        # m17n
+      - ln -s -t /app/lib/ /app/ime/m17n/lib/m17n
+      - ln -s -t /app/share/fcitx/ /app/ime/m17n/share/fcitx/m17n
+      - ln -s -t /app/share/ /app/ime/m17n/share/m17n
+        # kkc
+          # TODO: lib/girepository-1.0 symlink?
+          # TODO: lib/python3.7 symlink? or PYTHONPATH?
+          # TODO: share/gir-1.0 symlink?
+      - ln -s -t /app/lib/ /app/ime/kkc/lib/libkkc
+      - ln -s -t /app/share/fcitx/ /app/ime/kkc/share/fcitx/kkc
+      - ln -s -t /app/share/ /app/ime/kkc/share/libkkc
+      - ln -s -t /app/share/ /app/ime/kkc/share/skk
+        # mozc
+      - ln -s -t /app/lib/ /app/ime/mozc/lib/mozc
+        # rime
+      - ln -s -t /app/lib/ /app/ime/rime/lib/rime-data
+        # TODO: install icons
+        # table-other
+      - |
+          for t in amharic arabic cns11643 compose emoji ipa-x-sampa latex malayalam-phonetic rustrad tamil-remington thai translit translit-ua viqr yawerty; do
+            ln -s -t /app/share/fcitx/table /app/ime/table-other/share/fcitx/table/${t}.{conf,mb}
+          done
+        # table-extra
+      - |
+          for t in array30 array30-big boshiamy cangjie-big cangjie3 cangjie5 cantonese cantonhk easy-big jyutping quick-classic quick3 quick5 scj6 stroke5 t9 wu wubi-large zhengma zhengma-large; do
+            ln -s -t /app/share/fcitx/table /app/ime/table-extra/share/fcitx/table/${t}.{conf,mb}
+          done
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx/fcitx-4.2.9.7_dict.tar.xz
@@ -102,559 +184,21 @@ modules:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-configtool/fcitx-configtool-0.4.10.tar.xz
         sha512: 1c1267e9de694bbd5f258b5bba1e7514c4f8556cdc82a1cce5eafd8a4ec571955285dade0acd02f128eca01f867a30c5c6264ee7e91d32a333eba6e4d275fe8f
-  - name: fcitx-googlepinyin
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-googlepinyin/fcitx-googlepinyin-0.1.6.tar.xz
-        sha256: 29a5506ed45d26534f7bcbca1c56138984dcc7e99a42652c6a49fe20ec0da781
-      - type: file
-        path: rename_icons
-    modules:
-      - name: libgooglepinyin
-        buildsystem: cmake
-        config-opts:
-          - -DENABLE_STATIC=OFF
-        sources:
-          - type: archive
-            url: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/libgooglepinyin/libgooglepinyin-0.1.2.tar.bz2
-            sha512: 5ead9008cf1b5fe86bb49f2e5caa7c9868b69033316863ac61c5799d860f5d55ccb65560f6f28254ae930afe12cc7df786668b09caa4e39b2752c0aa5f8a101d
-      - name: intltool
-        cleanup:
-          - '*'
-        sources:
-          - type: archive
-            url: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
-            sha256: 67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
-  - name: fcitx-cloudpinyin
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-cloudpinyin/fcitx-cloudpinyin-0.3.7.tar.xz
-        sha256: a097f75a7eeadb33705f9d8871ca9c026efeaf6c30490017fbb2e1b1f921232a
-  # missing qt5, qt5-webengine for dictmanager interface
-  - name: fcitx-libpinyin
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DENABLE_QT=Off
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-libpinyin/fcitx-libpinyin-0.5.3.tar.xz
-        sha256: 46ca8cc970622665d4e46b69c99c9e37a729871d96cce9d4ee63c5c99210cca4
-      - type: file
-        url: https://download.fcitx-im.org/data/model.text.20161206.tar.gz
-        sha256: 5c7024e5735389c471f54b867eda0d98c5a40a5e5e75333a9febac107508f704
-        dest-filename: data/model.text.20161206.tar.gz
-      - type: file
-        path: rename_icons
-    modules:
-      - name: libpinyin
-        config-opts:
-          - --with-dbm=KyotoCabinet
-          - --enable-libzhuyin
-        sources:
-          - type: archive
-            url: https://github.com/libpinyin/libpinyin/archive/2.3.0.tar.gz
-            sha256: 00cb09f267031fb528bebc4621268037fca64677040123ebb184a50afcb43430
-          - type: file
-            url: https://downloads.sourceforge.net/libpinyin/model17.text.tar.gz
-            sha256: e017278ab022bca065a744ccbbede94db8932ec3fb64592a1693627db9b662cd
-            dest-filename: data/model17.text.tar.gz
-          - type: shell
-            commands:
-              - sed -i "/wget.*/d" data/Makefile.am
-        modules:
-          - name: kyotocabinet
-            config-opts:
-              - --disable-opt
-            sources:
-              - type: archive
-                url: https://fallabs.com/kyotocabinet/pkg/kyotocabinet-1.2.77.tar.gz
-                sha256: 56899329384cc6f0f1f8aa3f1b41001071ca99c1d79225086a7f3575c0209de6
-  - name: fcitx-anthy
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-anthy/fcitx-anthy-0.2.3.tar.xz
-        sha256: ed9b4956356ca68e5f7bdd46492873ebebc921a6cf713d7fc62e5680393f5d06
-      - type: file
-        path: rename_icons
-    modules:
-      - name: anthy
-        config-opts:
-          - --sysconfdir=/app/etc
-        sources:
-          - type: archive
-            url: http://dl.sourceforge.jp/anthy/37536/anthy-9100h.tar.gz
-            sha256: d256f075f018b4a3cb0d165ed6151fda4ba7db1621727e0eb54569b6e2275547
-  - name: fcitx-chewing
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=None
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-chewing/fcitx-chewing-0.2.3.tar.xz
-        sha256: b313c7134eb173668f42535b0eb6e985eb94fdf5d2fe705940a6cbfdcbadbaf0
-      - type: file
-        path: rename_icons
-    modules:
-      - name: libchewing
-        sources:
-          - type: archive
-            url: https://github.com/chewing/libchewing/releases/download/v0.5.1/libchewing-0.5.1.tar.bz2
-            sha256: 9708c63415fa6034435c0f38100e7d30d0e1bac927f67bec6dfeb3fef016172b
-        #modules:
-        #  - name: chewing-editor
-  - name: fcitx-hangul
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-hangul/fcitx-hangul-0.3.1.tar.xz
-        sha256: 6dd5fd5956924c85af92ebefaef1e113e38fa814355fbb0f07c26049c3014437
-      - type: file
-        path: rename_icons
-    modules:
-      - name: libhangul
-        buildsystem: simple
-        build-commands:
-          - ./autogen.sh
-          - automake --add-missing
-          - autoreconf
-          - ./configure --prefix=/app
-          - make
-          - make install
-        sources:
-          - type: archive
-            url: https://github.com/libhangul/libhangul/archive/libhangul-0.1.0.tar.gz
-            sha256: e2a81ef159ed098d3cc1a20377dba6204821b7ce2bc24cfb2f2543adf3bc5830
-#     - name: libhangul
-#       sources:
-#         - type: archive
-#           url: https://kldp.net/hangul/release/3442-libhangul-0.1.0.tar.gz
-#           sha256: 5905aa5c557d8d46e190fec1afdd75babf3bc086ef286b42007572703658295a
-  - name: fcitx-sayura
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-sayura/fcitx-sayura-0.1.2.tar.xz
-        sha256: 4cf1c26625efbcae05e6a741b6f955d85c4d4970ab0642fd9ecdb1ac6d757f74
-      - type: file
-        path: rename_icons
-  - name: fcitx-sunpinyin
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-sunpinyin/fcitx-sunpinyin-0.4.2.tar.xz
-        sha256: 0bf2d72d77732f06e7f04c119507c08b9618b21c4027e3997186bd7e4d0788c4
-      - type: file
-        path: rename_icons
-    modules:
-      - name: sunpinyin
-        buildsystem: simple
-        build-commands:
-          - python3 /app/bin/scons --prefix=/app
-          - python3 /app/bin/scons --prefix=/app install
-        sources:
-          - type: git
-            url: https://github.com/sunpinyin/sunpinyin
-            commit: f39c195db08661e894017507842991a1ef70bedf
-#           tag: v3.0.0-rc1
-#         - type: file
-#           url: https://git.archlinux.org/svntogit/community.git/plain/trunk/scons-python3.patch?h=packages/sunpinyin&id=909bf778a17f1b82c4ad972fd8286f145dc2d64c
-#           sha256: 5939d55658e8b0a75618fa88636f1ba4cb4ca0fda481655f660ca1e70dc0e8f6
-#           dest-filename: scons-python3.patch
-#         - type: shell
-#           commands:
-#             - sed -i -e "1s|#!/usr/bin/python|#!/app/bin/python2|" python/*.py python/importer/*.py
-#             - patch -p1 -i scons-python3.patch
-        modules:
-          - name: scons
-            buildsystem: simple
-            subdir: src
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --prefix=/app
-            sources:
-              - type: archive
-                url: https://github.com/scons/scons/archive/3.1.2.tar.gz
-                sha256: 6458e0beee0876fa3455b50223f97c54e0546317f8a5e9753acd89e6a5a20f3d
-              - type: shell
-                commands:
-                  - for _script in scons{,ign,-time,-configure-cache}; do
-                      cp -v "src/script/${_script}.py" "src/script/${_script}";
-                    done
-                  - sed -E '/scons(|ign|-time)\.1/d' -i src/setup.py
-#         - name: python2
-#           sources:
-#             - type: archive
-#               url: https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
-#               sha256: b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
-#           cleanup:
-#             - '*'
-      - name: sunpinyin-data
-        no-autogen: true
-        sources:
-          - type: archive
-            url: https://downloads.sourceforge.net/project/open-gram/lm_sc.3gm.arpa-20140820.tar.bz2
-            sha256: 751bab7c55ea93a2cedfb0fbb7eb09f67d4da9c2c55496e5f31eb8580f1d1e2f
-            strip-components: 0
-          - type: archive
-            url: https://downloads.sourceforge.net/project/open-gram/dict.utf8-20131214.tar.bz2
-            sha256: af70bc2bcd7af7468495774fed9e3a2de434650119fbc3d3388c2bcf7e0acb01
-            strip-components: 0
-          - type: shell
-            commands:
-              - cp /app/share/doc/sunpinyin/SLM-inst.mk Makefile
-  - name: fcitx-table-extra
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-table-extra/fcitx-table-extra-0.3.8.tar.xz
-        sha256: c91bb19c1a7b53c5339bf2f75ae83839020d337990f237a8b9bc0f4416c120ef
-      - type: file
-        path: rename_icons
-  - name: fcitx-table-other
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-table-other/fcitx-table-other-0.2.4.tar.xz
-        sha256: 18bae7020704b43d00b23a7b75a30753c88428042cfb1179d362166a320526b6
-      - type: file
-        path: rename_icons
-  - name: fcitx-unikey
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DENABLE_QT=Off
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-unikey/fcitx-unikey-0.2.7.tar.xz
-        sha256: e750774b73b08e51148b963736d8207e50c3973e5456b6569cb7ad86831e0e59
-      - type: file
-        path: rename_icons
-  - name: fcitx-skk
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DENABLE_QT=Off
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-skk/fcitx-skk-0.1.4.tar.xz
-        sha256: 17fe59f23da7721d43bfa5a06cb2bc09214f3b9aecef257ee385d802c7f3a732
-      - type: file
-        path: rename_icons
-    modules:
-      - name: libskk
-        sources:
-          - type: archive
-            url: https://github.com/ueno/libskk/archive/1.0.5.tar.gz
-            sha256: a298e9726b784dd9a6ce8dcb76ff8fbe633037756795d75cfd77d3aeab4f50ed
-# - name: fcitx-mozc
-# - name: fcitx-m17n
-#   buildsystem: cmake
-#   config-opts:
-#     - -DCMAKE_BUILD_TYPE=Release
-#   sources:
-#     - type: archive
-#       url: https://download.fcitx-im.org/fcitx-m17n/fcitx-m17n-0.2.4.tar.xz
-#       sha256: cf82158b907ba6b79aad3e4c26f9e0e2457a270619548adc31e9f77412144597
-#   modules:
-#     - name: m17n-lib
-#       make-args:
-#         - --debug
-#       sources:
-#         - type: archive
-#           url: https://download.savannah.gnu.org/releases/m17n/m17n-lib-1.8.0.tar.gz
-#           sha256: 78bacae7451822dfff62482ce4f9433c5ae82846e4c64b590541e29e800fe64a
-#         - type: shell
-#           commands:
-#             - sed -i "s/freetype-config/pkg-config freetype2/" configure
-#       modules:
-#         - name: m17n-db
-#           sources:
-#             - type: archive
-#               url: https://download.savannah.gnu.org/releases/m17n/m17n-db-1.8.0.tar.gz
-#               sha256: 657f23835b6655e7a63a362bac66260454ee356da4855eadb9366911d33fdc6d
-#         - name: gd
-#           sources:
-#             - type: archive
-#               url: https://github.com/libgd/libgd/releases/download/gd-2.3.0/libgd-2.3.0.tar.xz
-#               sha256: ecd9155b9a417fb3f837f29e5966323796de247789163761dd72dbf83bfcac58
-#         - name: libotf
-#           sources:
-#             - type: archive
-#               url: https://download.savannah.gnu.org/releases/m17n/libotf-0.9.16.tar.gz
-#               sha256: 68db0ca3cda2d46a663a92ec26e6eb5adc392ea5191bcda74268f0aefa78066b
-#           modules:
-#             - name: libxaw
-#               config-opts:
-#                 - --sysconfdir=/app/etc
-#               sources:
-#                 - type: archive
-#                   url: https://xorg.freedesktop.org/releases/individual/lib/libXaw-1.0.13.tar.bz2
-#                   sha256: 8ef8067312571292ccc2bbe94c41109dcf022ea5a4ec71656a83d8cce9edb0cd
-#               modules:
-#                 - name: libxmu
-#                   config-opts:
-#                     - --sysconfdir=/app/etc
-#                   sources:
-#                     - type: archive
-#                       url: https://xorg.freedesktop.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
-#                       sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
-  - name: fcitx-kkc
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DENABLE_QT=Off
-    post-install:
-      - ./rename_icons
-    sources:
-      - type: archive
-        url: https://download.fcitx-im.org/fcitx-kkc/fcitx-kkc-0.1.4.tar.xz
-        sha256: f19b447e2faac2b1ca71864688a6fc73deee68d824d399a28aea230b2ec25c17
-      - type: file
-        path: rename_icons
-    modules:
-      - name: libkkc
-        sources:
-          - type: git
-            url: https://github.com/ueno/libkkc
-            commit: b2e5a152980ee627c39ca8a49082e6df7694b8fc
-        modules:
-          - name: marisa
-            build-commands:
-              - make -C bindings swig-python
-              - cd bindings/python && python3 setup.py build_ext
-                --include-dirs=../../include
-                --library-dirs=../../lib/marisa/.libs
-              - cd bindings/python && python3 setup.py build
-            post-install:
-              - cd bindings/python && python3 setup.py install --prefix=/app
-            sources:
-              - type: archive
-                url: https://github.com/s-yata/marisa-trie/archive/v0.2.6.tar.gz
-                sha256: 1063a27c789e75afa2ee6f1716cc6a5486631dcfcb7f4d56d6485d2462e566de
-              - type: shell
-                commands:
-                  - autoreconf -i
-            modules:
-              - name: swig
-                sources:
-                  - type: archive
-                    url: https://downloads.sourceforge.net/swig/swig-4.0.2.tar.gz
-                    sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
-      - name: libkkc-data
-        sources:
-          - type: file
-            url: https://github.com/ueno/libkkc/releases/download/v0.3.5/libkkc-data-0.2.7.tar.xz
-            sha256: 9e678755a030043da68e37a4049aa296c296869ff1fb9e6c70026b2541595b99
-          - type: shell
-            commands:
-              - tar -xf libkkc-data-0.2.7.tar.xz --strip=4 libkkc-data-0.2.7/data/models/text3/data.arpa
-              - kkc-package-data data.arpa
-              - tar -xf libkkc-data-0.3.5.tar.xz --strip=1
-      - name: skk-jisyo
-        buildsystem: simple
-        build-commands:
-          - gunzip *.gz
-          - install -d /app/share/skk
-          - install -m644 SKK-JISYO.* -t /app/share/skk/
-        sources:
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.L.gz
-            sha256: 59080c482f5f452c953f834d7ac4f238f6d21070e4f4454d13e98872119e8cf4
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.ML.gz
-            sha256: 47105dc34df553cc587d431f035bac6d1e156bf23b6b47af63b9245817e9cf5f
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.S.gz
-            sha256: 97b7d5adec80f105a158ddf2106d9c8fed678bc860e4a38a8c47ca2b04bfb619
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.JIS2.gz
-            sha256: ef8cb03085e13e251e7216c2b1bfaa39f6ac67c0588f1d7944742bf82ec11754
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.JIS2004.gz
-            sha256: 644e1fe56181f45fa8da3c9fb65a7f337434af7d8e002778ebb99a6117fdd027
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.JIS3_4.gz
-            sha256: 77db2f8010142e2c9ba87b05a1b1409bde74ef61bd5961e5bfc4896670401792
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.assoc.gz
-            sha256: eb24eb46414df1a569fa01500d780c1aa02c60dc9bdb27bdd4652665775fffc4
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.china_taiwan.gz
-            sha256: 93c31f30ba3f32c47f00e16c4f9eec6cdc6b570f5e57aa2efc23060eb72f5b59
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.fullname.gz
-            sha256: b70e1b2ec74a6f2355397927c6ba5761de383d0bf6bf854e5baa6f5ee36e2d1a
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.geo.gz
-            sha256: 415789525e2e3899db1f8b2838508ca1fae553530a8251cf507bfe8c5a8823c8
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.itaiji.gz
-            sha256: 9d57cd74e3e87b29b45c1b2bcc9159d3aabe02f898c7153cc5e4669d3d3bbac6
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.itaiji.JIS3_4.gz
-            sha256: 5b6c341cd75ad94194f81458b4d096ce9884698c3e71199f3aff39eb3d1bb90d
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.jinmei.gz
-            sha256: cb0a01514f5371b6c607fc4e8f9cac7e945519560ad749d021ca1269fdda993a
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.law.gz
-            sha256: 1f563b9d30d539b9ae3ca0fdf61947b5c03f9b2c7771d31a22c378fe56977a66
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.lisp.gz
-            sha256: e6c88617f7bfe58278da8ec3951a585d55e2210ae5437bbad1a666f115157893
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.mazegaki.gz
-            sha256: a4f910065b050d22797cd9e528b4a411e09ad6a9577651ea097edc759ae2e226
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.okinawa.gz
-            sha256: 851b076be6ca24bea975f986f7386bada33128014e024ae7adfef0bd2131cba3
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.propernoun.gz
-            sha256: 00d951a4c1f4ac9441e4b10c3f4a15dfcc8b1e4b54d21a75f0be575fdedff6a6
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.pubdic+.gz
-            sha256: 4634b29252e0c7ee199447cf2acfea2cbec13a4f1fcc9d3876feb3a72e7590e4
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.requested.gz
-            sha256: dfa8b678c1bbc8edb3df768d21359efd4e8c3bf6bd3a27987b39966f7f6e0408
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.station.gz
-            sha256: 15b169e489a014969d701f4de93ee21867a6d71a6df5381990e4631c4fb778c1
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.wrong.gz
-            sha256: 1b37290324cfc264ed88c87f7dfdc11021e0b55ecd4bd26c0d76c8aa48fe813d
-          - type: file
-            url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.wrong.annotated.gz
-            sha256: ad57ab4608b5aca8377a2c2c43980c196eb2d514f9dcfdc1fd3f880d22dab33c
-        #modules:
-        #  - name: skktools
-# - name: fcitx-rime
-#   buildsystem: cmake
-#   build-options:
-#     cxxflags: '-DNDEBUG'
-#   config-opts:
-#     - -DCMAKE_BUILD_TYPE=Release
-#     - -DENABLE_QT=Off
-#   sources:
-#     - type: archive
-#       url: https://download.fcitx-im.org/fcitx-rime/fcitx-rime-0.3.2.tar.xz
-#       sha256: f97ea6f515fcc5f526cc25dce3d4ba05fa1c83001f68502d6c284ba39cd5a82d
-#   modules:
-#     - name: librime
-#       buildsystem: cmake
-#       config-opts:
-#         - -DBUILD_MERGED_PLUGINS=Off
-#       sources:
-#         - type: archive
-#           url: https://github.com/rime/librime/archive/1.5.3.tar.gz
-#           sha256: df4279df6bc0419c18d9325e7d76dfdab8f91f0ee00a954f19a27f66dd99f503
-#         - type: file
-#           url: https://github.com/lotem/librime-octagram/archive/3664bc9d0426397541e6dcfb7c3c7d6aaad73b2e/librime-octagram-3664bc9d0426397541e6dcfb7c3c7d6aaad73b2e.tar.gz
-#           sha256: something
-#           dest-filename: librime-octagram
-#         - type: file
-#           url: https://github.com/hchunhui/librime-lua/archive/d284336635330c2cba499d4ece7445cfd4928370/librime-lua-d284336635330c2cba499d4ece7445cfd4928370.tar.gz
-#           sha256: something
-#           dest-filename: librime-lua
-#         - type: file
-#           url: https://github.com/rime/librime/commit/beae5b1d4e990aeb05eb86db5eefec50fa03750b.patch
-#           sha256: something
-#           dest-filename: librime-opencc-1.1.patch
-#         - type: shell
-#           commands:
-#             - patch -p1 -i librime-opencc-1.1.patch
-#       modules:
-#         - name: google-glog
-#           sources:
-#             - type: archive
-#               url: https://github.com/google/glog/archive/v0.4.0.tar.gz
-#               sha256: f28359aeba12f30d73d9e4711ef356dc842886968112162bc73002645139c39c
-#         - name: boost-libs
-#         - name: opencc
-#           buildsystem: cmake
-#           modules:
-#             - name: python-setuptools
-#             - name: python-wheel
-#         - name: yaml-cpp
-#           buildsystem: cmake
-#           config-opts:
-#             - -DCMAKE_BUILD_TYPE=Release
-#             - -DBUILD_SHARED_LIBS=ON
-#             - -DYAML_BUILD_SHARED_LIBS=ON
-#           sources:
-#             - type: archive
-#               url: https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.6.3.tar.gz
-#               sha256: 77ea1b90b3718aa0c324207cb29418f5bced2354c2e483a9523d98c3460af1ed
-#         - name: leveldb
-#           modules:
-#             - name: snappy
-#             - name: gperftools
-#         - name: lua
-#         - name: marisa // already built for fcitx-kkc
-#     - name: librime-data
-#       buildsystem: simple
-#       build-commands:
-#         - install -Dm644 *.yaml -t /app/share/rime-data/
-#       sources:
-#         - type: archive
-#           url: https://github.com/rime/rime-prelude/archive/8a52b4f86a59f3eb602f9a4cf6a680a67c15df8c/rime-prelude-8a52b4f86a59f3eb602f9a4cf6a680a67c15df8c.tar.gz
-#           sha256: 0b14a46b0bde9997bf20cac89df5222580bf5544942ab6726b15029664d952b4
-#       modules:
-#         - name: rime-bopomofo
-#         - name: rime-cangjie
-#         - name: rime-luna-pinyin
-#         - name: rime-prelude
-#         - name: rime-rime-prelude
-#         - name: rime-stroke
-#         - name: rime-terra-pinyin
-  - name: fcitx-skin-material
+  - name: install-icons
     buildsystem: simple
     build-commands:
-      - install -d /app/share/fcitx/skin/material
-      - install -m644 material/* /app/share/fcitx/skin/material/
+      - ./install_icons
     sources:
-      - type: archive
-        url: https://github.com/hrko99/fcitx-skin-material/archive/v0.5.tar.gz
-        sha256: f2819f2053d8f1cceeb6b7fb917d11494ea962a9370fe095a580d7c41b1e40bb
+      - type: file
+        path: install_icons
+      - type: dir
+        path: icons
+# - name: fcitx-skin-material
+#   buildsystem: simple
+#   build-commands:
+#     - install -d /app/share/fcitx/skin/material
+#     - install -m644 material/* /app/share/fcitx/skin/material/
+#   sources:
+#     - type: archive
+#       url: https://github.com/hrko99/fcitx-skin-material/archive/v0.5.tar.gz
+#       sha256: f2819f2053d8f1cceeb6b7fb917d11494ea962a9370fe095a580d7c41b1e40bb
