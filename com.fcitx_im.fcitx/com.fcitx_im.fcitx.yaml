@@ -52,10 +52,16 @@ modules:
       - -DENCHANT_LIBRARIES=/app/lib/libenchant-2.so
       - -DENABLE_GIR=OFF
       #- -DGOBJECT_INTROSPECTION_GIRDIR=/app/share/gir-1.0
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx/fcitx-4.2.9.7_dict.tar.xz
         sha256: cf333b2a90be616ffed8b83438dfe3dc0e22ecf034b9f651167203ecbe3f6f8f
+      - type: patch
+        path: fcitx-exportable-icon_names.patch
+      - type: file
+        path: rename_icons
     modules:
       - name: extra-cmake-modules
         cleanup:
@@ -100,10 +106,14 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-googlepinyin/fcitx-googlepinyin-0.1.6.tar.xz
         sha256: 29a5506ed45d26534f7bcbca1c56138984dcc7e99a42652c6a49fe20ec0da781
+      - type: file
+        path: rename_icons
     modules:
       - name: libgooglepinyin
         buildsystem: cmake
@@ -134,6 +144,8 @@ modules:
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_QT=Off
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-libpinyin/fcitx-libpinyin-0.5.3.tar.xz
@@ -142,6 +154,8 @@ modules:
         url: https://download.fcitx-im.org/data/model.text.20161206.tar.gz
         sha256: 5c7024e5735389c471f54b867eda0d98c5a40a5e5e75333a9febac107508f704
         dest-filename: data/model.text.20161206.tar.gz
+      - type: file
+        path: rename_icons
     modules:
       - name: libpinyin
         config-opts:
@@ -170,10 +184,14 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-anthy/fcitx-anthy-0.2.3.tar.xz
         sha256: ed9b4956356ca68e5f7bdd46492873ebebc921a6cf713d7fc62e5680393f5d06
+      - type: file
+        path: rename_icons
     modules:
       - name: anthy
         config-opts:
@@ -186,10 +204,14 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=None
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-chewing/fcitx-chewing-0.2.3.tar.xz
         sha256: b313c7134eb173668f42535b0eb6e985eb94fdf5d2fe705940a6cbfdcbadbaf0
+      - type: file
+        path: rename_icons
     modules:
       - name: libchewing
         sources:
@@ -202,10 +224,14 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-hangul/fcitx-hangul-0.3.1.tar.xz
         sha256: 6dd5fd5956924c85af92ebefaef1e113e38fa814355fbb0f07c26049c3014437
+      - type: file
+        path: rename_icons
     modules:
       - name: libhangul
         buildsystem: simple
@@ -229,18 +255,26 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-sayura/fcitx-sayura-0.1.2.tar.xz
         sha256: 4cf1c26625efbcae05e6a741b6f955d85c4d4970ab0642fd9ecdb1ac6d757f74
+      - type: file
+        path: rename_icons
   - name: fcitx-sunpinyin
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-sunpinyin/fcitx-sunpinyin-0.4.2.tar.xz
         sha256: 0bf2d72d77732f06e7f04c119507c08b9618b21c4027e3997186bd7e4d0788c4
+      - type: file
+        path: rename_icons
     modules:
       - name: sunpinyin
         buildsystem: simple
@@ -302,36 +336,52 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-table-extra/fcitx-table-extra-0.3.8.tar.xz
         sha256: c91bb19c1a7b53c5339bf2f75ae83839020d337990f237a8b9bc0f4416c120ef
+      - type: file
+        path: rename_icons
   - name: fcitx-table-other
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-table-other/fcitx-table-other-0.2.4.tar.xz
         sha256: 18bae7020704b43d00b23a7b75a30753c88428042cfb1179d362166a320526b6
+      - type: file
+        path: rename_icons
   - name: fcitx-unikey
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_QT=Off
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-unikey/fcitx-unikey-0.2.7.tar.xz
         sha256: e750774b73b08e51148b963736d8207e50c3973e5456b6569cb7ad86831e0e59
+      - type: file
+        path: rename_icons
   - name: fcitx-skk
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_QT=Off
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-skk/fcitx-skk-0.1.4.tar.xz
         sha256: 17fe59f23da7721d43bfa5a06cb2bc09214f3b9aecef257ee385d802c7f3a732
+      - type: file
+        path: rename_icons
     modules:
       - name: libskk
         sources:
@@ -395,10 +445,14 @@ modules:
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_QT=Off
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-kkc/fcitx-kkc-0.1.4.tar.xz
         sha256: f19b447e2faac2b1ca71864688a6fc73deee68d824d399a28aea230b2ec25c17
+      - type: file
+        path: rename_icons
     modules:
       - name: libkkc
         sources:

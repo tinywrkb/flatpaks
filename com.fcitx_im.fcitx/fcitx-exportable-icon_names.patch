@@ -1,0 +1,35 @@
+diff --git a/src/module/notificationitem/dbusmenu.c b/src/module/notificationitem/dbusmenu.c
+index df77734f..6d7eb2a0 100644
+--- a/src/module/notificationitem/dbusmenu.c
++++ b/src/module/notificationitem/dbusmenu.c
+@@ -387,7 +387,7 @@ void FcitxDBusMenuFillProperty(FcitxNotificationItem* notificationitem, int32_t
+                     icon = compstatus->getIconName(compstatus->arg);
+ 
+                     if (CheckAddPrefix(&icon)) {
+-                        fcitx_utils_alloc_cat_str(needfree, "fcitx-", icon);
++                        fcitx_utils_alloc_cat_str(needfree, "com.fcitx_im.fcitx.fcitx-", icon);
+                         icon = needfree;
+                     }
+                 }
+@@ -397,7 +397,7 @@ void FcitxDBusMenuFillProperty(FcitxNotificationItem* notificationitem, int32_t
+                 if (status) {
+                     name = status->shortDescription;
+ 
+-                    fcitx_utils_alloc_cat_str(needfree, "fcitx-", status->name,
++                    fcitx_utils_alloc_cat_str(needfree, "com.fcitx_im.fcitx.fcitx-", status->name,
+                                             ((status->getCurrentStatus(status->arg)) ?
+                                             "-active" : "-inactive"));
+                     icon = needfree;
+diff --git a/src/module/notificationitem/notificationitem.c b/src/module/notificationitem/notificationitem.c
+index 6a7d127b..802d6122 100644
+--- a/src/module/notificationitem/notificationitem.c
++++ b/src/module/notificationitem/notificationitem.c
+@@ -374,7 +374,7 @@ char* FcitxNotificationItemGetIconNameString(FcitxNotificationItem* notification
+         }
+     }
+     boolean result = CheckAddPrefix(&icon);
+-    fcitx_utils_alloc_cat_str(iconName, result ? "fcitx-" : "", icon);
++    fcitx_utils_alloc_cat_str(iconName, result ? "com.fcitx_im.fcitx.fcitx-" : "", icon);
+     return iconName;
+ }
+ 
