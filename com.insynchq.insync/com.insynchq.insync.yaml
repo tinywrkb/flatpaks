@@ -24,15 +24,16 @@ runtime-version: '3.36'
 sdk: org.gnome.Sdk
 command: insync
 finish-args:
-  - --socket=wayland
-  - --socket=x11
-  - --share=ipc
   - --device=dri
   - --filesystem=home
-  # workaround for the unix file socket
-  - --filesystem=/tmp
+  - --own-name=org.kde.*
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
+  # workaround for the unix file socket
+  - --filesystem=/tmp
   - --share=network
   # workaround for the hardcoded ~/.config
   - --persist=.config/autostart
