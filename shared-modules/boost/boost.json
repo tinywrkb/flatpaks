@@ -3,7 +3,7 @@
   "buildsystem": "simple",
   "build-commands": [
     "./bootstrap.sh",
-    "./b2 variant=release debug-symbols=off --prefix=/app install"
+    "./b2 variant=release debug-symbols=off --prefix=${FLATPAK_DEST} install"
   ],
   "sources": [
     {
