@@ -183,3 +183,41 @@ modules:
           - type: archive
             url: https://github.com/gabime/spdlog/archive/v1.7.0.tar.gz
             sha256: f0114a4d3c88be9e696762f37a7c379619443ce9d668546c61b21d41affe5b62
+  - name: sway
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/swaywm/sway/releases/download/1.4/sway-1.4.tar.gz
+        sha256: e2805291fc01d49e21dda4b273e38170d1fff4e1757215439729edbed880dfbe
+    modules:
+      - name: wlroots
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://github.com/swaywm/wlroots/archive/0.10.1.tar.gz
+            sha256: b84baefbaff7bb04b3d2c43cbacef1a433e2cd65111f8fbf4bfc5faaa4b34b08
+      - name: json-c
+        cleanup:
+          - /lib/cmake
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=None
+          - -DENABLE_THREADING=ON
+          - -DENABLE_RDRAND=OFF
+        sources:
+          - type: archive
+            url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
+            sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
+  - name: jq
+    sources:
+      - type: archive
+        url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-1.6.tar.gz
+        sha256: 5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
+    modules:
+      - name: oniguruma
+        config-opts:
+          - --enable-posix-api
+        sources:
+          - type: archive
+            url: https://github.com/kkos/oniguruma/releases/download/v6.9.5_rev1/onig-6.9.5-rev1.tar.gz
+            sha256: d33c849d1672af227944878cefe0a8fcf26fc62bedba32aa517f2f63c314a99e
