@@ -1,0 +1,22 @@
+app-id: com.github.j_lentz.iwgtk
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: iwgtk
+rename-desktop-file: iwgtk.desktop
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+  - --system-talk-name=net.connman.iwd
+modules:
+  - name: iwgtk
+    no-autogen: true
+    make-install-args:
+      - prefix=/app
+    sources:
+      - type: archive
+        url: https://github.com/J-Lentz/iwgtk/archive/v0.2.tar.gz
+        sha256: c1a26589c31cafc79794a9b1d9c82cbcaa4eff221a0743238e9541bdf20c2eef
