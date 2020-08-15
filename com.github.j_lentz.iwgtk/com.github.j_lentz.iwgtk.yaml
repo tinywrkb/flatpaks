@@ -17,5 +17,5 @@ modules:
       - prefix=/app
     sources:
       - type: archive
-        url: https://github.com/J-Lentz/iwgtk/archive/v0.2.tar.gz
-        sha256: c1a26589c31cafc79794a9b1d9c82cbcaa4eff221a0743238e9541bdf20c2eef
+        url: https://github.com/J-Lentz/iwgtk/archive/v0.3.tar.gz
+        sha256: 28e39c4a0b0267068ca80697145c137c9ed5acf281ca8bb2ffd2d88b4e2547a8
