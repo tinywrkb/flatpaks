@@ -1,0 +1,185 @@
+app-id: com.github.alexays.waybar
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: waybar
+finish-args:
+  - --device=dri
+    # workaround for /dev/rfkill access
+  - --device=all
+  - --filesystem=xdg-run/sway
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=session-bus
+  - --socket=system-bus
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: waybar
+    buildsystem: meson
+    config-opts:
+      - --wrap-mode=nofallback
+      - -Dsystemd=disabled
+    sources:
+      - type: archive
+        url: https://github.com/Alexays/Waybar/archive/0.9.3.tar.gz
+        sha256: 15cadd05c6a366fd99a92b0f149974c697902c4683c50e2af69f3e59571793e5
+    modules:
+      - name: chrono-date
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=None
+          - -DBUILD_SHARED_LIBS=true
+          - -DBUILD_TZ_LIB=true
+          - -DUSE_SYSTEM_TZ_DB=true
+          - -DENABLE_DATE_TESTING=false
+          - -Wno-dev
+        sources:
+          - type: archive
+            url: https://github.com/HowardHinnant/date/archive/v3.0.0.tar.gz
+            sha256: 87bba2eaf0ebc7ec539e5e62fc317cb80671a337c1fb1b84cb9e4d42c6dbebe3
+          - type: patch
+            path: chrono-date-pkgconfig.patch
+      - name: fmt
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=None
+          - -DBUILD_SHARED_LIBS=true
+        sources:
+          - type: archive
+            url: https://github.com/fmtlib/fmt/archive/7.0.3.tar.gz
+            sha256: b4b51bc16288e2281cddc59c28f0b4f84fed58d016fb038273a09f05f8473297
+      - name: gtk-layer-shell
+        buildsystem: meson
+        config-opts:
+          - --wrap-mode=nofallback
+          - --buildtype=plain
+        sources:
+          - type: archive
+            url: https://github.com/wmww/gtk-layer-shell/archive/v0.3.0.tar.gz
+            sha256: edd5e31279d494df66da9e9190c219fa295da547f5538207685e98468dbc134d
+      - name: libsigcpp
+        buildsystem: meson
+        config-opts:
+          - -Dmaintainer-mode=true
+          - -Dbuild-documentation=false
+        sources:
+          - type: archive
+            url: https://github.com/libsigcplusplus/libsigcplusplus/archive/2.10.3.tar.gz
+            sha256: 55aae7a4e4ca85d4a698518f2b932f88a750dcad8e6224fd2f2026734287edd8
+        modules:
+          - name: mm-common
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: https://gitlab.gnome.org/GNOME/mm-common/-/archive/1.0.1/mm-common-1.0.1.tar.gz
+                sha256: c34ef0bc1182399c7777f9daabd62255ac57390f7dbd2e18900f0f80e433c020
+              - type: file
+                url: https://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/libstdc++.tag
+                sha256: f6c8c74e8293aefaefb4d25fd154d5f537b3bc80e7ceecaa02c5a01836fc09e6
+                dest-filename: doctags/libstdc++.tag
+            modules:
+              - ../shared-modules/graphviz/graphviz.json
+      - name: gtkmm3
+        config-opts:
+          - --enable-maintainer-mode
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/gtkmm/-/archive/3.24.2/gtkmm-3.24.2.tar.gz
+            sha256: 181f6160c072e80d075165217e56498594591eb64aa1b4a67451f00c606281aa
+        modules:
+          - name: glibmm
+            buildsystem: meson
+            config-opts:
+              - -Dmaintainer-mode=true
+              - -Dbuild-documentation=false
+            sources:
+              - type: archive
+                url: https://gitlab.gnome.org/GNOME/glibmm/-/archive/2.64.2/glibmm-2.64.2.tar.gz
+                sha256: 53c1a6dcfb75f9d93fe44a346ba50fdef21187945762e00ae2cb04c13d75e647
+          - name: atkmm
+            config-opts:
+              - --enable-maintainer-mode
+            sources:
+              - type: archive
+                url: https://gitlab.gnome.org/GNOME/atkmm/-/archive/2.28.0/atkmm-2.28.0.tar.gz
+                sha256: a3161784d06273f3e656ba2be73ec439e6ed40e76e968e4dfb9795065346e30f
+          - name: pangomm
+            buildsystem: meson
+            config-opts:
+              - -Dmaintainer-mode=true
+              - -Dbuild-documentation=false
+            sources:
+              - type: archive
+                url: https://gitlab.gnome.org/GNOME/pangomm/-/archive/2.42.1/pangomm-2.42.1.tar.gz
+                sha256: 9ba1bb31901195064c92793a6ba7ad842dd891a290bc644f738d886e9917f5e8
+            modules:
+              - name: cairomm
+                config-opts:
+                  - --enable-maintainer-mode
+                sources:
+                  - type: archive
+                    url: https://www.cairographics.org/releases/cairomm-1.12.2.tar.gz
+                    sha256: 45c47fd4d0aa77464a75cdca011143fea3ef795c4753f6e860057da5fb8bd599
+      - name: jsoncpp
+        buildsystem: meson
+        config-opts:
+          - --default-library=shared
+        sources:
+          - type: archive
+            url: https://github.com/open-source-parsers/jsoncpp/archive/1.9.3/jsoncpp-1.9.3.tar.gz
+            sha256: 8593c1d69e703563d94d8c12244e2e18893eeb9a8a9f8aa3d09a327aa45c8f7d
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      - name: libinput
+        buildsystem: meson
+        config-opts:
+          - -Dtests=false
+          - -Ddocumentation=false
+          - -Dlibwacom=false
+          - -Ddebug-gui=false
+        sources:
+          - type: archive
+            url: https://freedesktop.org/software/libinput/libinput-1.15.6.tar.xz
+            sha256: aeedea216a6317ddc6e27c3d54f26b987078780db6a8320cc09e19c25b307f1c
+        modules:
+          - name: mtdev
+            config-opts:
+              - --disable-static
+            sources:
+              - type: archive
+                url: https://bitmath.org/code/mtdev/mtdev-1.1.6.tar.bz2
+                sha256: 15d7b28da8ac71d8bc8c9287c2045fd174267bc740bec10cfda332dc1204e0e0
+          - name: libevdev
+            config-opts:
+              - --disable-static
+            sources:
+              - type: archive
+                url: https://freedesktop.org/software/libevdev/libevdev-1.9.1.tar.xz
+                sha256: f5603c48c5afd76b14df7a5124e0a94a102f8da0d45826192325069d1bbc7acb
+      - name: libmpdclient
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://www.musicpd.org/download/libmpdclient/2/libmpdclient-2.19.tar.xz
+            sha256: 158aad4c2278ab08e76a3f2b0166c99b39fae00ee17231bd225c5a36e977a189
+      - name: libnl
+        config-opts:
+          - --disable-static
+        sources:
+          - type: archive
+            url: https://github.com/thom311/libnl/releases/download/libnl3_5_0/libnl-3.5.0.tar.gz
+            sha256: 352133ec9545da76f77e70ccb48c9d7e5324d67f6474744647a7ed382b5e05fa
+      - name: spdlog
+        buildsystem: cmake
+        config-opts:
+          - -DSPDLOG_BUILD_BENCH=OFF
+          - -DSPDLOG_FMT_EXTERNAL=ON
+          - -DSPDLOG_BUILD_SHARED=ON
+          - -DCMAKE_BUILD_TYPE=None
+          - -DCMAKE_INSTALL_LIBDIR=lib
+          - -Wno-dev
+        sources:
+          - type: archive
+            url: https://github.com/gabime/spdlog/archive/v1.7.0.tar.gz
+            sha256: f0114a4d3c88be9e696762f37a7c379619443ce9d668546c61b21d41affe5b62
