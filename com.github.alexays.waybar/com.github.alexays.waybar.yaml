@@ -7,8 +7,6 @@ finish-args:
   - --device=dri
     # workaround for /dev/rfkill access
   - --device=all
-    # sway ipc socket
-  - --filesystem=xdg-run/sway
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
@@ -19,6 +17,16 @@ finish-args:
     # workaround for missing icon exports
   - --filesystem=/var/lib/flatpak
   - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share:/var/lib/flatpak/exports/share
+    # sway ipc socket workaround
+    #   by default sway socket is ${XDG_RUNTIME_DIR}/sway-ipc.<uid>.<pid>.sock
+    #   so we need to change this to a flatpak mount-able folder
+    #   1. export SWAYSOCK=$XDG_RUNTIME_DIR/sway/sway-ipc.sock
+    #   2. mkdir $XDG_RUNTIME_DIR/sway/sway-ipc.sock
+    #      or use tmpfiles.d by creating ~/.config/user-tmpfiles.d/sway.conf
+    #      with
+    #        d %t/sway 0700 - - - -
+    #      and enable systemd-tmpfiles-{clean.timer,setup.service}
+  - --filesystem=xdg-run/sway
 modules:
   - name: waybar
     buildsystem: meson
