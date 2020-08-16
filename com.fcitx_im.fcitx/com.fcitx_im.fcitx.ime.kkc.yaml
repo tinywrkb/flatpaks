@@ -68,14 +68,11 @@ modules:
           env:
             - PYTHONPATH=/app/ime/kkc/lib/python3.7/site-packages
         sources:
-          - type: file
+          - type: archive
             url: https://github.com/ueno/libkkc/releases/download/v0.3.5/libkkc-data-0.2.7.tar.xz
             sha256: 9e678755a030043da68e37a4049aa296c296869ff1fb9e6c70026b2541595b99
-          - type: shell
-            commands:
-              - tar -xf libkkc-data-0.2.7.tar.xz --strip=4 libkkc-data-0.2.7/data/models/text3/data.arpa
-              - kkc-package-data data.arpa
-              - tar -xf libkkc-data-0.3.5.tar.xz --strip=1
+          - type: patch
+            path: libkkc-data--update-buildsystem-from-libkkc-0.3.5.r55.gb2e5a15.patch
       - name: skk-jisyo
         buildsystem: simple
         build-commands:
