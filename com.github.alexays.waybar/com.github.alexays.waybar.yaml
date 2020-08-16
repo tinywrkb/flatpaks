@@ -15,8 +15,15 @@ finish-args:
   - --socket=wayland
   - --socket=x11
     # workaround for missing icon exports
-  - --filesystem=/var/lib/flatpak
-  - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share:/var/lib/flatpak/exports/share
+    #   flatpak does not expand variables given to --env, so it's not possible to include in
+    #   XDG_DATA_DIRS the icons exports from the user flatpak installation
+    #   e.g. --env=XDG_DATA_DIRS=$XDG_DATA_HOME/flatpak/exports/share:...
+    #   so a user override should be added, taking in account the content of XDG_DATA_DIRS below
+    #   e.g. $ flatpak override --user --env=XDG_DATA_DIRS=$XDG_DATA_HOME/flatpak/exports/share:... com.github.alexays.waybar
+    #   bug report: https://github.com/flatpak/flatpak/issues/1415
+  - --filesystem=/var/lib/flatpak:ro
+  - --filesystem=xdg-data/flatpak:ro
+  - --env=XDG_DATA_DIRS=/var/lib/flatpak/exports/share:/app/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share
     # sway ipc socket workaround
     #   by default sway socket is ${XDG_RUNTIME_DIR}/sway-ipc.<uid>.<pid>.sock
     #   so we need to change this to a flatpak mount-able folder
