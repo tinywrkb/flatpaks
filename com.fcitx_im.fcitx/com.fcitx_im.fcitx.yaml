@@ -192,7 +192,7 @@ modules:
       - type: file
         path: install_icons
       - type: dir
-        path: icons
+        path: resources
 # - name: fcitx-skin-material
 #   buildsystem: simple
 #   build-commands:
