@@ -20,7 +20,9 @@ finish-args:
     #   e.g. --env=XDG_DATA_DIRS=$XDG_DATA_HOME/flatpak/exports/share:...
     #   so a user override should be added, taking in account the content of XDG_DATA_DIRS below
     #   e.g. $ flatpak override --user --env=XDG_DATA_DIRS=$XDG_DATA_HOME/flatpak/exports/share:... com.github.alexays.waybar
-    #   bug report: https://github.com/flatpak/flatpak/issues/1415
+    #   related bug reports:
+    #     https://github.com/flatpak/flatpak/issues/1415
+    #     https://github.com/flatpak/flatpak/issues/3800
   - --filesystem=/var/lib/flatpak:ro
   - --filesystem=xdg-data/flatpak:ro
   - --env=XDG_DATA_DIRS=/var/lib/flatpak/exports/share:/app/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share
@@ -33,6 +35,8 @@ finish-args:
     #      with
     #        d %t/sway 0700 - - - -
     #      and enable systemd-tmpfiles-{clean.timer,setup.service}
+    #   related bug reports:
+    #     https://github.com/swaywm/sway/issues/5624
   - --filesystem=xdg-run/sway
 modules:
   - name: waybar
