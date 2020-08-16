@@ -20,6 +20,8 @@ modules:
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_QT=Off
+    post-install:
+      - ./rename_icons
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-rime/fcitx-rime-0.3.2.tar.xz
@@ -27,6 +29,8 @@ modules:
       - type: shell
         commands:
           - sed -i 's/FCITX4_PREFIX/CMAKE_INSTALL_PREFIX/g' data/CMakeLists.txt
+      - type: file
+        path: rename_icons
     modules:
       - name: librime
         buildsystem: cmake
