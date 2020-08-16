@@ -7,6 +7,7 @@ finish-args:
   - --device=dri
     # workaround for /dev/rfkill access
   - --device=all
+    # sway ipc socket
   - --filesystem=xdg-run/sway
   - --share=ipc
   - --share=network
@@ -15,6 +16,9 @@ finish-args:
   - --socket=system-bus
   - --socket=wayland
   - --socket=x11
+    # workaround for missing icon exports
+  - --filesystem=/var/lib/flatpak
+  - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share:/var/lib/flatpak/exports/share
 modules:
   - name: waybar
     buildsystem: meson
