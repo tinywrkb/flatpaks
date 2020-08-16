@@ -157,6 +157,7 @@ modules:
           - -Ddocumentation=false
           - -Dlibwacom=false
           - -Ddebug-gui=false
+          - --libexec=lib
         sources:
           - type: archive
             url: https://freedesktop.org/software/libinput/libinput-1.15.6.tar.xz
@@ -206,15 +207,36 @@ modules:
     buildsystem: meson
     sources:
       - type: archive
-        url: https://github.com/swaywm/sway/releases/download/1.4/sway-1.4.tar.gz
-        sha256: e2805291fc01d49e21dda4b273e38170d1fff4e1757215439729edbed880dfbe
+        url: https://github.com/swaywm/sway/releases/download/1.5/sway-1.5.tar.gz
+        sha256: c80644774d612d7d377093d4990061d36c36673862c06318a7b0e37fa47b0178
     modules:
       - name: wlroots
         buildsystem: meson
+        config-opts:
+          - --libdir=lib
         sources:
           - type: archive
-            url: https://github.com/swaywm/wlroots/archive/0.10.1.tar.gz
-            sha256: b84baefbaff7bb04b3d2c43cbacef1a433e2cd65111f8fbf4bfc5faaa4b34b08
+            url: https://github.com/swaywm/wlroots/archive/0.11.0.tar.gz
+            sha256: a7645e77229aab4942748c621be8bdb8b073d94f35f3e032b867246862bf2d01
+        modules:
+          - name: meson
+            buildsystem: simple
+            build-commands:
+              - python3 setup.py build
+              - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+            sources:
+              - type: archive
+                url: https://github.com/mesonbuild/meson/releases/download/0.55.1/meson-0.55.1.tar.gz
+                sha256: 3b5741f884e04928bdfa1947467ff06afa6c98e623c25cef75adf71ca39ce080
+          - name: wayland
+            buildsystem: meson
+            config-opts:
+              - -Ddocumentation=false
+              - --libdir=lib
+            sources:
+              - type: archive
+                url: https://wayland.freedesktop.org/releases/wayland-1.18.0.tar.xz
+                sha256: 4675a79f091020817a98fd0484e7208c8762242266967f55a67776936c2e294d
       - name: json-c
         cleanup:
           - /lib/cmake
