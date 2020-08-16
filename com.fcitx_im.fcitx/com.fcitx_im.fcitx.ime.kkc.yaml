@@ -82,7 +82,7 @@ modules:
         sources:
           - type: file
             url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.L.gz
-            sha256: 59080c482f5f452c953f834d7ac4f238f6d21070e4f4454d13e98872119e8cf4
+            sha256: d1fd37c605cac6b42f7d0e0269e1441a9c7242bf3e4935c327ca11b57ead3fea
           - type: file
             url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.ML.gz
             sha256: 47105dc34df553cc587d431f035bac6d1e156bf23b6b47af63b9245817e9cf5f
@@ -103,7 +103,7 @@ modules:
             sha256: eb24eb46414df1a569fa01500d780c1aa02c60dc9bdb27bdd4652665775fffc4
           - type: file
             url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.china_taiwan.gz
-            sha256: 93c31f30ba3f32c47f00e16c4f9eec6cdc6b570f5e57aa2efc23060eb72f5b59
+            sha256: 3018b17c5983adbbf40ca94b93cae152fc1a2be1e1b5cb773872ff67df288a55
           - type: file
             url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.fullname.gz
             sha256: b70e1b2ec74a6f2355397927c6ba5761de383d0bf6bf854e5baa6f5ee36e2d1a
@@ -145,7 +145,7 @@ modules:
             sha256: 15b169e489a014969d701f4de93ee21867a6d71a6df5381990e4631c4fb778c1
           - type: file
             url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.wrong.gz
-            sha256: 1b37290324cfc264ed88c87f7dfdc11021e0b55ecd4bd26c0d76c8aa48fe813d
+            sha256: 1992ecf858c9b560a660908441fe2c47de43c0932946563f72c83a6c581aa5d0
           - type: file
             url: http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.wrong.annotated.gz
             sha256: ad57ab4608b5aca8377a2c2c43980c196eb2d514f9dcfdc1fd3f880d22dab33c
