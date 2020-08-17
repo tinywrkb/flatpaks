@@ -111,15 +111,6 @@ modules:
                   - type: archive
                     url: https://downloads.sourceforge.net/swig/swig-4.0.2.tar.gz
                     sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
-          - name: opencc
-            buildsystem: cmake
-            sources:
-              - type: archive
-                url: https://github.com/BYVoid/OpenCC/archive/ver.1.1.1/opencc-1.1.1.tar.gz
-                sha256: 2d4987dc84275f252d47bc6d8c81b452f6a6e82caa26f284c854a8153ccf5933
-#           modules:
-#             - name: python-setuptools
-#             - name: python-wheel
       - name: librime-data
         buildsystem: simple
         build-commands:

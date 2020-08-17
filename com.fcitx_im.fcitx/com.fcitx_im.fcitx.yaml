@@ -162,6 +162,15 @@ modules:
           - type: archive
             url: https://github.com/AbiWord/enchant/releases/download/v2.2.8/enchant-2.2.8.tar.gz
             sha256: c7b5e2853f0dd0b1aafea2f9e071941affeec3a76df8e3f6d67a718c89293555
+      - name: opencc
+        buildsystem: cmake
+        sources:
+          - type: archive
+            url: https://github.com/BYVoid/OpenCC/archive/ver.1.1.1/opencc-1.1.1.tar.gz
+            sha256: 2d4987dc84275f252d47bc6d8c81b452f6a6e82caa26f284c854a8153ccf5933
+       #modules:
+       #  - name: python-setuptools
+       #  - name: python-wheel
   - name: fcitx-configtool
     buildsystem: cmake
     sources:
