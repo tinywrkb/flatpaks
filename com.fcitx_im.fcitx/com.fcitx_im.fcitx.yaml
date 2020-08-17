@@ -68,6 +68,13 @@ modules:
         # create base extension
       - |
           mkdir -p /app/ime/base/{lib,share/fcitx}
+
+          mkdir -p /app/lib/fcitx-libexec
+          for _f in $(ls /app/lib/fcitx/libexec/); do
+            mv /app/lib/fcitx/libexec/${_f} /app/lib/fcitx-libexec/
+            ln -s /app/lib/fcitx-libexec/${_f} /app/lib/fcitx/libexec/${_f}
+          done
+
           mv /app/lib/fcitx /app/ime/base/lib/
           mv /app/share/fcitx/{addon,configdesc,imicon,inputmethod,skin,table} /app/ime/base/share/fcitx/
 
@@ -82,7 +89,11 @@ modules:
           SET(FCITX4_INPUTMETHOD_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/fcitx/inputmethod)\
           SET(FCITX4_ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib/fcitx)\
           SET(FCITX4_CONFIGDESC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/fcitx/configdesc)' \
-          /app/share/cmake/fcitx/FcitxConfig.cmake
+            /app/share/cmake/fcitx/FcitxConfig.cmake
+
+          sed -i 's#${FCITX4_ADDON_INSTALL_DIR}/libexec#${FCITX4_ADDON_INSTALL_DIR}-libexec#g' \
+            /app/share/cmake/fcitx/FcitxMacro.cmake
+
           # TODO: handle extensions share/locale?
         # googlepinyin
       - ln -s -t /app/lib/ /app/ime/googlepinyin/lib/googlepinyin
