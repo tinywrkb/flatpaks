@@ -4,7 +4,6 @@
 #
 # Todo
 #   does it need notifications?
-#   move depends to shared modules
 #   check what extra settings windows available with qt5
 #   more skins
 #   add missing modules
@@ -17,10 +16,14 @@ sdk: org.gnome.Sdk
 add-extensions:
   com.fcitx_im.fcitx.ime:
     directory: ime
-    merge-dirs: bin;lib/fcitx;share/fcitx/addon;share/fcitx/configdesc;share/fcitx/inputmethod
+    merge-dirs: bin;lib/fcitx;share/fcitx/addon;share/fcitx/configdesc;share/fcitx/imicon;share/fcitx/inputmethod;share/fcitx/skin/classic;share/fcitx/skin/dark;share/fcitx/skin/default;share/fcitx/table
     subdirectories: true
     no-autodownload: true
     add-ld-path: lib
+  com.fcitx_im.fcitx.ime.base:
+    directory: ime/base
+    no-autodownload: false
+    bundle: true
 command: fcitx
 finish-args:
   - --device=dri
@@ -62,6 +65,16 @@ modules:
     post-install:
       - mkdir -p /app/ime
       - ./rename_icons
+        # create base extension
+      - |
+          mkdir -p /app/ime/base/{lib,share/fcitx}
+          mv /app/lib/fcitx /app/ime/base/lib/
+          mv /app/share/fcitx/{addon,configdesc,imicon,inputmethod,skin,table} /app/ime/base/share/fcitx/
+
+          for _res in lib/fcitx share/fcitx/{addon,configdesc,imicon,inputmethod,skin,table}; do
+            ln -s /app/ime/${_res} /app/${_res}
+          done
+        # fix cmake include source for to build fcitx extensions
       - |
           sed -i '$a\
           \
@@ -70,29 +83,11 @@ modules:
           SET(FCITX4_ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib/fcitx)\
           SET(FCITX4_CONFIGDESC_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/fcitx/configdesc)' \
           /app/share/cmake/fcitx/FcitxConfig.cmake
-      - |
-          # TODO: better error handling
-          for i in libpinyin cloudpinyin googlepinyin anthy chewing hangul sayura sunpinyin skk m17n unikey kkc mozc rime; do
-            ln -s -t /app/lib/fcitx/ /app/ime/lib/fcitx/fcitx-${i}.so
-            ln -s -t /app/share/fcitx/addon/ /app/ime/share/fcitx/addon/fcitx-${i}.conf
-            [ "$i" != "googlepinyin" ] &&
-            [ "$i" != "sayura" ] &&
-            [ "$i" != "mozc" ] &&
-            [ "$i" != "rime" ] &&
-              ln -s -t /app/share/fcitx/configdesc/ /app/ime/share/fcitx/configdesc/fcitx-${i}.desc
-            [ "$i" != "libpinyin" ] &&
-            [ "$i" != "cloudpinyin" ] &&
-            [ "$i" != "m17n" ] &&
-              ln -s -t /app/share/fcitx/inputmethod/ /app/ime/share/fcitx/inputmethod/${i}.conf
-          done
-          # TODO: add share/fcitx/{imicon,skin} symlinks
-          # TODO: handle share/locale?
-          exit 0
+          # TODO: handle extensions share/locale?
         # googlepinyin
       - ln -s -t /app/lib/ /app/ime/googlepinyin/lib/googlepinyin
         # libpinyin
       - ln -s -t /app/lib/ /app/ime/libpinyin/lib/libpinyin
-      - ln -s -t /app/share/fcitx/inputmethod/ /app/ime/share/fcitx/inputmethod/{pinyin,shuangpin,zhuyin}-libpinyin.conf
       - ln -s -t /app/share/fcitx/ /app/ime/libpinyin/share/fcitx/libpinyin
         # anthy
       - ln -s -t /app/share/ /app/ime/anthy/share/anthy
@@ -125,17 +120,6 @@ modules:
       - ln -s -t /app/lib/ /app/ime/mozc/lib/mozc
         # rime
       - ln -s -t /app/lib/ /app/ime/rime/lib/rime-data
-        # TODO: install icons
-        # table-other
-      - |
-          for t in amharic arabic cns11643 compose emoji ipa-x-sampa latex malayalam-phonetic rustrad tamil-remington thai translit translit-ua viqr yawerty; do
-            ln -s -t /app/share/fcitx/table /app/ime/table-other/share/fcitx/table/${t}.{conf,mb}
-          done
-        # table-extra
-      - |
-          for t in array30 array30-big boshiamy cangjie-big cangjie3 cangjie5 cantonese cantonhk easy-big jyutping quick-classic quick3 quick5 scj6 stroke5 t9 wu wubi-large zhengma zhengma-large; do
-            ln -s -t /app/share/fcitx/table /app/ime/table-extra/share/fcitx/table/${t}.{conf,mb}
-          done
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx/fcitx-4.2.9.7_dict.tar.xz
