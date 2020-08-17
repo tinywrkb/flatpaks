@@ -1,6 +1,6 @@
 app-id: com.fcitx_im.fcitx.ime.rime
 runtime: com.fcitx_im.fcitx
-sdk: org.gnome.Sdk//3.36
+sdk: org.kde.Sdk//5.14
 build-extension: true
 separate-locales: false
 build-options:
@@ -19,7 +19,7 @@ modules:
       cxxflags: '-DNDEBUG'
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
-      - -DENABLE_QT=Off
+      - -DENABLE_QT=ON
     post-install:
       - ./rename_icons
     sources:
@@ -38,6 +38,8 @@ modules:
         config-opts:
           - -DBUILD_MERGED_PLUGINS=Off
           - -DBUILD_TEST=Off
+          - -DOpencc_INCLUDE_PATH=/app/include/opencc/opencc.h
+          - -DOpencc_LIBRARY=/app/lib/libopencc.so
         sources:
           - type: archive
             url: https://github.com/rime/librime/archive/1.5.3.tar.gz

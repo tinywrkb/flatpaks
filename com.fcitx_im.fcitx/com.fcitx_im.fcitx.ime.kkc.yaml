@@ -1,6 +1,6 @@
 app-id: com.fcitx_im.fcitx.ime.kkc
 runtime: com.fcitx_im.fcitx
-sdk: org.gnome.Sdk//3.36
+sdk: org.kde.Sdk//5.14
 build-extension: true
 separate-locales: false
 build-options:
@@ -17,7 +17,7 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
-      - -DENABLE_QT=Off
+      - -DENABLE_QT=ON
     build-commands:
       - sed -i 's#/app/include#/app/ime/include#g' src/cmake_install.cmake
     post-install:

@@ -1,6 +1,6 @@
 app-id: com.fcitx_im.fcitx.ime.mozc
 runtime: com.fcitx_im.fcitx
-sdk: org.gnome.Sdk//3.36
+sdk: org.kde.Sdk//5.14
 build-extension: true
 separate-locales: false
 build-options:
@@ -20,7 +20,7 @@ modules:
         # generate zip code seed
       - PYTHONPATH=$PWD python2 dictionary/gen_zip_code_seed.py --zip_code=../x-ken-all/x-ken-all.csv --jigyosyo=../jigyosyo/JIGYOSYO.CSV >> data/dictionary_oss/dictionary09.txt
       - GYP_DEFINES="document_dir=/app/ime/mozc/licenses/mozc use_libzinnia=1 enable_gtk_renderer=0 use_fcitx5=0" python2 build_mozc.py gyp
-          --noqt
+     #    --noqt
       - python2 build_mozc.py build -c Release
           server/server.gyp:mozc_server gui/gui.gyp:mozc_tool unix/fcitx/fcitx.gyp:fcitx-mozc
       - install -Dm755 out_linux/Release/mozc_server ${FLATPAK_DEST}/lib/mozc/mozc_server

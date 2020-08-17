@@ -1,6 +1,6 @@
 app-id: com.fcitx_im.fcitx.ime.table-extra
 runtime: com.fcitx_im.fcitx
-sdk: org.gnome.Sdk//3.36
+sdk: org.kde.Sdk//5.14
 build-extension: true
 separate-locales: false
 build-options:
