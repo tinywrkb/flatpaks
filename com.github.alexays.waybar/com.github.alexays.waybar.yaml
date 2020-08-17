@@ -13,7 +13,6 @@ finish-args:
   - --socket=session-bus
   - --socket=system-bus
   - --socket=wayland
-  - --socket=x11
     # workaround for missing icon exports
     #   flatpak does not expand variables given to --env, so it's not possible to include in
     #   XDG_DATA_DIRS the icons exports from the user flatpak installation
