@@ -97,5 +97,27 @@ modules:
           - type: git
             url: https://github.com/skk-dev/dict.git
             branch: master
-        #modules:
-        #  - name: skktools
+        modules:
+          - name: skktools
+            config-opts:
+              - --with-gdbm
+            sources:
+              - type: archive
+                url: https://github.com/skk-dev/skktools/archive/skktools-1_3_4.tar.gz
+                sha256: 84cc5d3344362372e0dfe93a84790a193d93730178401a96248961ef161f2168
+            modules:
+              - name: gdbm
+                config-opts:
+                  - --enable-libgdbm-compat
+                post-install:
+                  - install -dm755 ${FLATPAK_DEST}/include/gdbm
+                  - ln -s ${FLATPAK_DEST}/include/{dbm,gdmb,ndbm}.h -t ${FLATPAK_DEST}/include/gdbm/
+                sources:
+                  - type: archive
+                    url: https://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1.tar.gz
+                    sha256: 86e613527e5dba544e73208f42b78b7c022d4fa5a6d5498bf18c8d6f745b91dc
+                cleanup:
+                  - /bin
+                  - /share/info
+                  - /share/locale
+                  - /share/man
