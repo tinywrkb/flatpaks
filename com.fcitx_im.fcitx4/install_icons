@@ -1,0 +1,8 @@
+#!/bin/bash
+
+_icon_path=""
+while IFS= read -r -d '' _icon_path; do
+ install -Dm644 "$_icon_path" ${FLATPAK_DEST}/share/icons/hicolor/${_icon_path#icons/}
+done < <(find icons/ \
+        -type f -and \( -name 'com.fcitx_im.fcitx4.fcitx-*.png' \
+        -or -name 'com.fcitx_im.fcitx4.fcitx-*.svg' \) -print0)

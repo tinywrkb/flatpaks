@@ -1,0 +1,10 @@
+#!/bin/bash
+
+_icon_path=""
+_icon_target=""
+while IFS= read -r -d '' _icon_path; do
+  _icon_target="${_icon_path##*/share/icons/hicolor/}"
+  install -Dm644 "$_icon_path" resources/icons/"${_icon_target}"
+done < <(find ${XDG_DATA_HOME}/flatpak/runtime/com.fcitx_im.fcitx4.ime.*/*/*/active/files/share/icons/hicolor/ \
+        -type f -and \( -name 'com.fcitx_im.fcitx4.fcitx-*.png' \
+        -or -name 'com.fcitx_im.fcitx4.fcitx-*.svg' \) -print0)

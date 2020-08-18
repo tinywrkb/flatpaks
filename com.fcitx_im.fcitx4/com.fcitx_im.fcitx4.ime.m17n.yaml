@@ -1,0 +1,85 @@
+# TODO: move out dependencies to main package
+app-id: com.fcitx_im.fcitx4.ime.m17n
+runtime: com.fcitx_im.fcitx4
+sdk: org.kde.Sdk//5.14
+build-extension: true
+separate-locales: false
+build-options:
+  prefix: /app/ime/m17n
+  libdir: /app/ime/m17n/lib
+  ldflags: -L/app/ime/m17n/lib
+  prepend-pkg-config-path: /app/ime/m17n/lib/pkgconfig
+  prepend-ld-library-path: /app/ime/m17n/lib
+  prepend-path: /app/ime/m17n/bin
+  cflags: -I/app/ime/m17n/include
+  cxxflags: -I/app/ime/m17n/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: fcitx-m17n
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-m17n/fcitx-m17n-0.2.4.tar.xz
+        sha256: cf82158b907ba6b79aad3e4c26f9e0e2457a270619548adc31e9f77412144597
+      - type: shell
+        commands:
+          - sed -i 's/FCITX4_PREFIX/CMAKE_INSTALL_PREFIX/g' im/CMakeLists.txt
+    modules:
+      - name: m17n-lib
+        make-args:
+          - --jobs=1
+        sources:
+          - type: archive
+            url: https://download.savannah.gnu.org/releases/m17n/m17n-lib-1.8.0.tar.gz
+            sha256: 78bacae7451822dfff62482ce4f9433c5ae82846e4c64b590541e29e800fe64a
+          - type: shell
+            commands:
+              - sed -i "s/freetype-config/pkg-config freetype2/" configure
+        modules:
+          - name: m17n-db
+            sources:
+              - type: archive
+                url: https://download.savannah.gnu.org/releases/m17n/m17n-db-1.8.0.tar.gz
+                sha256: 657f23835b6655e7a63a362bac66260454ee356da4855eadb9366911d33fdc6d
+          - name: gd
+            sources:
+              - type: archive
+                url: https://github.com/libgd/libgd/releases/download/gd-2.3.0/libgd-2.3.0.tar.xz
+                sha256: ecd9155b9a417fb3f837f29e5966323796de247789163761dd72dbf83bfcac58
+            cleanup:
+              - /bin
+          - name: libotf
+            sources:
+              - type: archive
+                url: https://download.savannah.gnu.org/releases/m17n/libotf-0.9.16.tar.gz
+                sha256: 68db0ca3cda2d46a663a92ec26e6eb5adc392ea5191bcda74268f0aefa78066b
+            cleanup:
+              - /bin
+            modules:
+              - name: libxaw
+                config-opts:
+                  - --sysconfdir=/app/etc
+                sources:
+                  - type: archive
+                    url: https://xorg.freedesktop.org/releases/individual/lib/libXaw-1.0.13.tar.bz2
+                    sha256: 8ef8067312571292ccc2bbe94c41109dcf022ea5a4ec71656a83d8cce9edb0cd
+                cleanup:
+                  - /share/doc
+                  - /share/man
+                modules:
+                  - name: libxmu
+                    config-opts:
+                      - --sysconfdir=/app/etc
+                    sources:
+                      - type: archive
+                        url: https://xorg.freedesktop.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
+                        sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+                    cleanup:
+                      - /share/doc
