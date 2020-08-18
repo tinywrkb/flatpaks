@@ -21,7 +21,6 @@ add-extensions:
 command: fcitx
 rename-desktop-file: fcitx.desktop
 rename-icon: fcitx
-# TODO: rename icon in desktop files
 finish-args:
   - --device=dri
   - --env=PATH=/app/ime/bin:/app/bin:/usr/bin
@@ -194,6 +193,7 @@ modules:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-configtool/fcitx-configtool-0.4.10.tar.xz
         sha512: 1c1267e9de694bbd5f258b5bba1e7514c4f8556cdc82a1cce5eafd8a4ec571955285dade0acd02f128eca01f867a30c5c6264ee7e91d32a333eba6e4d275fe8f
+    # TODO: test if needed with the kde runtime
   - name: libgee
     sources:
       - type: archive
@@ -277,3 +277,5 @@ modules:
 #     - type: archive
 #       url: https://github.com/hrko99/fcitx-skin-material/archive/v0.5.tar.gz
 #       sha256: f2819f2053d8f1cceeb6b7fb917d11494ea962a9370fe095a580d7c41b1e40bb
+# TODO: add fcitx-ui-light
+# TODO: more input modules?
