@@ -1,3 +1,5 @@
+# TODO: lib/girepository-1.0
+# TODO: share/gir-1.0
 app-id: com.fcitx_im.fcitx.ime.skk
 runtime: com.fcitx_im.fcitx
 sdk: org.kde.Sdk//5.14
@@ -12,6 +14,11 @@ build-options:
   prepend-path: /app/ime/skk/bin
   cflags: -I/app/ime/skk/include
   cxxflags: -I/app/ime/skk/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: fcitx-skk
     buildsystem: cmake
@@ -20,6 +27,7 @@ modules:
       - -DENABLE_QT=ON
     post-install:
       - ./rename_icons
+      - mv ${FLATPAK_DEST}/lib/fcitx/qt ${FLATPAK_DEST}/lib/fcitx-qt
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-skk/fcitx-skk-0.1.4.tar.xz
@@ -35,3 +43,6 @@ modules:
           - type: archive
             url: https://github.com/ueno/libskk/archive/1.0.5.tar.gz
             sha256: a298e9726b784dd9a6ce8dcb76ff8fbe633037756795d75cfd77d3aeab4f50ed
+        cleanup:
+          - /share/man
+          - /share/vala

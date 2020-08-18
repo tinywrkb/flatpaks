@@ -12,6 +12,12 @@ build-options:
   prepend-path: /app/ime/libpinyin/bin
   cflags: -I/app/ime/libpinyin/include
   cxxflags: -I/app/ime/libpinyin/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
 modules:
 # # missing qt5, qt5-webengine for dictmanager interface
   - name: fcitx-libpinyin
@@ -21,6 +27,7 @@ modules:
       - -DENABLE_QT=ON
     post-install:
       - ./rename_icons
+      - mv ${FLATPAK_DEST}/lib/fcitx/qt ${FLATPAK_DEST}/lib/fcitx-qt
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-libpinyin/fcitx-libpinyin-0.5.3.tar.xz
@@ -50,6 +57,8 @@ modules:
           - type: shell
             commands:
               - sed -i "/wget.*/d" data/Makefile.am
+        cleanup:
+          - /bin
         modules:
           - name: kyotocabinet
             config-opts:
@@ -58,3 +67,6 @@ modules:
               - type: archive
                 url: https://fallabs.com/kyotocabinet/pkg/kyotocabinet-1.2.77.tar.gz
                 sha256: 56899329384cc6f0f1f8aa3f1b41001071ca99c1d79225086a7f3575c0209de6
+            cleanup:
+              - /bin
+              - /share/doc

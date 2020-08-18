@@ -12,6 +12,11 @@ build-options:
   prepend-path: /app/ime/sunpinyin/bin
   cflags: -I/app/ime/sunpinyin/include
   cxxflags: -I/app/ime/sunpinyin/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: fcitx-sunpinyin
     buildsystem: cmake
@@ -35,6 +40,9 @@ modules:
           - type: git
             url: https://github.com/sunpinyin/sunpinyin
             commit: f39c195db08661e894017507842991a1ef70bedf
+        cleanup:
+          - /share/doc
+          - /share/man
          #  tag: v3.0.0-rc1
          #- type: file
          #  url: https://git.archlinux.org/svntogit/community.git/plain/trunk/scons-python3.patch?h=packages/sunpinyin&id=909bf778a17f1b82c4ad972fd8286f145dc2d64c
@@ -61,6 +69,8 @@ modules:
                       cp -v "src/script/${_script}.py" "src/script/${_script}";
                     done
                   - sed -E '/scons(|ign|-time)\.1/d' -i src/setup.py
+            cleanup:
+              - '*'
          #- name: python2
          #  sources:
          #    - type: archive

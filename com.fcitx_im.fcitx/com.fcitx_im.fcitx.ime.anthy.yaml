@@ -12,6 +12,11 @@ build-options:
   prepend-path: /app/ime/anthy/bin
   cflags: -I/app/ime/anthy/include
   cxxflags: -I/app/ime/anthy/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: fcitx-anthy
     buildsystem: cmake

@@ -9,6 +9,11 @@ build-options:
   append-pkg-config-path: /app/ime/googlepinyin/lib/pkgconfig
   cflags: -I${FLATPAK_DEST}/include
   cxxflags: -I${FLATPAK_DEST}/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: fcitx-googlepinyin
     buildsystem: cmake

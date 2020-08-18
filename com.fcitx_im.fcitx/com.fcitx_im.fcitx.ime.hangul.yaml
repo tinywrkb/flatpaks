@@ -12,6 +12,11 @@ build-options:
   prepend-path: /app/ime/hangul/bin
   cflags: -I/app/ime/hangul/include
   cxxflags: -I/app/ime/hangul/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: fcitx-hangul
     buildsystem: cmake

@@ -12,6 +12,11 @@ build-options:
   prepend-path: /app/ime/mozc/bin
   cflags: -I/app/ime/mozc/include
   cxxflags: -I/app/ime/mozc/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: fcitx-mozc
     buildsystem: simple
@@ -70,6 +75,8 @@ modules:
             sha256: ece3af93f937282971634fd81d3e997f848e8cfa958220e26a4564ca064ac20b
           - type: patch
             path: zinnia-gcc6.patch
+        cleanup:
+          - /bin
   - name: fcitx-mozc-icons
     buildsystem: simple
     build-commands:

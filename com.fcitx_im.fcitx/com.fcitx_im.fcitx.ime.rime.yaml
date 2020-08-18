@@ -1,3 +1,4 @@
+# TODO: move out marisa?
 app-id: com.fcitx_im.fcitx.ime.rime
 runtime: com.fcitx_im.fcitx
 sdk: org.kde.Sdk//5.14
@@ -12,6 +13,14 @@ build-options:
   prepend-path: /app/ime/rime/bin
   cflags: -I/app/ime/rime/include
   cxxflags: -I/app/ime/rime/include
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/lua
+  - /lib/pkgconfig
+  - /share/lua
+  - '*.a'
+  - '*.la'
 modules:
   - name: fcitx-rime
     buildsystem: cmake
@@ -59,6 +68,8 @@ modules:
           - type: shell
             commands:
               - patch -p1 -i librime-opencc-1.1.patch
+        cleanup:
+          - /share/cmake
         modules:
           - ../flathub-shared-modules/lua5.1/lua-5.1.5.json
          #- name: boost-libs
@@ -68,6 +79,8 @@ modules:
               - type: archive
                 url: https://github.com/google/glog/archive/v0.4.0.tar.gz
                 sha256: f28359aeba12f30d73d9e4711ef356dc842886968112162bc73002645139c39c
+            cleanup:
+              - /share/doc
           - name: yaml-cpp
             buildsystem: cmake
             config-opts:
@@ -107,12 +120,17 @@ modules:
               - type: shell
                 commands:
                   - autoreconf -i
+            cleanup:
+              - /bin
             modules:
               - name: swig
                 sources:
                   - type: archive
                     url: https://downloads.sourceforge.net/swig/swig-4.0.2.tar.gz
                     sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
+                cleanup:
+                  - /bin
+                  - /share/swig
       - name: librime-data
         buildsystem: simple
         build-commands:

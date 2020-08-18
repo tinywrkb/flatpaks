@@ -1,3 +1,6 @@
+# TODO: move marisa to the main package?
+# TODO: lib/girepository-1.0?
+# TODO: share/gir-1.0?
 app-id: com.fcitx_im.fcitx.ime.kkc
 runtime: com.fcitx_im.fcitx
 sdk: org.kde.Sdk//5.14
@@ -12,6 +15,11 @@ build-options:
   prepend-path: /app/ime/kkc/bin
   cflags: -I/app/ime/kkc/include
   cxxflags: -I/app/ime/kkc/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: fcitx-kkc
     buildsystem: cmake
@@ -22,6 +30,7 @@ modules:
       - sed -i 's#/app/include#/app/ime/include#g' src/cmake_install.cmake
     post-install:
       - ./rename_icons
+      - mv ${FLATPAK_DEST}/lib/fcitx/qt ${FLATPAK_DEST}/lib/fcitx-qt
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-kkc/fcitx-kkc-0.1.4.tar.xz
@@ -40,6 +49,8 @@ modules:
           - type: git
             url: https://github.com/ueno/libkkc
             commit: b2e5a152980ee627c39ca8a49082e6df7694b8fc
+        cleanup:
+          - /share/vala
         modules:
           - name: marisa
             build-commands:
@@ -57,12 +68,17 @@ modules:
               - type: shell
                 commands:
                   - autoreconf -i
+            cleanup:
+              - /bin
             modules:
               - name: swig
                 sources:
                   - type: archive
                     url: https://downloads.sourceforge.net/swig/swig-4.0.2.tar.gz
                     sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
+                cleanup:
+                  - /bin
+                  - /share/swig
       - name: libkkc-data
         build-options:
           env:

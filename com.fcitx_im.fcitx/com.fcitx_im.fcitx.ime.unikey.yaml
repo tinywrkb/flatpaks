@@ -20,6 +20,7 @@ modules:
       - -DENABLE_QT=ON
     post-install:
       - ./rename_icons
+      - mv ${FLATPAK_DEST}/lib/fcitx/qt ${FLATPAK_DEST}/lib/fcitx-qt
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-unikey/fcitx-unikey-0.2.7.tar.xz

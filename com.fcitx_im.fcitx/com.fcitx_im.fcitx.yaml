@@ -37,6 +37,7 @@ finish-args:
 cleanup:
 # - /include
 # - /lib/pkgconfig
+  - /share/doc
   - /share/man
   - '*.a'
   - '*.la'
@@ -105,13 +106,13 @@ modules:
       - ln -s -t /app/share/fcitx/ /app/ime/libpinyin/share/fcitx/libpinyin
         # anthy
       - ln -s -t /app/share/ /app/ime/anthy/share/anthy
+      - ln -s -t /app/share/fcitx/ /app/ime/anthy/share/fcitx/anthy
         # chewing
       - ln -s -t /app/share/ /app/ime/chewing/share/libchewing
         # hangul
       - ln -s -t /app/share/ /app/ime/hangul/share/libhangul
       - ln -s -t /app/share/fcitx/ /app/ime/hangul/share/fcitx/hangul
         # sunpiyin
-          # TODO: lib/scons symlink?
       - ln -s -t /app/share/ /app/ime/sunpinyin/share/sunpinyin
         # skk
           # TODO: lib/girepository-1.0 symlink?
@@ -132,6 +133,7 @@ modules:
       - ln -s -t /app/share/ /app/ime/kkc/share/skk
         # mozc
       - ln -s -t /app/lib/ /app/ime/mozc/lib/mozc
+      - ln -s -t /app/share/fcitx/ /app/ime/mozc/share/fcitx/mozc
         # rime
       - ln -s -t /app/lib/ /app/ime/rime/lib/rime-data
     sources:
@@ -211,6 +213,8 @@ modules:
           - type: git
             url: https://gitlab.gnome.org/GNOME/vala.git
             tag: 0.48.9
+        cleanup:
+          - /share/devhelp
         modules:
           - ../shared-modules/graphviz/graphviz.json
           - name: vala-bootstrap
@@ -235,6 +239,14 @@ modules:
       - -DCMAKE_INSTALL_LIBDIR=lib
     post-install:
       - ln -s /app/lib/fcitx-qt /app/ime/base/lib/fcitx/qt
+        # kkc
+      - ln -s -t /app/lib/fcitx-qt/ /app/ime/kkc/lib/fcitx-qt/libfcitx-kkc-config.so
+        # libpinyin
+      - ln -s -t /app/lib/fcitx-qt/ /app/ime/libpinyin/lib/fcitx-qt/libfcitx-libpinyin-dictmanager.so
+        # skk
+      - ln -s -t /app/lib/fcitx-qt/ /app/ime/skk/lib/fcitx-qt/libfcitx-skk-config.so
+        # unikey
+      - ln -s -t /app/lib/fcitx-qt/ /app/ime/unikey/lib/fcitx-qt/libfcitx-unikey-macro-editor.so
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx-qt5/fcitx-qt5-1.2.5.tar.xz
