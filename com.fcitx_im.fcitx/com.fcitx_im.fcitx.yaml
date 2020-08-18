@@ -135,7 +135,7 @@ modules:
       - ln -s -t /app/lib/ /app/ime/mozc/lib/mozc
       - ln -s -t /app/share/fcitx/ /app/ime/mozc/share/fcitx/mozc
         # rime
-      - ln -s -t /app/lib/ /app/ime/rime/lib/rime-data
+      - ln -s -t /app/share/ /app/ime/rime/share/rime-data
     sources:
       - type: archive
         url: https://download.fcitx-im.org/fcitx/fcitx-4.2.9.7_dict.tar.xz
