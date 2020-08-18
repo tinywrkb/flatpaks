@@ -1,0 +1,45 @@
+app-id: com.fcitx_im.fcitx5.ime.anthy
+runtime: com.fcitx_im.fcitx5
+sdk: org.kde.Sdk//5.14
+build-extension: true
+separate-locales: false
+build-options:
+  prefix: /app/ime/anthy
+  libdir: /app/ime/anthy/lib
+  ldflags: -L/app/ime/anthy/lib
+  prepend-pkg-config-path: /app/ime/anthy/lib/pkgconfig
+  prepend-ld-library-path: /app/ime/anthy/lib
+  prepend-path: /app/ime/anthy/bin
+  cflags: -I/app/ime/anthy/include
+  cxxflags: -I/app/ime/anthy/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: fcitx5-anthy
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=${FLATPAK_DEST}/lib
+    post-install:
+      - ./rename_icons
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5-anthy.git
+        branch: master
+        commit: 4a31821e6105f9121f1ae1880e2ee6b576fa500a
+      - type: file
+        path: rename_icons
+      - type: shell
+        commands:
+          - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#${CMAKE_INSTALL_PREFIX}/share/fcitx5#g'
+              {src,profile}/CMakeLists.txt
+    modules:
+      - name: anthy
+        config-opts:
+          - --sysconfdir=${FLATPAK_DEST}/etc
+        sources:
+          - type: archive
+            url: http://dl.sourceforge.jp/anthy/37536/anthy-9100h.tar.gz
+            sha256: d256f075f018b4a3cb0d165ed6151fda4ba7db1621727e0eb54569b6e2275547

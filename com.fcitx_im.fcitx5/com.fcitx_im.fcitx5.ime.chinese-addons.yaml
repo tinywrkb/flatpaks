@@ -18,7 +18,7 @@ cleanup:
   - '*.a'
   - '*.la'
 modules:
-  - name: fcitx-chinese-addons
+  - name: fcitx5-chinese-addons
     buildsystem: cmake
     config-opts:
       - -DCMAKE_INSTALL_LIBDIR=${FLATPAK_DEST}/lib

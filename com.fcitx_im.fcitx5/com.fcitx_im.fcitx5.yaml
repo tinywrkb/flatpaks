@@ -98,6 +98,10 @@ modules:
         # fcitx-chinese-addons
       - ln -s -t /app/share/fcitx5/ /app/ime/chinese-addons/share/fcitx5/{pinyin,pinyinhelper,punctuation}
 
+        # fcitx-anthy
+      - ln -s -t /app/share/fcitx5/ /app/ime/anthy/share/fcitx5/anthy
+      - ln -s -t /app/share/ /app/ime/anthy/share/anthy
+
     sources:
       - type: git
         url: https://github.com/fcitx/fcitx5.git
@@ -330,9 +334,7 @@ modules:
 # - name: fcitx5-material-color
 #
 # extensions
-# - name: fcitx5-anthy
 # - name: fcitx5-chewing
-# - name: fcitx5-chinese-addons
 # - name: fcitx5-hangul
 # - name: fcitx5-m17n
 # - name: fcitx5-mozc
