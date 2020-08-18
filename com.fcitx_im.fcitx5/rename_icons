@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# handle renaming of desktop icon in the manifest
+#_icon_path=""
+#while IFS= read -r -d '' _icon_path; do
+#  mv $_icon_path $(dirname $_icon_path)/com.fcitx_im.$(basename $_icon_path)
+#done < <(find ${FLATPAK_DEST}/share/icons/hicolor -type f -and \( -name 'fcitx.png' -or -name 'fcitx.svg' \) -print0)
+
+_icon_path=""
+while IFS= read -r -d '' _icon_path; do
+  mv $_icon_path $(dirname $_icon_path)/com.fcitx_im.fcitx5.$(basename $_icon_path)
+done < <(find ${FLATPAK_DEST}/share/icons/hicolor -type f -and -name 'fcitx-*' -print0)

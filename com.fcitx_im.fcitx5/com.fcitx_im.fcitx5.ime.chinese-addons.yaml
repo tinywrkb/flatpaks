@@ -1,0 +1,50 @@
+app-id: com.fcitx_im.fcitx5.ime.chinese-addons
+runtime: com.fcitx_im.fcitx5
+sdk: org.kde.Sdk//5.14
+build-extension: true
+separate-locales: false
+build-options:
+  prefix: /app/ime/chinese-addons
+  libdir: /app/ime/chinese-addons/lib
+  ldflags: -L/app/ime/chinese-addons/lib
+  prepend-pkg-config-path: /app/ime/chinese-addons/lib/pkgconfig
+  prepend-ld-library-path: /app/ime/chinese-addons/lib
+  prepend-path: /app/ime/chinese-addons/bin
+  cflags: -I/app/ime/chinese-addons/include
+  cxxflags: -I/app/ime/chinese-addons/include
+cleanup:
+# - /include
+# - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: fcitx-chinese-addons
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=${FLATPAK_DEST}/lib
+      - -DUSE_WEBKIT=OFF
+      - -DFEM_LIB_INSTALL_DIR=${FLATPAK_DEST}/lib
+      - -DFEM_INCLUDE_INSTALL_DIR=${FLATPAK_DEST}/include/Fcitx5/Module/fcitx-module
+    post-install:
+      - ./rename_icons
+      - mv ${FLATPAK_DEST}/lib/fcitx5/qt5 ${FLATPAK_DEST}/lib/fcitx5-qt5
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5-chinese-addons.git
+        branch: master
+        commit: 6317296d5b54b29002becc3effa039d8baab8ae3
+      - type: file
+        url: https://download.fcitx-im.org/data/py_table-20121124.tar.gz
+        sha256: 42146ac97de6c13d55f9e99ed873915f4c66739e9c11532a34556badf9792c04
+        dest-filename: modules/pinyinhelper/py_table-20121124.tar.gz
+      - type: file
+        url: https://download.fcitx-im.org/data/py_stroke-20121124.tar.gz
+        sha256: 8eb128a9bfa43952e67cf2fcee1fd134c6f4cfd317bc2f6c38a615f5eb64e248
+        dest-filename: modules/pinyinhelper/py_stroke-20121124.tar.gz
+      - type: file
+        path: rename_icons
+      - type: shell
+        commands:
+          - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#${CMAKE_INSTALL_PREFIX}/share/fcitx5#g'
+              modules/{chttrans,cloudpinyin,fullwidth,pinyinhelper,punctuation}/CMakeLists.txt
+              im/pinyin/CMakeLists.txt

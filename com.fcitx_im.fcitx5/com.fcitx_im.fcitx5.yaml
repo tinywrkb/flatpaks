@@ -1,0 +1,357 @@
+app-id: com.fcitx_im.fcitx5
+base: io.qt.qtwebengine.BaseApp
+base-version: '5.14'
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+add-extensions:
+  com.fcitx_im.fcitx5.ime:
+    directory: ime
+    # dirs: share/fcitx5{data,default,lua,spell,testing,themes,unicode}
+    # not in 5 (so far): share/fcitx5/configdesc;share/fcitx5/imicon;share/fcitx5/skin/classic;share/fcitx/skin/dark;share/fcitx/skin/default;share/fcitx/table
+    merge-dirs: bin;lib/fcitx5;share/fcitx5/addon;share/fcitx5/data;share/fcitx5/data-quickphrase.d;share/fcitx5/inputmethod;share/fcitx5/lua/imeapi;share/fcitx5/lua/imeapi-extensions
+    subdirectories: true
+    no-autodownload: true
+    add-ld-path: lib
+  com.fcitx_im.fcitx5.ime.base:
+    directory: ime/base
+    no-autodownload: false
+    bundle: true
+command: fcitx5
+rename-desktop-file: fcitx5.desktop
+rename-icon: fcitx
+finish-args:
+  - --device=dri
+  - --env=PATH=/app/ime/bin:/app/bin:/usr/bin
+  - --own-name=org.fcitx.*
+  - --own-name=org.fcitx.Fcitx.Controller1
+  - --own-name=org.fcitx.Fcitx5
+  - --own-name=org.freedesktop.IBus
+  - --own-name=org.freedesktop.IBus.*
+  - --own-name=org.freedesktop.IBus.Panel
+  - --own-name=org.freedesktop.portal.Fcitx
+  - --own-name=org.freedesktop.portal.IBus
+  - --own-name=org.kde.*
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+  - --talk-name=org.fcitx.GnomeHelper
+    # TODO: test notifications
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+    # testings
+  - --socket=session-bus
+cleanup:
+# - /include
+# - /lib/pkgconfig
+# - /share/doc
+# - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: fcitx
+#   cleanup:
+#     - /share/cmake
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=/app/lib
+    post-install:
+        # rename desktop files
+      - |
+          cd /app/share/applications/
+          mv fcitx5-configtool.desktop com.fcitx_im.fcitx5.configtool.desktop
+
+      - mkdir -p /app/ime
+
+     #- ./rename_icons
+        # create base extension
+        # folders that need to change level so they won't be overwrited
+        #   lib/fcitx5/qt5 -> lib/fcitx5-qt5
+        #   lib/fcitx5/libexec -> lib/fcitx5-libexec
+        #   share/fcitx5/data/quickphrase.d share/fcitx5/data-quickphrase.d
+        #   share/fcitx5/lua/imeapi/extensions share/fcitx5/lua/imeapi-extensions
+
+      - |
+          mkdir -p /app/ime/base/{lib,share/fcitx5}
+
+          mkdir -p /app/lib/fcitx5-libexec
+          for _f in $(ls /app/lib/fcitx5/libexec/); do
+            mv /app/lib/fcitx5/libexec/${_f} /app/lib/fcitx5-libexec/
+            ln -s /app/lib/fcitx5-libexec/${_f} /app/lib/fcitx5/libexec/${_f}
+          done
+
+          mv /app/lib/fcitx5 /app/ime/base/lib/
+          #mv /app/share/fcitx5/{addon,configdesc,imicon,inputmethod,skin,table} /app/ime/base/share/fcitx5/
+          mv /app/share/fcitx5/data/quickphrase.d /app/share/fcitx5/data-quickphrase.d
+          mv /app/share/fcitx5/{addon,data,data-quickphrase.d,inputmethod,lua} /app/ime/base/share/fcitx5/
+
+          ln -s /app/ime/share/fcitx5/data-quickphrase.d /app/ime/base/share/fcitx5/data/quickphrase.d
+
+          ln -s /app/ime/share/fcitx5/lua/imeapi-extensions /app/ime/base/share/fcitx5/lua/imeapi/extensions
+
+          #for _res in lib/fcitx5 share/fcitx5/{addon,configdesc,imicon,inputmethod,skin,table}; do
+          for _res in lib/fcitx5 share/fcitx5/{addon,data,inputmethod,lua}; do
+            ln -s /app/ime/${_res} /app/${_res}
+          done
+
+        # fcitx-chinese-addons
+      - ln -s -t /app/share/fcitx5/ /app/ime/chinese-addons/share/fcitx5/{pinyin,pinyinhelper,punctuation}
+
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5.git
+       #branch: master
+        commit: dd2c15271e7cf5cc008c9598aa60165eb32f26eb
+      - type: file
+        url: https://download.fcitx-im.org/data/en_dict-20121020.tar.gz
+        sha256: c44a5d7847925eea9e4d2d04748d442cd28dd9299a0b572ef7d91eac4f5a6ceb
+        dest-filename: src/modules/spell/dict/en_dict-20121020.tar.gz
+    modules:
+      - name: cldr-emoji-annotation
+        sources:
+          - type: archive
+            url: https://github.com/fujiwarat/cldr-emoji-annotation/archive/37.0_13.0_0_2.tar.gz
+            sha256: 22fbf6a96f6966edaff2bd23694568da394e064a0599ef5c6047fffe233cab16
+      - name: enchant
+        config-opts:
+          - --disable-static
+          - --disable-ispell
+          - --with-myspell-dir=/app/share/myspell
+        sources:
+          - type: archive
+            url: https://github.com/AbiWord/enchant/releases/download/v2.2.8/enchant-2.2.8.tar.gz
+            sha256: c7b5e2853f0dd0b1aafea2f9e071941affeec3a76df8e3f6d67a718c89293555
+      - name: fmt
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=None
+          - -DBUILD_SHARED_LIBS=true
+        sources:
+          - type: archive
+            url: https://github.com/fmtlib/fmt/archive/7.0.3.tar.gz
+            sha256: b4b51bc16288e2281cddc59c28f0b4f84fed58d016fb038273a09f05f8473297
+      - name: json-c
+        cleanup:
+          - /lib/cmake
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=None
+          - -DENABLE_THREADING=ON
+          - -DENABLE_RDRAND=OFF
+        sources:
+          - type: archive
+            url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
+            sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
+      - name: xcb-imdkit
+        buildsystem: cmake-ninja
+        config-opts:
+          - -DCMAKE_INSTALL_LIBDIR=/app/lib
+        sources:
+          - type: git
+            url: https://github.com/fcitx/xcb-imdkit.git
+            branch: master
+            commit: d6609a72465cf7e0479aea075a4d2e5d7ca018eb
+        modules:
+          - name: uthash
+            buildsystem: simple
+            build-commands:
+              - install -Dm644 src/*.h -t /app/include/
+            sources:
+              - type: archive
+                url: https://github.com/troydhanson/uthash/archive/v2.1.0.tar.gz
+                sha256: 152ccd8e64d0f495377232e3964d06c7ec8bb8c3fbd3217f8a5702614f9a669e
+  - name: fcitx5-configtool
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=/app/lib
+     #- -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5-configtool.git
+        branch: master
+        commit: 9fa56e4e6dd52a7a5ebda04660f20eea67204f86
+    modules:
+      - name: fcitx-qt
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_INSTALL_LIBDIR=/app/lib
+          - -DENABLE_QT4=0
+        post-install:
+          - ln -s /app/lib/fcitx5-qt5 /app/ime/base/lib/fcitx5/qt5
+        sources:
+          - type: git
+            url: https://github.com/fcitx/fcitx5-qt.git
+            branch: master
+            commit: 3ddd34aa720cb4efd451a686c389d579b1914425
+          - type: shell
+            commands:
+              - sed -i 's#${CMAKE_INSTALL_QT5PLUGINDIR}/platforminputcontexts#${CMAKE_INSTALL_PREFIX}/lib/plugins/platforminputcontexts#' qt5/platforminputcontext/CMakeLists.txt
+              - sed -i 's#${CMAKE_INSTALL_LIBDIR}/fcitx5/qt5#${CMAKE_INSTALL_LIBDIR}/fcitx5-qt5#' qt5/quickphrase-editor/CMakeLists.txt
+              - sed -i 's#${CMAKE_INSTALL_LIBDIR}/fcitx5/libexec#${CMAKE_INSTALL_LIBDIR}/fcitx5-libexec#' qt5/guiwrapper/CMakeLists.txt
+       #modules:
+       #  - name: qt4?
+  - name: fcitx-gtk
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=/app/lib
+      - -DENABLE_GTK2_IM_MODULE=OFF
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5-gtk.git
+        branch: master
+        commit: fc335f1d6be8820d021db282cf90b746dc7d9b7c
+      - type: shell
+        commands:
+          - sed -i 's#${GOBJECT_INTROSPECTION_GIRDIR}#/app/share/gir-1.0#' fcitx-gclient/CMakeLists.txt
+          - sed -i 's#${GOBJECT_INTROSPECTION_TYPELIBDIR}#/app/lib/x86_64-linux-gnu/girepository-1.0#' fcitx-gclient/CMakeLists.txt
+   #modules:
+   #  - name: gtk2?
+  - name: fcitx5-lua
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=/app/lib
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5-lua.git
+        branch: master
+        commit: d705404964d4842998be17cd53dd29d2f78a4144
+      - type: shell
+        commands:
+          - sed -i 's#${CMAKE_INSTALL_LIBDIR}#/app/ime/base/lib#' src/addonloader/CMakeLists.txt
+          - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#/app/ime/base/share/fcitx5#' src/addonloader/CMakeLists.txt
+          - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#/app/ime/base/share/fcitx5#' src/imeapi/CMakeLists.txt
+    modules:
+      - ../flathub-shared-modules/lua5.3/lua-5.3.5.json
+  - name: libime
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=/app/lib
+    sources:
+      - type: git
+        url: https://github.com/fcitx/libime.git
+        branch: master
+        commit: a108d15b06f0885f2fcc95d035614665392bc83b
+#     - type: archive
+#       url: https://github.com/kpu/kenlm/archive/96d303cfb1a0c21b8f060dbad640d7ab301c019a.tar.gz
+#       sha256: ba140d7f8e36fcc1ce03252f413b4a854e7dc313eedf964767a025c0eb2ad674
+#       dest: src/libime/core/kenlm
+      - type: file
+        url: https://download.fcitx-im.org/data/lm_sc.3gm.arpa-20140820.tar.bz2
+        sha256: 751bab7c55ea93a2cedfb0fbb7eb09f67d4da9c2c55496e5f31eb8580f1d1e2f
+        dest-filename: data/lm_sc.3gm.arpa-20140820.tar.bz2
+      - type: file
+        url: https://download.fcitx-im.org/data/dict.utf8-20200715.tar.xz
+        sha256: 23c36cd4df6de17f66bf2dfc453ec6c773641a479b6020c9e787552489c9c7d2
+        dest-filename: data/dict.utf8-20200715.tar.xz
+      - type: file
+        url: https://download.fcitx-im.org/data/table.tar.gz
+        sha256: 6196053c724125e3ae3d8bd6b2f9172d0c83b65b0d410d3cde63b7a8d6ab87b7
+        dest-filename: data/table.tar.gz
+    modules:
+      - ../shared-modules/boost/boost.json
+  - name: opencc
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://github.com/BYVoid/OpenCC/archive/ver.1.1.1/opencc-1.1.1.tar.gz
+        sha256: 2d4987dc84275f252d47bc6d8c81b452f6a6e82caa26f284c854a8153ccf5933
+   #modules:
+   #  - name: python-setuptools
+   #  - name: python-wheel
+  - name: gd
+    sources:
+      - type: archive
+        url: https://github.com/libgd/libgd/releases/download/gd-2.3.0/libgd-2.3.0.tar.xz
+        sha256: ecd9155b9a417fb3f837f29e5966323796de247789163761dd72dbf83bfcac58
+    cleanup:
+      - /bin
+  - name: libotf
+    sources:
+      - type: archive
+        url: https://download.savannah.gnu.org/releases/m17n/libotf-0.9.16.tar.gz
+        sha256: 68db0ca3cda2d46a663a92ec26e6eb5adc392ea5191bcda74268f0aefa78066b
+    cleanup:
+      - /bin
+    modules:
+      - name: libxaw
+        config-opts:
+          - --sysconfdir=/app/etc
+        sources:
+          - type: archive
+            url: https://xorg.freedesktop.org/releases/individual/lib/libXaw-1.0.13.tar.bz2
+            sha256: 8ef8067312571292ccc2bbe94c41109dcf022ea5a4ec71656a83d8cce9edb0cd
+        cleanup:
+          - /share/doc
+          - /share/man
+        modules:
+          - name: libxmu
+            config-opts:
+              - --sysconfdir=/app/etc
+            sources:
+              - type: archive
+                url: https://xorg.freedesktop.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
+                sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+            cleanup:
+              - /share/doc
+    # for pinyin-zhwiki dicts
+  - name: pypinyin
+    buildsystem: simple
+    build-commands:
+      - python3 setup.py build
+      - python3 setup.py install --skip-build --prefix=/app
+    sources:
+      - type: archive
+        url: https://files.pythonhosted.org/packages/source/p/pypinyin/pypinyin-0.37.0.tar.gz
+        sha256: 597b9d375bcd1a8a9c9bda7f813d58bd9e148288006f62d34ab2f3a9ff4cba33
+  - name: python2
+   #build-options:
+   #  strip: false
+   #config-opts:
+   #  - --enable-shared
+    sources:
+      - type: archive
+        url: https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
+        sha256: b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
+    cleanup:
+      - /include
+      - /share/man
+
+  # optional for fcitx-chinese-addons
+# - name: qt5-webkit
+#   buildsystem: cmake
+#   config-opts:
+#     - -DPORT=Qt
+#     - -DENABLE_TOOLS=OFF
+#   sources:
+#     - type: archive
+#       url: https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-5.212.0-alpha4/qtwebkit-5.212.0-alpha4.tar.xz
+#       sha256: 9ca126da9273664dd23a3ccd0c9bebceb7bb534bddd743db31caf6a5a6d4a9e6
+# - name: fcitx5-material-color
+#
+# extensions
+# - name: fcitx5-anthy
+# - name: fcitx5-chewing
+# - name: fcitx5-chinese-addons
+# - name: fcitx5-hangul
+# - name: fcitx5-m17n
+# - name: fcitx5-mozc
+# - name: fcitx5-pinyin-zhwiki
+# - name: fcitx5-pinyin-zhwiki-rime
+# - name: fcitx5-rime
+# - name: fcitx5-sayura
+# - name: fcitx5-skk
+# - name: fcitx5-unikey
+# - name: fcitx5-pinyin-moegirl-rime
+#
+# extra themes/skins
+# - name: fcitx5-simple-them
+# - name: fcitx5-skin-adwaita-dark
+# - name: fcitx5-skin-simple-blue
+# - name: fcitx5-skin-material
+# - name: fcitx5-skin-materia-exp
+# - name: fcitx5-skin-dark-transparent
+# - name: fcitx5-skin-dark-numix
+# - name: fcitx5-skin-base16-material-darker
+# - name: fcitx5-dark-default
+# - name: fcitx5-bing-input-color // not actually a full skin?
