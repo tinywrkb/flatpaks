@@ -29,7 +29,6 @@ finish-args:
   - --own-name=org.kde.*
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=x11
     # TODO: test notifications
   - --talk-name=org.freedesktop.Notifications
