@@ -145,18 +145,6 @@ modules:
       - type: file
         path: rename_icons
     modules:
-      - name: extra-cmake-modules
-        cleanup:
-          - '*'
-        buildsystem: cmake
-        config-opts:
-          - -DBUILD_HTML_DOCS=OFF
-          - -DBUILD_QTHELP_DOCS=OFF
-          - -DBUILD_TESTING=OFF
-        sources:
-          - type: archive
-            url: https://download.kde.org/stable/frameworks/5.69/extra-cmake-modules-5.69.0.tar.xz
-            sha256: dacc8e0be8605b6c609ea35bda2d87bf06e1d228bcbf8957b0f0230c4a888359
       - name: json-c
         cleanup:
           - /lib/cmake
