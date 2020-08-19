@@ -332,18 +332,6 @@ modules:
       - type: archive
         url: https://files.pythonhosted.org/packages/source/p/pypinyin/pypinyin-0.37.0.tar.gz
         sha256: 597b9d375bcd1a8a9c9bda7f813d58bd9e148288006f62d34ab2f3a9ff4cba33
-  - name: python2
-   #build-options:
-   #  strip: false
-   #config-opts:
-   #  - --enable-shared
-    sources:
-      - type: archive
-        url: https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
-        sha256: b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
-    cleanup:
-      - /include
-      - /share/man
   - name: libgee
     sources:
       - type: archive
@@ -383,6 +371,19 @@ modules:
                   - touch */*.stamp
             cleanup:
               - '*'
+    # keep python2 the last compiled module so no other module will notice it
+  - name: python2
+   #build-options:
+   #  strip: false
+   #config-opts:
+   #  - --enable-shared
+    sources:
+      - type: archive
+        url: https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
+        sha256: b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
+    cleanup:
+      - /include
+      - /share/man
   - name: monkey-business
     buildsystem: simple
     build-commands:
