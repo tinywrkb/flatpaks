@@ -8,8 +8,7 @@ add-extensions:
   com.fcitx_im.fcitx5.ime:
     directory: ime
     # dirs: share/fcitx5{data,default,lua,spell,testing,themes,unicode}
-    # not in 5 (so far): share/fcitx5/configdesc;share/fcitx5/imicon;share/fcitx5/skin/classic;share/fcitx/skin/dark;share/fcitx/skin/default;share/fcitx/table
-    merge-dirs: bin;lib/fcitx5;share/fcitx5/addon;share/fcitx5/data;share/fcitx5/data-quickphrase.d;share/fcitx5/inputmethod;share/fcitx5/lua/imeapi;share/fcitx5/lua/imeapi-extensions
+    merge-dirs: bin;lib/fcitx5;share/fcitx5/addon;share/fcitx5/data;share/fcitx5/data-quickphrase.d;share/fcitx5/inputmethod;share/fcitx5/lua/imeapi;share/fcitx5/lua/imeapi-extensions;share/fcitx5/table
     subdirectories: true
     no-autodownload: true
     add-ld-path: lib
@@ -92,52 +91,9 @@ modules:
           ln -s /app/ime/share/fcitx5/lua/imeapi-extensions /app/ime/base/share/fcitx5/lua/imeapi/extensions
 
           #for _res in lib/fcitx5 share/fcitx5/{addon,configdesc,imicon,inputmethod,skin,table}; do
-          for _res in lib/fcitx5 share/fcitx5/{addon,data,inputmethod,lua}; do
+          for _res in lib/fcitx5 share/fcitx5/{addon,data,inputmethod,lua,table}; do
             ln -s /app/ime/${_res} /app/${_res}
           done
-
-        # anthy
-      - ln -s -t /app/share/fcitx5/ /app/ime/anthy/share/fcitx5/anthy
-      - ln -s -t /app/share/ /app/ime/anthy/share/anthy
-
-        # chinese-addons
-      - ln -s -t /app/share/fcitx5/ /app/ime/chinese-addons/share/fcitx5/{pinyin,pinyinhelper,punctuation}
-
-        # chewing
-      - ln -s -t /app/share/ /app/ime/chewing/share/libchewing
-
-        # hangul
-      - ln -s -t /app/share/ /app/ime/hangul/share/libhangul
-      - ln -s -t /app/share/fcitx5/ /app/ime/hangul/share/fcitx5/hangul
-
-        # kkc
-          # TODO: lib/girepository-1.0 symlink?
-          # TODO: lib/python3.7 symlink? or PYTHONPATH?
-          # TODO: share/gir-1.0 symlink?
-      - ln -s -t /app/lib/ /app/ime/kkc/lib/libkkc
-      - ln -s -t /app/share/fcitx5/ /app/ime/kkc/share/fcitx5/kkc
-      - ln -s -t /app/share/ /app/ime/kkc/share/libkkc
-     #- ln -s -t /app/share/ /app/ime/kkc/share/skk
-
-        # m17n
-      - ln -s -t /app/lib/ /app/ime/m17n/lib/m17n
-      - ln -s -t /app/share/fcitx5/ /app/ime/m17n/share/fcitx5/m17n
-      - ln -s -t /app/share/ /app/ime/m17n/share/m17n
-
-        # mozc
-      - ln -s -t /app/lib/ /app/ime/mozc/lib/mozc
-      - ln -s -t /app/share/fcitx5/ /app/ime/mozc/share/fcitx5/mozc
-
-        # rime
-      - ln -s -t /app/share/ /app/ime/rime/share/rime-data
-
-        # skk
-          # TODO: lib/girepository-1.0 symlink?
-          # TODO: share/gir-1.0 symlink?
-          # TODO:  /app/ime/kkc/share/skk is the same as with kkc, maybe use mergedir or move lib here
-      - ln -s -t /app/share/fcitx5/ /app/ime/skk/share/fcitx5/skk
-      - ln -s -t /app/share/ /app/ime/skk/share/libskk
-      - ln -s -t /app/share/ /app/ime/skk/share/skk
 
     sources:
       - type: git
@@ -427,6 +383,58 @@ modules:
           - type: archive
             url: https://downloads.sourceforge.net/swig/swig-4.0.2.tar.gz
             sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
+  - name: monkey-business
+    buildsystem: simple
+    build-commands:
+        # anthy
+      - ln -s -t /app/share/fcitx5/ /app/ime/anthy/share/fcitx5/anthy
+      - ln -s -t /app/share/ /app/ime/anthy/share/anthy
+
+        # chinese-addons
+      - ln -s -t /app/share/fcitx5/ /app/ime/chinese-addons/share/fcitx5/{pinyin,pinyinhelper,punctuation}
+
+        # chewing
+      - ln -s -t /app/share/ /app/ime/chewing/share/libchewing
+
+        # hangul
+      - ln -s -t /app/share/ /app/ime/hangul/share/libhangul
+      - ln -s -t /app/share/fcitx5/ /app/ime/hangul/share/fcitx5/hangul
+
+        # libthai
+      - ln -s -t /app/share/ /app/ime/libthai/share/libthai
+
+        # kkc
+          # TODO: lib/girepository-1.0 symlink?
+          # TODO: lib/python3.7 symlink? or PYTHONPATH?
+          # TODO: share/gir-1.0 symlink?
+      - ln -s -t /app/lib/ /app/ime/kkc/lib/libkkc
+      - ln -s -t /app/share/fcitx5/ /app/ime/kkc/share/fcitx5/kkc
+      - ln -s -t /app/share/ /app/ime/kkc/share/libkkc
+     #- ln -s -t /app/share/ /app/ime/kkc/share/skk
+
+        # m17n
+      - ln -s -t /app/lib/ /app/ime/m17n/lib/m17n
+      - ln -s -t /app/share/fcitx5/ /app/ime/m17n/share/fcitx5/m17n
+      - ln -s -t /app/share/ /app/ime/m17n/share/m17n
+
+        # mozc
+      - ln -s -t /app/lib/ /app/ime/mozc/lib/mozc
+      - ln -s -t /app/share/fcitx5/ /app/ime/mozc/share/fcitx5/mozc
+
+        # rime
+      - ln -s -t /app/share/ /app/ime/rime/share/rime-data
+
+        # skk
+          # TODO: lib/girepository-1.0 symlink?
+          # TODO: share/gir-1.0 symlink?
+          # TODO:  /app/ime/kkc/share/skk is the same as with kkc, maybe use mergedir or move lib here
+      - ln -s -t /app/share/fcitx5/ /app/ime/skk/share/fcitx5/skk
+      - ln -s -t /app/share/ /app/ime/skk/share/libskk
+      - ln -s -t /app/share/ /app/ime/skk/share/skk
+
+        # zhuyin
+      - ln -s -t /app/lib/ /app/ime/zhuyin/lib/libpinyin
+      - ln -s -t /app/share/fcitx5 /app/ime/zhuyin/share/fcitx5/zhuyin
 
   # optional for fcitx-chinese-addons
 # - name: qt5-webkit
@@ -441,12 +449,9 @@ modules:
 # - name: fcitx5-material-color
 #
 # # TODO: add extensions
-# - name: fcitx5-libthai
 # - name: fcitx5-pinyin-moegirl-rime
 # - name: fcitx5-pinyin-zhwiki
 # - name: fcitx5-pinyin-zhwiki-rime
-# - name: fcitx5-table-extra
-# - name: fcitx5-zhuyin
 # - name: libime-jyutping
 # - name: libime-web?
 #

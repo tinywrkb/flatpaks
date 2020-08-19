@@ -1,0 +1,37 @@
+app-id: com.fcitx_im.fcitx5.ime.table-extra
+runtime: com.fcitx_im.fcitx5
+sdk: org.kde.Sdk//5.14
+build-extension: true
+separate-locales: false
+build-options:
+  prefix: /app/ime/table-extra
+  libdir: /app/ime/table-extra/lib
+  ldflags: -L/app/ime/table-extra/lib
+  prepend-pkg-config-path: /app/ime/table-extra/lib/pkgconfig
+  prepend-ld-library-path: /app/ime/table-extra/lib
+  prepend-path: /app/ime/table-extra/bin
+  cflags: -I/app/ime/table-extra/include
+  cxxflags: -I/app/ime/table-extra/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: fcitx5-table-extra
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=${FLATPAK_DEST}/lib
+    post-install:
+      - ./rename_icons
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5-table-extra.git
+        branch: master
+        commit: 41d22dc022f13ea5998368d6fcbb5a9ea7b57cda
+      - type: file
+        path: rename_icons
+      - type: shell
+        commands:
+          - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#${CMAKE_INSTALL_PREFIX}/share/fcitx5#g'
+              tables/CMakeLists.txt
