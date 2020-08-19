@@ -102,6 +102,10 @@ modules:
       - ln -s -t /app/share/fcitx5/ /app/ime/anthy/share/fcitx5/anthy
       - ln -s -t /app/share/ /app/ime/anthy/share/anthy
 
+        # mozc
+      - ln -s -t /app/lib/ /app/ime/mozc/lib/mozc
+      - ln -s -t /app/share/fcitx5/ /app/ime/mozc/share/fcitx5/mozc
+
     sources:
       - type: git
         url: https://github.com/fcitx/fcitx5.git
@@ -320,6 +324,28 @@ modules:
     cleanup:
       - /include
       - /share/man
+  - name: marisa
+    build-commands:
+      - make -C bindings swig-python
+      - cd bindings/python && python3 setup.py build_ext
+        --include-dirs=../../include
+        --library-dirs=../../lib/marisa/.libs
+      - cd bindings/python && python3 setup.py build
+    post-install:
+      - cd bindings/python && python3 setup.py install --prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/s-yata/marisa-trie/archive/v0.2.6.tar.gz
+        sha256: 1063a27c789e75afa2ee6f1716cc6a5486631dcfcb7f4d56d6485d2462e566de
+      - type: shell
+        commands:
+          - autoreconf -i
+    modules:
+      - name: swig
+        sources:
+          - type: archive
+            url: https://downloads.sourceforge.net/swig/swig-4.0.2.tar.gz
+            sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
 
   # optional for fcitx-chinese-addons
 # - name: qt5-webkit
@@ -337,13 +363,17 @@ modules:
 # - name: fcitx5-chewing
 # - name: fcitx5-hangul
 # - name: fcitx5-m17n
-# - name: fcitx5-mozc
-# - name: fcitx5-pinyin-zhwiki
-# - name: fcitx5-pinyin-zhwiki-rime
 # - name: fcitx5-rime
 # - name: fcitx5-sayura
 # - name: fcitx5-skk
 # - name: fcitx5-unikey
+# - name: fcitx5-zhuyin
+# - name: fcitx5-table-extra
+# - name: fcitx5-libthai
+# - name: libime-jyutping
+# - name: libime-web?
+# - name: fcitx5-pinyin-zhwiki
+# - name: fcitx5-pinyin-zhwiki-rime
 # - name: fcitx5-pinyin-moegirl-rime
 #
 # extra themes/skins
