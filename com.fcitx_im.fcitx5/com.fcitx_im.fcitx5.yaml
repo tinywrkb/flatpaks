@@ -262,9 +262,31 @@ modules:
         url: https://github.com/BYVoid/OpenCC/archive/ver.1.1.1/opencc-1.1.1.tar.gz
         sha256: 2d4987dc84275f252d47bc6d8c81b452f6a6e82caa26f284c854a8153ccf5933
         # needed?
-   #modules:
+    modules:
    #  - name: python-setuptools
    #  - name: python-wheel
+      - name: marisa
+        build-commands:
+          - make -C bindings swig-python
+          - cd bindings/python && python3 setup.py build_ext
+            --include-dirs=../../include
+            --library-dirs=../../lib/marisa/.libs
+          - cd bindings/python && python3 setup.py build
+        post-install:
+          - cd bindings/python && python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+        sources:
+          - type: archive
+            url: https://github.com/s-yata/marisa-trie/archive/v0.2.6.tar.gz
+            sha256: 1063a27c789e75afa2ee6f1716cc6a5486631dcfcb7f4d56d6485d2462e566de
+          - type: shell
+            commands:
+              - autoreconf -i
+        modules:
+          - name: swig
+            sources:
+              - type: archive
+                url: https://downloads.sourceforge.net/swig/swig-4.0.2.tar.gz
+                sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
   - name: gd
     sources:
       - type: archive
@@ -361,28 +383,6 @@ modules:
                   - touch */*.stamp
             cleanup:
               - '*'
-  - name: marisa
-    build-commands:
-      - make -C bindings swig-python
-      - cd bindings/python && python3 setup.py build_ext
-        --include-dirs=../../include
-        --library-dirs=../../lib/marisa/.libs
-      - cd bindings/python && python3 setup.py build
-    post-install:
-      - cd bindings/python && python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
-    sources:
-      - type: archive
-        url: https://github.com/s-yata/marisa-trie/archive/v0.2.6.tar.gz
-        sha256: 1063a27c789e75afa2ee6f1716cc6a5486631dcfcb7f4d56d6485d2462e566de
-      - type: shell
-        commands:
-          - autoreconf -i
-    modules:
-      - name: swig
-        sources:
-          - type: archive
-            url: https://downloads.sourceforge.net/swig/swig-4.0.2.tar.gz
-            sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
   - name: monkey-business
     buildsystem: simple
     build-commands:
