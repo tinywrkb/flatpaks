@@ -1,0 +1,124 @@
+app-id: com.fcitx_im.fcitx5.themes.extra
+runtime: com.fcitx_im.fcitx5
+sdk: org.kde.Sdk//5.14
+build-extension: true
+separate-locales: false
+modules:
+  - name: fcitx5-material-color
+    buildsystem: simple
+    build-commands:
+      - |
+          install -Dm644 arrow.png radio.png -t ${FLATPAK_DEST}/share/fcitx5-material-color/
+          for _variant in blue brown deepPurple indigo pink red teal; do
+            _variant_name=material-color-${_variant}
+            install -Dm644 panel-$_variant.png -t ${FLATPAK_DEST}/share/fcitx5/themes/$_variant_name/
+            install -Dm644 theme-$_variant.conf ${FLATPAK_DEST}/share/fcitx5/themes/$_variant_name/theme.conf
+            ln -s -t ${FLATPAK_DEST}/share/fcitx5/themes/$_variant_name/ ${FLATPAK_DEST}/share/fcitx5-material-color/{arrow,radio}.png
+            sed -i "s/^Name=.*/Name=$_variant_name/" ${FLATPAK_DEST}/share/fcitx5/themes/$_variant_name/theme.conf
+          done
+    sources:
+      - type: git
+        url: https://github.com/hosxy/Fcitx5-Material-Color.git
+        branch: master
+        commit: 41d52e93ba3bd68417635b257e8187be52acdb64
+  - name: fcitx5-dark-default
+    buildsystem: simple
+    build-commands:
+      - sed -i
+          -e 's/Per defecte/Per defecte(Negre)/g'
+          -e 's/\[de\]=Standard/\[de\]=Standard(Schwarz)/g'
+          -e 's/\[da\]=Standard/\[da\]=Standard(Sort)/g'
+          -e 's/既定/既定(黒)/g'
+          -e 's/기본값/기본값(검정색)/g'
+          -e 's/По умолчанию/По умолчанию(черный)/g'
+          -e 's/默认/默认(黑)/g'
+          -e 's/預設/預設(黑)/g'
+          -e 's/Default/Default(Dark)/g'
+          theme.conf
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/default-dark/ {arrow,highlight,panel,radio}.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/evansan/fcitx5-dark.git
+        branch: master
+        commit: 9ec539e6d2be5415abf6224de6d74775d59abfb6
+  - name: fcitx5-adwaita-dark
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/adwaita-dark/ *.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/escape0707/fcitx5-adwaita-dark.git
+        branch: master
+        commit: 2938a7cf417ec149aa26fc35949911ae297b0799
+  - name: fcitx5-base16-material-darker
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/base16-material-darker/ *.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/btstream/fcitx5-skin-base16-material-darker.git
+        branch: master
+        commit: 38bf71ad459a1ba6c84e212939f50541428d7ef3
+  - name: fcitx5-simple-blue
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/simple-blue/ *.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/weearc/fcitx5-skin-simple-blue.git
+        branch: master
+        commit: 8b2b2e225c3d6b4f70082716e06d7bc93dca046c
+  - name: fcitx5-simple-theme
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/simple-theme/ *.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/iovxw/fcitx5-simple-theme.git
+        branch: master
+        commit: ccaa0d959bec24b81c04f14e353bc008a8326150
+  - name: fcitx5-dark-numix
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/dark-numix/ *.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/cjxgm/fcitx5-dark-numix.git
+        branch: master
+        commit: bf0049dd46f6336e3f7db60a17e61a4c34dd082c
+  - name: fcitx5-dark-transparent
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/dark-transparent/ *.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/hosxy/fcitx5-dark-transparent.git
+        branch: master
+        commit: e196b8aa748d6a8747ff9f943a3ca25f45441c37
+  - name: fcitx5-materia-exp
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/materia-exp/ *.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/hosxy/Fcitx5-Materia-EXP.git
+        branch: master
+        commit: 09b9f878923efa6136f60e77440860f92392a932
+  - name: fcitx5-material
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/material/ material/*.{conf,png,svg}
+    sources:
+      - type: git
+        url: https://github.com/hrko99/fcitx-skin-material.git
+        branch: master
+        commit: be0d0de4fc744fec83276cd67268aef3d81a6fc0
+  - name: fcitx5-bing-input-color
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fcitx5/themes/bing-input-color/ *.png theme.conf
+    sources:
+      - type: git
+        url: https://github.com/skykeyjoker/Fcitx5-Bing-Input-Color.git
+        branch: master
+        commit: 10a5fba51899dbbe756528b0bb60f941aa56140c
