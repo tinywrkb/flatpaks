@@ -1,0 +1,55 @@
+app-id: com.fcitx_im.fcitx5.ime.m17n
+runtime: com.fcitx_im.fcitx5
+sdk: org.kde.Sdk//5.14
+build-extension: true
+separate-locales: false
+build-options:
+  prefix: /app/ime/m17n
+  libdir: /app/ime/m17n/lib
+  ldflags: -L/app/ime/m17n/lib
+  prepend-pkg-config-path: /app/ime/m17n/lib/pkgconfig
+  prepend-ld-library-path: /app/ime/m17n/lib
+  prepend-path: /app/ime/m17n/bin
+  cflags: -I/app/ime/m17n/include
+  cxxflags: -I/app/ime/m17n/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: fcitx5-m17n
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=${FLATPAK_DEST}/lib
+      - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+      - ./rename_icons
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5-m17n.git
+        branch: master
+        commit: 906eb4399d384bb4f0e7ae4f6f33fe5070583def
+      - type: file
+        path: rename_icons
+      - type: shell
+        commands:
+          - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#${CMAKE_INSTALL_PREFIX}/share/fcitx5#g'
+              im/CMakeLists.txt
+    modules:
+      - name: m17n-lib
+        make-args:
+          - --jobs=1
+        sources:
+          - type: archive
+            url: https://download.savannah.gnu.org/releases/m17n/m17n-lib-1.8.0.tar.gz
+            sha256: 78bacae7451822dfff62482ce4f9433c5ae82846e4c64b590541e29e800fe64a
+          - type: shell
+            commands:
+              - sed -i "s/freetype-config/pkg-config freetype2/" configure
+        modules:
+          - name: m17n-db
+            sources:
+              - type: archive
+                url: https://download.savannah.gnu.org/releases/m17n/m17n-db-1.8.0.tar.gz
+                sha256: 657f23835b6655e7a63a362bac66260454ee356da4855eadb9366911d33fdc6d

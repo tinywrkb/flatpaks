@@ -1,0 +1,38 @@
+app-id: com.fcitx_im.fcitx5.ime.unikey
+runtime: com.fcitx_im.fcitx5
+sdk: org.kde.Sdk//5.14
+build-extension: true
+separate-locales: false
+build-options:
+  prefix: /app/ime/unikey
+  libdir: /app/ime/unikey/lib
+  ldflags: -L/app/ime/unikey/lib
+  prepend-pkg-config-path: /app/ime/unikey/lib/pkgconfig
+  prepend-ld-library-path: /app/ime/unikey/lib
+  prepend-path: /app/ime/unikey/bin
+  cflags: -I/app/ime/unikey/include
+  cxxflags: -I/app/ime/unikey/include
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: fcitx5-unikey
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=${FLATPAK_DEST}/lib
+    post-install:
+      - ./rename_icons
+      - mv ${FLATPAK_DEST}/lib/fcitx5/qt5 ${FLATPAK_DEST}/lib/fcitx5-qt5
+    sources:
+      - type: git
+        url: https://github.com/fcitx/fcitx5-unikey.git
+        branch: master
+        commit: 6ac09e75c1d86ed78df2ca5c2833dea364ced654
+      - type: file
+        path: rename_icons
+      - type: shell
+        commands:
+          - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#${CMAKE_INSTALL_PREFIX}/share/fcitx5#g'
+              src/CMakeLists.txt
