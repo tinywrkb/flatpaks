@@ -1,11 +1,11 @@
-app-id: com.fcitx_im.fcitx5
+app-id: org.fcitx_im.fcitx5
 base: io.qt.qtwebengine.BaseApp
 base-version: '5.14'
 runtime: org.kde.Platform
 runtime-version: '5.14'
 sdk: org.kde.Sdk
 add-extensions:
-  com.fcitx_im.fcitx5.ime:
+  org.fcitx_im.fcitx5.ime:
     directory: ime
     # folders that aren't included in merge-dirs (not in extensions);
     #   share/fcitx5{default,spell,testing,unicode}
@@ -13,16 +13,16 @@ add-extensions:
     subdirectories: true
     no-autodownload: true
     add-ld-path: lib
-  com.fcitx_im.fcitx5.ime.base:
+  org.fcitx_im.fcitx5.ime.base:
     directory: ime/base
     no-autodownload: false
     bundle: true
-  com.fcitx_im.fcitx5.themes:
+  org.fcitx_im.fcitx5.themes:
     directory: themes
     merge-dirs: share/fcitx5/themes
     subdirectories: true
     no-autodownload: true
-  com.fcitx_im.fcitx5.themes.base:
+  org.fcitx_im.fcitx5.themes.base:
     directory: themes/base
     no-autodownload: false
     bundle: true
@@ -68,7 +68,7 @@ modules:
         # rename desktop files
       - |
           cd /app/share/applications/
-          mv fcitx5-configtool.desktop com.fcitx_im.fcitx5.configtool.desktop
+          mv fcitx5-configtool.desktop org.fcitx_im.fcitx5.configtool.desktop
 
       - mkdir -p /app/ime
 

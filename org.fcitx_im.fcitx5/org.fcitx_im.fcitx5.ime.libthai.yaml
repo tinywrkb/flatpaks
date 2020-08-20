@@ -1,5 +1,5 @@
-app-id: com.fcitx_im.fcitx5.ime.libthai
-runtime: com.fcitx_im.fcitx5
+app-id: org.fcitx_im.fcitx5.ime.libthai
+runtime: org.fcitx_im.fcitx5
 sdk: org.kde.Sdk//5.14
 build-extension: true
 separate-locales: false
