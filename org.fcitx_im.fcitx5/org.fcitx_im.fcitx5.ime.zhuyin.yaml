@@ -24,6 +24,7 @@ modules:
       - -DCMAKE_INSTALL_LIBDIR=${FLATPAK_DEST}/lib
     post-install:
       - ./rename_icons
+      - sed -i 's/Icon=fcitx-\(.*\)/Icon=org.fcitx_im.fcitx5.\1/g' ${FLATPAK_DEST}/share/fcitx5/inputmethod/*.conf
       - mv ${FLATPAK_DEST}/share/fcitx5/lua/imeapi/extensions ${FLATPAK_DEST}/share/fcitx5/lua/imeapi-extensions
       - rmdir ${FLATPAK_DEST}/share/fcitx5/lua/imeapi
     sources:

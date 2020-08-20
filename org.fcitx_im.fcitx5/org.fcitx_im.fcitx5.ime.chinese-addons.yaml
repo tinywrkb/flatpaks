@@ -27,11 +27,12 @@ modules:
       - -DFEM_INCLUDE_INSTALL_DIR=${FLATPAK_DEST}/include/Fcitx5/Module/fcitx-module
     post-install:
       - ./rename_icons
+      - sed -i 's/Icon=fcitx-\(.*\)/Icon=org.fcitx_im.fcitx5.\1/g' ${FLATPAK_DEST}/share/fcitx5/inputmethod/*.conf
       - mv ${FLATPAK_DEST}/lib/fcitx5/qt5 ${FLATPAK_DEST}/lib/fcitx5-qt5
     sources:
       - type: git
         url: https://github.com/fcitx/fcitx5-chinese-addons.git
-        branch: master
+       #branch: master
         commit: 6317296d5b54b29002becc3effa039d8baab8ae3
       - type: file
         url: https://download.fcitx-im.org/data/py_table-20121124.tar.gz

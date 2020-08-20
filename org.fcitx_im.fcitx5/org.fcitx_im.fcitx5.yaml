@@ -73,6 +73,7 @@ modules:
       - mkdir -p /app/ime
 
      #- ./rename_icons
+     # - sed -i 's/Icon=fcitx-\(.*\)/Icon=org.fcitx_im.fcitx5.\1/g' ${FLATPAK_DEST}/share/fcitx5/inputmethod/*.conf
 
         # create base ime extension
         #
@@ -500,6 +501,15 @@ modules:
         # zhuyin
       - ln -s -t /app/lib/ /app/ime/zhuyin/lib/libpinyin
       - ln -s -t /app/share/fcitx5 /app/ime/zhuyin/share/fcitx5/zhuyin
+
+
+        # install icons from extensions to be exported
+      - ./install_icons
+    sources:
+      - type: file
+        path: install_icons
+      - type: dir
+        path: resources
 
 # # TODO: add extensions
 # - name: fcitx5-pinyin-moegirl-rime

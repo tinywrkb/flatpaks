@@ -7,6 +7,8 @@
 #done < <(find ${FLATPAK_DEST}/share/icons/hicolor -type f -and \( -name 'fcitx.png' -or -name 'fcitx.svg' \) -print0)
 
 _icon_path=""
+_icon_fname=""
 while IFS= read -r -d '' _icon_path; do
-  mv $_icon_path $(dirname $_icon_path)/org.fcitx_im.fcitx5.$(basename $_icon_path)
+  _icon_fname=$(basename $_icon_path)
+  mv $_icon_path $(dirname $_icon_path)/org.fcitx_im.fcitx5.${_icon_fname#fcitx-}
 done < <(find ${FLATPAK_DEST}/share/icons/hicolor -type f -and -name 'fcitx-*' -print0)

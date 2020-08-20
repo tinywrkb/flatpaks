@@ -24,6 +24,7 @@ modules:
       - -DCMAKE_INSTALL_LIBDIR=${FLATPAK_DEST}/lib
     post-install:
       - ./rename_icons
+      - sed -i 's/Icon=fcitx-\(.*\)/Icon=org.fcitx_im.fcitx5.\1/g' ${FLATPAK_DEST}/share/fcitx5/inputmethod/*.conf
       - mv ${FLATPAK_DEST}/lib/fcitx5/qt5 ${FLATPAK_DEST}/lib/fcitx5-qt5
     sources:
       - type: git

@@ -40,7 +40,8 @@ modules:
       - install -Dm644 unix/fcitx5/mozc-addon.conf ${FLATPAK_DEST}/share/fcitx5/addon/mozc.conf
       - install -Dm644 unix/fcitx5/mozc.conf ${FLATPAK_DEST}/share/fcitx5/inputmethod/mozc.conf
     post-install:
-      - sed -i 's/Icon.*/Icon=mozc/' ${FLATPAK_DEST}/share/fcitx5/inputmethod/mozc.conf
+     #- sed -i 's/Icon=fcitx-\(.*\)/Icon=org.fcitx_im.fcitx5.\1/g' ${FLATPAK_DEST}/share/fcitx5/inputmethod/*.conf
+      - sed -i 's/Icon.*/Icon=org.fcitx_im.fcitx5.mozc/' ${FLATPAK_DEST}/share/fcitx5/inputmethod/mozc.conf
     sources:
       - type: git
         url: https://github.com/fcitx/mozc.git
