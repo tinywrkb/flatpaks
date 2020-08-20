@@ -36,6 +36,10 @@ modules:
         commands:
           - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#${CMAKE_INSTALL_PREFIX}/share/fcitx5#g'
               {src,data}/CMakeLists.txt
+          - sed -i
+              -e 's/fcitx-hanja-active/org.fcitx_im.fcitx5.hanja-active/'
+              -e 's/fcitx-hanja-inactive/org.fcitx_im.fcitx5.hanja-inactive/'
+              src/engine.h
     modules:
       - name: libhangul
         buildsystem: simple

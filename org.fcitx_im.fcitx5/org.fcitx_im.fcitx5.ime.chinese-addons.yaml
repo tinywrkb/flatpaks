@@ -49,3 +49,5 @@ modules:
           - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#${CMAKE_INSTALL_PREFIX}/share/fcitx5#g'
               modules/{chttrans,cloudpinyin,fullwidth,pinyinhelper,punctuation}/CMakeLists.txt
               im/pinyin/CMakeLists.txt
+      - type: patch
+        path: fcitx5-chinese-addons-icon-exports-workaround.patch

@@ -36,6 +36,13 @@ modules:
         commands:
           - sed -i 's#${FCITX_INSTALL_PKGDATADIR}#${CMAKE_INSTALL_PREFIX}/share/fcitx5#g'
               {src,profile}/CMakeLists.txt
+          - sed -i
+              -e 's/anthy-symbol/org.fcitx_im.fcitx5.anthy-symbol/g'
+              -e 's/anthy-period-japanese/org.fcitx_im.fcitx5.anthy-period-japanese/g'
+              -e 's/anthy-period-latin/org.fcitx_im.fcitx5.anthy-period-latin/g'
+              -e 's/anthy-period-wide-japanese/org.fcitx_im.fcitx5.anthy-period-wide-japanese/g'
+              -e 's/anthy-period-wide-latin/org.fcitx_im.fcitx5.anthy-period-wide-latin/g'
+              src/engine.cpp
     modules:
       - name: anthy
         config-opts:

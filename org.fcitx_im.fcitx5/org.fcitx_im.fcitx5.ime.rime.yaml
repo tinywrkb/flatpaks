@@ -34,11 +34,19 @@ modules:
           while IFS= read -r _icon_path; do
             _icon_fname=$(basename $_icon_path)
             _icon_fname_pf=${_icon_fname#rime-}
-            _icon_fname_pf=${_icon_fname#rime.}
+            _icon_fname_pf=${_icon_fname_pf#rime.}
             mv $_icon_path $(dirname $_icon_path)/org.fcitx_im.fcitx5.rime.${_icon_fname_pf}
           done < icons_to_rename
       - sed -i 's/Icon=\(.*\)/Icon=org.fcitx_im.fcitx5.\1/g' ${FLATPAK_DEST}/share/fcitx5/inputmethod/*.conf
-
+      - sed -i
+          -e 's/setIcon("rime-deploy")/setIcon("org.fcitx_im.fcitx5.rime.deploy")/g'
+          -e 's/"rime-deploy", _("Rime"), "rime-deploy", _("Rime"), message,/"rime-deploy", _("Rime"), "org.fcitx_im.fcitx5.rime.deploy"), _("Rime"), message,/g'
+          -e 's/result = "rime-disable"/result = "org.fcitx_im.fcitx5.rime.disable"/g'
+          -e 's/result = "rime-im"/result = "org.fcitx_im.fcitx5.rime.im"/g'
+          -e 's/stringutils::concat("rime-im-"/stringutils::concat("org.fcitx_im.fcitx5.rime.im-"/g'
+          -e 's/result = "rime-latin"/result = "rg.fcitx_im.fcitx5.rime.latin"/g'
+          -e 's/setIcon(_("rime-sync"))/setIcon(_("org.fcitx_im.fcitx5.rime.sync"))/g'
+          src/rimeengine.cpp
     sources:
       - type: git
         url: https://github.com/fcitx/fcitx5-rime.git
