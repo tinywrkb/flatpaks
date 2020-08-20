@@ -1,0 +1,32 @@
+app-id: org.fcitx_im.fcitx4.ime.unikey
+runtime: org.fcitx_im.fcitx4
+sdk: org.kde.Sdk//5.14
+build-extension: true
+separate-locales: false
+build-options:
+  prefix: /app/ime/unikey
+  libdir: /app/ime/unikey/lib
+  ldflags: -L/app/ime/unikey/lib
+  prepend-pkg-config-path: /app/ime/unikey/lib/pkgconfig
+  prepend-ld-library-path: /app/ime/unikey/lib
+  prepend-path: /app/ime/unikey/bin
+  cflags: -I/app/ime/unikey/include
+  cxxflags: -I/app/ime/unikey/include
+modules:
+  - name: fcitx-unikey
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_QT=ON
+    post-install:
+      - ./rename_icons
+      - mv ${FLATPAK_DEST}/lib/fcitx/qt ${FLATPAK_DEST}/lib/fcitx-qt
+    sources:
+      - type: archive
+        url: https://download.fcitx-im.org/fcitx-unikey/fcitx-unikey-0.2.7.tar.xz
+        sha256: e750774b73b08e51148b963736d8207e50c3973e5456b6569cb7ad86831e0e59
+      - type: file
+        path: rename_icons
+      - type: shell
+        commands:
+          - sed -i 's/FCITX4_PREFIX/CMAKE_INSTALL_PREFIX/g' data/CMakeLists.txt
