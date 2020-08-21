@@ -32,6 +32,7 @@ rename-icon: fcitx
 finish-args:
   - --device=dri
   - --env=PATH=/app/ime/bin:/app/bin:/usr/bin
+  - --own-name=com.canonical.dbusmenu
   - --own-name=org.fcitx.*
   - --own-name=org.fcitx.Fcitx.Controller1
   - --own-name=org.fcitx.Fcitx5
@@ -48,8 +49,6 @@ finish-args:
   - --talk-name=org.fcitx.GnomeHelper
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
-    # TODO: get rid of session access
-  - --socket=session-bus
 cleanup:
 # - /include
 # - /lib/pkgconfig
@@ -64,6 +63,7 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_INSTALL_LIBDIR=/app/lib
+      - -DUSE_SYSTEMD=OFF
     post-install:
         # rename desktop files
       - |
@@ -181,6 +181,15 @@ modules:
           - type: archive
             url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
             sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
+      - name: libevent
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=Release
+          - -DEVENT__LIBRARY_TYPE=SHARED
+        sources:
+          - type: archive
+            url: https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+            sha256: 92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb
       - name: xcb-imdkit
         buildsystem: cmake-ninja
         config-opts:
