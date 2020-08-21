@@ -206,7 +206,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/fcitx/fcitx5-configtool.git
-        branch: master
+       #branch: master
         commit: 9fa56e4e6dd52a7a5ebda04660f20eea67204f86
     modules:
       - name: fcitx-qt
@@ -259,7 +259,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/fcitx/fcitx5-lua.git
-        branch: master
+       #branch: master
         commit: d705404964d4842998be17cd53dd29d2f78a4144
       - type: shell
         commands:
