@@ -1,4 +1,5 @@
 app-id: org.fcitx_im.fcitx5
+# webengine is needed for fcitx5-chinese-addons
 base: io.qt.qtwebengine.BaseApp
 base-version: '5.14'
 runtime: org.kde.Platform
@@ -63,6 +64,7 @@ modules:
     buildsystem: cmake
     config-opts:
       - -DCMAKE_INSTALL_LIBDIR=/app/lib
+        # disable sd-bus as d-bus authentication is broken with it, use libdbus instead
       - -DUSE_SYSTEMD=OFF
     post-install:
         # rename desktop files
@@ -77,18 +79,18 @@ modules:
 
         # create base ime extension
         #
-        # folders that need to change level so they won't be overwrited
+        # folders that need to change level so they won't be overwritten
         #   lib/fcitx5/qt5 -> lib/fcitx5-qt5
         #   lib/fcitx5/libexec -> lib/fcitx5-libexec
-        #   share/fcitx5/data/quickphrase.d share/fcitx5/data-quickphrase.d
-        #   share/fcitx5/lua/imeapi/extensions share/fcitx5/lua/imeapi-extensions
+        #   share/fcitx5/data/quickphrase.d -> share/fcitx5/data-quickphrase.d
+        #   share/fcitx5/lua/imeapi/extensions -> share/fcitx5/lua/imeapi-extensions
 
       - |
           # flatten some sub-folders of merge targets
           #
           # lib/fcitx5 is a merge target
           # lib/fcitx5-libexec is unique as we don't want to move it out to the base extension
-          # as it's not mounted when extensions are being built and we might need to link against its libs
+          # as won't be mounted when extensions are being built and we might need it
           mkdir -p /app/lib/fcitx5-libexec
           for _f in $(ls /app/lib/fcitx5/libexec/); do
             mv /app/lib/fcitx5/libexec/${_f} /app/lib/fcitx5-libexec/
@@ -121,9 +123,8 @@ modules:
           ln -s /app/ime/share/fcitx5/lua/imeapi-extensions /app/ime/base/share/fcitx5/lua/imeapi/extensions
 
           # create symlinks to the merged extensions folders
-          # folders are not handled:
-          #   not found in extension: share/fcitx5/{default,spell,testing,unicode}
-          #   fcitx4 (not needed anymore?): share/fcitx5/{configdesc,imicon,skin}
+          # folders that aren't handled as they're not in extensions:
+          #    share/fcitx5/{default,spell,testing,unicode}
           for _res in lib/fcitx5 share/fcitx5/{addon,data,inputmethod,lua,pinyin,table}; do
             ln -s /app/ime/${_res} /app/${_res}
           done
@@ -306,10 +307,10 @@ modules:
     modules:
       - ../shared-modules/boost/boost.json
   - name: opencc
-    # TODO: switch from bundled to system marisa?
+    # TODO: switch dependency from release bundled marrise to our own built lib
     buildsystem: cmake
    #post-install:
-   #  # opencc python support is needed for pinyin-zhwiki
+   #  # opencc python support is needed for pinyin-zhwiki, fails to be built
    #  - |
    #      cd python
    #      python3 setup.py build
@@ -435,7 +436,7 @@ modules:
                   - touch */*.stamp
             cleanup:
               - '*'
-  # optional for fcitx-chinese-addons
+  # optional for fcitx-chinese-addons, webengine is enabled instead
  #- name: qt5-webkit
  #  buildsystem: cmake
  #  config-opts:
