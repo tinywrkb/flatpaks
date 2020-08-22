@@ -1,0 +1,167 @@
+app-id: com.github.christophgysin.pasystray
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: pasystray
+rename-desktop-file: pasystray.desktop
+rename-icon: pasystray
+finish-args:
+  - --device=dri
+  - --own-name=org.kde.*
+  - --own-name=org.pulseaudio.pavucontrol
+# - --share=ipc
+  - --socket=pulseaudio
+  - --socket=wayland
+# - --socket=x11
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+modules:
+    # TODO: patch pasystray so it won't crash in wayland even when libx11 is enabled
+  - name: pasystray
+    config-opts:
+      - --disable-avahi
+      - --disable-statusicon
+      - --disable-x11
+      - --enable-libappindicator
+      - --enable-notify
+      - --sysconfdir=${FLATPAK_DEST}/etc
+    sources:
+      - type: archive
+        url: https://github.com/christophgysin/pasystray/archive/pasystray-0.7.1.tar.gz
+        sha256: efa5e762c7a60e1017474b87fec78d55cc0420dba3dae7f04f74b64160bd56a6
+    modules:
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+        # TODO: investigate avahi features of pasystray
+     #- name: avahi
+      - name: libnotify
+        buildsystem: meson
+        config-opts:
+          - -Dtests=false
+          - -Dintrospection=disabled
+          - -Dman=false
+          - -Dgtk_doc=false
+          - -Ddocbook_docs=disabled
+        sources:
+          - type: git
+            url: https://gitlab.gnome.org/GNOME/libnotify.git
+            tag: 98a4bf483a69c6436311bcb9834d9d93235c96b7
+# TODO: move gtkmm3 into shared-modules
+# gtkmm3 dependent apps: pavucontrol, paprefs
+  - name: libsigcpp
+    buildsystem: meson
+    config-opts:
+      - -Dmaintainer-mode=true
+      - -Dbuild-documentation=false
+    sources:
+      - type: archive
+        url: https://github.com/libsigcplusplus/libsigcplusplus/archive/2.10.3.tar.gz
+        sha256: 55aae7a4e4ca85d4a698518f2b932f88a750dcad8e6224fd2f2026734287edd8
+    modules:
+      - name: mm-common
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/mm-common/-/archive/1.0.1/mm-common-1.0.1.tar.gz
+            sha256: c34ef0bc1182399c7777f9daabd62255ac57390f7dbd2e18900f0f80e433c020
+          - type: file
+            url: https://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/libstdc++.tag
+            sha256: f6c8c74e8293aefaefb4d25fd154d5f537b3bc80e7ceecaa02c5a01836fc09e6
+            dest-filename: doctags/libstdc++.tag
+        modules:
+          - ../shared-modules/graphviz/graphviz.json
+          - name: glib2
+  - name: gtkmm3
+    config-opts:
+      - --enable-maintainer-mode
+    sources:
+      - type: archive
+        url: https://gitlab.gnome.org/GNOME/gtkmm/-/archive/3.24.2/gtkmm-3.24.2.tar.gz
+        sha256: 181f6160c072e80d075165217e56498594591eb64aa1b4a67451f00c606281aa
+    modules:
+      - name: glibmm
+        config-opts:
+          - --enable-maintainer-mode
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/glibmm/-/archive/2.60.1/glibmm-2.60.1.tar.gz
+            sha256: f30908716e5ef515daec51d23a642296b837086d350075ab417ae928f20b9143
+      - name: atkmm
+        config-opts:
+          - --enable-maintainer-mode
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/atkmm/-/archive/2.28.0/atkmm-2.28.0.tar.gz
+            sha256: a3161784d06273f3e656ba2be73ec439e6ed40e76e968e4dfb9795065346e30f
+      - name: pangomm
+        buildsystem: meson
+        config-opts:
+          - -Dmaintainer-mode=true
+          - -Dbuild-documentation=false
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/pangomm/-/archive/2.42.1/pangomm-2.42.1.tar.gz
+            sha256: 9ba1bb31901195064c92793a6ba7ad842dd891a290bc644f738d886e9917f5e8
+        modules:
+          - name: cairomm
+            config-opts:
+              - --enable-maintainer-mode
+            sources:
+              - type: archive
+                url: https://www.cairographics.org/releases/cairomm-1.12.2.tar.gz
+                sha256: 45c47fd4d0aa77464a75cdca011143fea3ef795c4753f6e860057da5fb8bd599
+  - name: pavucontrol
+    sources:
+      - type: archive
+        url: http://freedesktop.org/software/pulseaudio/pavucontrol/pavucontrol-4.0.tar.xz
+        sha256: 8fc45bac9722aefa6f022999cbb76242d143c31b314e2dbb38f034f4069d14e2
+      - type: shell
+        commands:
+          - ./bootstrap.sh
+    modules:
+      - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - name: libcanberra
+        config-opts:
+          - --disable-oss
+          - --disable-static
+          - --enable-alsa
+          - --enable-gstreamer
+          - --enable-null
+          - --enable-pulse
+          - --with-builtin=dso
+          - --with-systemdsystemunitdir=/app/lib/systemd/system
+        sources:
+          - type: archive
+            url: http://0pointer.de/lennart/projects/libcanberra/libcanberra-0.30.tar.xz
+            sha256: c2b671e67e0c288a69fc33dc1b6f1b534d07882c2aceed37004bf48c601afa72
+# TODO: get paprefs to do something useful, most config options are not available
+  - name: paprefs
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://gitlab.freedesktop.org/pulseaudio/paprefs/-/archive/v1.1/paprefs-v1.1.tar.gz
+        sha256: 6fc604ffbe247367badf05285d01b10c1647229320fe61c644692023084f1661
+    modules:
+      - name: pulseaudio-gsettins-schema
+        buildsystem: simple
+        build-commands:
+          - install -Dm644 src/modules/gsettings/org.freedesktop.pulseaudio.gschema.xml -t /app/share/glib-2.0/schemas/
+          - glib-compile-schemas /app/share/glib-2.0/schemas
+        sources:
+          - type: archive
+            url: https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/archive/v13.0/pulseaudio-v13.0.tar.gz
+            sha256: 15bb355bf582ba7a5d456cd868cc39fb9b9fc7bff3506d2e88919d18e8fae95f
+# TODO: add gtkmm and enable relevant apps
+# gtkmm dependent apps: pavumeter , paman (libglademm)
+ #- name: pavumeter
+ #  sources:
+ #    - type: archive
+ #      url: http://0pointer.de/lennart/projects/pavumeter/pavumeter-0.9.3.tar.gz
+ #      sha256: fd8d5804c27efb22d63579aba5ab69d70ad115f5eb8c7bd1d63d5024113f067b
+ #- name: paman
+ #  modules:
+ #    - name: libglademm
+# TODO: add pyqt5 and enable pulseaudio-equalizer
+# pyqt5 dependent apps: pulseaudio-equalizer
+# - name: pulseaudio-equalizer (qpaeq command)
+#   modules:
+#     - pyqt5
