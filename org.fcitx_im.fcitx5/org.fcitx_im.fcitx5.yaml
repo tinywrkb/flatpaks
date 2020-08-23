@@ -35,11 +35,11 @@ finish-args:
   - --env=PATH=/app/ime/bin:/app/bin:/usr/bin
   - --own-name=com.canonical.dbusmenu
   - --own-name=org.fcitx.*
-  - --own-name=org.fcitx.Fcitx.Controller1
-  - --own-name=org.fcitx.Fcitx5
+# - --own-name=org.fcitx.Fcitx.Controller1
+# - --own-name=org.fcitx.Fcitx5
   - --own-name=org.freedesktop.IBus
   - --own-name=org.freedesktop.IBus.*
-  - --own-name=org.freedesktop.IBus.Panel
+# - --own-name=org.freedesktop.IBus.Panel
   - --own-name=org.freedesktop.portal.Fcitx
   - --own-name=org.freedesktop.portal.IBus
   - --own-name=org.kde.*
@@ -50,6 +50,8 @@ finish-args:
   - --talk-name=org.fcitx.GnomeHelper
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
+    # TODO: get rid of session access
+  - --socket=session-bus
 cleanup:
 # - /include
 # - /lib/pkgconfig
