@@ -1,0 +1,92 @@
+app-id: com.github.ibus.ibus
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
+command: ibus
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+    # testing
+  - --share=network
+  - --socket=session-bus
+modules:
+  - name: ibus
+    config-opts:
+      - --sysconfdir=/app/etc
+      - --enable-appindicator
+      - --enable-wayland
+      - --disable-tests
+      - --disable-gtk2
+      - --enable-gtk3
+      - --enable-xim
+      - --enable-gdk3-wayland
+      - --disable-appindicator-engine-icon
+      - --disable-gtk-doc
+      - --enable-memconf
+      - --enable-dconf
+      - --disable-python2
+      - --enable-python-library
+      - --enable-setup
+      - --with-python=python3
+      - --enable-pygobject
+      - --enable-key-snooper
+     #- --with-no-snooper-apps
+      - --enable-unicode-dic
+      - --disable-vala
+      - --with-ucd-dir=/app/share/unicode
+      - --enable-emoji-dict
+      - --with-unicode-emoji-dir=/app/share/unicode/emoji
+      - --with-emoji-annotation-dir=/app/share/unicode/cldr/common/annotations
+      - --with-pyoverridesdir=/app/lib/python3.7/site-packages/gi/overrides
+    sources:
+      - type: archive
+        url: https://github.com/ibus/ibus/releases/download/1.5.22/ibus-1.5.22.tar.gz
+        sha256: 8170eba58c28aa4818970751ebdeada728ebb63d535967a5c5f5c21b0017be4a
+      - type: patch
+        path: ibus-buildsystem.patch
+    modules:
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - name: cldr-emoji-annotation
+        sources:
+          - type: archive
+            url: https://github.com/fujiwarat/cldr-emoji-annotation/archive/37.0_13.0_0_2.tar.gz
+            sha256: 22fbf6a96f6966edaff2bd23694568da394e064a0599ef5c6047fffe233cab16
+      - name: unicode-emoji
+        buildsystem: simple
+        build-commands:
+          - install -Dm644 -t /app/share/unicode/emoji/ *.txt
+        sources:
+          - type: file
+            url: http://www.unicode.org/Public/emoji/13.0/emoji-sequences.txt
+            sha256: 5a864aab19aa703d019647f01a5b6fe127b7dbedff3a9569242224b4a4e9341a
+          - type: file
+            url: http://www.unicode.org/Public/emoji/13.0/emoji-test.txt
+            sha256: dbd8a566962e1d8b67f2c531ea0241b2ea791c736850a9fdb61fc8a0c62ae0ba
+          - type: file
+            url: http://www.unicode.org/Public/emoji/13.0/emoji-zwj-sequences.txt
+            sha256: 1d8f06c1dca8ebecb0ca7b753bc52efacdf44c60a921f2ab04f02b42ce1389bf
+        modules:
+          - name: unicode-character-database
+            buildsystem: simple
+            build-commands:
+              - mkdir -p /app/share/unicode
+              - cp -R {ucd,unihan}/* /app/share/unicode/
+                # TODO compat symlinks
+            sources:
+              - type: archive
+                url: https://www.unicode.org/Public/zipped/13.0.0/UCD.zip
+                sha256: 2f76973b4d36ae45584f5a45ec65b47138932d777dd23a5669c89535ef3da951
+                strip-components: 0
+                dest: ucd
+              - type: archive
+                url: https://www.unicode.org/Public/zipped/13.0.0/Unihan.zip
+                sha256: e380194c4835ad85aa50e8750a58c1f605dbfc4aba9e3e3b0ca25b9530c02f64
+                strip-components: 0
+                dest: unihan
+#     - name: python-dbus
+     #- name: gnome-common
+     #- name: qt5-base  # for appindicator-engine-icon
+     #- name: vala

@@ -1,0 +1,31 @@
+diff --git a/configure.ac b/configure.ac
+index 2917c10b..6c015178 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -439,7 +439,12 @@ PKG_CHECK_EXISTS([pygobject-3.0 >= $PYGOBJECT_REQUIRED],
+ if test "x$enable_pygobject" = "xyes"; then
+     PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])
+ 
+-    pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
++    AC_ARG_WITH(pyoverridesdir,
++        AS_HELP_STRING([--with-pyoverridesdir[=DIR]],
++            [Set the Python overrides directory.]),
++        pyoverridesdir=$with_pyoverridesdir,
++        pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
++    )
+     AC_SUBST(pyoverridesdir)
+ 
+     if test x"$enable_python2" = x"yes"; then
+diff --git a/data/dconf/Makefile.am b/data/dconf/Makefile.am
+index 5360f033..691a0ea8 100644
+--- a/data/dconf/Makefile.am
++++ b/data/dconf/Makefile.am
+@@ -50,7 +50,7 @@ man_5dir = $(mandir)/man5
+ 
+ install-data-hook:
+ 	if test -z "$(DESTDIR)"; then \
+-	    dconf update; \
++	    dconf update $(sysconfdir)/dconf/db; \
+ 	fi
+ 
+ EXTRA_DIST = \
