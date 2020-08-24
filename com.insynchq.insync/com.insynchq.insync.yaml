@@ -38,6 +38,8 @@ finish-args:
   # workaround for the hardcoded ~/.config
   - --persist=.config/autostart
   - --persist=.config/Insync
+  # force xwayland, qt5-wayland shell plugins are missing
+  - --env=QT_QPA_PLATFORM=xcb
 
 modules:
   - name: insync
