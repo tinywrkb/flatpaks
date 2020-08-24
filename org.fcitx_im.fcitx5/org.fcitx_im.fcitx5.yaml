@@ -27,6 +27,8 @@ add-extensions:
     directory: themes/base
     no-autodownload: false
     bundle: true
+# TODO: handle locale better, support extensions locale
+#separate-locales: false
 command: fcitx5
 rename-desktop-file: fcitx5.desktop
 rename-icon: fcitx
