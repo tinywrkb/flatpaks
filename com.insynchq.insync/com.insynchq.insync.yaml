@@ -40,6 +40,8 @@ finish-args:
   - --persist=.config/Insync
   # force xwayland, qt5-wayland shell plugins are missing
   - --env=QT_QPA_PLATFORM=xcb
+  # workaround for missing gio modules erro
+  - --env=GIO_EXTRA_MODULES=/app/lib/gio/modules
 
 modules:
   - name: insync
@@ -73,3 +75,47 @@ modules:
         url: http://s.insynchq.com/builds/insync_3.2.6.40863-buster_amd64.deb
         sha256: 1f83007e6c1aed6fdeaccd4e45eb39eef70d12911c193b9e5e189b8c2428d705
         size: 143724644
+# workaround for missing libs
+  - name: gvfs
+    buildsystem: meson
+    config-opts:
+      - -Dsystemduserunitdir=no
+      - -Dtmpfilesdir=no
+      - -Dadmin=false
+      - -Dafc=false
+      - -Dafp=false
+      - -Darchive=false
+      - -Dcdda=false
+      - -Ddnssd=false
+      - -Dgoa=false
+      - -Dgoogle=false
+      - -Dgphoto2=false
+      - -Dhttp=false
+      - -Dmtp=false
+      - -Dnfs=false
+      - -Dsftp=false
+      - -Dsmb=false
+      - -Dudisks2=false
+      - -Dbluray=false
+      - -Dfuse=false
+      - -Dgcr=false
+      - -Dgcrypt=false
+      - -Dgudev=false
+      - -Dkeyring=false
+      - -Dlogind=false
+      - -Dlibusb=false
+    sources:
+       - type: archive
+         url: https://gitlab.gnome.org/GNOME/gvfs/-/archive/1.38.1/gvfs-1.38.1.tar.gz
+         sha256: 736934b8710acb041881e91f482f695a7227684ff4d8c291dd53819639e654c7
+  - name: glib-networking
+    buildsystem: meson
+    config-opts:
+      - -Dlibproxy_support=true
+      - -Dgnome_proxy_support=true
+    sources:
+       - type: archive
+         url: https://gitlab.gnome.org/GNOME/glib-networking/-/archive/2.58.0/glib-networking-2.58.0.tar.gz
+         sha256: 44a66addbba9b28063f9bf4428df6bb573d85a3a95f261096e0d213cd28d4b32
+       - type: patch
+         path: gio_module_dir.patch

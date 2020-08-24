@@ -1,0 +1,13 @@
+diff --git a/meson.build b/meson.build
+index 87ee5a6..31cbe5c 100644
+--- a/meson.build
++++ b/meson.build
+@@ -60,6 +60,8 @@ else
+                                                   define_variable: ['prefix', prefix])
+ endif
+ 
++gio_module_dir = '/app/lib/gio/modules'
++
+ assert(gio_module_dir != '', 'GIO_MODULE_DIR is missing from gio-2.0.pc')
+ 
+ # *** Checks for LibProxy   ***
