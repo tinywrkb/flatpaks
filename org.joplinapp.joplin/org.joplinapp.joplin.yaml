@@ -5,9 +5,6 @@ sdk: org.freedesktop.Sdk
 command: joplin
 rename-desktop-file: joplin.desktop
 rename-icon: joplin
-build-options:
-  strip: true
-  no-debuginfo: true
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -15,11 +12,16 @@ cleanup:
   - '*.la'
 finish-args:
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --own-name=org.kde.*
+  - --persist=.config/joplin-desktop
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
-  - --socket=wayland
   - --socket=x11
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
@@ -30,9 +32,10 @@ modules:
       - install -D apply_extra /app/bin/apply_extra
       - install -Dm755 joplin /app/bin/joplin
       - install -D joplin.desktop /app/share/applications/joplin.desktop
-      - for s in 16 24 32 48 72 96 128 144 256 512; do
-        install -D ${s}x${s}.png /app/share/icons/hicolor/${s}x${s}/apps/joplin.png;
-        done
+      - |
+          for s in 16 24 32 48 72 96 128 144 256 512; do
+            install -Dm644 ${s}x${s}.png /app/share/icons/hicolor/${s}x${s}/apps/joplin.png
+          done
     sources:
       - type: script
         dest-filename: apply_extra
@@ -41,7 +44,8 @@ modules:
           - rm -f appimage
           - rm -f squashfs-root/{.DirIcon,AppRun,joplin.desktop,joplin.png}
           - rm -rf squashfs-root/usr
-          - mv squashfs-root joplin
+          - mv squashfs-root/* ./
+          - rmdir squashfs-root
       - type: extra-data
         filename: appimage
         url: https://github.com/laurent22/joplin/releases/download/v1.0.220/Joplin-1.0.220.AppImage
@@ -59,22 +63,23 @@ modules:
           - type: git
             url: https://github.com/refi64/unappimage
             branch: master
+            commit: d7f86f2a0d7ec3a69211125207d5f127386b849a
       - name: zypak
         sources:
           - type: git
             url: https://github.com/refi64/zypak
             tag: v2020.02
-      - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
-      # can switch to gnome runtime instead
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      # can switch to gnome runtime instead of building libnotify
       - name: libnotify
         buildsystem: meson
         config-opts:
-          - -Dtests=false
+          - -Ddocbook_docs=disabled
+          - -Dgtk_doc=false
           - -Dintrospection=disabled
           - -Dman=false
-          - -Dgtk_doc=false
-          - -Ddocbook_docs=disabled
+          - -Dtests=false
         sources:
-          - type: git
-            url: https://gitlab.gnome.org/GNOME/libnotify.git
-            tag: 98a4bf483a69c6436311bcb9834d9d93235c96b7
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/libnotify/-/archive/0.7.9/libnotify-0.7.9.tar.gz
+            sha256: 9bd4f5fa911d27567e7cc2d2d09d69356c16703c4e8d22c0b49a5c45651f3af0
