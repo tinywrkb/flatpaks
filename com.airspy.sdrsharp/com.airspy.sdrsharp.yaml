@@ -1,12 +1,12 @@
 # TODO: desktop files and icons
 # TODO: switch to extra-data
-# TODO: bump to mono6
+# TODO: bump runtime when mono is ready
 app-id: com.airspy.sdrsharp
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.mono5
+  - org.freedesktop.Sdk.Extension.mono6
 command: SDRSharp
 finish-args:
   - --device=all
