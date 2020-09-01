@@ -3,7 +3,7 @@
 
 app-id: cc.arduino.arduino-create-agent
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: arduino-create-agent
 rename-desktop-file: arduino-create-agent.desktop
@@ -41,4 +41,4 @@ modules:
       - type: dir
         path: resources
     modules:
-      - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json

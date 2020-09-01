@@ -1,6 +1,6 @@
 app-id: com.github.stevenhoneyman.l3afpad
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: l3afpad
 rename-desktop-file: l3afpad.desktop

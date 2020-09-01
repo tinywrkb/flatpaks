@@ -3,7 +3,7 @@
 #   add icestorm?
 app-id: io.icestudio.icestudio
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: icestudio
 rename-desktop-file: icestudio.desktop

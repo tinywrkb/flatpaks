@@ -4,7 +4,7 @@
 #   * can't save new boards, need to go through "sandbox mode"
 app-id: me.boolr.boolr
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: boolr
 rename-desktop-file: boolr.desktop

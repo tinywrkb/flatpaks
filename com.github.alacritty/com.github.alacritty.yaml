@@ -1,6 +1,6 @@
 app-id: com.github.alacritty
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: alacritty
 rename-desktop-file: Alacritty.desktop

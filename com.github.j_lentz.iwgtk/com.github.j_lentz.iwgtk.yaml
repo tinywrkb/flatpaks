@@ -1,6 +1,6 @@
 app-id: com.github.j_lentz.iwgtk
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: iwgtk
 rename-desktop-file: iwgtk.desktop

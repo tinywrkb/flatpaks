@@ -1,6 +1,6 @@
 app-id: com.mbed.os.mbedstudio
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: MbedStudio
 rename-desktop-file: MbedStudio.desktop
