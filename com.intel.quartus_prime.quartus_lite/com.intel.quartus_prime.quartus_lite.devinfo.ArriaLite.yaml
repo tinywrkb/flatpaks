@@ -1,6 +1,6 @@
 app-id: com.intel.quartus_prime.quartus_lite.devinfo.ArriaLite
 runtime: com.intel.quartus_prime.quartus_lite
-sdk: org.freedesktop.Sdk//19.08
+sdk: org.freedesktop.Sdk//20.08
 build-extension: true
 separate-locales: false
 #appstream-compose: false
