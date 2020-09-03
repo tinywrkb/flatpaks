@@ -1,6 +1,6 @@
 app-id: com.github.equalsraf.neovim-qt
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: nvim-qt
 rename-icon: nvim-qt
@@ -32,7 +32,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/equalsraf/neovim-qt
-        tag: v0.2.15
+        tag: v0.2.16.1
     modules:
       - name: neovim
         buildsystem: cmake-ninja
@@ -46,8 +46,8 @@ modules:
           - -DUSE_BUNDLED=OFF
         sources:
           - type: archive
-            url: https://github.com/neovim/neovim/archive/v0.4.3.tar.gz
-            sha256: 91a0b5d32204a821bf414690e6b48cf69224d1961d37158c2b383f6a6cf854d2
+            url: https://github.com/neovim/neovim/archive/v0.4.4.tar.gz
+            sha256: 2f76aac59363677f37592e853ab2c06151cca8830d4b3fe4675b4a52d41fc42c
         modules:
           - name: libluv
             buildsystem: cmake-ninja

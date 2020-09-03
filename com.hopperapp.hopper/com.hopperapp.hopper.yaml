@@ -9,7 +9,7 @@
 
 app-id: com.hopperapp.hopper
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: hopper
 rename-icon: hopper

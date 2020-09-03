@@ -1,6 +1,6 @@
 app-id: com.github.christophgysin.pasystray
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: pasystray
 rename-desktop-file: pasystray.desktop

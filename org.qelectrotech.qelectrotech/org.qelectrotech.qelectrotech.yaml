@@ -1,6 +1,6 @@
 app-id: org.qelectrotech.qelectrotech
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: qelectrotech
 rename-desktop-file: qelectrotech.desktop

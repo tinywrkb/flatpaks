@@ -3,7 +3,7 @@
 # TODO: share/gir-1.0?
 app-id: org.fcitx_im.fcitx4.ime.kkc
 runtime: org.fcitx_im.fcitx4
-sdk: org.kde.Sdk//5.14
+sdk: org.kde.Sdk//5.15
 build-extension: true
 separate-locales: false
 build-options:
@@ -44,7 +44,7 @@ modules:
       - name: libkkc
         build-options:
           env:
-            - PYTHONPATH=/app/ime/kkc/lib/python3.7/site-packages
+            - PYTHONPATH=/app/ime/kkc/lib/python3.8/site-packages
         sources:
           - type: git
             url: https://github.com/ueno/libkkc
@@ -82,7 +82,7 @@ modules:
       - name: libkkc-data
         build-options:
           env:
-            - PYTHONPATH=/app/ime/kkc/lib/python3.7/site-packages
+            - PYTHONPATH=/app/ime/kkc/lib/python3.8/site-packages
         sources:
           - type: archive
             url: https://github.com/ueno/libkkc/releases/download/v0.3.5/libkkc-data-0.2.7.tar.xz
@@ -116,6 +116,8 @@ modules:
                   - type: archive
                     url: https://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1.tar.gz
                     sha256: 86e613527e5dba544e73208f42b78b7c022d4fa5a6d5498bf18c8d6f745b91dc
+                  - type: patch
+                    path: gdbm-1.18.1-gcc-10.patch
                 cleanup:
                   - /bin
                   - /share/info

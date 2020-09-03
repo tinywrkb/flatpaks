@@ -5,7 +5,7 @@
 
 app-id: net.launchpad.qpdfview
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: qpdfview
 rename-icon: qpdfview
@@ -43,6 +43,9 @@ modules:
       - type: archive
         url: https://launchpad.net/qpdfview/trunk/0.4.18/+download/qpdfview-0.4.18.tar.gz
         sha256: cc642e7fa74029373ca9b9fbc29adc4883f8b455130a78ad54746d6844a0396c
+      - type: shell
+        commands:
+          - sed -i '/#include <QVector>/a#include <QPainterPath>' sources/model.h
     modules:
       - name: poppler
         buildsystem: cmake

@@ -1,6 +1,6 @@
 app-id: org.fcitx_im.fcitx5.themes.extra
 runtime: org.fcitx_im.fcitx5
-sdk: org.kde.Sdk//5.14
+sdk: org.kde.Sdk//5.15
 build-extension: true
 separate-locales: false
 modules:
@@ -20,7 +20,7 @@ modules:
       - type: git
         url: https://github.com/hosxy/Fcitx5-Material-Color.git
         branch: master
-        commit: 41d52e93ba3bd68417635b257e8187be52acdb64
+        commit: d6d13469fff8ba52110ec9c3d826840af648f159
   - name: fcitx5-dark-default
     buildsystem: simple
     build-commands:

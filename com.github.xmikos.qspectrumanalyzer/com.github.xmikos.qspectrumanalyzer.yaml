@@ -1,6 +1,6 @@
 app-id: com.github.xmikos.qspectrumanalyzer
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: qspectrumanalyzer
 rename-desktop-file: qspectrumanalyzer.desktop
@@ -23,7 +23,7 @@ modules:
   - name: qspectrumanalyzer
     buildsystem: simple
     ensure-writable:
-      - /lib/python3.7/site-packages/easy-install.pth
+      - /lib/python3.8/site-packages/easy-install.pth
     build-commands:
       - python3 setup.py build
       - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
@@ -46,8 +46,8 @@ modules:
           - --no-stubs
           - --no-tools
           - --disable=QtQuick
-          - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.7m'
-          - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.7m'
+          - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.8'
+          - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.8'
           - --qsci-api
           - --qsci-api-destdir=/app/share/qt/qsci
         sources:
@@ -66,7 +66,7 @@ modules:
           - name: sip5
             buildsystem: simple
             ensure-writable:
-              - /lib/python3.7/site-packages/easy-install.pth
+              - /lib/python3.8/site-packages/easy-install.pth
             build-commands:
               - python3 setup.py build
               - python3 setup.py install --skip-build --prefix=/app --root=/
@@ -81,7 +81,7 @@ modules:
               - name: python-toml
                 buildsystem: simple
                 ensure-writable:
-                  - /lib/python3.7/site-packages/easy-install.pth
+                  - /lib/python3.8/site-packages/easy-install.pth
                 build-commands:
                   - python3 setup.py build
                   - python3 setup.py install --skip-build --prefix=/app
@@ -92,7 +92,7 @@ modules:
               - name: python-packaging
                 buildsystem: simple
                 ensure-writable:
-                  - /lib/python3.7/site-packages/easy-install.pth
+                  - /lib/python3.8/site-packages/easy-install.pth
                 build-commands:
                   - python3 setup.py build
                   - python3 setup.py install --skip-build --prefix=/app
@@ -104,7 +104,7 @@ modules:
                   - name: python-pyparsing
                     buildsystem: simple
                     ensure-writable:
-                      - /lib/python3.7/site-packages/easy-install.pth
+                      - /lib/python3.8/site-packages/easy-install.pth
                     build-commands:
                       - python3 setup.py build
                       - python3 setup.py install --skip-build --prefix=/app
@@ -115,7 +115,7 @@ modules:
           - name: pyqt-builder
             buildsystem: simple
             ensure-writable:
-              - /lib/python3.7/site-packages/easy-install.pth
+              - /lib/python3.8/site-packages/easy-install.pth
             build-commands:
               - python3 setup.py build
               - python3 setup.py install --skip-build --prefix=/app --root=/
@@ -126,7 +126,7 @@ modules:
           - name: python-pyqt5-sip
             buildsystem: simple
             ensure-writable:
-              - /lib/python3.7/site-packages/easy-install.pth
+              - /lib/python3.8/site-packages/easy-install.pth
             build-commands:
               - python3 setup.py build
               - python3 setup.py install --skip-build --prefix=/app --root=/
@@ -137,7 +137,7 @@ modules:
       - name: python-qt.py
         buildsystem: simple
         ensure-writable:
-          - /lib/python3.7/site-packages/easy-install.pth
+          - /lib/python3.8/site-packages/easy-install.pth
         build-commands:
           - python3 setup.py build
           - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
@@ -148,7 +148,7 @@ modules:
       - name: python-pyqtgraph
         buildsystem: simple
         ensure-writable:
-          - /lib/python3.7/site-packages/easy-install.pth
+          - /lib/python3.8/site-packages/easy-install.pth
         build-commands:
           - python3 setup.py build
           - python3 setup.py install --skip-build --prefix=/app
@@ -160,7 +160,7 @@ modules:
           - name: python-opengl
             buildsystem: simple
             ensure-writable:
-              - /lib/python3.7/site-packages/easy-install.pth
+              - /lib/python3.8/site-packages/easy-install.pth
             build-commands:
               - python3 setup.py build
               - python3 setup.py install --skip-build --prefix=/app --root=/
@@ -170,6 +170,8 @@ modules:
                 sha256: 4107ba0d0390da5766a08c242cf0cf3404c377ed293c5f6d701e457c57ba3424
             modules:
               - name: freeglut
+                build-options:
+                  cflags: -fcommon
                 buildsystem: cmake
                 config-opts:
                   - -DFREEGLUT_BUILD_STATIC_LIBS=OFF
@@ -186,7 +188,7 @@ modules:
           - name: python-numpy
             buildsystem: simple
             ensure-writable:
-              - /lib/python3.7/site-packages/easy-install.pth
+              - /lib/python3.8/site-packages/easy-install.pth
             build-commands:
               - python3 setup.py build
               - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
@@ -194,27 +196,14 @@ modules:
               - type: archive
                 url: https://github.com/numpy/numpy/archive/v1.19.1.tar.gz
                 sha256: 65123e53a00b84d03a5a18ae049f4647d1fd100c9010ca1fdf997900ee13875d
-            modules:
-              - name: cython
-                buildsystem: simple
-                ensure-writable:
-                  - /lib/python3.7/site-packages/easy-install.pth
-                build-commands:
-                  - python3 setup.py build
-                  - python3 setup.py install --skip-build --prefix=/app --root=/
-                sources:
-                  - type: archive
-                    url: https://github.com/cython/cython/archive/0.29.21.tar.gz
-                    sha256: e2e38e1f0572ca54d6085df3dec8b607d20e81515fb80215aed19c81e8fe2079
-                cleanup:
-                  - '*'
+#           modules
 #             - name: python-nose
 #             - name: openblas
 #             - name: lapack
       - name: soapy_power
         buildsystem: simple
         ensure-writable:
-          - /lib/python3.7/site-packages/easy-install.pth
+          - /lib/python3.8/site-packages/easy-install.pth
         build-commands:
           - python3 setup.py build
           - python3 setup.py install --skip-build --prefix=/app
@@ -227,7 +216,7 @@ modules:
           - name: python-simplesoapy
             buildsystem: simple
             ensure-writable:
-              - /lib/python3.7/site-packages/easy-install.pth
+              - /lib/python3.8/site-packages/easy-install.pth
             build-commands:
               - python3 setup.py build
               - python3 setup.py install --skip-build --prefix=/app
@@ -245,7 +234,7 @@ modules:
           - name: python-simplespectral
             buildsystem: simple
             ensure-writable:
-              - /lib/python3.7/site-packages/easy-install.pth
+              - /lib/python3.8/site-packages/easy-install.pth
             build-commands:
               - python3 setup.py build
               - python3 setup.py install --skip-build --prefix=/app

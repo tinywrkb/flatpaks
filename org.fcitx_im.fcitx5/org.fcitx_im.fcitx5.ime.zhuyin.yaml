@@ -1,6 +1,6 @@
 app-id: org.fcitx_im.fcitx5.ime.zhuyin
 runtime: org.fcitx_im.fcitx5
-sdk: org.kde.Sdk//5.14
+sdk: org.kde.Sdk//5.15
 build-extension: true
 separate-locales: false
 build-options:
@@ -30,7 +30,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/fcitx/fcitx5-zhuyin.git
-        branch: master
+        #branch: master
         commit: 4b4d31ae0038ab19dc2f9721b304f6fae3620f6e
       - type: file
         url: http://download.fcitx-im.org/data/model.text.20161206.tar.gz

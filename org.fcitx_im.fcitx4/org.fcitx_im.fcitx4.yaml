@@ -3,9 +3,9 @@
 #   https://github.com/flatpak/flatpak/issues/2031
 app-id: org.fcitx_im.fcitx4
 base: io.qt.qtwebengine.BaseApp
-base-version: '5.14'
+base-version: '5.15'
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 add-extensions:
   org.fcitx_im.fcitx4.ime:

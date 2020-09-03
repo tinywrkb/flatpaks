@@ -1,6 +1,6 @@
 app-id: com.github.whoozle.android-file-transfer-linux
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: android-file-transfer
 rename-icon: android-file-transfer

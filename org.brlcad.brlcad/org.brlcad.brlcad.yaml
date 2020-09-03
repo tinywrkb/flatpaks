@@ -4,7 +4,7 @@
 #   * to start mged correctly from a desktop file, the Terminal option was defined as true.
 app-id: org.brlcad.brlcad
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: mged
 build-options:

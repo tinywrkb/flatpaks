@@ -1,9 +1,9 @@
 app-id: org.fcitx_im.fcitx5
 # webengine is needed for fcitx5-chinese-addons
 base: io.qt.qtwebengine.BaseApp
-base-version: '5.14'
+base-version: '5.15'
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 add-extensions:
   org.fcitx_im.fcitx5.ime:
@@ -202,7 +202,7 @@ modules:
         sources:
           - type: git
             url: https://github.com/fcitx/xcb-imdkit.git
-            branch: master
+            #branch: master
             commit: d6609a72465cf7e0479aea075a4d2e5d7ca018eb
         modules:
           - name: uthash
@@ -289,7 +289,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/fcitx/libime.git
-        branch: master
+        #branch: master
         commit: a108d15b06f0885f2fcc95d035614665392bc83b
         # initialized by the git submodule instead of downloading the archive
      #- type: archive
@@ -485,7 +485,7 @@ modules:
 
         # kkc
           # TODO: lib/girepository-1.0 symlink?
-          # TODO: lib/python3.7 symlink? or PYTHONPATH?
+          # TODO: lib/python3.8 symlink? or PYTHONPATH?
           # TODO: share/gir-1.0 symlink?
       - ln -s -t /app/lib/ /app/ime/kkc/lib/libkkc
       - ln -s -t /app/share/fcitx5/ /app/ime/kkc/share/fcitx5/kkc

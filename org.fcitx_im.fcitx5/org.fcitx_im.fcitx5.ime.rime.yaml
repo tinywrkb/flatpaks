@@ -1,6 +1,6 @@
 app-id: org.fcitx_im.fcitx5.ime.rime
 runtime: org.fcitx_im.fcitx5
-sdk: org.kde.Sdk//5.14
+sdk: org.kde.Sdk//5.15
 build-extension: true
 separate-locales: false
 build-options:
@@ -62,7 +62,7 @@ modules:
       - name: librime
         build-options:
           env:
-            - PYTHONPATH=/app/lib/python3.7/site-packages
+            - PYTHONPATH=/app/lib/python3.8/site-packages
         buildsystem: cmake
         builddir: true
         config-opts:

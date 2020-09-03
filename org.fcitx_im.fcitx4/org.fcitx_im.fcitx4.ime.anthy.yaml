@@ -1,6 +1,6 @@
 app-id: org.fcitx_im.fcitx4.ime.anthy
 runtime: org.fcitx_im.fcitx4
-sdk: org.kde.Sdk//5.14
+sdk: org.kde.Sdk//5.15
 build-extension: true
 separate-locales: false
 build-options:
