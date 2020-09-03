@@ -1,6 +1,6 @@
 app-id: org.librecad.librecad
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: librecad
 rename-desktop-file: librecad.desktop

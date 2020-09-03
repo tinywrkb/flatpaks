@@ -1,6 +1,7 @@
+# TODO: workaround for status icon exports
 app-id: nz.mega.megasync
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: megasync
 rename-desktop-file: megasync.desktop
@@ -9,6 +10,7 @@ copy-icon: true
 finish-args:
   - --device=dri
   - --filesystem=home
+  - --own-name=org.kde.*
   - --share=ipc
   - --share=network
   - --socket=wayland
@@ -63,16 +65,13 @@ modules:
       - type: git
         url: https://github.com/meganz/MEGAsync.git
         tag: v4.3.3.0_Linux
-      - type: file
-        url: https://aur.archlinux.org/cgit/aur.git/tree/add-missing-include.patch?h=megasync&id=ff8142d394ed080078821ea7f7dbf5bfbdf9a8d5
-        sha256: c4fa2f7c9e17c205bf009bc601b974ad6ac380e73238849b0be01d855a805e3f
-        dest-filename: add-missing-include.patch
+      - type: patch
+        # https://aur.archlinux.org/cgit/aur.git/plain/add-missing-include.patch?h=megasync&id=ff8142d394ed080078821ea7f7dbf5bfbdf9a8d5
+        path: megasync-add-missing-include.patch
       - type: shell
         commands:
           # https://docs.flatpak.org/en/latest/portals-qt.html
           - sed 's/DontUseNativeDialog, false/DontUseNativeDialog, true/g' -i src/MEGASync/{gui/MultiQFileDialog,MegaApplication}.cpp
-          - cd src/MEGASync &&
-            patch -Np1 -i ../../add-missing-include.patch
           - sed '/.*isEmpty(PREFIX).*/i \\tPREFIX = $$(PREFIX)' -i src/MEGASync/platform/platform.pri
           # Using the types and functions in <filesystem> does not require linking with -lstdc++fs now.
           # https://gcc.gnu.org/gcc-9/changes.html
@@ -195,6 +194,8 @@ modules:
             modules:
               - name: freeglut
                 buildsystem: cmake
+                build-options:
+                  cflags: -fcommon
                 config-opts:
                   - -DFREEGLUT_BUILD_STATIC_LIBS=OFF
                   - -DCMAKE_BUILD_TYPE=None

@@ -1,6 +1,6 @@
 app-id: org.dharkael.flameshot
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: flameshot
 rename-icon: flameshot  
@@ -26,3 +26,5 @@ modules:
       - type: git
         url: https://github.com/lupoDharkael/flameshot.git
         branch: master
+      - type: patch
+        path: flameshot-qt-5.15.patch
