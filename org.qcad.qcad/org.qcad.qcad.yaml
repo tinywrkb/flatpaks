@@ -10,7 +10,7 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --share=network
-  - --socket=wayland
+# - --socket=wayland
   - --socket=x11
 cleanup:
   - /include
