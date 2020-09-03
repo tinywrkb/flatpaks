@@ -1,6 +1,6 @@
 app-id: com.github.batchdrake.sigdigger
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: SigDigger
 #rename-desktop-file: sigdigger.desktop
@@ -97,5 +97,8 @@ modules:
           - type: archive
             url: https://github.com/BatchDrake/SuWidgets/archive/v0.1.0.tar.gz
             sha256: 60560026803f8c2864fc6c901b85fe4d667d06b453744597492766adcfa18f38
+          - type: shell
+            commands:
+                    - sed -i '/#include <QPainter>/a#include <QPainterPath>' LCD.cpp Histogram.cpp Waveform.cpp
 #       modules:
 #         - name: sigutils

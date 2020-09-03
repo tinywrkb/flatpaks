@@ -1,6 +1,6 @@
 app-id: org.qcad.qcad
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: qcad
 rename-desktop-file: qcad.desktop
@@ -43,8 +43,8 @@ modules:
       - install -Dm755 qcad /app/bin/qcad
     sources:
       - type: archive
-        url: https://github.com/qcad/qcad/archive/v3.24.3.8.tar.gz
-        sha256: 51403535329bdfe1f7e722eda53ce69896de4e0aee534f209ea597deac8eeb91
+        url: https://github.com/qcad/qcad/archive/v3.25.1.0.tar.gz
+        sha256: 7a27f9399cfdf8a42c36ed67ae91c791837add58cb18bd76e273c9bce08fc9dc
       - type: dir
         path: resources
     modules:

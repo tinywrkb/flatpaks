@@ -1,6 +1,6 @@
 app-id: com.github.rodlie.qtfm
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: qtfm
 rename-icon: qtfm
@@ -31,3 +31,6 @@ modules:
       - type: git
         url: https://github.com/rodlie/qtfm
         tag: 6.2.0
+      - type: patch
+        # https://aur.archlinux.org/cgit/aur.git/tree/qt-5.15+gentoo.patch?h=qtfm&id=3549fce2943e6badf7334fbf5f4aed6e88006c6e
+        path: qtfm-qt-5.15.patch
