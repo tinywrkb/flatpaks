@@ -35,17 +35,14 @@ finish-args:
   - --socket=wayland
   - --socket=x11
   - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=org.freedesktop.FileManager1
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.ScreenSaver
   - --talk-name=org.freedesktop.secrets
 # - --talk-name org.mpris.MediaPlayer2.*
   # testing
-# - --device=kvm
-# - --device=shm
 # - --socket=cups
 # - --socket=pcsc
-# - --socket=session-bus
-# - --socket=system-bus
 modules:
   - name: chrome
     buildsystem: simple
@@ -85,7 +82,7 @@ modules:
         sources:
           - type: git
             url: https://github.com/refi64/zypak
-            tag: v2020.10beta.1
+            tag: v2020.10beta.2
       - name: libsecret
         buildsystem: meson
         config-opts:
