@@ -22,12 +22,8 @@ finish-args:
   - --talk-name=org.freedesktop.secrets
 # - --talk-name org.mpris.MediaPlayer2.*
   # testing
-# - --device=kvm
-# - --device=shm
 # - --socket=cups
 # - --socket=pcsc
-# - --socket=session-bus
-# - --socket=system-bus
 modules:
   - name: chrome
     buildsystem: simple
