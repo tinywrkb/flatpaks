@@ -1,0 +1,88 @@
+app-id: com.google.chrome-unstable
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: chrome
+cleanup:
+  - /lib/pkgconfig
+finish-args:
+  - --device=all
+  - --device=dri
+  - --filesystem=home
+  - --own-name=org.mpris.MediaPlayer2.chrome.*
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=x11
+  - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=org.freedesktop.FileManager1
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.ScreenSaver
+  - --talk-name=org.freedesktop.secrets
+# - --talk-name org.mpris.MediaPlayer2.*
+  # testing
+# - --device=kvm
+# - --device=shm
+# - --socket=cups
+# - --socket=pcsc
+# - --socket=session-bus
+# - --socket=system-bus
+modules:
+  - name: chrome
+    buildsystem: simple
+    build-commands:
+      - install -D apply_extra /app/bin/apply_extra
+      - install -Dm755 chrome /app/bin/chrome
+      - install -Dm755 stub_sandbox /app/bin/stub_sandbox
+      - install -Dm644 chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome-unstable.svg
+      - install -Dm644 chrome.desktop /app/share/applications/com.google.chrome-unstable.desktop
+      - install -Dm644 appdata.xml /app/share/appdata/com.google.chrome-unstable.appdata.xml
+      - install -Dm755 /usr/bin/ar /app/bin
+      - mkdir -p /app/lib
+      - ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib
+      - ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - ar x google-chrome-unstable_amd64.deb
+          - rm -f google-chrome-unstable_amd64.deb
+          - tar xJf data.tar.xz
+          - rm -f control.tar.xz data.tar.xz debian-binary
+          - mv usr/* .
+          - rmdir usr
+          - rm -rf etc bin share/{doc,gnome-control-center,man,menu}
+          - mv opt/google/chrome-unstable/* .
+          - rm -rf opt
+          - rm -f product_logo_*.png
+          - rm -rf cron
+          - cp /app/bin/stub_sandbox chrome-sandbox
+      - type: dir
+        path: resources
+      - type: extra-data
+        filename: google-chrome-unstable_amd64.deb
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_87.0.4252.0-1_amd64.deb
+        sha256: 5c4633abe87f60d8cdc369eda0bd9a8081d013c278b55600bf9df132d671108c
+        size: 71378692
+    modules:
+      - name: zypak
+        sources:
+          - type: git
+            url: https://github.com/refi64/zypak
+            tag: v2020.10beta.2
+      - name: libsecret
+        buildsystem: meson
+        config-opts:
+          - -Dvapi=false
+          - -Dmanpage=false
+          - -Dgtk_doc=false
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/libsecret/-/archive/0.20.3/libsecret-0.20.3.tar.gz
+            sha256: 9a90f733d4cac1c5a937af1fc44ddfc52458a4bcb015891247ca75037f446f6d
+        cleanup:
+          - /bin
+          - /include
+          - /lib/girepository-1.0
+          - /share/gir-1.0
