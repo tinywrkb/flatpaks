@@ -48,9 +48,9 @@ modules:
           - rmdir squashfs-root
       - type: extra-data
         filename: appimage
-        url: https://github.com/laurent22/joplin/releases/download/v1.0.241/Joplin-1.0.241.AppImage
-        sha256: 6714b3557ee23bfb105501a369711389f88d678b9052d2832116540399e41b60
-        size: 122968856
+        url: https://github.com/laurent22/joplin/releases/download/v1.0.242/Joplin-1.0.242.AppImage
+        sha256: d4eebed29886f1f061be2239901cbdf4ae9b047c73cbe5cce548c6c898b066e6
+        size: 122969102
       - type: dir
         path: resources
     modules:
