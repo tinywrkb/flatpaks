@@ -18,10 +18,9 @@
 #         and also be able to test if another instace of insync is running
 
 app-id: com.insynchq.insync
-# needed for notifications that are not working with the freedesktop runtime
-runtime: org.gnome.Platform
-runtime-version: '3.36'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: insync
 finish-args:
   - --device=dri
@@ -40,7 +39,7 @@ finish-args:
   - --persist=.config/Insync
   # force xwayland, qt5-wayland shell plugins are missing
   - --env=QT_QPA_PLATFORM=xcb
-  # workaround for missing gio modules erro
+  # workaround for missing gio modules
   - --env=GIO_EXTRA_MODULES=/app/lib/gio/modules
 
 modules:
@@ -119,3 +118,15 @@ modules:
          sha256: 44a66addbba9b28063f9bf4428df6bb573d85a3a95f261096e0d213cd28d4b32
        - type: patch
          path: gio_module_dir.patch
+  - name: libnotify
+    buildsystem: meson
+    config-opts:
+      - -Dtests=false
+      - -Dintrospection=disabled
+      - -Dman=false
+      - -Dgtk_doc=false
+      - -Ddocbook_docs=disabled
+    sources:
+      - type: git
+        url: https://gitlab.gnome.org/GNOME/libnotify.git
+        tag: 98a4bf483a69c6436311bcb9834d9d93235c96b7
