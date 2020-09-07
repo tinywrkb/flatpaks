@@ -38,7 +38,7 @@ modules:
           - rm -f clangd.zip
           - rm -f MbedStudio/{install.sh,mbed-studio-uninstall.sh,mbed-studio.desktop.template,README.md}
           - mv MbedStudio/tools.json MbedStudio/mbed-studio-tools/
-          - echo 1.2.0 > MbedStudio/release_version
+          - echo 1.2.1.42d8a0c0 > MbedStudio/release_version
           - cp MbedStudio/release_version MbedStudio/mbed-studio-tools/release_version
           - unappimage MbedStudio/mbed-studio
           - rm -f MbedStudio/mbed-studio
@@ -50,9 +50,9 @@ modules:
         # curl -s https://studio.mbed.com/installers/latest/linux/MbedStudio.sh|egrep 'DOMAIN=|ARCHIVE_PATH=|CLANGD_FILENAME='
       - type: extra-data
         filename: MbedStudio.tar.gz
-        url: https://studio.mbed.com/installers/latest/linux/MbedStudio.tar.gz
-        sha256: 10b71dbe33cf87a75f3a48c459e8097528e9e8bf7ddaa1df94a9a25f40daa191
-        size: 1284569964
+        url: https://studio.mbed.com/installers/release-1.2.1/1.2.1.42d8a0c0/linux/MbedStudio.tar.gz
+        sha256: d5653f70135654e6566e88fc73eb0e5dc1112747da0ed5909793977a54517d4b
+        size: 1284604766
       - type: extra-data
         filename: clangd.zip
         url: https://studio.mbed.com/tools/linux/clangd-ubuntu-18/clangd-8.0.2.zip
