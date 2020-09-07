@@ -23,7 +23,8 @@ runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: insync
 finish-args:
-  - --device=dri
+  # workaround for mincore() allocation issue with qt5 wayland egl backend
+# - --device=dri
   - --filesystem=home
   - --own-name=org.kde.*
   - --share=ipc
@@ -37,8 +38,6 @@ finish-args:
   # workaround for the hardcoded ~/.config
   - --persist=.config/autostart
   - --persist=.config/Insync
-  # force xwayland, qt5-wayland shell plugins are missing
-  - --env=QT_QPA_PLATFORM=xcb
   # workaround for missing gio modules
   - --env=GIO_EXTRA_MODULES=/app/lib/gio/modules
 
