@@ -23,8 +23,7 @@ runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: insync
 finish-args:
-  # workaround for mincore() allocation issue with qt5 wayland egl backend
-# - --device=dri
+  - --device=dri
   - --filesystem=home
   - --own-name=org.kde.*
   - --share=ipc
@@ -59,13 +58,15 @@ modules:
       - type: script
         dest-filename: apply_extra
         commands:
-          - "ar x insync.deb"
-          - "rm -f insync.deb"
-          - "tar xf data.tar.gz"
-          - "rm -f control.tar.gz data.tar.gz debian-binary"
-          - "mv usr/* ."
-          - "rmdir usr"
-          - "rm -rf bin share/doc share/man"
+          - ar x insync.deb
+          - rm -f insync.deb
+          - tar xf data.tar.gz
+          - rm -f control.tar.gz data.tar.gz debian-binary
+          - mv usr/* .
+          - rmdir usr
+          - rm -rf bin share/doc share/man
+            # remove some packaged libs, use runtime libs instead
+          - rm -f lib/insync/lib{drm,GLdispatch,GLX}.so*
       - type: dir
         path: resources
       - type: extra-data
