@@ -1,3 +1,4 @@
+# TODO: bump runtime
 app-id: com.github.qucs.qucs
 base: com.github.qucs.qucs.BaseApp
 #base-version: stable

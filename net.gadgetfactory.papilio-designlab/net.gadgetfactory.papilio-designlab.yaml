@@ -1,3 +1,4 @@
+# TODO: bump runtime
 app-id: net.gadgetfactory.papilio-designlab
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'

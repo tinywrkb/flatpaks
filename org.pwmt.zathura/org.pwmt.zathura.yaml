@@ -1,3 +1,4 @@
+# TODO: bump runtime
 app-id: org.pwmt.zathura
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'

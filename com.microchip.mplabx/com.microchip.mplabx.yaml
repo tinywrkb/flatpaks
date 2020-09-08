@@ -5,6 +5,7 @@
 #   https://ww1.microchip.com/downloads/en/DeviceDoc/xc16-v1.50-full-install-linux64-installer.run
 # * MPLAB XC32/32++ Compiler v2.41 mplabxc32
 #   https://ww1.microchip.com/downloads/en/DeviceDoc/xc32-v2.41-full-install-linux-installer.run
+# TODO: bump runtime
 
 app-id: com.microchip.mplabx
 runtime: org.freedesktop.Platform

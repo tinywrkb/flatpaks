@@ -1,6 +1,7 @@
 # TODO: export desktop files
 # TODO: go through dependency tree
 # TODO: cleaning
+# TODO: bump runtime
 app-id: org.geda_project.geda
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'

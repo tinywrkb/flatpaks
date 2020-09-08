@@ -1,4 +1,6 @@
-# TODO: workaround for ~/.hugin config? xdg spec supposedly supported since 2018.0.0 release
+# TODO: workaround for ~/.hugin config?
+# TODO: xdg spec supposedly supported since 2018.0.0 release, check if persist workarounds can be drop
+# TODO: bump runtime
 app-id: net.sourceforge.hugin
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
