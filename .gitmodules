@@ -1,9 +1,6 @@
 [submodule "org.sunflower_fm.sunflower/shared-modules"]
 	path = org.sunflower_fm.sunflower/shared-modules
 	url = https://github.com/flathub/shared-modules.git
-[submodule "org.virt_manager.virt-manager/shared-modules"]
-	path = org.virt_manager.virt-manager/shared-modules
-	url = https://github.com/flathub/shared-modules.git
 [submodule "com.github.thestinger.termite/shared-modules"]
 	path = com.github.thestinger.termite/shared-modules
 	url = https://github.com/flathub/shared-modules.git

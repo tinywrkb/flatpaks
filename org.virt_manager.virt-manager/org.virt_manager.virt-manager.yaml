@@ -56,12 +56,13 @@ modules:
 #     - python3 -m compileall /app/share/virt-manager
 #     - python3 -O -m compileall /app/share/virt-manager
     sources:
-      - type: archive
-        url: https://virt-manager.org/download/sources/virt-manager/virt-manager-2.2.1.tar.gz
-        sha256: cfd88d66e834513e067b4d3501217e21352fadb673103bacb9e646da9f029a1b
+      - type: git
+        url: https://github.com/virt-manager/virt-manager
+        branch: master
+        commit: 8d5439567b638aabde862606691271a9b1161775
     modules:
       # build depends
-      - shared-modules/intltool/intltool-0.51.json
+      - ../flathub-shared-modules/intltool/intltool-0.51.json
       # runtime depends: compiled
       - name: libosinfo
         buildsystem: meson
