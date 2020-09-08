@@ -1,7 +1,6 @@
-# TODO: switch release source to extra-data
 app-id: com.github.hneemann.digital
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk
@@ -18,6 +17,7 @@ cleanup:
 finish-args:
   - --device=dri
   - --env=PATH=/app/bin:/app/jre/bin:/usr/bin
+  - --env=_JAVA_AWT_WM_NONREPARENTING=1
   - --filesystem=home
   - --share=ipc
   - --socket=wayland
@@ -26,17 +26,31 @@ modules:
   - name: openjdk
     buildsystem: simple
     build-commands:
-      - /usr/lib/sdk/openjdk/install.sh
+     #- /usr/lib/sdk/openjdk/install.sh
+      - |
+          mkdir -p /app/jre/bin
+          cd /usr/lib/sdk/openjdk/jvm/openjdk-15
+          cp -ra conf lib release /app/jre/
+          rm /app/jre/lib/src.zip /app/jre/lib/ct.sym
+          cp -ra bin/{java,keytool,rmid,rmiregistry} /app/jre/bin
   - name: digital
     buildsystem: simple
     build-commands:
-      - install -Dm644 Digital.jar /app/digital/digital.jar
-      - mv examples /app/digital/examples
       - install -Dm755 digital /app/bin/digital
       - install -Dm644 digital.desktop /app/share/applications/digital.desktop
+      - install -Dm755 apply_extra /app/bin/apply_extra
     sources:
-      - type: archive
-        url: https://github.com/hneemann/Digital/releases/download/v0.25/Digital.zip
-        sha256: 855670949e09443fa550e0c82230f8c2b42c8e6dbdc7e0b4914fbc412a6555c1
       - type: dir
         path: resources
+      - type: extra-data
+        filename: digital.zip
+        url: https://github.com/hneemann/Digital/releases/download/v0.25/Digital.zip
+        sha256: 855670949e09443fa550e0c82230f8c2b42c8e6dbdc7e0b4914fbc412a6555c1
+        size: 9143153
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - bsdtar -xf digital.zip --strip 1
+          - rm -f digital.zip
+          - rm -f *.{exe,txt} Digital.sh Windows_Read.me
+          - rm -rf docu
