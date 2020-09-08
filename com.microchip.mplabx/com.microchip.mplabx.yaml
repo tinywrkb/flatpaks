@@ -1,8 +1,3 @@
-#
-# WARNING: This will not be installed correctly without patching Flatpak to enable
-#          multiarch when running apply_extra during the installation.
-#          See example patch: https://github.com/flatpak/flatpak/issues/3742
-#
 # TODO: add compilers as extensions
 # * MPLAB XC8 Compiler v2.20 mplabxc8
 #   https://ww1.microchip.com/downloads/en/DeviceDoc/xc8-v2.20-full-install-linux-installer.run
