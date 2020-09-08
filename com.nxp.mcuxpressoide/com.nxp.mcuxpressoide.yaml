@@ -7,10 +7,10 @@ sdk-extensions:
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
-    version: '19.08'
+    version: '20.08'
   org.freedesktop.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
-    version: '19.08'
+    version: '20.08'
     no-autodownload: true
 command: mcuxpressoide
 rename-desktop-file: mcuxpressoide.desktop
