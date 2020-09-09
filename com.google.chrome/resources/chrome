@@ -12,4 +12,4 @@ fi
 CHROME_USER_FLAGS="--use-cmd-decoder=validating --use-gl=desktop $CHROME_USER_FLAGS"
 
 # Launch
-exec zypak-wrapper.sh /app/extra/opt/google/chrome/google-chrome $CHROME_USER_FLAGS "$@"
+exec zypak-wrapper.sh /app/extra/google-chrome $CHROME_USER_FLAGS "$@"

@@ -50,8 +50,9 @@ modules:
       - install -D apply_extra /app/bin/apply_extra
       - install -Dm755 chrome /app/bin/chrome
       - install -Dm755 stub_sandbox /app/bin/stub_sandbox
-      - install -Dm644 com.google.chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome.svg
-      - install -Dm644 com.google.chrome.desktop /app/share/applications/com.google.chrome.desktop
+      - install -Dm644 chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome.svg
+      - install -Dm644 chrome.desktop /app/share/applications/com.google.chrome.desktop
+      - install -Dm644 appdata.xml /app/share/appdata/com.google.chrome.appdata.xml
       - install -Dm755 /usr/bin/ar /app/bin
       - mkdir -p /app/lib
       - ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib
@@ -66,10 +67,12 @@ modules:
           - rm -f control.tar.xz data.tar.xz debian-binary
           - mv usr/* .
           - rmdir usr
-          - rm -rf bin etc share/doc share/man
-          - rm opt/google/chrome/product_logo_*.png
-          - rm -r opt/google/chrome/cron
-          - cp /app/bin/stub_sandbox opt/google/chrome/chrome-sandbox
+          - rm -rf bin etc share/{doc,gnome-control-center,man,menu}
+          - mv opt/google/chrome/* .
+          - rm -rf opt
+          - rm -f product_logo_*.png
+          - rm -rf cron
+          - cp /app/bin/stub_sandbox chrome-sandbox
       - type: dir
         path: resources
       - type: extra-data
