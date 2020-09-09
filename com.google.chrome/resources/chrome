@@ -7,5 +7,9 @@ if [[ -f $XDG_CONFIG_HOME/chrome-flags.conf ]]; then
    CHROME_USER_FLAGS="$(cat ${XDG_CONFIG_HOME}/chrome-flags.conf | egrep -v -e '^#' -e '^$')"
 fi
 
+# 1121782 workaround
+# https://bugs.chromium.org/p/chromium/issues/detail?id=1121782
+CHROME_USER_FLAGS="--use-cmd-decoder=validating --use-gl=desktop $CHROME_USER_FLAGS"
+
 # Launch
 exec zypak-wrapper.sh /app/extra/opt/google/chrome/google-chrome $CHROME_USER_FLAGS "$@"
