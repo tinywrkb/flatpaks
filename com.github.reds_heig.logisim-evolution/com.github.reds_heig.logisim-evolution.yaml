@@ -28,13 +28,7 @@ modules:
   - name: openjdk
     buildsystem: simple
     build-commands:
-     #- /usr/lib/sdk/openjdk/install.sh
-      - |
-          mkdir -p /app/jre/bin
-          cd /usr/lib/sdk/openjdk/jvm/openjdk-15
-          cp -ra conf lib release /app/jre/
-          rm /app/jre/lib/src.zip /app/jre/lib/ct.sym
-          cp -ra bin/{java,keytool,rmid,rmiregistry} /app/jre/bin
+      - /usr/lib/sdk/openjdk/install.sh
   - name: logisim-evolution
     buildsystem: simple
     build-commands:
