@@ -48,7 +48,7 @@ modules:
           - rm -f control.tar.xz data.tar.xz debian-binary
           - mv usr/* .
           - rmdir usr
-          - rm -rf etc bin share/{doc,gnome-control-center,man,menu}
+          - rm -rf bin etc share/{doc,gnome-control-center,man,menu}
           - mv opt/google/chrome-unstable/* .
           - rm -rf opt
           - rm -f product_logo_*.png
