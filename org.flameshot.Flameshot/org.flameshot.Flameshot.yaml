@@ -1,0 +1,34 @@
+app-id: org.flameshot.Flameshot
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: flameshot
+rename-icon: flameshot
+rename-desktop-file: flameshot.desktop
+copy-icon: true
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --own-name=org.flameshot.Flameshot
+  - --own-name=org.kde.*
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+  - --talk-name=org.kde.StatusNotifierWatcher
+modules:
+  - name: flameshot
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    post-install:
+        # flatpak-builder annoyance: https://github.com/flatpak/flatpak-builder/issues/252
+      - install -dm755 /app/share/appdata/
+      - mv /app/share/metainfo/flameshot.metainfo.xml /app/share/appdata/org.flameshot.Flameshot.appdata.xml
+      - rmdir /app/share/metainfo/
+    sources:
+      - type: archive
+        url: https://github.com/flameshot-org/flameshot/archive/v0.8.0_beta.tar.gz
+        sha256: 5d6715b228d0bfe61e918b331909fb0ed53b74fd9dffb0215d2b9cf670688705
+    cleanup:
+      - /share/bash-completion
+      - /share/zsh
