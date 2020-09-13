@@ -1,4 +1,4 @@
-From 4c66e4cb7e0597c427d0770d794574caf410b025 Mon Sep 17 00:00:00 2001
+From 5daf5b93faf2a7718b44aa9df372423b91c2c1a8 Mon Sep 17 00:00:00 2001
 From: tinywrkb <tinywrkb@gmail.com>
 Date: Sun, 13 Sep 2020 22:50:07 +0300
 Subject: [PATCH] exportable action icons
@@ -9,7 +9,7 @@ Subject: [PATCH] exportable action icons
  2 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 52faf24..b20346e 100644
+index 52faf24..55c8f7f 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -47,22 +47,22 @@ install : iwgtk iwgtk.1.gz
@@ -21,11 +21,11 @@ index 52faf24..b20346e 100644
 -	install icons/connected.svg $(DESTDIR)$(svg_icon_dir)/actions/iwgtk-station-up.svg
 -	install icons/ap-down.svg $(DESTDIR)$(svg_icon_dir)/actions/iwgtk-ap-down.svg
 -	install icons/ap-up.svg $(DESTDIR)$(svg_icon_dir)/actions/iwgtk-ap-up.svg
-+	install icons/unknown.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-station-down.svg
-+	install icons/connecting.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-station-connecting.svg
-+	install icons/connected.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-station-up.svg
-+	install icons/ap-down.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-ap-down.svg
-+	install icons/ap-up.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-ap-up.svg
++	install icons/unknown.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.station-down.svg
++	install icons/connecting.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.station-connecting.svg
++	install icons/connected.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.station-up.svg
++	install icons/ap-down.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.ap-down.svg
++	install icons/ap-up.svg $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.ap-up.svg
  
  uninstall :
  	rm $(DESTDIR)$(bindir)/iwgtk
@@ -37,16 +37,16 @@ index 52faf24..b20346e 100644
 -	rm $(DESTDIR)$(svg_icon_dir)/actions/iwgtk-station-up.svg
 -	rm $(DESTDIR)$(svg_icon_dir)/actions/iwgtk-ap-down.svg
 -	rm $(DESTDIR)$(svg_icon_dir)/actions/iwgtk-ap-up.svg
-+	rm $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-station-down.svg
-+	rm $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-station-connecting.svg
-+	rm $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-station-up.svg
++	rm $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.station-down.svg
++	rm $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.station-connecting.svg
++	rm $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.station-up.svg
 +	rm $(DESTDIR)$(svg_icon_dir)/actions/icom.github.j_lentz.wgtk-ap-down.svg
-+	rm $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk-ap-up.svg
++	rm $(DESTDIR)$(svg_icon_dir)/actions/com.github.j_lentz.iwgtk.ap-up.svg
  
  clean :
  	rm -f iwgtk *.o $(srcdir)/icons.c $(srcdir)/icons.h iwgtk.1.gz
 diff --git a/src/indicator.c b/src/indicator.c
-index 825fe89..f0c7f7e 100644
+index 825fe89..6cfa652 100644
 --- a/src/indicator.c
 +++ b/src/indicator.c
 @@ -58,15 +58,15 @@ void indicator_set_station(Indicator *indicator) {
@@ -54,17 +54,17 @@ index 825fe89..f0c7f7e 100644
  
      if (!strcmp(state, "connected")) {
 -	icon_name = "iwgtk-station-up";
-+	icon_name = "com.github.j_lentz.iwgtk-station-up";
++	icon_name = "com.github.j_lentz.iwgtk.station-up";
  	icon_desc = "Connected to wifi network";
      }
      else if (!strcmp(state, "connecting")) {
 -	icon_name = "iwgtk-station-connecting";
-+	icon_name = "com.github.j_lentz.iwgtk-station-connecting";
++	icon_name = "com.github.j_lentz.iwgtk.station-connecting";
  	icon_desc = "Connecting to wifi network";
      }
      else {
 -	icon_name = "iwgtk-station-down";
-+	icon_name = "com.github.j_lentz.iwgtk-station-down";
++	icon_name = "com.github.j_lentz.iwgtk.station-down";
  	icon_desc = "Not connected to a wifi network";
      }
  
@@ -73,12 +73,12 @@ index 825fe89..f0c7f7e 100644
  
      if (started) {
 -	icon_name = "iwgtk-ap-up";
-+	icon_name = "com.github.j_lentz.iwgtk-ap-up";
++	icon_name = "com.github.j_lentz.iwgtk.ap-up";
  	icon_desc = "AP is up";
      }
      else {
 -	icon_name = "iwgtk-ap-down";
-+	icon_name = "com.github.j_lentz.iwgtk-ap-down";
++	icon_name = "com.github.j_lentz.iwgtk.ap-down";
  	icon_desc = "AP is down";
      }
  
@@ -87,12 +87,12 @@ index 825fe89..f0c7f7e 100644
  
      if (started) {
 -	icon_name = "iwgtk-ap-up";
-+	icon_name = "com.github.j_lentz.iwgtk-ap-up";
++	icon_name = "com.github.j_lentz.iwgtk.ap-up";
  	icon_desc = "Ad-hoc node is up";
      }
      else {
 -	icon_name = "iwgtk-ap-down";
-+	icon_name = "com.github.j_lentz.iwgtk-ap-down";
++	icon_name = "com.github.j_lentz.iwgtk.ap-down";
  	icon_desc = "Ad-hoc node is down";
      }
  
