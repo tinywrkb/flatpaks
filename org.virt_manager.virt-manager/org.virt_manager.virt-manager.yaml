@@ -56,10 +56,11 @@ modules:
 #     - python3 -m compileall /app/share/virt-manager
 #     - python3 -O -m compileall /app/share/virt-manager
     sources:
-      - type: git
-        url: https://github.com/virt-manager/virt-manager
-        branch: master
-        commit: 8d5439567b638aabde862606691271a9b1161775
+      - type: archive
+        url: https://github.com/virt-manager/virt-manager/archive/v3.0.0.tar.gz
+        sha256: bc934c748395e98ed02e225898acefffc3464067873c9508fee5321b77a5f718
+      - type: patch
+        path: 0001-virt-manager-disable-man-pages.patch
     modules:
       # build depends
       - ../flathub-shared-modules/intltool/intltool-0.51.json
