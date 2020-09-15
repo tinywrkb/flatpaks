@@ -1,4 +1,4 @@
-app-id: com.github.j_lentz.iwgtk
+app-id: org.twosheds.iwgtk
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
@@ -7,7 +7,7 @@ rename-desktop-file: iwgtk.desktop
 rename-icon: iwgtk
 finish-args:
   - --device=dri
-  - --own-name=application.iwgtk
+  - --own-name=org.twosheds.iwgtk
   - --own-name=org.kde.*
   - --share=ipc
   - --socket=wayland
@@ -22,9 +22,7 @@ modules:
       - prefix=/app
     sources:
       - type: archive
-        url: https://github.com/J-Lentz/iwgtk/archive/v0.4.tar.gz
-        sha256: 71bb85546a55bf710052d4947f6be5f5a01033d04d2d14a85a7e734dd570657d
-      - type: patch
-        path: 0001-exportable-action-icons.patch
+        url: https://github.com/J-Lentz/iwgtk/archive/06739cc8e29949e477b5e6427a382ad0accf69fb.zip
+        sha256: 77cfc6bc60d24fcbb992684b4504c205be70850d6c8900d996a30b629574e350
     cleanup:
       - /share/man
