@@ -1,7 +1,7 @@
 # TODO ~/.wxMaxima config workaround
 app-id: com.github.wxmaxima_developers.wxmaxima
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: wxmaxima
 rename-desktop-file: io.github.wxmaxima_developers.wxMaxima.desktop

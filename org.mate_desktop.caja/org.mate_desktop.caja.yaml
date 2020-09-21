@@ -1,6 +1,6 @@
 app-id: org.mate_desktop.caja
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: caja
 #rename-icon: caja
@@ -52,12 +52,23 @@ modules:
           - --disable-schemas-compile
         sources:
           - type: archive
-            url: https://pub.mate-desktop.org/releases/1.24/mate-desktop-1.24.0.tar.xz
-            sha256: afa93116ad5bdf55091341ae5426e4418ff8980c5c17dc6cd1258c6f8d5c8b50
-#       modules:
+            url: https://pub.mate-desktop.org/releases/1.24/mate-desktop-1.24.1.tar.xz
+            sha256: d1e8cfae3828d8f083d624b1bfaa332a68ff37c145286432e9e6875a916da1d9
+        modules:
 #         - intltool
 #         - name: iso-codes
 #         - name: startup-notification
+          - name: dconf
+            buildsystem: meson
+            config-opts:
+              - -Dbash_completion=false
+              - -Dman=false
+              - -Dgtk_docs=false
+              - -Dvapi=false
+            sources:
+              - type: archive
+                url: https://gitlab.gnome.org/GNOME/dconf/-/archive/0.38.0/dconf-0.38.0.tar.gz
+                sha256: eefceea6b0093f0b66bf712f7f5036726aafebae724b0daab54ef24ee7bb8f04
   - name: python-caja
     sources:
       - type: archive

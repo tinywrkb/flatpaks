@@ -1,6 +1,6 @@
 app-id: com.github.drahnr.oregano
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: oregano
 rename-desktop-file: oregano.desktop
@@ -13,7 +13,8 @@ finish-args:
   - --filesystem=home
   - --own-name=org.gnome.oregano
   - --share=ipc
-  - --socket=wayland
+# disable wayland for now, startup not consistently successful
+#  - --socket=wayland
   - --socket=x11
 cleanup:
   - /include
@@ -38,7 +39,7 @@ modules:
       - ../flathub-shared-modules/intltool/intltool-0.51.json
       - name: goocanvas
         make-install-args:
-          - pyoverridesdir=/app/lib/python3.7/site-packages/gi/overrides
+          - pyoverridesdir=/app/lib/python3.8/site-packages/gi/overrides
         sources:
           - type: archive
             url: https://download.gnome.org/sources/goocanvas/2.0/goocanvas-2.0.4.tar.xz

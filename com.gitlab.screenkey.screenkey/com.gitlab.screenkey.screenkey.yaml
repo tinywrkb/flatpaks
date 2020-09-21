@@ -1,11 +1,12 @@
 app-id: com.gitlab.screenkey.screenkey
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: screenkey
 rename-desktop-file: screenkey.desktop
 finish-args:
   - --device=dri
+  - --own-name=org.kde.*
   - --share=ipc
   - --socket=wayland
   - --socket=x11
@@ -14,7 +15,7 @@ modules:
   - name: screenkey
     buildsystem: simple
     ensure-writable:
-      - /lib/python3.7/site-packages/easy-install.pth
+      - /lib/python3.8/site-packages/easy-install.pth
     build-commands:
       - python3 setup.py build
       - python3 setup.py install --skip-build --prefix=/app
@@ -57,3 +58,5 @@ modules:
         modules:
           - ../flathub-shared-modules/glew/glew.json
           - ../flathub-shared-modules/glu/glu-9.json
+          # not helping with statusnotifier
+     #- ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json

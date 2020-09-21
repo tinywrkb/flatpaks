@@ -2,7 +2,7 @@ app-id: org.virt_manager.virt-viewer
 base: org.libvirt.libvirt.BaseApp
 #base-version: stable
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: virt-viewer
 rename-icon: virt-viewer
@@ -36,4 +36,4 @@ modules:
         url: https://virt-manager.org/download/sources/virt-viewer/virt-viewer-8.0.tar.gz
         sha256: dcf358ed5d7a4900215133135a6492c04311d84332816d930df9a89d6195b6ed
     modules:
-      - shared-modules/intltool/intltool-0.51.json
+      - ../flathub-shared-modules/intltool/intltool-0.51.json

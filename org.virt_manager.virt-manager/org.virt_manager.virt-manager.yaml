@@ -13,7 +13,7 @@ app-id: org.virt_manager.virt-manager
 base: org.libvirt.libvirt.BaseApp
 #base-version: stable
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: virt-manager
 rename-icon: virt-manager

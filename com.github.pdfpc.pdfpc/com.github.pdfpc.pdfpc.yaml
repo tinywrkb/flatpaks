@@ -2,7 +2,7 @@
 # TODO: add desktop file with mimetypes? or maybe avoid the desktop file and just add mimetypes?
 app-id: com.github.pdfpc.pdfpc
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: pdfpc
 build-options:

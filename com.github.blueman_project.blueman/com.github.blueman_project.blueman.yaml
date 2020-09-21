@@ -1,6 +1,6 @@
 app-id: com.github.blueman_project.blueman
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: blueman-applet
 rename-icon: blueman
@@ -10,6 +10,7 @@ finish-args:
   - --device=dri
   - --filesystem=home
   - --own-name=org.blueman.*
+  - --own-name=org.kde.*
   - --share=ipc
   - --socket=wayland
   - --socket=x11
@@ -50,9 +51,9 @@ modules:
       - /share/man
       - /share/Thunar
     modules:
-      - shared-modules/intltool/intltool-0.51.json
+      - ../flathub-shared-modules/intltool/intltool-0.51.json
       # appindicator doesn't work
-      #- shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      #- ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
       - name: iproute2
         make-install-args:
           #- DESTDIR=/

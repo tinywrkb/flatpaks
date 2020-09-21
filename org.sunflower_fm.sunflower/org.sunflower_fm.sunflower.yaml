@@ -1,6 +1,6 @@
 app-id: org.sunflower_fm.sunflower
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: sunflower
 rename-icon: sunflower
@@ -22,7 +22,7 @@ modules:
   - name: sunflower
     buildsystem: simple
     ensure-writable:
-      - /lib/python3.7/site-packages/easy-install.pth
+      - /lib/python3.8/site-packages/easy-install.pth
     build-commands:
       - python3 setup.py build
       - python3 setup.py install --skip-build --prefix=/app
@@ -39,7 +39,7 @@ modules:
         # actually available in the runtime & sdk but setup.py fail to find it
         buildsystem: simple
         ensure-writable:
-          - /lib/python3.7/site-packages/easy-install.pth
+          - /lib/python3.8/site-packages/easy-install.pth
         build-commands:
           - python3 setup.py install --prefix=/app
         sources:

@@ -1,7 +1,7 @@
 app-id: org.libvirt.libvirt.BaseApp
 #branch: stable
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 separate-locales: false
 #finish-args:
@@ -151,18 +151,6 @@ modules:
             url: https://download.gnome.org/sources/phodav/2.4/phodav-2.4.tar.xz
             sha256: 7dddc2b75e04d0866bb9c9a83028a597ebd73ef4c37bd6ebe1032a870b43b8c3
           - type: shell
-      - name: lz4
-        subdir: lib
-        no-autogen: true
-        make-args:
-          - BUILD_STATIC=no
-        make-install-args:
-          - BUILD_STATIC=no
-          - PREFIX=/app
-        sources:
-          - type: archive
-            url: https://github.com/lz4/lz4/archive/v1.9.2.tar.gz
-            sha256: 658ba6191fa44c92280d4aa2c271b0f4fbc0e34d249578dd05e50e76d0e5efcc
       - name: libusb
         config-opts:
           - --enable-static=no
