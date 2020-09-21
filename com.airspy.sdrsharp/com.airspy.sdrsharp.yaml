@@ -1,9 +1,8 @@
 # TODO: desktop files and icons
 # TODO: switch to extra-data
-# TODO: bump runtime when mono is ready
 app-id: com.airspy.sdrsharp
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.mono6
@@ -33,10 +32,10 @@ modules:
           #export PKG_CONFIG_PATH=${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}${FLATPAK_DEST}/lib/pkgconfig
           #export MONO_GAC_PREFIX=/app
 
-          export PATH=/usr/lib/sdk/mono5/bin:$PATH
-          export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}/usr/lib/sdk/mono5/lib
-          export PKG_CONFIG_PATH=${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}/usr/lib/sdk/mono5/lib/pkgconfig
-          export MONO_GAC_PREFIX=/usr/lib/sdk/mono5
+          export PATH=/usr/lib/sdk/mono6/bin:$PATH
+          export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}/usr/lib/sdk/mono6/lib
+          export PKG_CONFIG_PATH=${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}/usr/lib/sdk/mono6/lib/pkgconfig
+          export MONO_GAC_PREFIX=/usr/lib/sdk/mono6
 
           export MONO_LOG_LEVEL=debug
           for prog in SDRSharp ADSBSpy AirspyCalibrate AstroSpy SpectrumSpy; do
@@ -66,10 +65,10 @@ modules:
       - name: mono
         buildsystem: simple
         build-commands:
-          - /usr/lib/sdk/mono5/install.sh
+          - /usr/lib/sdk/mono6/install.sh
             # crude workaround for missing gacs
             # TODO: a more correct mono installation
-          - cp -ar /usr/lib/sdk/mono5/lib/mono/gac/System* /app/lib/mono/gac/
+          - cp -ar /usr/lib/sdk/mono6/lib/mono/gac/System* /app/lib/mono/gac/
           - rm -f /app/lib/mono/gac/System*/*/*.pdb
       - name: portaudio
         config-opts:
@@ -96,6 +95,6 @@ modules:
       - name: libgdiplus
         sources:
           - type: archive
-            url: https://github.com/mono/libgdiplus/archive/5.6.1/libgdiplus-5.6.1.tar.gz
-            sha256: deff863023950b1d1de7e47e44fc31c8ba39cfc06334737261965f697b2ad312
+            url: https://github.com/mono/libgdiplus/archive/6.0.5.tar.gz
+            sha256: 1fd034f4b636214cc24e94c563cd10b3f3444d9f0660927b60e63fd4131d97fa
 #     - name: gtk2 ???
