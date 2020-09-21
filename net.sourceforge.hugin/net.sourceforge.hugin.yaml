@@ -1,9 +1,8 @@
 # TODO: xdg spec supposedly supported since 2018.0.0 release, check if persist workarounds can be drop
 # TODO: better workaround for ~/.hugin config file
-# TODO: bump runtime
 app-id: net.sourceforge.hugin
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.texlive
@@ -53,7 +52,7 @@ modules:
         sha256: 8ba6bdfea246313f142f17f42e066c6888f51b72e4f8814b5e1c84ff56a95a3e
       - type: shell
         commands:
-          - sed -i "\#OUTPUT_STRIP_TRAILING_WHITESPACE)#a\    SET(pyinstalldir \"/app/lib/python3.7/site-packages\")" src/hugin_script_interface/CMakeLists.txt
+          - sed -i "\#OUTPUT_STRIP_TRAILING_WHITESPACE)#a\    SET(pyinstalldir \"/app/lib/python3.8/site-packages\")" src/hugin_script_interface/CMakeLists.txt
     modules:
       - ../flathub-shared-modules/glew/glew.json
       - name: wxgtk
