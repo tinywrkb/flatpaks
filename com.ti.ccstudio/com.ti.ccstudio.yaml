@@ -30,7 +30,8 @@ finish-args:
   - --persist=ti
   - --share=ipc
   - --share=network
-  - --socket=wayland
+#  disable wayland, built-in browser is broken
+#  - --socket=wayland
   - --socket=x11
 # - --talk-name=org.freedesktop.Notifications
 # - --talk-name=org.kde.StatusNotifierWatcher
