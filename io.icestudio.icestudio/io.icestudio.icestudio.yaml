@@ -78,9 +78,9 @@ modules:
             url: https://download.gnome.org/sources/gnome-common/3.18/gnome-common-3.18.0.tar.xz
             sha256: 22569e370ae755e04527b76328befc4c73b62bfd4a572499fde116b8318af8cf
         modules:
-          - shared-modules/intltool/intltool-0.51.json
-      - shared-modules/dbus-glib/dbus-glib-0.110.json
-  - shared-modules/gtk2/gtk2.json
+          - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - ../flathub-shared-modules/dbus-glib/dbus-glib-0.110.json
+  - ../flathub-shared-modules/gtk2/gtk2.json
   - name: libnotify
     buildsystem: meson
     config-opts:
