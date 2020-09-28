@@ -27,8 +27,8 @@ modules:
       - rmdir /app/share/metainfo/
     sources:
       - type: archive
-        url: https://github.com/flameshot-org/flameshot/archive/v0.8.1.tar.gz
-        sha256: 92394c469536b264f36e592b51468d9bbe4ea619888bb0090e8a4831c2ce2d7c
+        url: https://github.com/flameshot-org/flameshot/archive/v0.8.3.tar.gz
+        sha256: 73b0e52d389518b58e4488931e14ef40d611a2bd8661c06e187c211fb947fd05
     cleanup:
       - /share/bash-completion
       - /share/zsh
