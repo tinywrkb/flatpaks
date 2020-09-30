@@ -57,8 +57,8 @@ modules:
 #     - python3 -O -m compileall /app/share/virt-manager
     sources:
       - type: archive
-        url: https://github.com/virt-manager/virt-manager/archive/v3.0.0.tar.gz
-        sha256: bc934c748395e98ed02e225898acefffc3464067873c9508fee5321b77a5f718
+        url: https://github.com/virt-manager/virt-manager/archive/v3.1.0.tar.gz
+        sha256: bb8dea0cfdfa09bfc96389783cdfb4b8b6968fac95536212044756812b4f250a
       - type: patch
         path: 0001-virt-manager-disable-man-pages.patch
     modules:
