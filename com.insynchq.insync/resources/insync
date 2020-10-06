@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /app/extra/lib/insync
+cd /app/extra
 
 if [ $# -eq 0 ]; then
   LC_TIME=C exec ./insync start

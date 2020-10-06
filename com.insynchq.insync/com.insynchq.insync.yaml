@@ -39,7 +39,9 @@ finish-args:
   - --persist=.config/Insync
   # workaround for missing gio modules
   - --env=GIO_EXTRA_MODULES=/app/lib/gio/modules
-
+cleanup:
+  - /include
+  - /lib/pkgconfig
 modules:
   - name: insync
     buildsystem: simple
@@ -59,21 +61,22 @@ modules:
         dest-filename: apply_extra
         commands:
           - ar x insync.deb
-          - rm -f insync.deb
+          - rm -f insync.deb control.tar.gz debian-binary
           - tar xf data.tar.gz
-          - rm -f control.tar.gz data.tar.gz debian-binary
-          - mv usr/* .
-          - rmdir usr
-          - rm -rf bin share/doc share/man
+          - rm -f data.tar.gz
+          - rm -rf usr/{bin,share/{doc,man}}
+          - mv usr/share/* .
+          - mv usr/lib/insync/* .
+          - rmdir usr/{lib/{insync,},share,}
             # remove some packaged libs, use runtime libs instead
-          - rm -f lib/insync/lib{drm,GLdispatch,GLX}.so*
+          - rm -f lib{drm,GLdispatch,GLX}.so*
       - type: dir
         path: resources
       - type: extra-data
         filename: insync.deb
-        url: http://s.insynchq.com/builds/insync_3.2.8.40877-buster_amd64.deb
-        sha256: 311321a1a3e8d5486a1fe60a6e764ea237cc042ce246769cc525c5e46731c29b
-        size: 144145390
+        url: http://s.insynchq.com/builds/insync_3.2.9.40883-buster_amd64.deb
+        sha256: dd95ea0e3c52774cb9780475b2b54a17b150a29191f05cedf5a5f597ee08e89a
+        size: 144136850
 # workaround for missing libs
   - name: gvfs
     buildsystem: meson
