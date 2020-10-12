@@ -6,6 +6,7 @@ command: chrome
 cleanup:
   - /lib/pkgconfig
 finish-args:
+  - --allow=bluetooth
   - --device=all
   - --device=dri
   - --filesystem=home
@@ -15,6 +16,7 @@ finish-args:
   - --socket=pulseaudio
   - --socket=wayland
   - --socket=x11
+  - --system-talk-name=org.bluez
   - --system-talk-name=org.freedesktop.UPower
   - --talk-name=org.freedesktop.FileManager1
   - --talk-name=org.freedesktop.Notifications
