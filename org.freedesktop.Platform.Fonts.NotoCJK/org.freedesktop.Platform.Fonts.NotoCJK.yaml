@@ -1,0 +1,21 @@
+app-id: org.freedesktop.Platform.Fonts.NotoCJK
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+modules:
+  - name: noto-emoji
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t /app/share/fonts/ noto-cjk-*/*.ttc
+      - install -Dm644 -t /app/share/fonts/conf.d/ conf.d/*.conf
+    sources:
+        # download doesn't not complete so use git instead
+     #- type: archive
+     #  url: https://github.com/googlefonts/noto-cjk/archive/NotoSansV2.001.tar.gz
+     #  sha256: 0f811a6a5eacd2d4b249acf5e2d083378bbd70e8046389c9c30cc993dd278ce8
+      - type: git
+        url: https://github.com/googlefonts/noto-cjk.git
+        commit: be6c059ac1587e556e2412b27f5155c8eb3ddbe6
+        dest:  noto-cjk-latest
+      - type: dir
+        path: resources

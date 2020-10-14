@@ -1,0 +1,17 @@
+app-id: org.freedesktop.Platform.Fonts.NotoExtra
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+modules:
+  - name: noto
+    buildsystem: simple
+    build-commands:
+      - install -dm755 /app/share/fonts/
+      - cp hinted/Noto*/*{Condensed,SemiBold,Extra}*.tt[fc] /app/share/fonts/
+      - install -Dm644 -t /app/share/fonts/conf.d/ conf.d/*.conf
+    sources:
+      - type: archive
+        url: https://github.com/googlefonts/noto-fonts/archive/0fa1dfabd6e3746bb7463399e2813f60d3f1b256.tar.gz
+        sha256: 6ca2938b99e4316c6eabdab498f577efb979c4f2aeaf5a3a357ab4e3dcc2c2a5
+      - type: dir
+        path: resources
