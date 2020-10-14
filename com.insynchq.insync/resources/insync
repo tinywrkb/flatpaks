@@ -1,7 +1,5 @@
 #!/bin/sh
 
-export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
-
 cd /app/extra
 
 if [ $# -eq 0 ]; then
