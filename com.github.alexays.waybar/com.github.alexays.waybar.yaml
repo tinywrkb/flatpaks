@@ -37,6 +37,12 @@ finish-args:
     #   related bug reports:
     #     https://github.com/swaywm/sway/issues/5624
   - --filesystem=xdg-run/sway
+    # give access to flatpak apps runtime dirs
+    #   this can be a workaround for the system tray icon problem with QT when used with
+    #   XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+  - --filesystem=xdg-run/app:ro
+    #   make sure the app runtime dir is still writable
+  - --filesystem=xdg-run/app/com.github.alexays.waybar
 modules:
   - name: waybar
     buildsystem: meson
