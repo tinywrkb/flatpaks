@@ -25,6 +25,7 @@ modules:
         # generate zip code seed
       - PYTHONPATH=$PWD python2 dictionary/gen_zip_code_seed.py --zip_code=../x-ken-all/x-ken-all.csv --jigyosyo=../jigyosyo/JIGYOSYO.CSV >> data/dictionary_oss/dictionary09.txt
       - GYP_DEFINES="document_dir=/app/ime/mozc/licenses/mozc use_libzinnia=1 enable_gtk_renderer=0 use_fcitx5=YES use_fcitx=0" python2 build_mozc.py gyp
+          --server_dir=/app/ime/mozc/lib/mozc
      #    --noqt
       - python2 build_mozc.py build -c Release
           server/server.gyp:mozc_server gui/gui.gyp:mozc_tool unix/fcitx5/fcitx5.gyp:fcitx5-mozc
