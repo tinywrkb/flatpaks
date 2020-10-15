@@ -9,7 +9,7 @@ modules:
       - install -Dm644 -t /app/share/fonts/ noto-cjk-*/*.ttc
       - install -Dm644 -t /app/share/fonts/conf.d/ conf.d/*.conf
     sources:
-        # download doesn't not complete so use git instead
+        # download does not complete so use git instead
      #- type: archive
      #  url: https://github.com/googlefonts/noto-cjk/archive/NotoSansV2.001.tar.gz
      #  sha256: 0f811a6a5eacd2d4b249acf5e2d083378bbd70e8046389c9c30cc993dd278ce8
