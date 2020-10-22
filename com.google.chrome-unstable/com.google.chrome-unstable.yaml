@@ -60,9 +60,9 @@ modules:
         path: resources
       - type: extra-data
         filename: google-chrome-unstable_amd64.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_88.0.4292.2-1_amd64.deb
-        sha256: cc1196177ff418e498be13217b909b6c4e9336bc04ade1a50f595453720a7d8d
-        size: 72824244
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_88.0.4298.4-1_amd64.deb
+        sha256: 0642513e073820f5da4754c029b90db48b200bddd55c7faefd812e2cc3f0c81c
+        size: 73773128
     modules:
       - name: zypak
         sources:
@@ -77,8 +77,8 @@ modules:
           - -Dgtk_doc=false
         sources:
           - type: archive
-            url: https://gitlab.gnome.org/GNOME/libsecret/-/archive/0.20.3/libsecret-0.20.3.tar.gz
-            sha256: 9a90f733d4cac1c5a937af1fc44ddfc52458a4bcb015891247ca75037f446f6d
+            url: https://gitlab.gnome.org/GNOME/libsecret/-/archive/0.20.4/libsecret-0.20.4.tar.gz
+            sha256: ca34e69b210df221ae5da6692c2cb15ef169bb4daf42e204442f24fdb0520d4b
         cleanup:
           - /bin
           - /include
