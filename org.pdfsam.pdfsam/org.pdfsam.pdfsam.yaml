@@ -44,11 +44,12 @@ modules:
         commands:
           - bsdtar -xf pdfsam-linux.zip --strip=1
           - rm -f pdfsam-linux.zip
-          - mv pdfsam-basic-4.1.4.jar pdfsam.jar
+          - rm -rf bin doc runtime LICENSE.txt
+          - mv pdfsam-basic-*.jar pdfsam.jar
       - type: dir
         path: resources
       - type: extra-data
         filename: pdfsam-linux.zip
-        url: https://github.com/torakiki/pdfsam/releases/download/v4.1.4/pdfsam-4.1.4-linux.zip
-        sha256: 7bc29b5b4322e6821e6e6355270689de276402b191afc3e81dda8440c5b02e73
-        size: 57125292
+        url: https://github.com/torakiki/pdfsam/releases/download/v4.2.0/pdfsam-4.2.0-linux.zip
+        sha256: 5035b75b845c360f37b17882322db6323a743593624aa4e5e9593ad629ddc212
+        size: 57582632
