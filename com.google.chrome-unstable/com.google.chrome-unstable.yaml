@@ -9,12 +9,12 @@ finish-args:
   - --allow=bluetooth
   - --device=all
   - --device=dri
-  - --filesystem=~/.local/share/applications
-  - --filesystem=~/.local/share/icons
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
   - --filesystem=xdg-videos
+  - --filesystem=~/.local/share/applications
+  - --filesystem=~/.local/share/icons
   - --own-name=org.mpris.MediaPlayer2.chrome.*
   - --share=ipc
   - --share=network
