@@ -9,7 +9,12 @@ finish-args:
   - --allow=bluetooth
   - --device=all
   - --device=dri
-  - --filesystem=home
+  - --filesystem=~/.local/share/applications
+  - --filesystem=~/.local/share/icons
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
   - --own-name=org.mpris.MediaPlayer2.chrome.*
   - --share=ipc
   - --share=network
@@ -84,3 +89,10 @@ modules:
           - /include
           - /lib/girepository-1.0
           - /share/gir-1.0
+      - name: flextop
+        buildsystem: meson
+        sources:
+          - type: git
+            url: https://github.com/refi64/flextop
+            branch: main
+            commit: f0845f44e07739d3d1ba70a9f42fdfd0eb6947da
