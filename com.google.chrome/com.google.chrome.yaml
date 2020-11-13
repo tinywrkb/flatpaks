@@ -25,7 +25,6 @@ command: chrome
 cleanup:
   - /lib/pkgconfig
 finish-args:
-  - --allow=bluetooth
   - --device=all
   - --device=dri
   - --filesystem=xdg-download
