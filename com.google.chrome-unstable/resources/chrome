@@ -9,6 +9,11 @@ if [[ -f $XDG_CONFIG_HOME/chrome-flags.conf ]]; then
    CHROME_USER_FLAGS="$(cat ${XDG_CONFIG_HOME}/chrome-flags.conf | egrep -v -e '^#' -e '^$')"
 fi
 
+# TODO: switch back to executing the wrapper and drop the wrapper code from here
+#       this still doesn't seem to work correctly with zypak beta4
+# needed before running zypak-wrapper?
+#export CHROME_WRAPPER=/app/extra/google-chrome-unstable
+
 ###############################################################################
 # from google's official wrapper
 ###############################################################################
@@ -53,4 +58,4 @@ exec 2> >(exec cat >&2)
 # Launch
 ## need to use the chrome's binary and not the wrapper to have zypak work correctly
 ## at least restart is fixed this way
-exec zypak-wrapper.sh /app/extra/chrome $CHROME_USER_FLAGS "$@"
+exec zypak-wrapper /app/extra/chrome $CHROME_USER_FLAGS "$@"
