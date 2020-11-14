@@ -9,10 +9,7 @@ if [[ -f $XDG_CONFIG_HOME/chrome-flags.conf ]]; then
    CHROME_USER_FLAGS="$(cat ${XDG_CONFIG_HOME}/chrome-flags.conf | egrep -v -e '^#' -e '^$')"
 fi
 
-# TODO: switch back to executing the wrapper and drop the wrapper code from here
-#       this still doesn't seem to work correctly with zypak beta4
-# needed before running zypak-wrapper?
-#export CHROME_WRAPPER=/app/extra/google-chrome-unstable
+export CHROME_WRAPPER=$(readlink -f "$0")
 
 ###############################################################################
 # from google's official wrapper
