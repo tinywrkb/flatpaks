@@ -11,6 +11,7 @@ build-options:
 finish-args:
   - --device=dri
   - --filesystem=home
+  - --own-name=io.github.pdfpc
   - --share=ipc
   - --socket=wayland
   - --socket=x11
