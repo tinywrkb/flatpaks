@@ -54,7 +54,7 @@ exec 2> >(exec cat >&2)
 
 # 1121782 workaround
 # https://bugs.chromium.org/p/chromium/issues/detail?id=1121782
-CHROME_USER_FLAGS="--use-cmd-decoder=validating --use-gl=desktop $CHROME_USER_FLAGS"
+#CHROME_USER_FLAGS="--use-cmd-decoder=validating --use-gl=desktop $CHROME_USER_FLAGS"
 
 # Launch
 ## need to use the chrome's binary and not the wrapper to have zypak work correctly
