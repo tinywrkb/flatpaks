@@ -94,4 +94,4 @@ modules:
           - type: git
             url: https://github.com/refi64/flextop
             branch: main
-            commit: f0845f44e07739d3d1ba70a9f42fdfd0eb6947da
+            commit: b8ca6d9952a9f5d40df99903448c3fa7ccea80ee
