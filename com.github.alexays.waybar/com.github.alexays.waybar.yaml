@@ -50,6 +50,8 @@ modules:
     config-opts:
       - --wrap-mode=nofallback
       - -Dsystemd=disabled
+    post-install:
+      - install -Dm755 ../resources/custom_modules/mediaplayer.py -t /app/bin/
     sources:
       - type: archive
         url: https://github.com/Alexays/Waybar/archive/0.9.4.tar.gz
