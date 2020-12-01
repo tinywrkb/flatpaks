@@ -7,6 +7,7 @@ finish-args:
   - --device=dri
     # workaround for /dev/rfkill access
   - --device=all
+  - --env=XDG_CURRENT_DESKTOP=Unity
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
@@ -51,8 +52,8 @@ modules:
       - -Dsystemd=disabled
     sources:
       - type: archive
-        url: https://github.com/Alexays/Waybar/archive/0.9.3.tar.gz
-        sha256: 15cadd05c6a366fd99a92b0f149974c697902c4683c50e2af69f3e59571793e5
+        url: https://github.com/Alexays/Waybar/archive/0.9.4.tar.gz
+        sha256: d49c09ee253ca9cc9688d1b4d8602adc9bdae613b02e2fa1a2e7277ddc9e82e8
     modules:
       - name: chrono-date
         buildsystem: cmake
@@ -76,8 +77,8 @@ modules:
           - -DBUILD_SHARED_LIBS=true
         sources:
           - type: archive
-            url: https://github.com/fmtlib/fmt/archive/7.0.3.tar.gz
-            sha256: b4b51bc16288e2281cddc59c28f0b4f84fed58d016fb038273a09f05f8473297
+            url: https://github.com/fmtlib/fmt/archive/7.1.3.tar.gz
+            sha256: 5cae7072042b3043e12d53d50ef404bbb76949dad1de368d7f993a15c8c05ecc
       - name: gtk-layer-shell
         buildsystem: meson
         config-opts:
@@ -85,8 +86,8 @@ modules:
           - --buildtype=plain
         sources:
           - type: archive
-            url: https://github.com/wmww/gtk-layer-shell/archive/v0.3.0.tar.gz
-            sha256: edd5e31279d494df66da9e9190c219fa295da547f5538207685e98468dbc134d
+            url: https://github.com/wmww/gtk-layer-shell/archive/v0.5.1.tar.gz
+            sha256: d77e42dff69e2cf1eee4489fb7db465d4e33be48e67ee0ca653238de0ab882ba
       - ../shared-modules/gtkmm3/gtkmm3-gnome_runtime.json
       - name: jsoncpp
         buildsystem: meson
@@ -94,8 +95,8 @@ modules:
           - --default-library=shared
         sources:
           - type: archive
-            url: https://github.com/open-source-parsers/jsoncpp/archive/1.9.3/jsoncpp-1.9.3.tar.gz
-            sha256: 8593c1d69e703563d94d8c12244e2e18893eeb9a8a9f8aa3d09a327aa45c8f7d
+            url: https://github.com/open-source-parsers/jsoncpp/archive/1.9.4/jsoncpp-1.9.4.tar.gz
+            sha256: e34a628a8142643b976c7233ef381457efad79468c67cb1ae0b83a33d7493999
       - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
       - name: libinput
         buildsystem: meson
@@ -107,8 +108,8 @@ modules:
           - --libexec=lib
         sources:
           - type: archive
-            url: https://freedesktop.org/software/libinput/libinput-1.15.6.tar.xz
-            sha256: aeedea216a6317ddc6e27c3d54f26b987078780db6a8320cc09e19c25b307f1c
+            url: https://freedesktop.org/software/libinput/libinput-1.16.4.tar.xz
+            sha256: 65923a06d5a8970e4a999c4668797b9b689614b62b1d44432ab1c87b65e39e29
         modules:
           - name: mtdev
             config-opts:
@@ -122,8 +123,8 @@ modules:
               - --disable-static
             sources:
               - type: archive
-                url: https://freedesktop.org/software/libevdev/libevdev-1.9.1.tar.xz
-                sha256: f5603c48c5afd76b14df7a5124e0a94a102f8da0d45826192325069d1bbc7acb
+                url: https://freedesktop.org/software/libevdev/libevdev-1.10.0.tar.xz
+                sha256: 3522c26e2c148be0ad68ce26fbced408a4185dea90bfe8079dc82b8ace962d4a
       - name: libmpdclient
         buildsystem: meson
         sources:
@@ -148,14 +149,14 @@ modules:
           - -Wno-dev
         sources:
           - type: archive
-            url: https://github.com/gabime/spdlog/archive/v1.7.0.tar.gz
-            sha256: f0114a4d3c88be9e696762f37a7c379619443ce9d668546c61b21d41affe5b62
+            url: https://github.com/gabime/spdlog/archive/v1.8.1.tar.gz
+            sha256: 5197b3147cfcfaa67dd564db7b878e4a4b3d9f3443801722b3915cdeced656cb
   - name: sway
     buildsystem: meson
     sources:
       - type: archive
-        url: https://github.com/swaywm/sway/releases/download/1.5/sway-1.5.tar.gz
-        sha256: c80644774d612d7d377093d4990061d36c36673862c06318a7b0e37fa47b0178
+        url: https://github.com/swaywm/sway/releases/download/1.5.1/sway-1.5.1.tar.gz
+        sha256: 095f983c9a5f80d761bc2fb19df8166839b9290124ccd47f3e74119a1335490f
     modules:
       - name: wlroots
         buildsystem: meson
@@ -163,8 +164,8 @@ modules:
           - --libdir=lib
         sources:
           - type: archive
-            url: https://github.com/swaywm/wlroots/archive/0.11.0.tar.gz
-            sha256: a7645e77229aab4942748c621be8bdb8b073d94f35f3e032b867246862bf2d01
+            url: https://github.com/swaywm/wlroots/archive/0.12.0.tar.gz
+            sha256: c9e9f4f6d2f526d0b2886daf3ec37e64831773059aa669fb98a88522a1626bdb
       - name: json-c
         cleanup:
           - /lib/cmake
@@ -175,8 +176,8 @@ modules:
           - -DENABLE_RDRAND=OFF
         sources:
           - type: archive
-            url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
-            sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
+            url: https://github.com/json-c/json-c/archive/json-c-0.15-20200726.tar.gz
+            sha256: 4ba9a090a42cf1e12b84c64e4464bb6fb893666841d5843cc5bef90774028882
   - name: jq
     sources:
       - type: archive
@@ -188,5 +189,12 @@ modules:
           - --enable-posix-api
         sources:
           - type: archive
-            url: https://github.com/kkos/oniguruma/releases/download/v6.9.5_rev1/onig-6.9.5-rev1.tar.gz
-            sha256: d33c849d1672af227944878cefe0a8fcf26fc62bedba32aa517f2f63c314a99e
+            url: https://github.com/kkos/oniguruma/releases/download/v6.9.6/onig-6.9.6.tar.gz
+            sha256: bd0faeb887f748193282848d01ec2dad8943b5dfcb8dc03ed52dcc963549e819
+  # dependency of mediaplayer.py: custom media module
+  - name: playerctl
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/altdesktop/playerctl/archive/v2.3.1.tar.gz
+        sha256: 62b55123fe0fcbb5add8b7abdf7b039d2d74662f851def77b482bd1ca0440608
