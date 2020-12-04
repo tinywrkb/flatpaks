@@ -32,7 +32,7 @@ flatpak-builder --install --user --force-clean --state-dir=build/flatpak-builder
 Flatpak does not support font packages or extensions, in order for Flatpak and host apps to make use of fonts install via Flatpak we need a few workarounds.
 
 
-Give all our Flatpak apps access to the user's fontconfig configuration file and where the font package is installed.  
+1. Give all our Flatpak apps access to the user's fontconfig configuration file and where the font package is installed.  
 Due to the mismatch of `XDG_CONFIG_DIR` value between the host and the Flatpak sandbox (different path for each app), we need to set some environment variables.  
 Also note that the fontconfig variable value need to be an absolute path, meaning it needs to be expanded before given to `flatpak override` command.
 ```
@@ -43,7 +43,7 @@ $ flatpak override --user \
     --env=FONTCONFIG_PATH=$XDG_CONFIG_HOME/fontconfig/conf.d
 ```
 
-Adding the following to `$XDG_CONFIG_HOME/fontconfig/fonts.conf` will tell fontconfig to include the Flatpak font package in its scan.  
+2. Adding the following to `$XDG_CONFIG_HOME/fontconfig/fonts.conf` will tell fontconfig to include the Flatpak font package in its scan.  
 The first directive is required because fc-cache omits the default font locations when scanning inside a Flatpak sandbox, and that's due to our use of `FONTCONFIG_FILE` variable.
 
 ```
@@ -55,11 +55,16 @@ The first directive is required because fc-cache omits the default font location
 <include ignore_missing="yes">/var/lib/flatpak/app/org.freedesktop.Platform.Fonts.<FontName>/current/active/files/share/fonts/conf.d</include>
 ```
 
-Now we can update the host font cache.
+3. Now we can update the host font cache.
 
 ```
 cd ~
 fc-cache
 ```
 
-To update the font cache of a Flatpak app sandbox just restart the app.
+4. To update the font cache of a Flatpak app sandbox just restart the app.
+
+#### Related bugs
+
+* [Flatpak: Expose host fontconfig conf.d?](https://github.com/flatpak/flatpak/issues/1563)
+* [Flatpak: Expose xdg-config/fontconfig to sandbox by default](https://github.com/flatpak/flatpak/issues/3947)
