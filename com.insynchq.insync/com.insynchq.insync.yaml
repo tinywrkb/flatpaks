@@ -68,8 +68,35 @@ modules:
           - mv usr/share/* .
           - mv usr/lib/insync/* .
           - rmdir usr/{lib/{insync,},share,}
-            # remove some packaged libs, use runtime libs instead
-          - rm -f lib{drm,GLdispatch,GLX}.so*
+          - |
+             # remove mesa and drm libs, fixes wayland egl backend
+             libs=(drm GLdispatch GLX)
+             # remove x11 libs
+             libs+=(X11 Xau xcb Xcomposite Xcursor Xdamage Xdmcp Xext Xfixes Xi Xinerama xkbcommon Xrandr Xrender Xtst)
+             # remove wayland libs
+             libs+=(wayland)
+             # remove other libs
+             libs+=(atk atspi avahi
+                    bz2 blkid
+                    cairo cups com_err crypto
+                    datrie dbus
+                    epoxy expat
+                    fontconfig fribidi freetype
+                    gcc gcrypt gio girepository glib gmodule gmp gnutls gpg graphite2 gssapi gthread gdk gtk gobject
+                    harfbuzz hogweed idn2
+                    k5crypto keyutils krb5
+                    lz4 lzma
+                    mount
+                    ncursesw nettle
+                    p11-kit pango pixman panelw pcre png16
+                    readline
+                    selinux sqlite3 ssl stdc++ systemd
+                    tasn1 tinfo thai
+                    unistring uuid
+                    z)
+             for lib in ${libs[@]}; do
+               rm -f lib${lib}*.so*
+             done
       - type: dir
         path: resources
       - type: extra-data
