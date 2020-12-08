@@ -8,6 +8,7 @@ finish-args:
   - --env=LC_NUMERIC=C
   - --filesystem=xdg-download
   - --filesystem=xdg-run/pipewire-0
+  - --own-name=org.mpris.MediaPlayer2.mpv
   - --share=ipc
   - --share=network
   - --socket=fallback-x11
@@ -149,3 +150,12 @@ modules:
         url: https://github.com/ytdl-org/youtube-dl.git
         tag: 2020.11.21.1
         commit: f23eceebbfa0aa26f7ff598026ee6029233148b6
+  - name: mpv-mpris
+    buildsystem: simple
+    build-commands:
+      - make
+      - install -Dm644 mpris.so -t /app/lib/mpv/
+    sources:
+      - type: archive
+        url: https://github.com/hoyon/mpv-mpris/archive/0.5.tar.gz
+        sha256: 673aff031e7cc741edea68d7b4b0103d7b031d4a55755abb9e1be5dd4ec4e969
