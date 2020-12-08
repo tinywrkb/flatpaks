@@ -1,0 +1,155 @@
+app-id: io.mpv.player
+runtime: org.gnome.Platform
+runtime-version: '3.38'
+sdk: org.gnome.Sdk
+command: mpv
+finish-args:
+  - --device=all
+  - --env=LC_NUMERIC=C
+  - --filesystem=xdg-download
+  - --filesystem=xdg-run/pipewire-0
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --socket=session-bus
+  - --socket=system-bus
+  - --socket=wayland
+  - --talk-name=org.gnome.SettingsDaemon.MediaKeys
+  - --talk-name=org.gtk.vfs
+  - --talk-name=org.gtk.vfs.*
+modules:
+  - name: mpv
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share/man
+    buildsystem: simple
+    build-commands:
+      - python3 waf configure --prefix=/app --enable-libmpv-shared --disable-build-date
+        --disable-alsa
+      - python3 waf build
+      - python3 waf install
+    sources:
+      - type: archive
+        url: https://github.com/mpv-player/mpv/archive/v0.33.0.tar.gz
+        sha256: f1b9baf5dc2eeaf376597c28a6281facf6ed98ff3d567e3955c95bf2459520b4
+      - type: file
+        url: https://waf.io/waf-2.0.21
+        sha256: 7cebf2c5efe53cbb9a4b5bdc4b49ae90ecd64a8fce7a3222d58e591b58215306
+        dest-filename: waf
+    modules:
+      - name: jack2
+        buildsystem: simple
+        build-commands:
+          - python3 waf configure --prefix=/app
+          - python3 waf build
+          - python3 waf install
+        sources:
+          - type: archive
+            url: https://github.com/jackaudio/jack2/archive/v1.9.16.tar.gz
+            sha256: e176d04de94dcaa3f9d32ca1825091e1b938783a78c84e7466abd06af7637d37
+        cleanup:
+          - '*'
+      - name: luajit
+        no-autogen: true
+        cleanup:
+          - /bin
+          - /lib/*.a
+          - /include
+          - /lib/pkgconfig
+          - /share/man
+        sources:
+          - type: archive
+            url: http://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz
+            sha256: 1ad2e34b111c802f9d0cdf019e986909123237a28c746b21295b63c9e785d9c3
+          - type: shell
+            commands:
+              - sed -i 's|/usr/local|/app|' ./Makefile
+      - name: libv4l2
+        cleanup:
+          - /sbin
+          - /bin
+          - /include
+          - /lib/*.la
+          - /lib/*/*.la
+          - /lib*/*/*/*.la
+          - /lib/pkgconfig
+          - /share/man
+        config-opts:
+          - --disable-static
+          - --disable-bpf
+          - --with-udevdir=/app/lib/udev
+        sources:
+          - type: archive
+            url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.20.0.tar.bz2
+            sha256: 956118713f7ccb405c55c7088a6a2490c32d54300dd9a30d8d5008c28d3726f7
+      - name: nv-codec-headers
+        cleanup:
+          - '*'
+        no-autogen: true
+        make-install-args:
+          - PREFIX=/app
+        sources:
+          - type: git
+            url: https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
+            tag: n8.2.15.11
+            commit: 58c159153814260c02c580716677bc4e823dfeff
+      - name: ffmpeg
+        cleanup:
+          - /include
+          - /lib/pkgconfig
+          - /share/ffmpeg/examples
+        config-opts:
+          - --enable-shared
+          - --disable-static
+          - --enable-gnutls
+          - --disable-doc
+          - --disable-programs
+          - --disable-encoders
+          - --disable-muxers
+          - --enable-encoder=png
+          - --enable-libv4l2
+          - --enable-libdav1d
+        sources:
+          - type: archive
+            url: https://ffmpeg.org/releases/ffmpeg-4.3.1.tar.xz
+            sha256: ad009240d46e307b4e03a213a0f49c11b650e445b1f8be0dda2a9212b34d2ffb
+      - name: libass
+        cleanup:
+          - /include
+          - /lib/*.la
+          - /lib/pkgconfig
+        config-opts:
+          - --disable-static
+        sources:
+          - type: archive
+            url: https://github.com/libass/libass/releases/download/0.15.0/libass-0.15.0.tar.xz
+            sha256: 9f09230c9a0aa68ef7aa6a9e2ab709ca957020f842e52c5b2e52b801a7d9e833
+      - name: uchardet
+        buildsystem: cmake-ninja
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=Release
+          - -DBUILD_STATIC=0
+        cleanup:
+          - /bin
+          - /include
+          - /lib/pkgconfig
+          - /share/man
+        sources:
+          - type: archive
+            url: https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.7.tar.xz
+            sha256: 3fc79408ae1d84b406922fa9319ce005631c95ca0f34b205fad867e8b30e45b1
+  - name: youtube-dl
+    no-autogen: true
+    no-make-install: true
+    make-args:
+      - youtube-dl
+      - PYTHON=/usr/bin/python3
+    post-install:
+      - install youtube-dl /app/bin
+    sources:
+      - type: git
+        url: https://github.com/ytdl-org/youtube-dl.git
+        tag: 2020.11.21.1
+        commit: f23eceebbfa0aa26f7ff598026ee6029233148b6
