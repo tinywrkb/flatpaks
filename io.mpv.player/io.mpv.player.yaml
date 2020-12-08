@@ -12,12 +12,8 @@ finish-args:
   - --share=network
   - --socket=fallback-x11
   - --socket=pulseaudio
-  - --socket=session-bus
-  - --socket=system-bus
   - --socket=wayland
-  - --talk-name=org.gnome.SettingsDaemon.MediaKeys
-  - --talk-name=org.gtk.vfs
-  - --talk-name=org.gtk.vfs.*
+  - --system-talk-name=org.freedesktop.RealtimeKit1
 modules:
   - name: mpv
     cleanup:
