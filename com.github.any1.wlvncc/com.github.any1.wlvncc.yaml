@@ -1,0 +1,43 @@
+app-id: com.github.any1.wlvncc
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: wlvncc
+finish-args:
+  - --device=dri
+  - --share=network
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: wlvncc
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/any1/wlvncc.git
+        branch: master
+        commit: 1ca82ce2e2661040ade2e683c2f330b1935760e0
+    modules:
+      - name: libvncserver
+        buildsystem: cmake
+        config-opts:
+          - -DWITH_GTK=OFF
+          - -DWITH_SDL=OFF
+        post-install:
+          - rm /app/lib/libvncserver.so*
+          - rm /app/lib/pkgconfig/libvncserver.pc
+        sources:
+          - type: git
+            url: https://github.com/LibVNC/libvncserver.git
+            branch: master
+            commit: c82b3abb369983cd737190331b897814a580a980
+      - name: aml
+        buildsystem: meson
+        sources:
+          - type: git
+            url: https://github.com/any1/aml
+            branch: master
+            commit: 6e9c36089f4f82edf10eaf85446bfa0bccf5f6ca
