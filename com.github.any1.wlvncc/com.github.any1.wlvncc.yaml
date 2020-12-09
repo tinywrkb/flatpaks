@@ -27,6 +27,8 @@ modules:
           - -DWITH_GTK=OFF
           - -DWITH_SDL=OFF
         post-install:
+          # also can be done in cleanup step but this way we can notice if wlvcc tries to link
+          #  against the server lib
           - rm /app/lib/libvncserver.so*
           - rm /app/lib/pkgconfig/libvncserver.pc
         sources:
