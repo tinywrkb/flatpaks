@@ -11,6 +11,7 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
+  - --filesystem=xdg-run/pipewire-0
   - --filesystem=xdg-videos
   - --filesystem=~/.local/share/applications
   - --filesystem=~/.local/share/icons
@@ -21,6 +22,7 @@ finish-args:
   - --socket=wayland
   - --socket=x11
   - --system-talk-name=org.bluez
+  - --system-talk-name=org.freedesktop.RealtimeKit1
   - --system-talk-name=org.freedesktop.UPower
   - --talk-name=org.freedesktop.FileManager1
   - --talk-name=org.freedesktop.Notifications
