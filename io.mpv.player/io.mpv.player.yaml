@@ -7,6 +7,9 @@ finish-args:
   - --device=all
   - --env=LC_NUMERIC=C
   - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-pictures
   - --filesystem=xdg-run/pipewire-0:ro
   - --own-name=org.mpris.MediaPlayer2.mpv
   - --share=ipc
