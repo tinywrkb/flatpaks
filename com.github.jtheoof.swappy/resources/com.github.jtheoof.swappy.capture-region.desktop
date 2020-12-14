@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Swappy: Capture Region
+GenericName=Annotation Tool
+Comment=A Wayland native snapshot editing tool
+TryExec=swappy
+Exec=swappy.sh region
+Type=Application
+Keywords=wayland;snapshot;annotation;editing;
+Icon=com.github.jtheoof.swappy
+Categories=Utility;Graphics;Annotation;
+StartupNotify=true
+MimeType=image/png;
