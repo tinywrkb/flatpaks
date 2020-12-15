@@ -1,0 +1,63 @@
+app-id: org.gramps_project.gramps
+runtime: org.gnome.Platform
+runtime-version: '3.38'
+sdk: org.gnome.Sdk
+command: gramps
+finish-args:
+  - --device=dri
+  - --own-name=org.gramps-project.Gramps
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.ls'
+modules:
+  - name: gramps
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+      - echo -n "/app/share" > /app/lib/python3.8/site-packages/gramps/gen/utils/resource-path
+    sources:
+      - type: archive
+        url: https://github.com/gramps-project/gramps/archive/v5.1.3.tar.gz
+        sha256: 91d755b7e407af40ce5ebe24b29baab860bc6e2871ebcbee3f5e109c438df1e8
+    modules:
+      - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - name: python-bsddb
+        buildsystem: simple
+        build-commands:
+          - python setup.py build --berkeley-db=/app
+          - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1 --berkeley-db=/app
+        sources:
+          - type: archive
+            url: https://files.pythonhosted.org/packages/source/b/bsddb3/bsddb3-6.2.7.tar.gz
+            sha256: b0f7fa63eb240cd5815809c9d1d7df9f7cc8d6fa9619d0edbe9c794afc02dc9f
+        modules:
+          - name: db
+            no-autogen: true
+            subdir: build_unix
+            config-opts:
+              - --enable-compat185
+              - --enable-shared
+              - --enable-cxx
+              - --enable-dbm
+              - --enable-stl
+            make-args:
+              - LIBSO_LIBS=-lpthread
+            sources:
+              - type: archive
+                url: https://download.oracle.com/berkeley-db/db-5.3.28.tar.gz
+                sha256: e0a992d740709892e81f9d93f06daf305cf73fb81b545afe72478043172c3628
+              - type: patch
+                strip-components: 0
+                path: db-atomic_compare_exchange.patch
+              - type: script
+                commands:
+                  - ../dist/configure "$@"
+                dest-filename: build_unix/configure
+            cleanup:
+              - /docs
