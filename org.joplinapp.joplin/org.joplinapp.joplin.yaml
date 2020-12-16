@@ -44,7 +44,6 @@ modules:
           - rm -f appimage
           - rm -f squashfs-root/{AppRun,.DirIcon,joplin.desktop,joplin.png}
           - rm -rf squashfs-root/usr
-          - ls squashfs-root/
           - mv squashfs-root/* ./
           - rmdir squashfs-root
       - type: extra-data

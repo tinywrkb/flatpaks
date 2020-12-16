@@ -1,5 +1,4 @@
 #!/bin/bash
 
 export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
-ls /app/extra
 exec zypak-wrapper /app/extra/@joplinapp-desktop "$@"
