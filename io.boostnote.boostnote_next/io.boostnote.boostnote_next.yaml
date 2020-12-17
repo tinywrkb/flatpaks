@@ -7,11 +7,16 @@ rename-desktop-file: boostnote.desktop
 rename-icon: boostnote
 finish-args:
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
-  - --socket=wayland
+  # needs electron v11 (chromium v87) or newer with ozone enabled
+  # https://github.com/electron/electron/issues/10915
+  # - --socket=wayland
   - --socket=x11
 modules:
   - name: boostnote
@@ -30,20 +35,18 @@ modules:
         dest-filename: apply_extra
         commands:
           - ar x boostnote_amd64.deb
-          - rm -f boostnote_amd64.deb
-          - tar xJf data.tar.xz
-          - rm -f control.tar.xz data.tar.xz debian-binary
-          - mv usr/* .
-          - install -d opt/boostnote
-          - mv opt/"Boost Note"/* opt/boostnote/
-          - rmdir usr opt/"Boost Note"
+          - rm boostnote_amd64.deb
+          - tar -xf data.tar.xz
+          - rm control.tar.gz data.tar.xz debian-binary
+          - mv opt/"Boost Note"/* .
+          - rm -r opt usr
       - type: dir
         path: resources
       - type: extra-data
         filename: boostnote_amd64.deb
-        url: https://github.com/BoostIO/BoostNote.next/releases/download/v0.10.2/boost-note-linux.deb
-        sha256: 25c45df2cf2c1e218d293c030708874d1ae56003f358d6d26488f4f2def3bdc3
-        size: 53145596
+        url: https://github.com/BoostIO/BoostNote.next/releases/download/v0.11.6/boost-note-linux.deb
+        sha256: 6557ca54b7449172ecd23eb885d6cac705a8b172855a10a17256552d88f54b30
+        size: 62463244
     modules:
       - name: zypak
         sources:
