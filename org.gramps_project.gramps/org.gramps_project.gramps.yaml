@@ -4,6 +4,8 @@ runtime: org.gnome.Platform
 runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: gramps
+rename-desktop-file: gramps.desktop
+rename-icon: gramps
 finish-args:
   - --device=dri
   - --filesystem=xdg-documents
@@ -27,6 +29,10 @@ modules:
       - python setup.py build
       - python setup.py install --prefix=/app --root=/ --optimize=1
       - echo -n "/app/share" > /app/lib/python3.8/site-packages/gramps/gen/utils/resource-path
+    post-install:
+      - mv /app/share/icons/gnome /app/share/icons/hicolor
+      - mkdir -p /app/share/icons/hicolor/48x48/apps
+      - mv /app/share/icons/gramps.png /app/share/icons/hicolor/48x48/apps/
     sources:
       - type: archive
         url: https://github.com/gramps-project/gramps/archive/v5.1.3.tar.gz
