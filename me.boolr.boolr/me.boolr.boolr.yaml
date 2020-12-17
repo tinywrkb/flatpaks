@@ -10,9 +10,6 @@ command: boolr
 rename-desktop-file: boolr.desktop
 rename-icon: boolr
 separate-locales: false
-build-options:
-  strip: true
-  no-debuginfo: true
 cleanup:
   - /include
   - /lib/pkgconfig

@@ -5,9 +5,6 @@ sdk: org.gnome.Sdk
 command: oregano
 rename-desktop-file: oregano.desktop
 rename-icon: oregano
-build-options:
-  strip: true
-  no-debuginfo: true
 finish-args:
   - --device=dri
   - --filesystem=home

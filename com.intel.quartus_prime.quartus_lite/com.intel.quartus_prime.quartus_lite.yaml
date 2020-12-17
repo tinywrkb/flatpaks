@@ -34,9 +34,6 @@ x-compat-i386-opts: &compat_i386_opts
 command: quartus
 rename-desktop-file: quartus.desktop
 rename-icon: quartus
-build-options:
-  strip: true
-  no-debuginfo: true
 cleanup:
   - /lib*/pkgconfig
   - '*.la'

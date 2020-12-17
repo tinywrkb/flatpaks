@@ -24,9 +24,6 @@ cleanup:
   - /lib/pkgconfig
   - '*.a'
   - '*.la'
-build-options:
-  strip: true
-  no-debuginfo: true
 modules:
   - name: blueman
     config-opts:

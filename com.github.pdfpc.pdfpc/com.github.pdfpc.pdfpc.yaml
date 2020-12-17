@@ -5,9 +5,6 @@ runtime: org.gnome.Platform
 runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: pdfpc
-build-options:
-  no-debuginfo: true
-  strip: true
 finish-args:
   - --device=dri
   - --filesystem=home

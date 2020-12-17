@@ -7,9 +7,6 @@ runtime: org.kde.Platform
 runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: mged
-build-options:
-  strip: true
-  no-debuginfo: true
 rename-desktop-file: brlcad.desktop
 rename-icon: brlcad
 finish-args:

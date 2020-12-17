@@ -24,9 +24,6 @@ x-compat-i386-opts: &compat_i386_opts
 command: modelsim
 rename-desktop-file: modelsim.desktop
 rename-icon: modelsim
-build-options:
-  strip: true
-  no-debuginfo: true
 cleanup:
   - /lib*/pkgconfig
   - '*.la'

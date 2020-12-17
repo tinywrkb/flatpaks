@@ -7,9 +7,6 @@ rename-icon: qimgv
 rename-appdata-file: qimgv.appdata.xml  
 rename-desktop-file: qimgv.desktop
 copy-icon: true
-build-options:
-  strip: true
-  no-debuginfo: true
 finish-args:
   - --device=dri
   - --filesystem=home

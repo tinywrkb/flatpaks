@@ -8,9 +8,6 @@ sdk: org.freedesktop.Sdk
 command: icestudio
 rename-desktop-file: icestudio.desktop
 rename-icon: icestudio
-build-options:
-  strip: true
-  no-debuginfo: true
 cleanup:
   - /include
   - /lib/pkgconfig

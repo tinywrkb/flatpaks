@@ -13,9 +13,6 @@ finish-args:
   - --socket=x11
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
-build-options:
-  strip: true
-  no-debuginfo: true
 modules:
   - name: termite
     no-autogen: true

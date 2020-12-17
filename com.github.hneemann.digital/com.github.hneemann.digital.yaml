@@ -6,9 +6,6 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk
 command: digital
 rename-desktop-file: digital.desktop
-build-options:
-  strip: true
-  no-debuginfo: true
 cleanup:
   - /include
   - /lib/pkgconfig
