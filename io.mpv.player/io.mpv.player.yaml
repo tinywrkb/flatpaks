@@ -39,16 +39,18 @@ modules:
         sha256: 7cebf2c5efe53cbb9a4b5bdc4b49ae90ecd64a8fce7a3222d58e591b58215306
         dest-filename: waf
     modules:
-      - name: jack2
+      - name: pipewire-jack
         buildsystem: simple
         build-commands:
-          - python3 waf configure --prefix=/app
-          - python3 waf build
-          - python3 waf install
+          - install -Dm644 *.h -t /app/include/jack/
+          - install -Dm644 pipewire-jack.pc /app/lib/pkgconfig/jack.pc
         sources:
-          - type: archive
-            url: https://github.com/jackaudio/jack2/archive/v1.9.16.tar.gz
-            sha256: e176d04de94dcaa3f9d32ca1825091e1b938783a78c84e7466abd06af7637d37
+          - type: git
+            url: https://github.com/jackaudio/headers
+            branch: master
+            commit: ab27e5a59fe5294cf09d50ffa2414d1542cf245e
+          - type: file
+            path: pipewire-jack.pc
         cleanup:
           - '*'
       - name: luajit
