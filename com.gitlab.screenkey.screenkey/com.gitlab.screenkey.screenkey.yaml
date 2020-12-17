@@ -8,7 +8,6 @@ finish-args:
   - --device=dri
   - --own-name=org.kde.*
   - --share=ipc
-  - --socket=wayland
   - --socket=x11
   - --talk-name=org.kde.StatusNotifierWatcher
 modules:
@@ -23,8 +22,8 @@ modules:
       - install -D com.gitlab.screenkey.screenkey.appdata.xml /app/share/appdata/com.gitlab.screenkey.screenkey.appdata.xml
     sources:
       - type: archive
-        url: https://gitlab.com/screenkey/screenkey/-/archive/v1.2/screenkey-v1.2.tar.gz
-        sha256: cac76751981857cb65ae3e892285ca8f01e7905e1279327cf2bcf1fec0f0fb69
+        url: https://gitlab.com/screenkey/screenkey/-/archive/v1.3/screenkey-v1.3.tar.gz
+        sha256: 2917176ab74de25758a3feaf7724dd3362dcc4169dea0c77f5c10c7477202f45
       - type: dir
         path: resources
     modules:
