@@ -1,3 +1,4 @@
+# TODO: add modules: python-pillow, gtkspell3
 app-id: org.gramps_project.gramps
 runtime: org.gnome.Platform
 runtime-version: '3.38'
@@ -5,10 +6,15 @@ sdk: org.gnome.Sdk
 command: gramps
 finish-args:
   - --device=dri
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
   - --own-name=org.gramps-project.Gramps
+    # TODO: maybe use GRAMPSHOME env var instead
+  - --persist=.gramps
   - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
-  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -19,7 +25,7 @@ modules:
     buildsystem: simple
     build-commands:
       - python setup.py build
-      - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+      - python setup.py install --prefix=/app --root=/ --optimize=1
       - echo -n "/app/share" > /app/lib/python3.8/site-packages/gramps/gen/utils/resource-path
     sources:
       - type: archive
@@ -27,6 +33,7 @@ modules:
         sha256: 91d755b7e407af40ce5ebe24b29baab860bc6e2871ebcbee3f5e109c438df1e8
     modules:
       - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - ../shared-modules/graphviz/graphviz.json
       - name: python-bsddb
         buildsystem: simple
         build-commands:
@@ -61,3 +68,64 @@ modules:
                 dest-filename: build_unix/configure
             cleanup:
               - /docs
+      - name: geocode-glib
+        buildsystem: meson
+        config-opts:
+          - -Denable-installed-tests=false
+          - -Denable-gtk-doc=false
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/geocode-glib/-/archive/3.26.2/geocode-glib-3.26.2.tar.gz
+            sha256: 589ed8cf890fb47619ad1062b7117d16104554078b837344496d603d0896ec20
+      - name: python-pyicu
+        buildsystem: simple
+        build-commands:
+          - python setup.py build
+          - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+        sources:
+          - type: archive
+            url: https://pypi.io/packages/source/P/PyICU/PyICU-2.6.tar.gz
+            sha256: a9a5bf6833360f8f69e9375b91c1a7dd6e0c9157a42aee5bb7d6891804d96371
+      - name: libgexiv2
+        buildsystem: meson
+        config-opts:
+          - -Dtools=false
+          - -Dvapi=false
+          - -Dpython3_girdir=/app/lib/python3.8/site-packages/gi/overrides
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/gexiv2/-/archive/gexiv2-0.12.1/gexiv2-gexiv2-0.12.1.tar.gz
+            sha256: 25b70757fa7b5b010c391edeb903f1406e5c2d15358655005872a4d67e571d21
+        modules:
+          - name: exiv2
+            buildsystem: cmake
+            # TODO: config-opts
+            sources:
+              - type: archive
+                url: https://github.com/Exiv2/exiv2/archive/v0.27.3.tar.gz
+                sha256: 6398bc743c32b85b2cb2a604273b8c90aa4eb0fd7c1700bf66cbb2712b4f00c1
+      - name: rcs
+        sources:
+          - type: archive
+            url: https://ftp.gnu.org/gnu/rcs/rcs-5.10.0.tar.xz
+            sha256: 3a0d9f958c7ad303e475e8634654974edbe6deb3a454491f3857dc1889bac5c5
+        modules:
+          - name: ed
+            buildsystem: simple
+            build-commands:
+              - install -Dm755 /usr/bin/{ed,red} -t /app/bin
+      - name: osm-gps-map
+        # TODO: confirm NOCONFIGURE=1 actually works
+        build-options:
+          env:
+            - NOCONFIGURE=1
+        sources:
+          - type: archive
+            url: https://github.com/nzjrs/osm-gps-map/archive/1.1.0.tar.gz
+            sha256: 027004459f2f29232d4ca0c914f835e6c06b720aef1daa9b470d9d5e1b71159b
+        modules:
+          - name: gnome-common
+            sources:
+              - type: archive
+                url: https://ftp.acc.umu.se/pub/GNOME/sources/gnome-common/3.18/gnome-common-3.18.0.tar.xz
+                sha256: 22569e370ae755e04527b76328befc4c73b62bfd4a572499fde116b8318af8cf
