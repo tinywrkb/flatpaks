@@ -7,11 +7,16 @@ rename-desktop-file: boostnote.desktop
 rename-icon: boostnote
 finish-args:
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
-  - --socket=wayland
+  # needs electron v11 (chromium v87) or newer with ozone enabled
+  # https://github.com/electron/electron/issues/10915
+  # - --socket=wayland
   - --socket=x11
 modules:
   - name: boostnote
