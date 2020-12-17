@@ -7,9 +7,6 @@ sdk-extensions:
 command: pdfsam
 rename-desktop-file: pdfsam.desktop
 rename-icon: pdfsam
-build-options:
-  strip: true
-  no-debuginfo: true
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -18,9 +15,9 @@ cleanup:
 finish-args:
   - --device=dri
   - --env=PATH=/app/bin:/app/jre/bin:/usr/bin
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
   - --share=ipc
-  - --socket=wayland
   - --socket=x11
 modules:
   - name: openjdk
