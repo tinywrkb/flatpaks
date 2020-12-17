@@ -1,21 +1,23 @@
-# TODO
-#   Fix tray icons, ld_preload?
-#   Add an example extension for dolphin
-#   Safer workaround for the Unix file socket which could be shared with other Flatpak apps
-#
-#   Insync bugs
+#   bugs:
 #     * ~/.config is hardcoded, not using XDG_CONFIG_HOME
-#     * /usr/share/icons/hicolor/48x48/status is hardcoded and breaks the status tray icon
-#       apparently insync intentionally ignoring other icons sources and not using XDG_DATA_DIRS
-#       this can be confirmed by copying the icons to flatpak runtime which is mounted in the
-#       contained app to /usr and running gtk-update-icon-cache to update icon-theme.cache.
-#       maybe this can be overrided with an ld_preload and catch the openat syscall.
-#         https://forums.insynchq.com/t/no-tray-icon-in-lastest-version/6073/11
-#         https://forums.insynchq.com/t/ubuntu-16-10-with-xfce-no-tray-icon/7619
-#     * using unix file socket at /tmp/insync${UID}.sock
-#       allowing mutliple instances of insync in the same ipc/namespace
-#       a linux named socket will allow sharing the socket between containers in the same network namespace
-#         and also be able to test if another instace of insync is running
+#     * blank status tray icon
+#       probably can be easily fixed if insync uses QIcon::fromTheme to load the icon,
+#       so something like: setIcon(QIcon::fromTheme("com.insynchq.insync.status-alert"));
+#       maybe an ld-preload can be used but insync should just fix their code
+#     * unix file socket at /tmp/insync${UID}.sock
+#       used for singleton and communications between multiple instances
+#       requires bind mounting /tmp from the host for proper operation of insync and file manager extensions
+#         making host's /tmp accessible in the sandbox is unacceptable and probably wouldn't be allowed
+#         by file manager flatpak packages, so this is a bad workaround
+#         this is also means insync and insync-headless cannot run at the same time as both using the same socket file
+#       a better solution would be using a linux named socket
+#       a proper solution would be switching to d-bus
+#     * impossible to set the local folder for the synced account
+#       this is a limitation in Qt5 Portals support, https://docs.flatpak.org/en/latest/portals-qt.html
+#       insync should have set FileDialog::DontUseNativeDialog as false
+#       possible non-code workarounds:
+#         1. directly edit the sqlite DB ~/.config/Insync/data/gd-*.db
+#         2. using a symlink to point to the wanted location
 
 app-id: com.insynchq.insync
 runtime: org.freedesktop.Platform
