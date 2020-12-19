@@ -8,5 +8,5 @@ case "$1" in
     grim - | swappy -f -
     ;;
   *)
-    exec swappy
+    exec swappy "$@"
 esac
