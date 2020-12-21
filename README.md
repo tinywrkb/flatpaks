@@ -1,7 +1,12 @@
 # flatpaks
 
 A few Flatpaks that I hastly packaged. These are not thoroughly tested so use at your own risk!  
-Packaging was adapted mainly from the Flatpaks of Spotify and Flameshot, and Arch Linux's PKGBUILDs.
+Packaging was adapted mainly from Arch Linux's official PKGBUILDs and the AUR.  
+Most of these are PoC, not maintained, might need some cleanup, missing a feature here and there,
+and in general are not ready to publish via Flathub.  
+The catalyst for packaging these apps is to prove that it's possible to convert to, and as a precondition
+for switching to stateless distributed system, an  os that has a clear seperation between the stateless
+read-only distributed OS files and the stateful data and configs.
 
 ### Not usable or too buggy
 
@@ -63,7 +68,7 @@ fc-cache
 
 4. To update the font cache of a Flatpak app sandbox just restart the app.
 
-#### Related bugs
+#### Fontconfig related bugs
 
 * [Flatpak: Expose host fontconfig conf.d?](https://github.com/flatpak/flatpak/issues/1563)
 * [Flatpak: Expose xdg-config/fontconfig to sandbox by default](https://github.com/flatpak/flatpak/issues/3947)
