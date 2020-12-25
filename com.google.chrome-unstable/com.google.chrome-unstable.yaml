@@ -95,8 +95,8 @@ modules:
         sources:
           - type: git
             url: https://github.com/refi64/flextop
-            branch: main
-            commit: 485c332c7ec36a8b74be8f3622fc756ac6263f40
+            #branch: main
+            commit: 113bf403b70041fa21d30b7b6a61283b6c30ff41
       - name: pipewire02
         buildsystem: meson
         config-opts:
