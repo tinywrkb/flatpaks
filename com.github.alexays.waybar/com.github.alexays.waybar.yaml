@@ -174,7 +174,9 @@ modules:
       - -Dgdk-pixbuf=disabled
       - -Dman-pages=disabled
     cleanup:
-      - /bin/sway{,bar,nag}
+      - /bin/sway
+      - /bin/swaybar
+      - /bin/swaynag
     sources:
       - type: archive
         url: https://github.com/swaywm/sway/releases/download/1.5.1/sway-1.5.1.tar.gz
