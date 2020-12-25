@@ -45,6 +45,14 @@ finish-args:
   - --filesystem=xdg-run/app:ro
     #   make sure the app runtime dir is still writable
   - --filesystem=xdg-run/app/com.github.alexays.waybar
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/devhelp
+  - /share/doc
+  - /share/gtk-doc
+  - '*.a'
+  - '*.la'
 modules:
   - name: waybar
     buildsystem: meson
@@ -55,8 +63,8 @@ modules:
       - install -Dm755 ../resources/custom_modules/mediaplayer.py -t /app/bin/
     sources:
       - type: archive
-        url: https://github.com/Alexays/Waybar/archive/0.9.4.tar.gz
-        sha256: d49c09ee253ca9cc9688d1b4d8602adc9bdae613b02e2fa1a2e7277ddc9e82e8
+        url: https://github.com/Alexays/Waybar/archive/0.9.5.tar.gz
+        sha256: 74d783d4da01c1c3a90a00968d74f47c2193a6952c3b2e0584cf3ddfa1ae4254
     modules:
       - name: chrono-date
         buildsystem: cmake
@@ -89,8 +97,8 @@ modules:
           - --buildtype=plain
         sources:
           - type: archive
-            url: https://github.com/wmww/gtk-layer-shell/archive/v0.5.1.tar.gz
-            sha256: d77e42dff69e2cf1eee4489fb7db465d4e33be48e67ee0ca653238de0ab882ba
+            url: https://github.com/wmww/gtk-layer-shell/archive/v0.5.2.tar.gz
+            sha256: 1587b0fbfc0cb023066180e8055704981e8ab3fc7ab8dbe9aad0da05728799be
       - ../shared-modules/gtkmm3/gtkmm3-gnome_runtime.json
       - name: jsoncpp
         buildsystem: meson
@@ -152,10 +160,21 @@ modules:
           - -Wno-dev
         sources:
           - type: archive
-            url: https://github.com/gabime/spdlog/archive/v1.8.1.tar.gz
-            sha256: 5197b3147cfcfaa67dd564db7b878e4a4b3d9f3443801722b3915cdeced656cb
+            url: https://github.com/gabime/spdlog/archive/v1.8.2.tar.gz
+            sha256: e20e6bd8f57e866eaf25a5417f0a38a116e537f1a77ac7b5409ca2b180cec0d5
   - name: sway
     buildsystem: meson
+    config-opts:
+      - -Ddefault-wallpaper=false
+      - -Dzsh-completions=false
+      - -Dbash-completions=false
+      - -Dfish-completions=false
+      - -Dxwayland=disabled
+      - -Dtray=disabled
+      - -Dgdk-pixbuf=disabled
+      - -Dman-pages=disabled
+    cleanup:
+      - /bin/sway{,bar,nag}
     sources:
       - type: archive
         url: https://github.com/swaywm/sway/releases/download/1.5.1/sway-1.5.1.tar.gz
@@ -165,6 +184,11 @@ modules:
         buildsystem: meson
         config-opts:
           - --libdir=lib
+          - -Dlogind=disabled
+          - -Dlibseat=disabled
+          - -Dxwayland=disabled
+          - -Dx11-backend=disabled
+          - -Dexamples=false
         sources:
           - type: archive
             url: https://github.com/swaywm/wlroots/archive/0.12.0.tar.gz
