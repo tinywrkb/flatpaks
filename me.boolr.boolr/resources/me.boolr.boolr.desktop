@@ -4,5 +4,6 @@ Comment=A digital logic simulator
 Exec=boolr %U
 Terminal=false
 Type=Application
+Icon=me.boolr.boolr
 StartupNotify=true
 Categories=Development
