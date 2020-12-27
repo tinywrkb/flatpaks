@@ -3,8 +3,6 @@ runtime: org.freedesktop.Platform
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: boostnote
-rename-desktop-file: boostnote.desktop
-rename-icon: boostnote
 finish-args:
   - --device=dri
   - --filesystem=xdg-documents
@@ -22,12 +20,12 @@ modules:
   - name: boostnote
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
-      - install -D boostnote /app/bin/boostnote
-      - install -D boostnote_512.png /app/share/icons/hicolor/512x512/apps/boostnote.png
-      - install -D boostnote.desktop /app/share/applications/boostnote.desktop
-      - install -D /usr/bin/ar /app/bin
-      - mkdir -p /app/lib
+      - install -Dm755 apply_extra /app/bin/apply_extra
+      - install -Dm755 boostnote /app/bin/boostnote
+      - install -Dm644 io.boostnote.boostnote_next.png -t /app/share/icons/hicolor/512x512/apps/
+      - install -Dm644 io.boostnote.boostnote_next.desktop -t /app/share/applications/
+      - install -Dm755 /usr/bin/ar /app/bin
+      - install -d /app/lib
       - ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib
       - ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4
     sources:
