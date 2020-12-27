@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Fontweak
+GenericName=Font Configuration Tool
+GenericName[zh_CN]=字体配置工具
+Comment=Configure font family and render effects
+Comment[zh_CN]=选择字体并设置字体效果
+Exec=fontweak
+Icon=com.github.guoyunhe.fontweak
+Terminal=false
+Categories=Settings;DesktopSettings;
