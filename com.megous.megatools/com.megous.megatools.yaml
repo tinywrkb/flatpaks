@@ -1,0 +1,29 @@
+app-id: com.megous.megatools
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: megatools
+finish-args:
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --share=network
+modules:
+  - name: megatools
+    buildsystem: meson
+    config-opts:
+      - -Dsymlinks=true
+      - -Dman=true
+    sources:
+      - type: archive
+        url: https://megatools.megous.com/builds/experimental/megatools-1.11.0-git-20200830.tar.gz
+        sha256: a6ac5b8c9e51f180dff4af82ac431eee04d73ee35366191d1fe47def6ebc3b65
+# TODO: enable man pages and support exports in wrapper
+#   modules:
+#     - name: asciidoc
+#       cleanup:
+#         - '*'
+#     - name: docbook2x
+#       cleanup:
+#         - '*'
