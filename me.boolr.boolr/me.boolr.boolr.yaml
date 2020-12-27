@@ -71,22 +71,17 @@ modules:
   - name: boolr
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
       - install -Dm755 boolr /app/bin/boolr
       - install -Dm644 me.boolr.boolr.desktop -t /app/share/applications/
       - install -Dm644 me.boolr.boolr.png -t /app/share/icons/hicolor/128x128/apps/
+      - rm -f boolr.dir/boolr.desktop
+      - sed -i 's#^\(const savesFolder =\).*#\1 process.env.XDG_CONFIG_HOME + "/BOOLR/saves/";\nif (!fs.existsSync(savesFolder)) fs.mkdir(savesFolder);#' boolr.dir/resources/app/app/js/saves.js
+      - install -d /app/lib/
+      - mv boolr.dir /app/lib/boolr
     sources:
-      - type: script
-        dest-filename: apply_extra
-        commands:
-          - bsdtar -xf boolr.zip --strip-components=1
-          - rm -f boolr.zip
-          - rm -f boolr.desktop
-          - sed -i 's#^\(const savesFolder =\).*#\1 process.env.XDG_CONFIG_HOME + "/BOOLR/saves/";\nif (!fs.existsSync(savesFolder)) fs.mkdir(savesFolder);#' resources/app/app/js/saves.js
-      - type: extra-data
-        filename: boolr.zip
+      - type: archive
         url: https://github.com/GGBRW/BOOLR/releases/download/v1.0.3/BOOLR-v1.0.3-linux-x86_64.zip
         sha256: 94fa88d65442687aa6aa4ac2d3f5a0c76ed13d45adf98bcc6609f3118c90bb29
-        size: 48267385
+        dest: boolr.dir
       - type: dir
         path: resources
