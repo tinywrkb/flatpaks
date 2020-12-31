@@ -52,9 +52,9 @@ modules:
             #- rm -rf swiftshader libvk_swiftshader.so vk_swiftshader_icd.json
       - type: extra-data
         filename: appimage
-        url: https://github.com/laurent22/joplin/releases/download/v1.5.12/Joplin-1.5.12.AppImage
-        sha256: 139700096e6a0f20bf8262a7df9cabcc2b406ba34121d34684500993c68fc91c
-        size: 146023150
+        url: https://github.com/laurent22/joplin/releases/download/v1.5.14/Joplin-1.5.14.AppImage
+        sha256: c83111e5eb47c354caad2eae6ddea5895f8ea64c9a8ff21e17d78af0cb7336b8
+        size: 146056394
       - type: dir
         path: resources
     modules:
