@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=DIY Layout Creator
+Comment=A free tool for designing circuit layouts and schematics with ease
+Exec=diylc
+Icon=com.diy_fever.diy-layout-creator
+Type=Application
+StartupNotify=true
+Categories=Science;Electronics;
+Terminal=false

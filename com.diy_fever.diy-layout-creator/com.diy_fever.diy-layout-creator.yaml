@@ -1,0 +1,43 @@
+app-id: com.diy_fever.diy-layout-creator
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk8
+command: diylc
+finish-args:
+  - --device=dri
+  - --env=PATH=/app/bin:/usr/bin:/app/jre/bin
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --persist=diylc
+  - --share=ipc
+  - --socket=x11
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk8/install.sh
+  - name: diylc
+    buildsystem: simple
+    build-commands:
+      - install -dm755 /app/{bin,lib}
+      - install -Dm755 diylc -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - |
+          for s in 16 32 48 64 512; do
+            install -Dm644 \
+              diylc.dir/icons/icon_${s}x${s}.png \
+              /app/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+          done
+      - rm -f diylc/{diylc.exe,run.sh}
+      - mv diylc.dir /app/lib/diylc
+    sources:
+      - type: archive
+        url: https://github.com/bancika/diy-layout-creator/releases/download/v4.15.1/diylc-4.15.1.zip
+        sha256: 4eed6e8cd765f276d26e248fbd9d64af78309293144bdaaf459614a3555f7f27
+        dest: diylc.dir
+        strip-components: 0
+      - type: dir
+        path: resources
