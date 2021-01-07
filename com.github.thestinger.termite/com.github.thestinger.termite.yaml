@@ -1,5 +1,20 @@
 # TODO: cleanup
 # TODO: move out tremc & byobu to a shared module
+# host access
+#   1. use ssh
+#   2. with a terminal multiplexer
+#       * set environment variables
+#           SCREENDIR="$XDG_RUNTIME_DIR"/screen
+#           TMUX_TMPDIR="$XDG_RUNTIME_DIR"/tmux
+#       * create $XDG_CONFIG_HOME/user-tmpfiles.d/tmux.conf
+#           d %t/tmux 0700 - - - -
+#       * create $XDG_CONFIG_HOME/user-tmpfiles.d/screen.conf
+#           d %t/screen 0700 - - - -
+#       * start tmpfiles.d user service
+#           $ systemctl --user enable --now systemd-tmpfiles-setup.service
+#       * create flatpak overrides
+#           $ flatpak override --user --filesystem=xdg-run/tmux
+#           $ flatpak override --user --filesystem=xdg-run/screen
 app-id: com.github.thestinger.termite
 runtime: org.gnome.Platform
 runtime-version: '3.38'
@@ -62,6 +77,7 @@ modules:
 #         - /libexec
 #         - /share/gir-1.0
 #         - /share/vala
+  # TODO: add gnu screen
   - name: tmux
     sources:
       - type: archive
