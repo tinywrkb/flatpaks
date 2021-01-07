@@ -7,6 +7,7 @@ command: termite
 rename-desktop-file: termite.desktop
 finish-args:
   - --device=dri
+  - --env=TERMINFO_DIRS='/app/share/terminfo:'
   - --filesystem=home
   - --share=ipc
   - --socket=wayland
