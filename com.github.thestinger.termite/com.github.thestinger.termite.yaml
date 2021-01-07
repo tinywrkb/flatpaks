@@ -152,3 +152,12 @@ modules:
               - type: git
                 url: https://github.com/telmich/gpm.git
                 commit: e82d1a653ca94aa4ed12441424da6ce780b1e530
+  - name: finish
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 com.github.thestinger.termite.byobu.desktop -t /app/share/applications
+      - install -Dm644 /app/share/byobu/pixmaps/byobu.svg
+          /app/share/icons/hicolor/scalable/apps/com.github.thestinger.termite.byobu.svg
+    sources:
+      - type: dir
+        path: resources
