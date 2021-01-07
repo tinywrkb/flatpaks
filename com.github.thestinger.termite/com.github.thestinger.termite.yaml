@@ -138,6 +138,9 @@ modules:
                 url: https://github.com/besser82/libxcrypt/archive/v4.4.17.tar.gz
                 sha256: 7665168d0409574a03f7b484682e68334764c29c21ca5df438955a381384ca07
           - name: gpm
+            config-opts:
+              - --sbindir=/app/bin
+              - --sysconfdir=/app/etc
             sources:
               - type: git
                 url: https://github.com/telmich/gpm.git
