@@ -1,0 +1,118 @@
+{
+  "name": "byobu",
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://launchpad.net/byobu/trunk/5.133/+download/byobu_5.133.orig.tar.gz",
+      "sha256": "4d8ea48f8c059e56f7174df89b04a08c32286bae5a21562c5c6f61be6dab7563"
+    },
+    {
+      "type": "shell",
+      "commands": [
+        "sed -i 's#^\\(SOCKETDIR\\)=.*#\\1=/tmp/screens#' etc/byobu/socketdir\n"
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "name": "libnewt",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://releases.pagure.org/newt/newt-0.52.21.tar.gz",
+          "sha256": "265eb46b55d7eaeb887fca7a1d51fe115658882dfe148164b6c49fccac5abb31"
+        }
+      ],
+      "modules": [
+        {
+          "name": "slang",
+          "no-parallel-make": true,
+          "config-opts": [
+            "--with-pcreinc=/usr/include",
+            "--with-pcrelib=/usr/lib/x86_64-linux-gnu"
+          ],
+          "sources": [
+            {
+              "type": "archive",
+              "url": "https://www.jedsoft.org/releases/slang/slang-2.3.2.tar.bz2",
+              "sha256": "fc9e3b0fc4f67c3c1f6d43c90c16a5c42d117b8e28457c5b46831b8b5d3ae31a"
+            }
+          ]
+        },
+        {
+          "name": "libxcrypt",
+          "config-opts": [
+            "--disable-static",
+            "--disable-failure-tokens",
+            "--enable-hashes=strong,glibc",
+            "--enable-obsolete-api=no"
+          ],
+          "sources": [
+            {
+              "type": "archive",
+              "url": "https://github.com/besser82/libxcrypt/archive/v4.4.17.tar.gz",
+              "sha256": "7665168d0409574a03f7b484682e68334764c29c21ca5df438955a381384ca07"
+            }
+          ]
+        },
+        {
+          "name": "gpm",
+          "config-opts": [
+            "--sbindir=/app/bin",
+            "--sysconfdir=/app/etc"
+          ],
+          "sources": [
+            {
+              "type": "git",
+              "url": "https://github.com/telmich/gpm.git",
+              "commit": "e82d1a653ca94aa4ed12441424da6ce780b1e530"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tmux",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/tmux/tmux/releases/download/3.1c/tmux-3.1c.tar.gz",
+          "sha256": "918f7220447bef33a1902d4faff05317afd9db4ae1c9971bef5c787ac6c88386"
+        }
+      ],
+      "modules": [
+        {
+          "name": "libutempter",
+          "no-autogen": true,
+          "make-install-args": [
+            "libdir=/app/lib",
+            "libexecdir=/app/lib",
+            "includedir=/app/include",
+            "mandir=/app/share/man"
+          ],
+          "sources": [
+            {
+              "type": "archive",
+              "url": "ftp://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-1.2.1.tar.gz",
+              "sha256": "967fef372f391de501843ad87570c6cf5dabd9651f00f1783090fbc12b2a34cb"
+            }
+          ]
+        },
+        {
+          "name": "libevent",
+          "buildsystem": "cmake",
+          "sources": [
+            {
+              "type": "archive",
+              "url": "https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz",
+              "sha256": "92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb"
+            }
+          ],
+          "cleanup": [
+            "/lib/cmake"
+          ]
+        }
+      ]
+    }
+  ]
+}
