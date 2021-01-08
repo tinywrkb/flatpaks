@@ -46,3 +46,4 @@ modules:
             dest-filename: rust-x86_64-unknown-linux-gnu.tar.gz
         cleanup:
           - '*'
+  - ../shared-modules/byobu/byobu.json
