@@ -1,20 +1,33 @@
 # TODO: cleanup
 # TODO: move out tremc & byobu to a shared module
-# host access
-#   1. use ssh
-#   2. with a terminal multiplexer
-#       * set environment variables
-#           SCREENDIR="$XDG_RUNTIME_DIR"/screen
-#           TMUX_TMPDIR="$XDG_RUNTIME_DIR"/tmux
-#       * create $XDG_CONFIG_HOME/user-tmpfiles.d/tmux.conf
-#           d %t/tmux 0700 - - - -
-#       * create $XDG_CONFIG_HOME/user-tmpfiles.d/screen.conf
-#           d %t/screen 0700 - - - -
-#       * start tmpfiles.d user service
-#           $ systemctl --user enable --now systemd-tmpfiles-setup.service
-#       * create flatpak overrides
-#           $ flatpak override --user --filesystem=xdg-run/tmux
-#           $ flatpak override --user --filesystem=xdg-run/screen
+#
+# Tips
+#   * Host access
+#     1. use ssh over tcp, get keys from an already running ssh-agent
+#     2. use ssh over a unix socket with socat
+#     3. run a shell through flatpak-spawn
+#        create flatpak overrides
+#          $ flatpak override --user --talk-name=org.freedesktop.Flatpak
+#        run a shell on the host
+#          $ flatpak-spawn --host /bin/bash
+#     3. with a terminal multiplexer
+#        set environment variables
+#          SCREENDIR="$XDG_RUNTIME_DIR"/screen
+#          TMUX_TMPDIR="$XDG_RUNTIME_DIR"/tmux
+#        create $XDG_CONFIG_HOME/user-tmpfiles.d/tmux.conf
+#          d %t/tmux 0700 - - - -
+#        create $XDG_CONFIG_HOME/user-tmpfiles.d/screen.conf
+#          d %t/screen 0700 - - - -
+#        start tmpfiles.d user service
+#          $ systemctl --user enable --now systemd-tmpfiles-setup.service
+#        create flatpak overrides
+#          $ flatpak override --user --filesystem=xdg-run/tmux
+#          $ flatpak override --user --filesystem=xdg-run/screen
+#   * Update terminfo so apps will work correctly when access the host environment
+#     Add the terminfo folders from the flatpak app
+#       $ export TERMINFO_DIRS+=":$XDG_DATA_HOME/flatpak/app/com.github.thestinger.termite/current/active/files/share/terminfo"
+#     Make sure /usr/share/terminfo is still being used
+#       $ export TERMINFO_DIRS+=":
 app-id: com.github.thestinger.termite
 runtime: org.gnome.Platform
 runtime-version: '3.38'
