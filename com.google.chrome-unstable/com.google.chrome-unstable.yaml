@@ -74,7 +74,8 @@ modules:
         sources:
           - type: git
             url: https://github.com/refi64/zypak
-            tag: v2020.10beta.4
+            branch: master
+            commit: c63a87a49898299bb803408eecffbcc1e44a65e6
       - name: libsecret
         buildsystem: meson
         config-opts:
