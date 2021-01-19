@@ -92,7 +92,7 @@ modules:
           - type: git
             url: https://github.com/refi64/zypak
             branch: master
-            commit: c63a87a49898299bb803408eecffbcc1e44a65e6
+            commit: e16b0e37f94915707f03d6d2a827bec927b59d26
       - name: libsecret
         buildsystem: meson
         config-opts:
