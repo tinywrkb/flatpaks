@@ -166,3 +166,9 @@ modules:
       - type: archive
         url: https://github.com/hoyon/mpv-mpris/archive/0.5.tar.gz
         sha256: 673aff031e7cc741edea68d7b4b0103d7b031d4a55755abb9e1be5dd4ec4e969
+  - name: mpvpaper
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/GhostNaN/mpvpaper/archive/1.1.tar.gz
+        sha256: dc774d3ec0a14cc955af6426427870163bab858f5878ada71706473884359a33
