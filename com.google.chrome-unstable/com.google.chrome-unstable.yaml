@@ -66,15 +66,15 @@ modules:
         path: resources
       - type: extra-data
         filename: google-chrome-unstable_amd64.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_90.0.4400.8-1_amd64.deb
-        sha256: aed623f751676929ea84fa5d313210a5a91ef08cb6bb2796c3c678aaba16f785
-        size: 75217788
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_90.0.4412.3-1_amd64.deb
+        sha256: 1f8ebf2b260aaf3183ac1dfacd510dec6e157ae3ac4f37a6129450b258944dab
+        size: 81204256
     modules:
       - name: zypak
         sources:
           - type: git
             url: https://github.com/refi64/zypak
-            branch: master
+            #branch: master
             commit: e16b0e37f94915707f03d6d2a827bec927b59d26
       - name: libsecret
         buildsystem: meson
