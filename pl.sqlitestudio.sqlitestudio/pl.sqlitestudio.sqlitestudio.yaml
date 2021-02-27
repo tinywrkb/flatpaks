@@ -39,8 +39,8 @@ modules:
           done
     sources:
       - type: archive
-        url: https://github.com/pawelsalawa/sqlitestudio/archive/3.2.1.tar.gz
-        sha256: 1599046368ab0f11974d9fc7f10cdfc30ca08a7dc6767610b5aa0be26715dc1d
+        url: https://github.com/pawelsalawa/sqlitestudio/archive/3.3.0.tar.gz
+        sha256: 87bf5e17bb462a8817de34e7078bd6efad6822472b576231c36442f5c2fe3c9a
       - type: dir
         path: resources
     modules:
