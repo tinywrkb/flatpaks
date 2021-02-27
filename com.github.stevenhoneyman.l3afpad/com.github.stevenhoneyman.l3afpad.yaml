@@ -11,7 +11,7 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --socket=wayland
-  - --socket=x11
+  - --socket=fallback-x11
 modules:
   - name: l3afpad
     post-install:

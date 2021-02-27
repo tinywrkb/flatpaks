@@ -13,7 +13,7 @@ finish-args:
   - --persist=.config/nvim
   - --share=ipc
   - --socket=wayland
-  - --socket=x11
+  - --socket=fallback-x11
 cleanup:
   - /include
   - /lib/debug

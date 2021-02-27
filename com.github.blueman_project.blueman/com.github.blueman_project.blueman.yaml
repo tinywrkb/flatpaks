@@ -13,7 +13,7 @@ finish-args:
   - --own-name=org.kde.*
   - --share=ipc
   - --socket=wayland
-  - --socket=x11
+  - --socket=fallback-x11
   - --system-talk-name=org.bluez.*
   - --talk-name=org.bluez
   - --talk-name=org.bluez.*

@@ -14,7 +14,7 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --socket=wayland
-  - --socket=x11
+  - --socket=fallback-x11
 cleanup:
   - /include
   - /lib/pkgconfig

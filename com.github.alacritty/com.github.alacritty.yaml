@@ -12,6 +12,7 @@ finish-args:
   - --share=ipc
   - --share=network
   - --socket=wayland
+  # also keep x11 socket enabled so WINIT_UNIX_BACKEND=x11 will still work
   - --socket=x11
 modules:
   - name: alacritty

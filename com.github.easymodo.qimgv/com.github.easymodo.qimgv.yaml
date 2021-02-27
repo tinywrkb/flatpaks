@@ -13,7 +13,7 @@ finish-args:
   - --share=ipc
   - --socket=pulseaudio
   - --socket=wayland
-  - --socket=x11
+  - --socket=fallback-x11
 cleanup:
   - /lib/pkgconfig
   - '*.a'

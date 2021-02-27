@@ -12,7 +12,7 @@ finish-args:
   - --socket=session-bus
   - --socket=system-bus
   - --socket=wayland
-  - --socket=x11
+  - --socket=fallback-x11
 build-options:
   cflags: -O2 -g
   cxxflags: -O2 -g

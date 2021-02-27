@@ -13,7 +13,7 @@ separate-locales: false
 # - --share=ipc
 # - --share=network
 # - --socket=wayland
-# - --socket=x11
+# - --socket=fallback-x11
 cleanup:
   - /share/bash-completion
   - /share/man
