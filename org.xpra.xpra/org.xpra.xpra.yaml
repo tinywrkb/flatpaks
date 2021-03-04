@@ -1,8 +1,13 @@
 # How to test:
-#   flatpak run --filesystem=host-os --device=all org.xpra.xpra
-#   xpra --xvfb=/app/bin/Xvfb start --encoding=rgb --compress=0 :11
-#   GDK_BACKEND=wayland xpra attach :11 &
-#   DISPLAY=:11 /run/host/usr/bin/glxgears
+#   * start and enter the sandbox
+#     $ flatpak run --filesystem=host-os --device=all org.xpra.xpra
+#   * start xpra x session
+#     $ xpra --xvfb=/app/bin/Xvfb start --encoding=rgb --compress=0 :11
+#   * connect xpra session to the gtk3 client running through wayland
+#     $ GDK_BACKEND=wayland xpra attach :11 &
+#   * run apps in the xpra x session
+#     * glxgears: DISPLAY=:11 /run/host/usr/bin/glxgears
+#     * gtk3-demo: DISPLAY=:11 GDK_BACKEND=x11 gtk3-demo
 app-id: org.xpra.xpra
 runtime: org.gnome.Platform
 runtime-version: '3.38'
