@@ -6,8 +6,14 @@
 #   * connect xpra session to the gtk3 client running through wayland
 #     $ GDK_BACKEND=wayland xpra attach :11 &
 #   * run apps in the xpra x session
-#     * glxgears: DISPLAY=:11 /run/host/usr/bin/glxgears
-#     * gtk3-demo: DISPLAY=:11 GDK_BACKEND=x11 gtk3-demo
+#     * glxgears
+#       $ DISPLAY=:11 /run/host/usr/bin/glxgears
+#     * gtk3-demo
+#       $ DISPLAY=:11 GDK_BACKEND=x11 gtk3-demo
+#     * joplin
+#       $ wget https://github.com/laurent22/joplin/releases/download/v1.7.11/Joplin-1.7.11.AppImage
+#       $ unappimage Joplin-*.AppImage & cd squashfs-root
+#       $ DISPLAY=:11 ./\@joplinapp-desktop --no-sandbox
 app-id: org.xpra.xpra
 runtime: org.gnome.Platform
 runtime-version: '3.38'
@@ -103,3 +109,12 @@ modules:
       - type: archive
         url: https://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.16.tar.gz
         sha256: 11238f1d86c995d8aed2e22f04a1e3779f0d70e587caffeab4857f3c662ed5a4
+  - name: unappimage
+    no-autogen: true
+    subdir: squashfs-tools
+    make-install-args:
+      - INSTALL_DIR=/app/bin
+    sources:
+      - type: git
+        url: https://github.com/refi64/unappimage
+        branch: master
