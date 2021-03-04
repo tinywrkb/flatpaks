@@ -12,7 +12,7 @@
 #       $ DISPLAY=:11 GDK_BACKEND=x11 gtk3-demo
 #     * joplin
 #       $ wget https://github.com/laurent22/joplin/releases/download/v1.7.11/Joplin-1.7.11.AppImage
-#       $ unappimage Joplin-*.AppImage & cd squashfs-root
+#       $ unappimage Joplin-*.AppImage && cd squashfs-root
 #       $ DISPLAY=:11 ./\@joplinapp-desktop --no-sandbox
 app-id: org.xpra.xpra
 runtime: org.gnome.Platform
