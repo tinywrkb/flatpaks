@@ -1,6 +1,6 @@
 # How to test:
 #   * start and enter the sandbox
-#     $ flatpak run --filesystem=host-os --device=all org.xpra.xpra
+#     $ flatpak run org.xpra.xpra
 #   * start xpra x session
 #     $ xpra --xvfb=/app/bin/Xvfb start --encoding=rgb --compress=0 :11
 #   * connect xpra session to the gtk3 client running through wayland
