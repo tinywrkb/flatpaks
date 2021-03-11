@@ -3,7 +3,7 @@ runtime: org.freedesktop.Platform
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 modules:
-  - name: noto-emoji
+  - name: noto-cjk
     buildsystem: simple
     build-commands:
       - install -Dm644 -t /app/share/fonts/ noto-cjk-*/*.ttc
