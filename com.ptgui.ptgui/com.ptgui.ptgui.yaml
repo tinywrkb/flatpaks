@@ -35,7 +35,7 @@ modules:
           - tar -xf ptgui.tar.gz
           - rm -f ptgui.tar.gz
       - type: extra-data
-        url: https://www.ptgui.com/downloads/118909/trial/linux/standard/18506/c62607887632c4ecc96e31c49df3d4ed5d6215e2c3e4ca24bb8487b51700bb58/PTGui_12_beta_9_trial.tar.gz
-        sha256: 0a38ec72829da766fc1c528db326a7ff0a9f6c30deade9de6146af65bf7ca7ea
-        size: 29476344
+        url: https://www.ptgui.com/downloads/120000/trial/linux/standard/18698/c16df71ff7e1f7982e82d8c10ae7b13e38004ab369cb206d8f17fb0eee7c1ec4/PTGui_12.0_trial.tar.gz
+        sha256: 9fa3465504450187a40e49e590c9d0ad0797e652307319de1b2a040b5042e840
+        size: 31290532
         filename: ptgui.tar.gz
