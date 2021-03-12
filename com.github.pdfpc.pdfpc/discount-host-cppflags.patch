@@ -1,0 +1,42 @@
+From b7aeccad864dd84fc64d6cbeb123e49a7b3c8392 Mon Sep 17 00:00:00 2001
+From: Balint Reczey <balint.reczey@canonical.com>
+Date: Sat, 10 Oct 2020 20:28:28 +0200
+Subject: [PATCH] Honor CPPFLAGS
+
+---
+ Makefile.in   | 3 ++-
+ configure.inc | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 9361ad97..c132466d 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -1,4 +1,5 @@
+ CC=@CC@
++CPPFLAGS=@CPPFLAGS@
+ CFLAGS=@CFLAGS@
+ LDFLAGS=@LDFLAGS@
+ AR=@AR@
+@@ -7,7 +8,7 @@ INSTALL_PROGRAM=@INSTALL_PROGRAM@
+ INSTALL_DIR=@INSTALL_DIR@
+ INSTALL_DATA=@INSTALL_DATA@
+ 
+-BUILD=$(CC) -I. $(CFLAGS)
++BUILD=$(CC) -I. $(CPPFLAGS) $(CFLAGS)
+ LINK=$(CC) -L. $(LDFLAGS)
+ 
+ .c.o:
+diff --git a/configure.inc b/configure.inc
+index 0c2a5508..97ff6b94 100755
+--- a/configure.inc
++++ b/configure.inc
+@@ -231,7 +231,7 @@ EOF
+ 
+     LOGN "looking for the $B function"
+ 
+-    if $AC_CC $AC_CFLAGS $AC_LDFLAGS -o ngc$$ ngc$$.c $LIBS; then
++    if $AC_CC $AC_CPPFLAGS $AC_CFLAGS $AC_LDFLAGS -o ngc$$ ngc$$.c $LIBS; then
+ 	AC_DEFINE `echo ${2:-HAVE_$B} | $AC_UPPERCASE` 1
+ 	TLOG " (found)"
+ 	rc=0

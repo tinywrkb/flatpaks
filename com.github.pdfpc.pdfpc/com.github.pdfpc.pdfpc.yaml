@@ -27,3 +27,21 @@ modules:
         sha256: e53ede1576da55403bba23671df5b946c756ec83ba30fbeb0cb7302f28b54a64
     modules:
       - ../shared-modules/poppler/poppler.json
+      - name: discount
+        make-args:
+          - -j1
+        sources:
+          - type: archive
+            url: https://github.com/Orc/discount/archive/v2.2.7.tar.gz
+            sha256: 72c1325ddfc40871d6810f1e272cf2d45b361f26357eb38f170fd04d737bb9f2
+          - type: patch
+            path: discount-host-cppflags.patch
+          - type: patch
+            path: discount-host-ldflags.patch
+#         - type: git
+#           url: https://github.com/Orc/discount.git
+#           branch: main
+#           commit: 3520113e1fbf2e012ba24ceb1343c37acda4edf0
+          - type: shell
+            commands:
+              - ln -s configure{.sh,}
