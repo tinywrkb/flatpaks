@@ -98,7 +98,7 @@ modules:
   - name: imagemagick
     sources:
       - type: archive
-        url: https://imagemagick.org/download/ImageMagick-7.0.10-23.tar.xz
+        url: https://download.imagemagick.org/ImageMagick/download/releases/ImageMagick-7.0.10-23.tar.xz
         sha256: 882cecda27265526eb4e7ce7e2cf6f74c018bcbbd34bc9ddd3c67fb3e9184103
   - name: pcb
     config-opts:
