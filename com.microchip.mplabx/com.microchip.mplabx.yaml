@@ -9,7 +9,7 @@
 
 app-id: com.microchip.mplabx
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
@@ -169,20 +169,19 @@ modules:
           - --with-ipc=sysv
         sources:
           - type: archive
-            url: https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.24.orig.tar.gz
-            sha256: 2e045b3160370b8ab4d44d1f8d267e5d1d555f1bb522d650e7167b09477266ed
-          - type: patch
-            path: fakeroot-silence-dlerror.patch
+            url: https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.25.3.orig.tar.gz
+            sha256: 8e903683357f7f5bcc31b879fd743391ad47691d4be33d24a76be3b6c21e956c
           - type: shell
             commands:
+              - sed -i 's|SUBDIRS=doc|SUBDIRS=|' Makefile.am
               - ./bootstrap
       - name: fakechroot
         config-opts:
           - --libdir=/app/lib/libfakeroot
         sources:
           - type: archive
-            url: https://github.com/dex4er/fakechroot/archive/2.20.1.tar.gz
-            sha256: 7f9d60d0d48611969e195fadf84d05f6c74f71bbf8f41950ad8f5bf061773e18
+            url: https://github.com/dex4er/fakechroot/releases/download/2.20.1/fakechroot-2.20.1.tar.gz
+            sha256: 5abd04323c9ddae06b5dcaa56b2da07728de3fe21007b08bd88a17b2409b32aa
       - name: lib32-fakeroot
         build-options:
           arch:
@@ -193,12 +192,11 @@ modules:
           - --with-ipc=sysv
         sources:
           - type: archive
-            url: https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.24.orig.tar.gz
-            sha256: 2e045b3160370b8ab4d44d1f8d267e5d1d555f1bb522d650e7167b09477266ed
-          - type: patch
-            path: fakeroot-silence-dlerror.patch
+            url: https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.25.3.orig.tar.gz
+            sha256: 8e903683357f7f5bcc31b879fd743391ad47691d4be33d24a76be3b6c21e956c
           - type: shell
             commands:
+              - sed -i 's|SUBDIRS=doc|SUBDIRS=|' Makefile.am
               - ./bootstrap
       - name: lib32-fakechroot
         build-options:
@@ -208,8 +206,8 @@ modules:
           - --libdir=/app/lib32/libfakeroot
         sources:
           - type: archive
-            url: https://github.com/dex4er/fakechroot/archive/2.20.1.tar.gz
-            sha256: 7f9d60d0d48611969e195fadf84d05f6c74f71bbf8f41950ad8f5bf061773e18
+            url: https://github.com/dex4er/fakechroot/releases/download/2.20.1/fakechroot-2.20.1.tar.gz
+            sha256: 5abd04323c9ddae06b5dcaa56b2da07728de3fe21007b08bd88a17b2409b32aa
 
       - name: openjfx8-bin
         buildsystem: simple
