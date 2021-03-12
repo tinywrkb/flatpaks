@@ -1,6 +1,6 @@
 app-id: org.sigrok.pulseview
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk
@@ -21,16 +21,24 @@ modules:
       - -DDISABLE_WERROR=ON
       - -DENABLE_TESTS=OFF
     sources:
-      - type: archive
-        url: https://sigrok.org/download/source/pulseview/pulseview-0.4.2.tar.gz
-        sha256: f042f77a3e1b35bf30666330e36ec38fab8d248c3693c37b7e35d401c3bfabcb
+#     - type: archive
+#       url: https://sigrok.org/download/source/pulseview/pulseview-0.4.2.tar.gz
+#       sha256: f042f77a3e1b35bf30666330e36ec38fab8d248c3693c37b7e35d401c3bfabcb
+      - type: git
+        url: git://sigrok.org/pulseview.git
+        branch: master
+        commit: 3ce5dd9a981d128085dc5ea507dd7157a87be4cb
     modules:
       - ../shared-modules/boost/boost.json
       - name: libsigrokdecode
         sources:
-          - type: archive
-            url: https://sigrok.org/download/source/libsigrokdecode/libsigrokdecode-0.5.3.tar.gz
-            sha256: c50814aa6743cd8c4e88c84a0cdd8889d883c3be122289be90c63d7d67883fc0
+#         - type: archive
+#           url: https://sigrok.org/download/source/libsigrokdecode/libsigrokdecode-0.5.3.tar.gz
+#           sha256: c50814aa6743cd8c4e88c84a0cdd8889d883c3be122289be90c63d7d67883fc0
+          - type: git
+            url: git://sigrok.org/libsigrokdecode
+            branch: master
+            commit: 234cbf50152b7e007322c62ed6190ae6bff30a92
           - type: shell
             commands:
               - autoreconf --force --install
@@ -44,9 +52,13 @@ modules:
         post-install:
           - install -Dm644 contrib/6*-libsigrok*.rules -t /app/docs/udev_rules/
         sources:
-          - type: archive
-            url: https://sigrok.org/download/source/libsigrok/libsigrok-0.5.2.tar.gz
-            sha256: 4d341f90b6220d3e8cb251dacf726c41165285612248f2c52d15df4590a1ce3c
+#         - type: archive
+#           url: https://sigrok.org/download/source/libsigrok/libsigrok-0.5.2.tar.gz
+#           sha256: 4d341f90b6220d3e8cb251dacf726c41165285612248f2c52d15df4590a1ce3c
+          - type: git
+            url: git://sigrok.org/libsigrok
+            branch: master
+            commit: 2111d1574b7bc715bc60ca5626f126369553f3f8
 #         - type: patch
 #           path: libsigrok-swig4_java_bindings.patch
 #         - type: patch
@@ -117,6 +129,7 @@ modules:
             config-opts:
               - -DCMAKE_SKIP_BUILD_RPATH=ON
               - -DCMAKE_BUILD_TYPE=Release
+              - -DDOCUMENTATION=OFF
               - -DEXAMPLES=OFF
               - -DFTDI_EEPROM=ON
               - -DLIB_SUFFIX=/
@@ -135,29 +148,11 @@ modules:
                   - type: archive
                     url: https://github.com/martinh/libconfuse/releases/download/v3.3/confuse-3.3.tar.gz
                     sha256: 3a59ded20bc652eaa8e6261ab46f7e483bc13dad79263c15af42ecbb329707b8
-          - name: doxygen
-            buildsystem: cmake
-            config-opts:
-              - -Dbuild_doc=OFF
-            sources:
-              - type: archive
-                url: https://github.com/doxygen/doxygen/archive/Release_1_8_18.tar.gz
-                sha256: 9c88f733396dca16139483045d5afa5bbf19d67be0b8f0ea43c4e813ecfb2aa2
-            cleanup:
-              - '*'
-            modules:
-              - name: ghostscript
-                sources:
-                  - type: archive
-                    url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs952/ghostpdl-9.52.tar.xz
-                    sha256: 33dd239a61bac154de123b6f8a28ebf3d8d9d462ac282065a1c389f96d92c0f3
-                cleanup:
-                  - '*'
           - name: libieee1284
             config-opts:
               - --with-python
             build-options:
-              cflags: -I/usr/include/python3.7m
+              cflags: -I/usr/include/python3.8
             sources:
               - type: git
                 url: https://github.com/twaugh/libieee1284.git
