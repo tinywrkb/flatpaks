@@ -1,3 +1,4 @@
+# TODO: properly use qt from the runtime and fix wayland
 app-id: org.qcad.qcad
 runtime: org.kde.Platform
 runtime-version: '5.15'
@@ -12,6 +13,7 @@ finish-args:
   - --share=network
 # - --socket=wayland
   - --socket=x11
+  - --unset-env=QT_QPA_PLATFORM
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -43,8 +45,8 @@ modules:
       - install -Dm755 qcad /app/bin/qcad
     sources:
       - type: archive
-        url: https://github.com/qcad/qcad/archive/v3.25.1.0.tar.gz
-        sha256: 7a27f9399cfdf8a42c36ed67ae91c791837add58cb18bd76e273c9bce08fc9dc
+        url: https://github.com/qcad/qcad/archive/v3.26.1.0.tar.gz
+        sha256: 7f5fddc779cea270880fb82e7bf1549b1ac5b42ac289249c4a75217b77f0308b
       - type: dir
         path: resources
     modules:
