@@ -1,0 +1,118 @@
+app-id: studio.kx.carla
+# https://github.com/flathub/flathub/pull/1460
+#base: org.freedesktop.LinuxAudio.BaseExtension
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: carla
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-run/pipewire-0:ro
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: carla
+    no-autogen: true
+    make-args:
+      - HAVE_PYQT=true
+      - USING_JUCE=false
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: https://github.com/falkTX/Carla/archive/v2.2.0.tar.gz
+        sha256: 4bf08511257db88979eccc002f10c153ff2a14f5143291c2be39cadd69ce10e1
+      - type: shell
+        commands:
+          - |
+            make features \
+              HAVE_PYQT=true \
+              USING_JUCE=false
+    modules:
+      - name: pyqt5
+        config-opts:
+          - --assume-shared
+          - --concatenate
+          - --confirm-license
+          - --no-designer-plugin
+          - --no-dist-info
+          - --no-docstrings
+          - --no-qml-plugin
+          - --no-qsci-api
+          - --no-stubs
+          - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.8/'
+          - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.8/'
+        build-options:
+          arch:
+            i386:
+              config-opts:
+                - --enable=QtCore
+                - --enable=QtGui
+                - --enable=QtNetwork
+                - --enable=QtOpenGL
+                - --enable=QtPrintSupport
+                - --enable=QtQml
+                - --enable=QtQuick
+                - --enable=QtSql
+                - --enable=QtSvg
+                - --enable=QtWebChannel
+                - --enable=QtWidgets
+            x86_64:
+              config-opts:
+                - --enable=QtCore
+                - --enable=QtGui
+                - --enable=QtNetwork
+                - --enable=QtOpenGL
+                - --enable=QtPrintSupport
+                - --enable=QtQml
+                - --enable=QtQuick
+                - --enable=QtSql
+                - --enable=QtSvg
+                - --enable=QtWebChannel
+                - --enable=QtWidgets
+        sources:
+          - type: archive
+            url: https://pypi.python.org/packages/source/P/PyQt5/PyQt5-5.15.4.tar.gz
+            sha256: 2a69597e0dd11caabe75fae133feca66387819fc9bc050f547e5551bce97e5be
+          - type: script
+            commands:
+            - processed=`sed -e 's|prefix|sysroot|' <<< $@`
+            - python3 configure.py $processed
+            dest-filename: configure
+        cleanup:
+          - /lib/debug
+          - /share/sip
+        modules:
+          - name: sip
+            config-opts:
+              - --no-dist-info
+              - --no-stubs
+              - --bindir=/app/bin
+              - --destdir=/app/lib/python3.8/site-packages
+              - --incdir=/app/include
+              - --pyidir=/app/lib/python3.8/site-packages
+              - --sipdir=/app/share/sip
+              - --sip-module PyQt5.sip
+            sources:
+              - type: archive
+                url: https://www.riverbankcomputing.com/static/Downloads/sip/4.19.25/sip-4.19.25.tar.gz
+                sha256: b39d93e937647807bac23579edbff25fe46d16213f708370072574ab1f1b4211
+              - type: script
+                commands:
+                  - processed=`sed -e 's|--prefix=/app||' <<< $@`
+                  - python3 configure.py $processed
+                dest-filename: configure
+            cleanup:
+              - /bin
+              - /include
+      - name: liblo
+        sources:
+          - type: archive
+            url: https://github.com/radarsat1/liblo/archive/0.31.tar.gz
+            sha256: 71d1819bcd18be66bd80c95a2d3159b9ca6f13746ddbaf1e489128f3bf46d231
