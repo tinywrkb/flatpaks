@@ -83,9 +83,9 @@ modules:
         path: resources
       - type: extra-data
         filename: google-chrome-stable_current_amd64.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_89.0.4389.72-1_amd64.deb
-        sha256: 8b3ee655bf8c8114f4a6494c2161938582ad8cbe683251760ebe0363f2eb4dc0
-        size: 81392912
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_89.0.4389.90-1_amd64.deb
+        sha256: f38a1699e1707dd76edadc671d54922992ea4fd2705d79645679a6abe3e9f7c1
+        size: 75841728
     modules:
       - name: zypak
         sources:
