@@ -96,9 +96,9 @@ modules:
         path: resources
       - type: extra-data
         filename: insync.deb
-        url: http://s.insynchq.com/builds/insync_3.3.6.40933-buster_amd64.deb
-        sha256: 54cde8561bcec5e76360a4b22696098c8fc069fc6fb50bd83b039e004d9cbde3
-        size: 132408744
+        url: http://s.insynchq.com/builds/insync_3.3.7.40937-buster_amd64.deb
+        sha256: 1e30d98ca9fdf268bbcd0865ccdd1e1868c287eee40e1719c94a11d436532edc
+        size: 132420862
 # workaround for missing libs
   - name: gvfs
     buildsystem: meson
