@@ -155,8 +155,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/ytdl-org/youtube-dl.git
-        tag: 2021.01.24.1
-        commit: b63981e85095542e056d7180496de4a2d85ddf9e
+        tag: 2021.03.14
+        commit: ebfd66c4b1d6ffabd8a5bc52737f2bacac341d3d
   - name: mpv-mpris
     buildsystem: simple
     build-commands:
