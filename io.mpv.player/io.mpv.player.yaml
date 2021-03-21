@@ -137,10 +137,6 @@ modules:
           - --disable-static
           - --enable-gnutls
           - --disable-doc
-          - --disable-programs
-          - --disable-encoders
-          - --disable-muxers
-          - --enable-encoder=png
           - --enable-libv4l2
           - --enable-libdav1d
         sources:
