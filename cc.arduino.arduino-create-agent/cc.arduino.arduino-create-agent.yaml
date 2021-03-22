@@ -6,14 +6,12 @@ runtime: org.freedesktop.Platform
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: arduino-create-agent
-rename-desktop-file: arduino-create-agent.desktop
-rename-icon: arduino-create-agent
 finish-args:
   - --device=all
   - --device=dri
-  - --filesystem=home
   - --own-name=org.kde.*
   - --persist=.arduino-create
+  - --persist=ArduinoCreateAgent
   - --share=ipc
   - --share=network
   - --socket=wayland
@@ -22,23 +20,26 @@ finish-args:
 modules:
   - name: arduino-create-agent
     buildsystem: simple
-    build-options:
-      build-args:
-        - --persist=ArduinoCreateAgent-1.1
     build-commands:
-      - install -Dm755 arduino-create-agent /app/bin/arduino-create-agent
-      - install -D config.ini /app/share/arduino-create-agent/config.ini
-      - install -D arduino-create-agent.svg /app/share/icons/hicolor/scalable/apps/arduino-create-agent.svg
-      - install -D arduino-create-agent.desktop /app/share/applications/arduino-create-agent.desktop
-      - tar xf ArduinoCreateAgent-1.1-linux-x64-installer-chrome.tar.gz
-      - ./ArduinoCreateAgent-1.1-linux-x64.run --mode unattended 2>/dev/null
-      - install -D "$HOME"/ArduinoCreateAgent-1.1/Arduino_Create_Bridge /app/lib/arduino-create-agent/arduino_create_bridge
-      - install -D "$HOME"/ArduinoCreateAgent-1.1/Arduino_Create_Bridge_cli /app/lib/arduino-create-agent/arduino_create_bridge_cli
+      - install -Dm755 apply_extra -t /app/bin/
+      - install -Dm755 arduino-create-agent -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
     sources:
-      - type: file
-        url: https://downloads.arduino.cc/CreateBridgeStable/ArduinoCreateAgent-1.1-linux-x64-installer-chrome.tar.gz
-        sha256: 97d2c900584451ef7afc4515c42dbddf9410f5c3f451d2173c5bef2d1f2cd843
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - bsdtar -xf installer.tar.gz -O > installer.run && chmod +x installer.run
+          - ln -s /app/extra ~/ArduinoCreateAgent
+          - ./installer.run --mode unattended 2>/dev/null
+          - ./installer.run --version|awk '{print $2}' > .release
+          - rm -f installer.{tar.gz,run} InstallerIcon.png uninstall{,.dat} Uninstall*desktop
       - type: dir
         path: resources
+      - type: extra-data
+        filename: installer.tar.gz
+        url: https://github.com/arduino/arduino-create-agent/releases/download/1.2.1/ArduinoCreateAgent-1.2.1-linux-amd64-installer-chrome.tar.gz
+        size: 26749372
+        sha256: b545bf510f886a62c60dc979104cc41f532efb66104afeab9991af96e707bbba
     modules:
       - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json

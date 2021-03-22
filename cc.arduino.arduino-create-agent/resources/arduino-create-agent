@@ -1,12 +1,37 @@
 #!/bin/bash
 
-mkdir -p "$XDG_CONFIG_HOME"/arduino-create-agent
-cp -u /app/lib/arduino-create-agent/arduino_create_bridge "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge
-cp -u /app/lib/arduino-create-agent/arduino_create_bridge_cli "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge_cli
-cp -u /app/share/arduino-create-agent/config.ini "$XDG_CONFIG_HOME"/arduino-create-agent/config.ini
+die(){
+  [ $# -gt 0 ] || set -- 'Something went wrong! exiting...'
+  echo "$@"
+  exit 1
+}
 
-if [[ "$1" == gui ]]; then
-  "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge
+install_aca(){
+  if [ -d ArduinoCreateAgent.old ]; then
+    rm -rf ~/ArduinoCreateAgent.old ||
+    die "Something went wrong! Can't remove ~/ArduinoCreateAgent.old"
+  fi
+
+  if [ "$1" = update ]; then
+    mv ~/ArduinoCreateAgent ~/ArduinoCreateAgent.old ||
+    die "Something went wrong! Can't remove old installation in ~/ArduinoCreateAgent"
+  fi
+
+  mkdir -p ~/ArduinoCreateAgent
+  cp -u /app/extra/* ~/ArduinoCreateAgent/ ||
+    die "Failed copying to ~/ArduinoCreateAgent"
+}
+
+if [ -f ~/ArduinoCreateAgent/.release ]; then
+  if ! diff /app/extra/.release ~/ArduinoCreateAgent/.release &>/dev/null; then
+    install_aca update
+  fi
 else
-  "$XDG_CONFIG_HOME"/arduino-create-agent/arduino_create_bridge_cli
+  install_aca
+fi
+
+if [ "$1" = gui ]; then
+  ~/ArduinoCreateAgent/Arduino_Create_Agent
+else
+  ~/ArduinoCreateAgent/Arduino_Create_Agent_cli
 fi
