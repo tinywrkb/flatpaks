@@ -1,9 +1,8 @@
 app-id: org.sigrok.pulseview
+base: org.sigrok.libsigrok.BaseApp
 runtime: org.kde.Platform
 runtime-version: '5.15'
 sdk: org.kde.Sdk
-sdk-extensions:
-  - org.freedesktop.Sdk.Extension.openjdk
 rename-desktop-file: org.sigrok.PulseView.desktop
 rename-icon: pulseview
 finish-args:
@@ -13,6 +12,9 @@ finish-args:
   - --share=ipc
   - --socket=wayland
   - --socket=fallback-x11
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+  - rm -f /app/cleanup-BaseApp.sh
 modules:
   - name: pulseview
     buildsystem: cmake
@@ -28,155 +30,3 @@ modules:
         url: git://sigrok.org/pulseview.git
         branch: master
         commit: 3ce5dd9a981d128085dc5ea507dd7157a87be4cb
-    modules:
-      - ../shared-modules/boost/boost.json
-      - name: libsigrokdecode
-        sources:
-#         - type: archive
-#           url: https://sigrok.org/download/source/libsigrokdecode/libsigrokdecode-0.5.3.tar.gz
-#           sha256: c50814aa6743cd8c4e88c84a0cdd8889d883c3be122289be90c63d7d67883fc0
-          - type: git
-            url: git://sigrok.org/libsigrokdecode
-            branch: master
-            commit: 234cbf50152b7e007322c62ed6190ae6bff30a92
-          - type: shell
-            commands:
-              - autoreconf --force --install
-      - name: libsigrok
-        config-opts:
-          - --enable-ruby=no
-#       build-options:
-#         env:
-#           - JAVA_HOME=/usr/lib/sdk/openjdk/jvm/openjdk-14
-#           - PATH=/usr/bin:/app/bin:/usr/lib/sdk/openjdk/bin
-        post-install:
-          - install -Dm644 contrib/6*-libsigrok*.rules -t /app/docs/udev_rules/
-        sources:
-#         - type: archive
-#           url: https://sigrok.org/download/source/libsigrok/libsigrok-0.5.2.tar.gz
-#           sha256: 4d341f90b6220d3e8cb251dacf726c41165285612248f2c52d15df4590a1ce3c
-          - type: git
-            url: git://sigrok.org/libsigrok
-            branch: master
-            commit: 2111d1574b7bc715bc60ca5626f126369553f3f8
-#         - type: patch
-#           path: libsigrok-swig4_java_bindings.patch
-#         - type: patch
-#           path: libsigrok-ruby_bindings.patch
-        modules:
-          - ../shared-modules/swig/swig.json
-          - name: libzip
-            buildsystem: cmake
-            sources:
-              - type: archive
-                url: https://libzip.org/download/libzip-1.6.1.tar.xz
-                sha256: 705dac7a671b3f440181481e607b0908129a9cf1ddfcba75d66436c0e7d33641
-          - name: libserialport
-            sources:
-              - type: archive
-                url: https://sigrok.org/download/source/libserialport/libserialport-0.1.1.tar.gz
-                sha256: 4a2af9d9c3ff488e92fb75b4ba38b35bcf9b8a66df04773eba2a7bbf1fa7529d
-          - name: glibmm
-            config-opts:
-              - --enable-maintainer-mode
-#           buildsystem: meson
-#           config-opts:
-#             - -Dbuild-examples=false
-#             - -Dmaintainer-mode=true
-#             - -Dbuild-documentation=false
-            sources:
-              - type: archive
-                url: https://gitlab.gnome.org/GNOME/glibmm/-/archive/2.60.1/glibmm-2.60.1.tar.gz
-                sha256: f30908716e5ef515daec51d23a642296b837086d350075ab417ae928f20b9143
-#               url: https://gitlab.gnome.org/GNOME/glibmm/-/archive/2.64.2/glibmm-2.64.2.tar.gz
-#               sha256: 53c1a6dcfb75f9d93fe44a346ba50fdef21187945762e00ae2cb04c13d75e647
-            modules:
-              - name: libsigc++
-                buildsystem: meson
-                config-opts:
-                  - -Dmaintainer-mode=true
-                  - -Dbuild-documentation=false
-                sources:
-                  - type: archive
-                    url: https://github.com/libsigcplusplus/libsigcplusplus/releases/download/2.10.3/libsigc++-2.10.3.tar.xz
-                    sha256: 0b68dfc6313c6cc90ac989c6d722a1bf0585ad13846e79746aa87cb265904786
-                modules:
-                    # can be dropped when disabling maintainer-mode
-                  - name: mm-common
-                    buildsystem: meson
-                    sources:
-                      - type: archive
-                        url: https://gitlab.gnome.org/GNOME/mm-common/-/archive/1.0.1/mm-common-1.0.1.tar.gz
-                        sha256: c34ef0bc1182399c7777f9daabd62255ac57390f7dbd2e18900f0f80e433c020
-                      - type: file
-                        url: https://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/libstdc++.tag
-                        sha256: f6c8c74e8293aefaefb4d25fd154d5f537b3bc80e7ceecaa02c5a01836fc09e6
-                        dest-filename: doctags/libstdc++.tag
-                    cleanup:
-                      - '*'
-#                   modules:
-#                     - name: libsigc++
-#                     - name: graphviz
-#                     - name: perl-xml-parser
-#                     - name: libsigc++-docs
-#                     - name: doxygen
-#                     - name: gtk-doc
-#                 - name: perl-xml-parser (make)
-#                   modules:
-#                     - name: perl-libwww
-          - name: libftdi
-            buildsystem: cmake
-            config-opts:
-              - -DCMAKE_SKIP_BUILD_RPATH=ON
-              - -DCMAKE_BUILD_TYPE=Release
-              - -DDOCUMENTATION=OFF
-              - -DEXAMPLES=OFF
-              - -DFTDI_EEPROM=ON
-              - -DLIB_SUFFIX=/
-            sources:
-              - type: archive
-                url: https://www.intra2net.com/en/developer/libftdi/download/libftdi1-1.4.tar.bz2
-                sha256: ec36fb49080f834690c24008328a5ef42d3cf584ef4060f3a35aa4681cb31b74
-            modules:
-              - ../flathub-shared-modules/libusb/libusb.json
-#             - boost
-#             - swig
-              - name: confuse
-                config-opts:
-                  - --enable-shared
-                sources:
-                  - type: archive
-                    url: https://github.com/martinh/libconfuse/releases/download/v3.3/confuse-3.3.tar.gz
-                    sha256: 3a59ded20bc652eaa8e6261ab46f7e483bc13dad79263c15af42ecbb329707b8
-          - name: libieee1284
-            config-opts:
-              - --with-python
-            build-options:
-              cflags: -I/usr/include/python3.8
-            sources:
-              - type: git
-                url: https://github.com/twaugh/libieee1284.git
-                commit: 0663326cbcfdf2a59f9492ddaff72ec5d1b248eb
-              - type: patch
-                path: libieee1284-py3.patch
-              - type: shell
-                commands:
-                  - ./bootstrap
-            modules:
-              - name: xmlto
-                sources:
-                  - type: archive
-                    url: https://releases.pagure.org/xmlto/xmlto-0.0.28.tar.bz2
-                    sha256: 1130df3a7957eb9f6f0d29e4aa1c75732a7dfb6d639be013859b5c7ec5421276
-#         - name: ruby
-#         - name: python-setuptools
-#           cleanup:
-#             - '*'
-#         - name: pygobject-devel
-#           cleanup:
-#             - '*'
-#         - name: python-numpy
-#           cleanup:
-#             - '*'
-#   - name: sigrok-firmware-fx2lafw
-#     https://www.kernel.org/doc/html/latest/driver-api/firmware/fw_search_path.html
