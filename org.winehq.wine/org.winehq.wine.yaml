@@ -35,12 +35,13 @@ cleanup:
   - /include
 modules:
   - name: wine64
+    no-make-install: true
     config-opts:
       - --enable-win64
       - --libdir=/app/lib
       - --with-x
       - --with-wayland
-    post-install:
+    build-commands:
       - mkdir -p /app/src
       - cp -r $FLATPAK_BUILDER_BUILDDIR /app/src/wine64
     sources:
@@ -79,6 +80,7 @@ modules:
     build-commands:
       - install -dm755 /app/lib/i386-linux-gnu
       - install -Dm644 ld.so.conf -t /app/etc/
+      - make -C /app/src/wine64 install
     sources:
       - type: dir
         path: resources
