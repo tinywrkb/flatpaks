@@ -44,7 +44,9 @@ modules:
         url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
         sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
     cleanup:
-      - /app/src
+      - /share/applications
+      - /share/man/*.UTF-8
+      - /src
   - name: wine32
     config-opts:
       - --with-win64=/app/src/wine64
@@ -56,3 +58,10 @@ modules:
       - type: archive
         url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
         sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+  - name: wine
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 ld.so.conf -t /app/etc/
+    sources:
+      - type: dir
+        path: resources
