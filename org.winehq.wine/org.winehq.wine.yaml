@@ -21,9 +21,11 @@ x-compat-i386-opts: &compat_i386_opts
     CC: i686-unknown-linux-gnu-gcc
     CXX: i686-unknown-linux-gnu-g++
   libdir: /app/lib32
+command: /bin/sh
 finish-args:
   - --allow=multiarch
   - --device=dri
+  - --filesystem=~/.local/wine
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
@@ -69,10 +71,50 @@ modules:
         url: https://gitlab.collabora.com/alf/wine.git
         branch: wayland
         commit: ce0da9c9f646536df40c2fa2869482edee0b1b1e
+    cleanup:
+      - /share/applications
+      - /share/man/*.UTF-8
   - name: wine
     buildsystem: simple
     build-commands:
+      - install -dm755 /app/lib/i386-linux-gnu
       - install -Dm644 ld.so.conf -t /app/etc/
     sources:
       - type: dir
         path: resources
+  - name: wine-gecko
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 wine-gecko-x86*.msi -t /app/share/wine/gecko/
+    sources:
+      - type: file
+        dest-filename: wine-gecko-x86.msi
+        url: https://dl.winehq.org/wine/wine-gecko/2.47.2/wine-gecko-2.47.2-x86.msi
+        sha256: e520ce7336cd420cd09c91337d87e74bb420300fd5cbc6f724c1802766b6a61d
+      - type: file
+        dest-filename: wine-gecko-x86_64.msi
+        url: https://dl.winehq.org/wine/wine-gecko/2.47.2/wine-gecko-2.47.2-x86_64.msi
+        sha256: 0596761024823ff3c21f13e1cd5cd3e89dccc698294d62974d8930aeda86ce45
+  - name: wine-mone
+    buildsystem: simple
+    build-commands:
+      - install -dm755 /app/share/wine/mono
+      - install -Dm644 wine-mono-x86.msi -t /app/share/wine/mono/
+      - cp -r wine-mono /app/share/wine/mono/
+    sources:
+      - type: file
+        dest-filename: wine-mono-x86.msi
+        url: https://dl.winehq.org/wine/wine-mono/6.0.0/wine-mono-6.0.0-x86.msi
+        sha256: 5c7af5976d101be359a77045c9cc8fc40feac028263d00e731578864e8b183d0
+      - type: archive
+        dest: wine-mono
+        url: https://dl.winehq.org/wine/wine-mono/6.0.0/wine-mono-6.0.0-x86.tar.xz
+        sha256: 3a101983af16aa2652262fff9c6b5365b884866a9d3c65ee6de0c6c1f300134c
+  - name: winetricks
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: https://github.com/Winetricks/winetricks/archive/20210206.tar.gz
+        sha256: 705421798b28696f577104ebdf03b068b9343ab096754150f47a6ec06fa8ae65
