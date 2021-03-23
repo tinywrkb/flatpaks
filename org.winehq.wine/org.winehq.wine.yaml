@@ -28,8 +28,27 @@ finish-args:
   - --share=network
   - --socket=pulseaudio
   - --socket=x11
+cleanup:
+  - /include
 modules:
-  - name: wine
+  - name: wine64
+    config-opts:
+      - --enable-win64
+      - --libdir=/app/lib
+      - --with-x
+    post-install:
+      - mkdir -p /app/src
+      - cp -r $FLATPAK_BUILDER_BUILDDIR /app/src/wine64
+    sources:
+      - type: archive
+        url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
+        sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+    cleanup:
+      - /app/src
+  - name: wine32
+    config-opts:
+      - --with-win64=/app/src/wine64
+      - --with-x
     build-options:
       arch:
         x86_64: *compat_i386_opts
