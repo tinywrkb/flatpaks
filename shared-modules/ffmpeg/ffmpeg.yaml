@@ -1,0 +1,46 @@
+- name: ffmpeg
+  cleanup:
+    - /include
+    - /lib/pkgconfig
+    - /share/ffmpeg/examples
+  config-opts:
+    - --enable-shared
+    - --disable-static
+    - --enable-gnutls
+    - --disable-doc
+    - --enable-libv4l2
+    - --enable-libdav1d
+  sources:
+    - type: archive
+      url: https://ffmpeg.org/releases/ffmpeg-4.3.2.tar.xz
+      sha256: 46e4e64f1dd0233cbc0934b9f1c0da676008cad34725113fb7f802cfa84ccddb
+  modules:
+    - name: libv4l2
+      cleanup:
+        - /sbin
+        - /bin
+        - /include
+        - /lib/*.la
+        - /lib/*/*.la
+        - /lib*/*/*/*.la
+        - /lib/pkgconfig
+        - /share/man
+      config-opts:
+        - --disable-static
+        - --disable-bpf
+        - --with-udevdir=/app/lib/udev
+      sources:
+        - type: archive
+          url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.20.0.tar.bz2
+          sha256: 956118713f7ccb405c55c7088a6a2490c32d54300dd9a30d8d5008c28d3726f7
+    - name: nv-codec-headers
+      cleanup:
+        - '*'
+      no-autogen: true
+      make-install-args:
+        - PREFIX=/app
+      sources:
+        - type: git
+          url: https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
+          tag: n8.2.15.11
+          commit: 58c159153814260c02c580716677bc4e823dfeff
