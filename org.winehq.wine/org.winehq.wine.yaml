@@ -27,6 +27,7 @@ finish-args:
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
+  - --socket=wayland
   - --socket=x11
 cleanup:
   - /include
@@ -36,13 +37,18 @@ modules:
       - --enable-win64
       - --libdir=/app/lib
       - --with-x
+      - --with-wayland
     post-install:
       - mkdir -p /app/src
       - cp -r $FLATPAK_BUILDER_BUILDDIR /app/src/wine64
     sources:
-      - type: archive
-        url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
-        sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+     #- type: archive
+     #  url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
+     #  sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+      - type: git
+        url: https://gitlab.collabora.com/alf/wine.git
+        branch: wayland
+        commit: ce0da9c9f646536df40c2fa2869482edee0b1b1e
     cleanup:
       - /share/applications
       - /share/man/*.UTF-8
@@ -51,13 +57,18 @@ modules:
     config-opts:
       - --with-win64=/app/src/wine64
       - --with-x
+      - --with-wayland
     build-options:
       arch:
         x86_64: *compat_i386_opts
     sources:
-      - type: archive
-        url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
-        sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+     #- type: archive
+     #  url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
+     #  sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+      - type: git
+        url: https://gitlab.collabora.com/alf/wine.git
+        branch: wayland
+        commit: ce0da9c9f646536df40c2fa2869482edee0b1b1e
   - name: wine
     buildsystem: simple
     build-commands:
