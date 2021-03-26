@@ -1,0 +1,13 @@
+app-id: org.ffmpeg.ffmpeg
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: ffmpeg
+finish-args:
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --share=network
+modules:
+  - ../shared-modules/ffmpeg/ffmpeg.json
