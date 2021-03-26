@@ -9,6 +9,16 @@ finish-args:
   - --filesystem=xdg-pictures
   - --filesystem=xdg-videos
   - --share=network
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
 modules:
   - ../shared-modules/youtube-dl/youtube-dl.json
-  - ../shared-modules/ffmpeg/ffmpeg.json
+  - name: ffmpeg
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 ffmpeg -t /app/bin/
+    sources:
+      - type: script
+        dest-filename: ffmpeg
+        commands:
+          - flatpak-spawn --host flatpak run org.ffmpeg.ffmpeg "$@"
