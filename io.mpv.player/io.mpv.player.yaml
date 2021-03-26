@@ -11,7 +11,7 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
-  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
   - --filesystem=xdg-run/pipewire-0:ro
   - --own-name=org.mpris.MediaPlayer2.mpv
   - --share=ipc
