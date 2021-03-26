@@ -1,0 +1,32 @@
+app-id: com.github.mps-youtube
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: mpsyt
+finish-args:
+  - --share=network
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
+modules:
+  - name: mps-youtube
+    buildsystem: simple
+    build-commands:
+      - python3 setup.py build
+      - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+    sources:
+      - type: git
+        url: https://github.com/mps-youtube/mps-youtube
+        tag: v0.2.8
+        commit: da798cf4f80513ebb424257e3fed9e9dd72c980b
+    modules:
+      - ../shared-modules/python-pafy/python-pafy.json
+      - ../shared-modules/ffmpeg/ffmpeg.json
+      - name: mpv
+        buildsystem: simple
+        build-commands:
+          - install -Dm755 mpv -t /app/bin/
+        sources:
+          - type: script
+            dest-filename: mpv
+            commands:
+              - flatpak-spawn --host flatpak run io.mpv.player "$@"
