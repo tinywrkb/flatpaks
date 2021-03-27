@@ -15,6 +15,7 @@ modules:
           - --disable-db-install
           - --enable-pc-files
           - --enable-widec
+          - --with-default-terminfo-dir=/usr/share/terminfo
           - --with-pkg-config-libdir=/app/lib/pkgconfig
           - --with-shared
           - --without-ada
