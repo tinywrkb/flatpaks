@@ -1,0 +1,18 @@
+app-id: com.github.tremc
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: tremc
+finish-args:
+  - --share=network
+modules:
+  - name: tremc
+    no-autogen: true
+    no-make-install: true
+    make-args:
+      - PREFIX=/app
+    sources:
+      - type: git
+        url: https://github.com/tremc/tremc.git
+        tag: 0.9.2
+        commit: e4c02f4bbf07474e2fe235beee93d7ce164e7efd
