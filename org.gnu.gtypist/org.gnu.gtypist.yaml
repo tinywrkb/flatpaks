@@ -1,0 +1,33 @@
+app-id: org.gnu.gtypist
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: gtypist
+modules:
+  - name: gtypist
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/gtypist/gtypist-2.9.5.tar.gz
+        sha256: 4059be9585683bbb84757dd4bbafa8ff4ecda2ed9eecd4e7594365843f05a266
+    modules:
+      - name: ncurses
+        config-opts:
+          - --disable-db-install
+          - --enable-pc-files
+          - --enable-widec
+          - --with-pkg-config-libdir=/app/lib/pkgconfig
+          - --with-shared
+          - --without-ada
+          - --without-cxx-binding
+          - --without-cxx-shared
+          - --without-manpages
+          - --without-progs
+        sources:
+          - type: archive
+            url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.2.tar.gz
+            sha256: 30306e0c76e0f9f1f0de987cf1c82a5c21e1ce6568b9227f7da5b71cbea86c9d
+        cleanup:
+          - /bin
+          - /include
+          - /lib/pkgconfig
+          - '*.a'
