@@ -1,0 +1,107 @@
+app-id: com.github.nwg_piotr.nwg-panel
+runtime: org.gnome.Platform
+runtime-version: '3.38'
+sdk: org.gnome.Sdk
+command: nwg-panel
+finish-args:
+  - --device=dri
+    # workaround for /dev/rfkill access
+  - --device=all
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=session-bus
+  - --socket=system-bus
+  - --socket=wayland
+    # workaround for missing icon exports
+    #   flatpak does not expand variables given to --env, so it's not possible to include in
+    #   XDG_DATA_DIRS the icons exports from the user flatpak installation
+    #   e.g. --env=XDG_DATA_DIRS=$XDG_DATA_HOME/flatpak/exports/share:...
+    #   so a user override should be added, taking in account the content of XDG_DATA_DIRS below
+    #   e.g. $ flatpak override --user --env=XDG_DATA_DIRS=$XDG_DATA_HOME/flatpak/exports/share:... com.github.alexays.waybar
+    #   related bug reports:
+    #     https://github.com/flatpak/flatpak/issues/1415
+    #     https://github.com/flatpak/flatpak/issues/3800
+  - --filesystem=/var/lib/flatpak:ro
+  - --filesystem=xdg-data/flatpak:ro
+  - --env=XDG_DATA_DIRS=/var/lib/flatpak/exports/share:/app/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share
+    # sway ipc socket workaround
+    #   by default sway socket is ${XDG_RUNTIME_DIR}/sway-ipc.<uid>.<pid>.sock
+    #   so we need to change this to a flatpak mount-able folder
+    #   1. export SWAYSOCK=$XDG_RUNTIME_DIR/sway/sway-ipc.sock
+    #   2. mkdir $XDG_RUNTIME_DIR/sway/sway-ipc.sock
+    #      or use tmpfiles.d by creating ~/.config/user-tmpfiles.d/sway.conf
+    #      with
+    #        d %t/sway 0700 - - - -
+    #      and enable systemd-tmpfiles-{clean.timer,setup.service}
+    #   related bug reports:
+    #     https://github.com/swaywm/sway/issues/5624
+  - --filesystem=xdg-run/sway
+    # give access to flatpak apps runtime dirs
+    #   this can be a workaround for the system tray icon problem with QT when used with
+    #   XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+  - --filesystem=xdg-run/app:ro
+modules:
+  - name: nwg-panel
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+      - install -Dm644 nwg-panel.svg /app/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+      - install -Dm644 nwg-panel-config.desktop /app/share/applications/${FLATPAK_ID}.desktop
+    sources:
+      - type: git
+        url: https://github.com/nwg-piotr/nwg-panel.git
+        tag: v0.2.1
+        commit: 9056837d7682211146be5475fe22c82399e1b92a
+  - name: gtk-layer-shell
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/wmww/gtk-layer-shell.git
+        tag: v0.6.0
+        commit: eac78939e3ea07b119a57488e6645a6cd5d7eafd
+  - name: python-psutil
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+    sources:
+      - type: git
+        url: https://github.com/giampaolo/psutil.git
+        tag: release-5.8.0
+        commit: b760f4848db4db49de57918660f6a5059666b720
+  - name: python-i3ipc
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+    sources:
+      - type: git
+        url: https://github.com/altdesktop/i3ipc-python.git
+        tag: v2.2.1
+        commit: 8ee74938fef47bf409a9f13c6d6436a1ef27ad7f
+    modules:
+      - name: python-xlib
+        buildsystem: simple
+        build-commands:
+          - python setup.py build
+          - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+        sources:
+          - type: git
+            url: https://github.com/python-xlib/python-xlib.git
+            tag: '0.29'
+            commit: f2aa74862d2f4067fcc5a82e0b77bd59d66afe2a
+        modules:
+          - name: setuptools-scm
+            buildsystem: simple
+            build-commands:
+              - python setup.py build
+              - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+            sources:
+              - type: git
+                url: https://github.com/pypa/setuptools_scm.git
+                tag: v5.0.1
+                commit: 03690ec63a31a7b17403eae00b639ace8b2f13e2
+            cleanup:
+              - '*'
