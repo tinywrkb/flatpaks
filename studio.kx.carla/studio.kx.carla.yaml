@@ -41,6 +41,17 @@ modules:
           - --assume-shared
           - --concatenate
           - --confirm-license
+          - --enable=QtCore
+          - --enable=QtGui
+          - --enable=QtNetwork
+          - --enable=QtOpenGL
+          - --enable=QtPrintSupport
+          - --enable=QtQml
+          - --enable=QtQuick
+          - --enable=QtSql
+          - --enable=QtSvg
+          - --enable=QtWebChannel
+          - --enable=QtWidgets
           - --no-designer-plugin
           - --no-dist-info
           - --no-docstrings
@@ -49,34 +60,6 @@ modules:
           - --no-stubs
           - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.8/'
           - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.8/'
-        build-options:
-          arch:
-            i386:
-              config-opts:
-                - --enable=QtCore
-                - --enable=QtGui
-                - --enable=QtNetwork
-                - --enable=QtOpenGL
-                - --enable=QtPrintSupport
-                - --enable=QtQml
-                - --enable=QtQuick
-                - --enable=QtSql
-                - --enable=QtSvg
-                - --enable=QtWebChannel
-                - --enable=QtWidgets
-            x86_64:
-              config-opts:
-                - --enable=QtCore
-                - --enable=QtGui
-                - --enable=QtNetwork
-                - --enable=QtOpenGL
-                - --enable=QtPrintSupport
-                - --enable=QtQml
-                - --enable=QtQuick
-                - --enable=QtSql
-                - --enable=QtSvg
-                - --enable=QtWebChannel
-                - --enable=QtWidgets
         sources:
           - type: archive
             url: https://pypi.python.org/packages/source/P/PyQt5/PyQt5-5.15.4.tar.gz
