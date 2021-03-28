@@ -41,6 +41,9 @@ finish-args:
     #   this can be a workaround for the system tray icon problem with QT when used with
     #   XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
   - --filesystem=xdg-run/app:ro
+cleanup:
+  - /include
+  - /lib/pkgconfig
 modules:
   - name: nwg-panel
     buildsystem: simple
@@ -49,6 +52,7 @@ modules:
       - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
       - install -Dm644 nwg-panel.svg /app/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
       - install -Dm644 nwg-panel-config.desktop /app/share/applications/${FLATPAK_ID}.desktop
+      - desktop-file-edit --set-icon=$FLATPAK_ID /app/share/applications/${FLATPAK_ID}.desktop
     sources:
       - type: git
         url: https://github.com/nwg-piotr/nwg-panel.git
@@ -57,30 +61,27 @@ modules:
   - name: gtk-layer-shell
     buildsystem: meson
     sources:
-      - type: git
-        url: https://github.com/wmww/gtk-layer-shell.git
-        tag: v0.6.0
-        commit: eac78939e3ea07b119a57488e6645a6cd5d7eafd
+      - type: archive
+        url: https://github.com/wmww/gtk-layer-shell/archive/refs/tags/v0.6.0.tar.gz
+        sha256: 9a0ba72cea90e092d6b10ba47e627cd873271d287d9af80a6f66ab131fb34cac
   - name: python-psutil
     buildsystem: simple
     build-commands:
       - python setup.py build
       - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
     sources:
-      - type: git
-        url: https://github.com/giampaolo/psutil.git
-        tag: release-5.8.0
-        commit: b760f4848db4db49de57918660f6a5059666b720
+      - type: archive
+        url: https://github.com/giampaolo/psutil/archive/refs/tags/release-5.8.0.tar.gz
+        sha256: c015248da36109ffaa15f46fce8c0003f678cfaa408090f466c80318885e7abf
   - name: python-i3ipc
     buildsystem: simple
     build-commands:
       - python setup.py build
       - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
     sources:
-      - type: git
-        url: https://github.com/altdesktop/i3ipc-python.git
-        tag: v2.2.1
-        commit: 8ee74938fef47bf409a9f13c6d6436a1ef27ad7f
+      - type: archive
+        url: https://github.com/altdesktop/i3ipc-python/archive/refs/tags/v2.2.1.tar.gz
+        sha256: 54af180fac6e3e16c65747884ae4479f0df034c45ed02523f8300f98c99eb29e
     modules:
       - name: python-xlib
         buildsystem: simple
@@ -88,10 +89,9 @@ modules:
           - python setup.py build
           - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
         sources:
-          - type: git
-            url: https://github.com/python-xlib/python-xlib.git
-            tag: '0.29'
-            commit: f2aa74862d2f4067fcc5a82e0b77bd59d66afe2a
+          - type: archive
+            url: https://github.com/python-xlib/python-xlib/archive/refs/tags/0.29.tar.gz
+            sha256: ae59dc56ead2f7280fc0f24310409e8250a79e930e06c703f8dd7b080cd4b4b6
         modules:
           - name: setuptools-scm
             buildsystem: simple
@@ -99,9 +99,20 @@ modules:
               - python setup.py build
               - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
             sources:
-              - type: git
-                url: https://github.com/pypa/setuptools_scm.git
-                tag: v5.0.1
-                commit: 03690ec63a31a7b17403eae00b639ace8b2f13e2
+              - type: archive
+                url: https://files.pythonhosted.org/packages/56/c9/09f4a531720b1bf54f316fdff926fbb937c59a9c4a34e3a533b26e501898/setuptools_scm-5.0.2.tar.gz
+                sha256: 83a0cedd3449e3946307811a4c7b9d89c4b5fd464a2fb5eeccd0a5bb158ae5c8
             cleanup:
               - '*'
+  - name: light
+    config-opts:
+      - --without-udev
+    sources:
+      - type: archive
+        url: https://github.com/haikarainen/light/archive/refs/tags/v1.2.2.tar.gz
+        sha256: 62e889ee9be80fe808a972ef4981acc39e83a20f9a84a66a82cd1f623c868d9c
+      - type: shell
+        commands:
+          - sed -i 's/\(light_CFLAGS.*=.*\)/\1 -fcommon/' src/Makefile.am
+    cleanup:
+      - /share
