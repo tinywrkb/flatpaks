@@ -1,0 +1,22 @@
+app-id: io.sourceforge.qjackctl
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: qjackctl
+rename-desktop-file: qjackctl.desktop
+rename-icon: qjackctl
+finish-args:
+  - --device=all
+  - --device=dri
+  - --filesystem=xdg-run/pipewire-0:ro
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+modules:
+  - name: qjackctl
+    sources:
+      - type: archive
+        url: https://download.sourceforge.net/qjackctl/qjackctl-0.9.2.tar.gz
+        sha256: 867c088ed819f61d2eb1e550d4bb8f6330d8f247ab99843a584d81825f1a5d24
+    modules:
+      - ../shared-modules/pipewire/pipewire-jack.json
