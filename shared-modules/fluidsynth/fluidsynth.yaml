@@ -1,0 +1,12 @@
+# TODO: enable features and cleanup
+name: fluidsynth
+buildsystem: cmake
+config-opts:
+  - -DLIB_SUFFIX=''
+sources:
+  - type: archive
+    url: https://github.com/FluidSynth/fluidsynth/archive/refs/tags/v2.1.8.tar.gz
+    sha256: a254efceff5d99f8d658d12d25318317f37307e6df852ec9baeb7da173496967
+modules:
+  - ../pipewire/pipewire-jack.json
+  - ../liblo/liblo.json
