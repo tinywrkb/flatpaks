@@ -19,15 +19,14 @@ modules:
         - GOBIN=/app/bin
         - GOROOT=/usr/lib/sdk/golang
         - GOFLAGS=-modcacherw
+        - GOPATH=/run/build/rclone
       append-path: /usr/lib/sdk/golang/bin
       build-args:
         - --share=network
     build-commands:
-      - |
-         export GOPATH=$PWD
-         go get github.com/rclone/rclone@latest
-         #chmod u+w -R pkg
-         go install github.com/rclone/rclone@latest
+      - go get github.com/rclone/rclone@latest
+      #- chmod u+w -R pkg
+      - go install github.com/rclone/rclone@latest
   - name: fusermount
     buildsystem: simple
     build-commands:
