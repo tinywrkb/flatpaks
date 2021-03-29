@@ -7,6 +7,8 @@ sdk-extensions:
 command: rclone
 finish-args:
   - --share=network
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
 build-options:
   no-debuginfo: true
 modules:
@@ -26,3 +28,23 @@ modules:
          go get github.com/rclone/rclone@latest
          #chmod u+w -R pkg
          go install github.com/rclone/rclone@latest
+  - name: fusermount
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 fusermount -t /app/bin/
+    sources:
+      - type: script
+        dest-filename: fusermount
+        commands:
+          - |
+
+             # source: https://github.com/flathub/org.flatpak.Builder/blob/master/fusermount-wrapper.sh
+
+             if [ -z "$_FUSE_COMMFD" ]; then
+                 FD_ARGS=
+             else
+                 FD_ARGS="--env=_FUSE_COMMFD=${_FUSE_COMMFD}"
+                 [ "$_FUSE_COMMFD" -gt 3 ] && FD_ARGS+=" --forward-fd=${_FUSE_COMMFD}"
+             fi
+
+             exec flatpak-spawn --host --forward-fd=1 --forward-fd=2 --forward-fd=3 $FD_ARGS fusermount "$@"
