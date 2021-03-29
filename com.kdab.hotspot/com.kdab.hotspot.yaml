@@ -1,0 +1,41 @@
+app-id: com.kdab.hotspot
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: hotspot
+rename-desktop-file: hotspot.desktop
+rename-icon: hotspot
+finish-args:
+  - --share=ipc
+  - --device=dri
+  - --socket=wayland
+  - --socket=fallback-x11
+modules:
+  - name: hotspot
+    buildsystem: cmake
+    config-opts:
+      - -DKDE_INSTALL_LIBEXECDIR=lib
+    post-install:
+      - install -Dm644 hotspot.desktop -t /app/share/applications/
+      - install -Dm644 com.kdab.Hotspot.appdata.xml /app/share/appdata/${FLATPAK_ID}.xml
+      - sed -i 's/com\.kdab\.Hotspot/com.kdab.hotspot/' /app/share/appdata/${FLATPAK_ID}.xml
+      - rm /app/share/icons/hicolor/icon-theme.cache
+    sources:
+      - type: archive
+        url: https://github.com/KDAB/hotspot/releases/download/v1.3.0/hotspot-v1.3.0.tar.gz
+        sha256: 7651c5f504138f6438d0cacaea041550bddb30a4ab2128abe3111fc827af4fc8
+    modules:
+      - name: zstd
+        no-autogen: true
+        make-install-args:
+          - PREFIX=/app
+        sources:
+          - type: archive
+            url: https://github.com/facebook/zstd/releases/download/v1.4.9/zstd-1.4.9.tar.gz
+            sha256: 29ac74e19ea28659017361976240c4b5c5c24db3b89338731a6feb97c038d293
+        cleanup:
+          - /bin
+          - /include
+          - /lib/pkgconfig
+          - /share/man
+          - '*.a'
