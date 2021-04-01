@@ -8,11 +8,12 @@ sdk: org.freedesktop.Sdk
 #  - org.freedesktop.Sdk.Extension.texlive
 command: zathura
 finish-args:
-  - --socket=wayland
-  - --socket=fallback-x11
-  - --share=ipc
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -26,8 +27,8 @@ modules:
 #      - -Dsynctex=enabled
     sources:
       - type: archive
-        url: https://github.com/pwmt/zathura/archive/0.4.5.tar.gz
-        sha256: 317882fc4e05104591c011c237b2ba6bf0b3978c189f5cdf3c978cb333ee04fe
+        url: https://github.com/pwmt/zathura/archive/0.4.7.tar.gz
+        sha256: dbea0d5c42bfb813640af2587edbf04a93e6e87232f429e09845e5a9d0049ffb
     cleanup:
       - /share/bash-completion
       - /share/fish
@@ -37,21 +38,10 @@ modules:
         buildsystem: meson
         sources:
           - type: archive
-            url: https://pwmt.org/projects/girara/download/girara-0.3.4.tar.xz
-            sha256: 51fcda5a50a68fabd461fb4e467a1defd531dafca4f47f6851a9eb56756cb232
+            url: https://pwmt.org/projects/girara/download/girara-0.3.5.tar.xz
+            sha256: e33ba2a21dd57606439d37c829d48466a14e3e50a698e6bd678b511f5c59f4b5
         modules:
-          - name: json-c
-            buildsystem: cmake
-            config-opts:
-              - -DCMAKE_BUILD_TYPE=None
-              - -DENABLE_THREADING=ON
-              - -DENABLE_RDRAND=OFF
-            sources:
-              - type: archive
-                url: https://github.com/json-c/json-c/archive/json-c-0.14-20200419.tar.gz
-                sha256: ec4eb70e0f6c0d707b9b1ec646cf7c860f4abb3562a90ea6e4d78d177fd95303
-            cleanup:
-              - /lib/cmake
+          - ../shared-modules/json-c/json-c.json
 #      - name: libsynctex.so
 #        buildsystem: simple
 #        build-commands:
@@ -63,36 +53,7 @@ modules:
         url: https://github.com/pwmt/zathura-pdf-poppler/archive/0.3.0.tar.gz
         sha256: 2034f70a936d458ddc9276f769e77ff308ba3bb1b7a7cdc87bab8b9ef7ade84a
     modules:
-      - name: openjpeg2
-        buildsystem: cmake
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=Release
-          - -DCMAKE_INSTALL_PREFIX=/app
-          - -DBUILD_SHARED_LIBS=ON
-          - -DBUILD_STATIC_LIBS=OFF
-        sources:
-          - type: archive
-            url: https://github.com/uclouvain/openjpeg/archive/v2.3.1.tar.gz
-            sha256: 63f5a4713ecafc86de51bfad89cc07bb788e9bba24ebbf0c4ca637621aadb6a9
-        cleanup:
-          - /bin
-          - /lib/openjpeg-*
-      - name: poppler
-        buildsystem: cmake
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=Release
-          - -DCMAKE_INSTALL_PREFIX:PATH=/app
-          - -DCMAKE_INSTALL_LIBDIR=/app/lib
-          - -DENABLE_UNSTABLE_API_ABI_HEADERS=ON
-          - -DENABLE_GLIB=ON
-        sources:
-          - type: archive
-            url: https://poppler.freedesktop.org/poppler-0.88.0.tar.xz
-            sha256: b4453804e9a5a519e6ceee0ac8f5efc229e3b0bf70419263c239124474d256c7
-        cleanup:
-          - /bin
-          - /lib/girepository-1.0
-          - /share
+      - ../shared-modules/poppler/poppler.json
   - name: zathura-pdf-djvu
     buildsystem: meson
     sources:
@@ -100,16 +61,7 @@ modules:
         url: https://github.com/pwmt/zathura-djvu/archive/0.2.9.tar.gz
         sha256: 84fae6da42e7cdc2e49ed4cd4f0315ac09716e95358b9c7487803a2cff47dbca
     modules:
-      - name: djvulibre
-        config-opts:
-          - --disable-desktopfiles
-        sources:
-          - type: archive
-            url: https://downloads.sourceforge.net/djvu/djvulibre-3.5.27.tar.gz
-            sha256: e69668252565603875fb88500cde02bf93d12d48a3884e472696c896e81f505f
-        cleanup:
-          - /bin
-          - /share
+      - ../shared-modules/djvulibre/djvulibre.json
   - name: zathura-pdf-ps
     buildsystem: meson
     sources:
@@ -117,39 +69,7 @@ modules:
         url: https://github.com/pwmt/zathura-ps/archive/0.2.6.tar.gz
         sha256: 08c1927bfb8a40e201fa3638f9523d4b6d70e3444ef070bd4aa8a869b6574567
     modules:
-      - name: libspectre
-        config-opts:
-          - --prefix=/app
-          - --disable-static
-        sources:
-          - type: archive
-            url: https://libspectre.freedesktop.org/releases/libspectre-0.2.8.tar.gz
-            sha256: 65256af389823bbc4ee4d25bfd1cc19023ffc29ae9f9677f2d200fa6e98bc7a8
-        modules:
-          - name: ghostscript
-            config-opts:
-              - --disable-cups
-              - --with-drivers=FILES
-              - --disable-gtk
-            make-args:
-              - so
-            make-install-args:
-              - soinstall
-            sources:
-              - type: archive
-                url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs952/ghostscript-9.52.tar.xz
-                sha512: 4c4a33884e1138bad553eee61fac1a72158297ad5c2ce46a4b36150848dea8158affaf2b902f4ff03e4f72ebc8154c198b618112624f409230a610b7648faa67
-              - type: shell
-                commands:
-                  - cp -p /usr/share/automake-*/config.{sub,guess} freetype/builds/unix/
-                  - cp -p /usr/share/automake-*/config.{sub,guess} ijs/
-                  - cp -p /usr/share/automake-*/config.{sub,guess} jpeg/
-                  - cp -p /usr/share/automake-*/config.{sub,guess} libpng/
-                  - cp -p /usr/share/automake-*/config.{sub,guess} lcms2mt/
-                  - cp -p /usr/share/automake-*/config.{sub,guess} tiff/config/
-            cleanup:
-              - /bin
-              - /share
+      - ../shared-modules/libspectre/libspectre.json
   - name: zathura-pdf-cb
     buildsystem: meson
     sources:
@@ -162,8 +82,8 @@ modules:
       - -Dlink-external=true
     sources:
       - type: archive
-        url: https://github.com/pwmt/zathura-pdf-mupdf/archive/0.3.5.tar.gz
-        sha256: 6344acda225ca637fc72788cacce7448cd2e69ac13f19429726786a0b62cd7e3
+        url: https://github.com/pwmt/zathura-pdf-mupdf/archive/0.3.6.tar.gz
+        sha256: 94ab90b367c04e3a9dda52e3587e257e4c825b375bde13032f81b1f84becb4f1
     modules:
       - name: libmupdf
         no-autogen: true
@@ -180,8 +100,8 @@ modules:
           - prefix=/app
         sources:
           - type: archive
-            url: https://mupdf.com/downloads/archive/mupdf-1.16.1-source.tar.xz
-            sha256: 6fe78184bd5208f9595e4d7f92bc8df50af30fbe8e2c1298b581c84945f2f5da
+            url: https://mupdf.com/downloads/archive/mupdf-1.18.0-source.tar.xz
+            sha256: 592d4f6c0fba41bb954eb1a41616661b62b134d5b383e33bd45a081af5d4a59a
           - type: shell
             commands:
               - rm -rf thirdparty/{freeglut,freetype,harfbuzz,jbig2dec,libjpeg,openjpeg,zlib}
@@ -189,32 +109,19 @@ modules:
           - /bin
           - /share
         modules:
-          - name: freeglut
-            buildsystem: cmake
-            config-opts:
-              - -DFREEGLUT_BUILD_STATIC_LIBS=OFF
-              - -DCMAKE_BUILD_TYPE=None
-            sources:
-              - type: archive
-                url: https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz
-                sha256: d4000e02102acaf259998c870e25214739d1f16f67f99cb35e4f46841399da68
-            cleanup:
-              - /lib/cmake
-            modules:
-              - name: glu
-                config-opts:
-                  - --disable-static
-                sources:
-                  - type: archive
-                    url: https://mesa.freedesktop.org/archive/glu/glu-9.0.1.tar.xz
-                    sha256: fb5a4c2dd6ba6d1c21ab7c05129b0769544e1d68e1e3b0ffecb18e73c93055bc
+          - ../shared-modules/freeglut/freeglut.json
           - name: jbig2dec
             sources:
               - type: archive
-                url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs951/jbig2dec-0.18.tar.gz
-                sha256: 9e19775237350e299c422b7b91b0c045e90ffa4ba66abf28c8fb5eb005772f5e
+                url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9530/jbig2dec-0.19.tar.gz
+                sha256: 279476695b38f04939aa59d041be56f6bade3422003a406a85e9792c27118a37
               - type: shell
                 commands:
                   - autoreconf -vfi
             cleanup:
               - /bin
+          - name: gumbo-parser
+            sources:
+              - type: archive
+                url: https://github.com/google/gumbo-parser/archive/v0.10.1.tar.gz
+                sha256: 28463053d44a5dfbc4b77bcf49c8cee119338ffa636cc17fc3378421d714efad
