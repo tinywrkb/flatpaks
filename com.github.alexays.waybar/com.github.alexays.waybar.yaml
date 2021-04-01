@@ -97,8 +97,8 @@ modules:
           - --buildtype=plain
         sources:
           - type: archive
-            url: https://github.com/wmww/gtk-layer-shell/archive/v0.5.2.tar.gz
-            sha256: 1587b0fbfc0cb023066180e8055704981e8ab3fc7ab8dbe9aad0da05728799be
+            url: https://github.com/wmww/gtk-layer-shell/archive/v0.6.0.tar.gz
+            sha256: 9a0ba72cea90e092d6b10ba47e627cd873271d287d9af80a6f66ab131fb34cac
       - ../shared-modules/gtkmm3/gtkmm3-gnome_runtime.json
       - name: jsoncpp
         buildsystem: meson
@@ -195,18 +195,7 @@ modules:
           - type: archive
             url: https://github.com/swaywm/wlroots/archive/0.12.0.tar.gz
             sha256: c9e9f4f6d2f526d0b2886daf3ec37e64831773059aa669fb98a88522a1626bdb
-      - name: json-c
-        cleanup:
-          - /lib/cmake
-        buildsystem: cmake
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=None
-          - -DENABLE_THREADING=ON
-          - -DENABLE_RDRAND=OFF
-        sources:
-          - type: archive
-            url: https://github.com/json-c/json-c/archive/json-c-0.15-20200726.tar.gz
-            sha256: 4ba9a090a42cf1e12b84c64e4464bb6fb893666841d5843cc5bef90774028882
+      - ../shared-modules/json-c/json-c.json
   - name: jq
     sources:
       - type: archive
