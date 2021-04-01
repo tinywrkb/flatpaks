@@ -19,5 +19,8 @@
     "/bin",
     "/lib/girepository-1.0",
     "/share"
+  ],
+  "modules": [
+    "../openjpeg2/openjpeg2.json"
   ]
 }
