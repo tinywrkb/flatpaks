@@ -1,0 +1,19 @@
+{
+  "name": "json-c",
+  "buildsystem": "cmake",
+  "config-opts": [
+    "-DCMAKE_BUILD_TYPE=None",
+    "-DENABLE_THREADING=ON",
+    "-DENABLE_RDRAND=OFF"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/json-c/json-c/archive/json-c-0.15-20200726.tar.gz",
+      "sha256": "4ba9a090a42cf1e12b84c64e4464bb6fb893666841d5843cc5bef90774028882"
+    }
+  ],
+  "cleanup": [
+    "/lib/cmake"
+  ]
+}
