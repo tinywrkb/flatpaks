@@ -2,6 +2,7 @@
 #
 # In online mode you will always fetch the latest tools.
 #
+# WARNING: Offline build is broken ATM
 # To update the modules for offline/cached mode:
 # * Uncomment the dependencies-online-install and generate-dependencies modules.
 # * Comment-out the dependencies-offline-install module.
