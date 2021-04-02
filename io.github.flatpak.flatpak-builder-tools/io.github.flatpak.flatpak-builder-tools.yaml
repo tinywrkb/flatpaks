@@ -31,13 +31,18 @@ modules:
               requirements-parser toml aiohttp
       - name: perl-dependencies
         buildsystem: simple
-        ensure-writable: /app/lib/perl5/x86_64-linux/perllocal.pod
+        ensure-writable:
+          - /app/lib/perl5/x86_64-linux/perllocal.pod
         build-options:
           env:
             - PERL5LIB=/app/lib/perl5
         build-commands:
           - cpanm -l /app
               Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
+        post-install:
+          # workaround for cpanm acting silly and install files without write permission
+          - find /app -type f ! -perm -0200 -exec
+              chmod u+w '{}' \;
         modules:
           - name: perl-cpanminus
             no-autogen: true
