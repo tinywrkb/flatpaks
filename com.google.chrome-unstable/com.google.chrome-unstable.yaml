@@ -66,9 +66,9 @@ modules:
         path: resources
       - type: extra-data
         filename: google-chrome-unstable_amd64.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_91.0.4455.2-1_amd64.deb
-        sha256: 83498fc24fb5b2474c8e3acd3b0e399401cee726d28b1409bc091154de3afa34
-        size: 78950724
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_91.0.4464.5-1_amd64.deb
+        sha256: 54b0b74170fd01f8dcce480730224f42615d6409901ef37c856a08bc682d194f
+        size: 79107396
     modules:
       - name: zypak
         sources:
