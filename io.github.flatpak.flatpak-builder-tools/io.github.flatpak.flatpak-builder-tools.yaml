@@ -112,6 +112,12 @@ modules:
 #     - python-dependencies.json
 #     - name: perl-dependencies
 #       buildsystem: simple
+#       build-options:
+#         env:
+#           - PERL5LIB=/app/lib/perl5
+#           - PERL_MB_OPT='--install_base /app'
+#           - PERL_MM_OPT=INSTALL_BASE=/app
+#           - PERL_LOCAL_LIB_ROOT=/app
 #       build-commands:
 #         - perl-libs/install.sh
 #       # Same as with the Perl module, we need to restore write permission.
