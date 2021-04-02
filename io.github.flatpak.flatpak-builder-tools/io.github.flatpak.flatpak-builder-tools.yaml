@@ -19,11 +19,6 @@ command: /bin/sh
 finish-args:
   - --share=network
   - --env=PERL5LIB=/app/lib/perl5
-build-options:
-  build-args:
-    - --share=network
-  env:
-  - --env=PERL5LIB=/app/lib/perl5
 modules:
   - name: flatpak-builder-tools
     buildsystem: simple
