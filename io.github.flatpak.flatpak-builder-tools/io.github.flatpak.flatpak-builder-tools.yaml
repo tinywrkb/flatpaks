@@ -73,6 +73,17 @@ modules:
 #             - type: shell
 #               commands:
 #                 - PERL5LIB=/app/lib/perl5 perl Makefile.PL INSTALL_BASE=/app
+#        #- name: perl-cpanminus-latest
+#        #  buildsystem: simple
+#        #  build-options:
+#        #    build-args:
+#        #      - --share=network
+#        #  build-commands
+#        #    - curl -L https://cpanmin.us | perl - -l /app App::cpanminus
+#        #  sources:
+#        #    # workaround to always rebuild and not use cache
+#        #    - type: dir
+#        #    - path: .
 # - name: generate-dependencies
 #   modules:
 #     - name: generate-python-dependencies
