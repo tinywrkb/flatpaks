@@ -113,7 +113,7 @@ modules:
 #     - name: perl-dependencies
 #       buildsystem: simple
 #       build-commands:
-#         - perl-dependencies-install.sh
+#         - perl-libs/install.sh
 #       # Same as with the Perl module, we need to restore write permission.
 #       # However, -f is now passed to avoid errors from trying to touch files from the
 #       # above module that are now marked as read-only.
