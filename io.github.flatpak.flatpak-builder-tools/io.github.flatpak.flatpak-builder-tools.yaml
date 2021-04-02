@@ -37,47 +37,47 @@ modules:
         url: https://github.com/flatpak/flatpak-builder-tools.git
         branch: master
         dest: tools
-  - name: dependencies-online-install
-    modules:
-      - name: python-dependencies
-        buildsystem: simple
-        build-options:
-          build-args:
-            - --share=network
-        build-commands:
-          - pip3 install --exists-action=i --prefix=${FLATPAK_DEST}
-              requirements-parser toml aiohttp
-      - name: perl-dependencies
-        buildsystem: simple
-        ensure-writable:
-          - /app/lib/perl5/x86_64-linux/perllocal.pod
-        build-options:
-          build-args:
-            - --share=network
-          env:
-            - PERL5LIB=/app/lib/perl5
-        build-commands:
-          - cpanm -l /app
-              Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
-        post-install:
-          # workaround for cpanm acting silly and install files without write permission
-          - find /app -type f ! -perm -0200 -exec
-              chmod u+w '{}' \;
-        modules:
-          - name: perl-cpanminus
-            no-autogen: true
-            build-options:
-              env:
-              - PERL5LIB=/app/lib/perl5
-            make-install-args:
-              - pure_install
-            sources:
-              - type: archive
-                url: https://search.cpan.org/CPAN/authors/id/M/MI/MIYAGAWA/App-cpanminus-1.7044.tar.gz
-                sha256: 9b60767fe40752ef7a9d3f13f19060a63389a5c23acc3e9827e19b75500f81f3
-              - type: shell
-                commands:
-                  - PERL5LIB=/app/lib/perl5 perl Makefile.PL INSTALL_BASE=/app
+# - name: dependencies-online-install
+#   modules:
+#     - name: python-dependencies
+#       buildsystem: simple
+#       build-options:
+#         build-args:
+#           - --share=network
+#       build-commands:
+#         - pip3 install --exists-action=i --prefix=${FLATPAK_DEST}
+#             requirements-parser toml aiohttp
+#     - name: perl-dependencies
+#       buildsystem: simple
+#       ensure-writable:
+#         - /app/lib/perl5/x86_64-linux/perllocal.pod
+#       build-options:
+#         build-args:
+#           - --share=network
+#         env:
+#           - PERL5LIB=/app/lib/perl5
+#       build-commands:
+#         - cpanm -l /app
+#             Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
+#       post-install:
+#         # workaround for cpanm acting silly and install files without write permission
+#         - find /app -type f ! -perm -0200 -exec
+#             chmod u+w '{}' \;
+#       modules:
+#         - name: perl-cpanminus
+#           no-autogen: true
+#           build-options:
+#             env:
+#             - PERL5LIB=/app/lib/perl5
+#           make-install-args:
+#             - pure_install
+#           sources:
+#             - type: archive
+#               url: https://search.cpan.org/CPAN/authors/id/M/MI/MIYAGAWA/App-cpanminus-1.7044.tar.gz
+#               sha256: 9b60767fe40752ef7a9d3f13f19060a63389a5c23acc3e9827e19b75500f81f3
+#             - type: shell
+#               commands:
+#                 - PERL5LIB=/app/lib/perl5 perl Makefile.PL INSTALL_BASE=/app
 # - name: generate-dependencies
 #   modules:
 #     - name: generate-python-dependencies
@@ -107,30 +107,30 @@ modules:
 #         # workaround to always rebuild and not use cache
 #         - type: dir
 #           path: .
-# - name: dependencies-offline-install
-#   modules:
-#     - python-dependencies.json
-#     - name: perl-dependencies
-#       buildsystem: simple
-#       build-options:
-#         env:
-#           - PERL5LIB=/app/lib/perl5
-#           - PERL_MB_OPT='--install_base /app'
-#           - PERL_MM_OPT=INSTALL_BASE=/app
-#           - PERL_LOCAL_LIB_ROOT=/app
-#       build-commands:
-#         - perl-libs/install.sh
-#       # Same as with the Perl module, we need to restore write permission.
-#       # However, -f is now passed to avoid errors from trying to touch files from the
-#       # above module that are now marked as read-only.
-#       post-install:
-#         # workaround for cpanm acting silly and install files without write permission
-#         - find /app -type f ! -perm -0200 -exec
-#             chmod u+w '{}' \;
-#       sources:
-#         - perl-dependencies-sources.json
-#         - type: shell
-#           commands:
-#             - sed -e 's|\(perl Makefile.PL\) \&\&|\1 INSTALL_BASE=/app \&\&|'
-#                 -e 's|\(perl Build.PL\) \&\&|\1 --install_base=/app \&\&|'
-#                 -i perl-libs/install.sh
+  - name: dependencies-offline-install
+    modules:
+      - python-dependencies.json
+      - name: perl-dependencies
+        buildsystem: simple
+        build-options:
+          env:
+            - PERL5LIB=/app/lib/perl5
+            - PERL_MB_OPT='--install_base /app'
+            - PERL_MM_OPT=INSTALL_BASE=/app
+            - PERL_LOCAL_LIB_ROOT=/app
+        build-commands:
+          - perl-libs/install.sh
+        # Same as with the Perl module, we need to restore write permission.
+        # However, -f is now passed to avoid errors from trying to touch files from the
+        # above module that are now marked as read-only.
+        post-install:
+          # workaround for cpanm acting silly and install files without write permission
+          - find /app -type f ! -perm -0200 -exec
+              chmod u+w '{}' \;
+        sources:
+          - perl-dependencies-sources.json
+          - type: shell
+            commands:
+              - sed -e 's|\(perl Makefile.PL\) \&\&|\1 INSTALL_BASE=/app \&\&|'
+                  -e 's|\(perl Build.PL\) \&\&|\1 --install_base=/app \&\&|'
+                  -i perl-libs/install.sh
