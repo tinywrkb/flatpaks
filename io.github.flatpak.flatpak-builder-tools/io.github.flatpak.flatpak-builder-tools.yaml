@@ -1,0 +1,55 @@
+app-id: io.github.flatpak.flatpak-builder-tools
+branch: '20.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: /bin/sh
+finish-args:
+  - --share=network
+  - --env=PERL5LIB=/app/lib/perl5
+build-options:
+  build-args:
+    - --share=network
+modules:
+  - name: flatpak-builder-tools
+    buildsystem: simple
+    build-commands:
+      - install -dm755 /app/{bin,tools}
+      - cp --recursive --preserve=mode tools/* /app/tools/
+      - find /app/tools -type f -perm 0755 |
+          xargs ln -s -t /app/bin/
+    sources:
+      - type: git
+        url: https://github.com/flatpak/flatpak-builder-tools.git
+        branch: master
+        dest: tools
+    modules:
+      - name: python-dependencies
+        buildsystem: simple
+        build-commands:
+          - pip3 install --exists-action=i --prefix=${FLATPAK_DEST}
+              requirements-parser toml aiohttp
+      - name: perl-dependencies
+        buildsystem: simple
+        ensure-writable: /app/lib/perl5/x86_64-linux/perllocal.pod
+        build-options:
+          env:
+            - PERL5LIB=/app/lib/perl5
+        build-commands:
+          - cpanm -l /app
+              Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
+        modules:
+          - name: perl-cpanminus
+            no-autogen: true
+            build-options:
+              env:
+              - PERL5LIB=/app/lib/perl5
+            make-install-args:
+              - pure_install
+            sources:
+              - type: archive
+                url: https://search.cpan.org/CPAN/authors/id/M/MI/MIYAGAWA/App-cpanminus-1.7044.tar.gz
+                sha256: 9b60767fe40752ef7a9d3f13f19060a63389a5c23acc3e9827e19b75500f81f3
+              - type: shell
+                commands:
+                  - PERL5LIB=/app/lib/perl5 perl Makefile.PL INSTALL_BASE=/app
