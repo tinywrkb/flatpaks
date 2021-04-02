@@ -1,3 +1,15 @@
+# This manifest allows building in online or offline mode.
+#
+# In online mode you will always fetch the latest tools.
+#
+# To update the modules for offline/cached mode:
+# * Uncomment the dependencies-online-install and generate-dependencies modules.
+# * Comment-out the dependencies-offline-install module.
+# * Run flatpak-builder with --keep-build-dirs.
+# * Copy over the python-dependencies.json from the generate-python-dependencies build dir.
+# * Copy over the perl-dependencies-sources.json from the generate-perl-dependencies build dir.
+# * Comment-out the dependencies-online-install and generate-dependencies modules.
+# * Uncomment the dependencies-offline-install module.
 app-id: io.github.flatpak.flatpak-builder-tools
 branch: '20.08'
 runtime: org.freedesktop.Sdk
@@ -10,6 +22,8 @@ finish-args:
 build-options:
   build-args:
     - --share=network
+  env:
+  - --env=PERL5LIB=/app/lib/perl5
 modules:
   - name: flatpak-builder-tools
     buildsystem: simple
@@ -23,9 +37,13 @@ modules:
         url: https://github.com/flatpak/flatpak-builder-tools.git
         branch: master
         dest: tools
+  - name: dependencies-online-install
     modules:
       - name: python-dependencies
         buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
         build-commands:
           - pip3 install --exists-action=i --prefix=${FLATPAK_DEST}
               requirements-parser toml aiohttp
@@ -34,6 +52,8 @@ modules:
         ensure-writable:
           - /app/lib/perl5/x86_64-linux/perllocal.pod
         build-options:
+          build-args:
+            - --share=network
           env:
             - PERL5LIB=/app/lib/perl5
         build-commands:
@@ -58,3 +78,48 @@ modules:
               - type: shell
                 commands:
                   - PERL5LIB=/app/lib/perl5 perl Makefile.PL INSTALL_BASE=/app
+  - name: generate-dependencies
+    modules:
+      - name: generate-python-dependencies
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+        build-commands:
+          - flatpak-pip-generator -o python-dependencies
+              requirements-parser toml aiohttp
+        sources:
+          # workaround to always rebuild and not use cache
+          - type: dir
+            path: .
+      - name: generate-perl-dependencies
+        buildsystem: simple
+        build-options:
+          build-args:
+            - --share=network
+          env:
+            - PERL5LIB=/app/lib/perl5
+        build-commands:
+          - flatpak-cpan-generator.pl -o perl-dependencies-sources.json
+              App::cpanminus
+              Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
+        sources:
+          # workaround to always rebuild and not use cache
+          - type: dir
+            path: .
+# - name: dependencies-offline-install
+#   modules:
+#     - python-dependencies.json
+#     - name: perl-dependencies
+#       buildsystem: simple
+#       build-commands:
+#         - perl-dependencies-install.sh
+#       # Same as with the Perl module, we need to restore write permission.
+#       # However, -f is now passed to avoid errors from trying to touch files from the
+#       # above module that are now marked as read-only.
+#       post-install:
+#         # workaround for cpanm acting silly and install files without write permission
+#         - find /app -type f ! -perm -0200 -exec
+#             chmod u+w '{}' \;
+#       sources:
+#         - perl-dependencies-sources.json
