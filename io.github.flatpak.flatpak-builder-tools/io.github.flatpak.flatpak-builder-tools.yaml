@@ -2,7 +2,6 @@
 #
 # In online mode you will always fetch the latest tools.
 #
-# WARNING: Offline build is broken ATM
 # To update the modules for offline/cached mode:
 # * Uncomment the dependencies-online-install and generate-dependencies modules.
 # * Comment-out the dependencies-offline-install module.
@@ -130,3 +129,8 @@ modules:
 #             chmod u+w '{}' \;
 #       sources:
 #         - perl-dependencies-sources.json
+#         - type: shell
+#           commands:
+#             - sed -e 's|\(perl Makefile.PL\) \&\&|\1 INSTALL_BASE=/app \&\&|'
+#                 -e 's|\(perl Build.PL\) \&\&|\1 --install_base=/app \&\&|'
+#                 -i perl-libs/install.sh
