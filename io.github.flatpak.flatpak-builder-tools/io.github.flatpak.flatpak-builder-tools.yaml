@@ -78,35 +78,35 @@ modules:
               - type: shell
                 commands:
                   - PERL5LIB=/app/lib/perl5 perl Makefile.PL INSTALL_BASE=/app
-  - name: generate-dependencies
-    modules:
-      - name: generate-python-dependencies
-        buildsystem: simple
-        build-options:
-          build-args:
-            - --share=network
-        build-commands:
-          - flatpak-pip-generator -o python-dependencies
-              requirements-parser toml aiohttp
-        sources:
-          # workaround to always rebuild and not use cache
-          - type: dir
-            path: .
-      - name: generate-perl-dependencies
-        buildsystem: simple
-        build-options:
-          build-args:
-            - --share=network
-          env:
-            - PERL5LIB=/app/lib/perl5
-        build-commands:
-          - flatpak-cpan-generator.pl -o perl-dependencies-sources.json
-              App::cpanminus
-              Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
-        sources:
-          # workaround to always rebuild and not use cache
-          - type: dir
-            path: .
+# - name: generate-dependencies
+#   modules:
+#     - name: generate-python-dependencies
+#       buildsystem: simple
+#       build-options:
+#         build-args:
+#           - --share=network
+#       build-commands:
+#         - flatpak-pip-generator -o python-dependencies
+#             requirements-parser toml aiohttp
+#       sources:
+#         # workaround to always rebuild and not use cache
+#         - type: dir
+#           path: .
+#     - name: generate-perl-dependencies
+#       buildsystem: simple
+#       build-options:
+#         build-args:
+#           - --share=network
+#         env:
+#           - PERL5LIB=/app/lib/perl5
+#       build-commands:
+#         - flatpak-cpan-generator.pl -o perl-dependencies-sources.json
+#             App::cpanminus
+#             Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
+#       sources:
+#         # workaround to always rebuild and not use cache
+#         - type: dir
+#           path: .
 # - name: dependencies-offline-install
 #   modules:
 #     - python-dependencies.json
