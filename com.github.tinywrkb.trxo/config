@@ -1,0 +1,17 @@
+# trxo config file sample
+#
+# config path by priority order:
+#   $XDG_HOME_CONFIG"/trxo/config
+#   $XDG_HOME_CONFIG"/trxo.config
+#   ~/.config/trxo/config
+#   ~/.config/trxo.config
+#   ~/.trxo
+
+# Hostname or host ip address
+#TR_HOST=localhost
+
+# Host RPC port
+#TR_PORT=9091
+
+# Host authentication credentials
+#TR_AUTH=username:password

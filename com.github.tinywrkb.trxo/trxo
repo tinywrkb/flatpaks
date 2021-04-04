@@ -1,0 +1,51 @@
+#!/bin/bash
+
+unset confdir_parent conf_list conf retval
+unset HOST AUTH
+
+[ $# -eq 0 ] && { echo "missing command parameter"; exit; }
+[ $# -ne 1 ] && { echo "too many command parameters"; exit; }
+
+if [ -n "$XDG_CONFIG_HOME" ]; then
+  confdir_parent=$XDG_CONFIG_HOME
+else
+  confdir_parent=~/.config
+fi
+
+conf_list=(
+  "$confdir_parent"/trxo/config
+  "$confdir_parent"/trxo.config
+  ~/.trxo
+)
+
+for entry in "${conf_list[@]}"; do
+  if [ -f "$entry" ]; then
+    echo found config file at "$entry"
+    conf="$entry"
+    break
+  fi
+done
+
+
+[ -f "$conf" ] && source "$conf"
+
+if [ -n "$TR_HOST" ]; then
+  echo "found host: $TR_HOST"
+  if [ -n "$TR_PORT" ]; then
+    echo "found host port: $TR_PORT"
+    HOST=${TR_HOST}:${TR_PORT}
+  else
+    HOST=${TR_HOST}
+  fi
+fi
+[ -n "$TR_AUTH" ] && AUTH="--auth $TR_AUTH"
+
+retval=$(transmission-remote $HOST $AUTH --add "$1")
+
+echo "$retval"
+
+if [[ ${retval##*responded: } == '"success"' ]]; then
+  notify-send --hint int:transient:1 "Torrent added successfuly"
+else
+  notify-send --hint int:transient:1 "Failed adding torrent" "$retval"
+fi

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=trxo
+Comment=transmission-remote xdg-open
+Exec=trxo %u
+Terminal=false
+Type=Application
+Categories=Utility
+MimeType=x-scheme-handler/magnet;application/x-bittorrent

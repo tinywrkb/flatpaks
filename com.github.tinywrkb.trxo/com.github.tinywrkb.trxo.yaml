@@ -1,0 +1,39 @@
+app-id: com.github.tinywrkb.trxo
+runtime: org.gnome.Platform
+runtime-version: '40'
+sdk: org.gnome.Sdk
+command: trxo
+finish-args:
+  - --share=network
+  - --talk-name=org.freedesktop.Notifications
+modules:
+  - name: trxo
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 trxo -t /app/bin/
+      - install -Dm644 -t /app/share/doc/
+          config README.md
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.xml -t /app/share/mime/packages/
+    sources:
+      - type: dir
+        path: .
+    modules:
+      - name: transmission-remote
+        config-opts:
+          - --disable-daemon
+          - --disable-static
+          - --disable-shared
+          - --without-gtk
+        sources:
+          - type: archive
+            url: https://github.com/transmission/transmission-releases/raw/master/transmission-3.00.tar.xz
+            sha256: 9144652fe742f7f7dd6657716e378da60b751aaeda8bef8344b3eefc4db255f2
+        cleanup:
+          - /bin/transmission-create
+          - /bin/transmission-edit
+          - /bin/transmission-show
+          - /share
+        modules:
+          - ../shared-modules/libevent/libevent.json
+          - ../flathub-shared-modules/intltool/intltool-0.51.json
