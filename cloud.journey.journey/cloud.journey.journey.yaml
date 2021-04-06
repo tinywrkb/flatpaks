@@ -1,0 +1,83 @@
+app-id: cloud.journey.journey
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: journey
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  # needs electron v11 (chromium v87) or newer with ozone enabled
+  # https://github.com/electron/electron/issues/10915
+  # - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: journey
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 -t /app/bin/
+          apply_extra journey
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/512x512/apps/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - unsquashfs -quiet -no-progress journey.squashfs
+          - rm journey.squashfs
+          - rm squashfs-root/{command,desktop-*}.sh
+          - rmdir squashfs-root/data-dir/{icons,sounds,themes}
+              squashfs-root/{data-dir,gnome-platform,scripts}
+          - rm -r squashfs-root/meta
+              squashfs-root/{lib,usr}
+          - mv squashfs-root/* ./
+          - rmdir squashfs-root
+          - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
+      - type: extra-data
+        filename: journey.squashfs
+        url: https://api.snapcraft.io/api/v1/snaps/download/TWwObnuGiM3Urabc9hR2Xg2bJs6J8f2Y_23.snap
+        sha256: 94286dc928e8d9cdf8b2d3897b70f009089838b7f45680172d366fc8a9cfd885
+        size: 81227776
+      - type: script
+        dest-filename: journey
+        commands:
+          - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+          - exec zypak-wrapper /app/extra/journey "$@"
+      - type: file
+        path: cloud.journey.journey.desktop
+      - type: file
+        path: cloud.journey.journey.png
+    modules:
+      - ../shared-modules/unsquashfs/unsquashfs.json
+      - ../shared-modules/zypak/zypak.json
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      - ../shared-modules/libbsd/libbsd.json
+      - name: libkeyutils
+        no-autogen: true
+        make-install-args:
+          - BINDIR=/app/bin
+          - INCLUDEDIR=/app/include
+          - LIBDIR=/app/lib
+          - MANDIR=/app/share/keyutils
+          - SBINDIR=/app/bin
+          - SHAREDIR=/app/share/keyutils
+          - USRLIBDIR=/app/lib
+        sources:
+          - type: archive
+            url: https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/snapshot/keyutils-1.6.3.tar.gz
+            sha256: a61d5706136ae4c05bd48f86186bcfdbd88dd8bd5107e3e195c924cfc1b39bb4
+        cleanup:
+          - /bin
+          - /include
+          - /share

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Journey
+Exec=journey %U
+Terminal=false
+Type=Application
+Icon=cloud.journey.journey
+StartupWMClass=Journey
+Comment=Keep your private memories forever.
+Categories=Office;
