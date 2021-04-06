@@ -1,0 +1,16 @@
+{
+  "name": "zypak",
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/refi64/zypak/archive/refs/tags/v2020.02.tar.gz",
+      "sha256": "8c7b9251aabc92c2702c2e98131ea8b0f2acd53b50ec3bbd2cfb44f2b423089f"
+    },
+    {
+      "type": "archive",
+      "url": "https://github.com/refi64/nickle/archive/7d134a7ba29db0e49a75081b96489dbe6966f3f3.tar.gz",
+      "sha256": "ec06f18223bdf3a5e8c1ff30d92a4cd4a05753e7fd3ebfb4e258b78888433393",
+      "dest": "nickle"
+    }
+  ]
+}
