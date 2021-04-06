@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Authy Desktop
+Exec=authy
+Terminal=false
+Type=Application
+Icon=com.authy.authy
+StartupWMClass=Authy Desktop
+Comment=Twilio Authy two factor authentication desktop application
+Categories=Utility;

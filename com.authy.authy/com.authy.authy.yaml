@@ -1,0 +1,68 @@
+# WARNING: this won't work without access to the snap package
+#          you need to put it on http server and update the url of authy.snap
+app-id: com.authy.authy
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: authy
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  # needs electron v11 (chromium v87) or newer with ozone enabled
+  # https://github.com/electron/electron/issues/10915
+  # - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: authy
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 -t /app/bin/
+          apply_extra authy
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/512x512/apps/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+    sources:
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - unsquashfs -quiet -no-progress authy.squashfs
+          - rm authy.squashfs
+          - rm squashfs-root/{command,desktop-*}.sh
+          - rmdir squashfs-root/data-dir/{icons,sounds,themes}
+              squashfs-root/{data-dir,gnome-platform,scripts}
+          - rm -r squashfs-root/meta
+              squashfs-root/{lib,usr}
+          - mv squashfs-root/* ./
+          - rmdir squashfs-root
+          - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
+      - type: extra-data
+        filename: authy.squashfs
+        url: http://files.net.private/authy.snap
+        sha256: f6be2a19b96a23c626f15f6baa1b51674b84d4f4215495ac6a8155327c9ddbf9
+        size: 64233472
+      - type: script
+        dest-filename: authy
+        commands:
+          - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+          - exec zypak-wrapper /app/extra/authy "$@"
+      - type: file
+        path: com.authy.authy.desktop
+      - type: file
+        path: com.authy.authy.png
+    modules:
+      - ../shared-modules/unsquashfs/unsquashfs.json
+      - ../shared-modules/zypak/zypak.json
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      - ../shared-modules/libbsd/libbsd.json
+      - ../shared-modules/libkeyutils/libkeyutils.json
