@@ -1,18 +1,11 @@
-# TODO: bump runtime
 app-id: com.github.ra3xdh.qucs-s
 base: com.github.qucs.qucs.BaseApp
-#base-version: stable
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: qucs-s
 rename-desktop-file: qucs-s.desktop
 rename-icon: qucs-s
-build-options:
-  # TODO: better workaround for the strip issue?
-  # https://github.com/flatpak/flatpak-builder/issues/317
-# strip: false
-  no-debuginfo: true
 cleanup:
   # TODO: more cleanup
   - /include
@@ -33,15 +26,11 @@ finish-args:
 modules:
   - name: qucs-s
     buildsystem: cmake
-    build-options:
-      strip: true
     sources:
       - type: archive
         url: https://github.com/ra3xdh/qucs_s/releases/download/0.0.22/qucs-s-0.0.22.tar.gz
         sha256: 907a58e973e1851a356f726849560c2d6371d4e5108194f9470aa08c664d0ef5
   - name: ngspice
-    build-options:
-      strip: true
     # TODO: add ngspice shared lib
     config-opts:
       - --enable-xspice
