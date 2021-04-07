@@ -1,18 +1,11 @@
-# TODO: bump runtime
 app-id: com.github.qucs.qucs
 base: com.github.qucs.qucs.BaseApp
-#base-version: stable
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: qucs
 rename-desktop-file: qucs.desktop
 rename-icon: qucs
-build-options:
-  # TODO: better workaround for the strip issue?
-  # https://github.com/flatpak/flatpak-builder/issues/317
-# strip: false
-  no-debuginfo: true
 cleanup:
   # TODO: more cleanup
   - /include

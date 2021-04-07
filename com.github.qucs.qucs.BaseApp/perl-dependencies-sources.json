@@ -1,0 +1,98 @@
+[
+   {
+      "dest": "perl-libs/File-Which",
+      "sha256": "7c5414dd6d5c61cb992fdd257aefe52f9a80bf55158cd5ec17469199d0b12eef",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/File-Which-1.24.tar.gz"
+   },
+   {
+      "dest": "perl-libs/FFI-CheckLib",
+      "sha256": "8d442747c24fcd8560107ed9deb98265838f17bc850cb7237f8b6d4821992d74",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/FFI-CheckLib-0.27.tar.gz"
+   },
+   {
+      "dest": "perl-libs/File-chdir",
+      "sha256": "efc121f40bd7a0f62f8ec9b8bc70f7f5409d81cd705e37008596c8efc4452b01",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/File-chdir-0.1010.tar.gz"
+   },
+   {
+      "dest": "perl-libs/Capture-Tiny",
+      "sha256": "6c23113e87bad393308c90a207013e505f659274736638d8c79bac9c67cc3e19",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/Capture-Tiny-0.48.tar.gz"
+   },
+   {
+      "dest": "perl-libs/Path-Tiny",
+      "sha256": "32138d8d0f4c9c1a84d2a8f91bc5e913d37d8a7edefbb15a10961bfed560b0fd",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/Path-Tiny-0.118.tar.gz"
+   },
+   {
+      "dest": "perl-libs/Alien-Build",
+      "sha256": "6bbd4116d1a08f95df669fcba16acd6a7e94329843abc8cb7c4b038d1778bded",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Build-2.38.tar.gz"
+   },
+   {
+      "dest": "perl-libs/Alien-Libxml2",
+      "sha256": "73b45244f0b5c36e5332c33569b82a1ab2c33e263f1d00785d2003bcaec68db3",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Libxml2-0.17.tar.gz"
+   },
+   {
+      "dest": "perl-libs/XML-SAX-Base",
+      "sha256": "66cb355ba4ef47c10ca738bd35999723644386ac853abbeb5132841f5e8a2ad0",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/G/GR/GRANTM/XML-SAX-Base-1.09.tar.gz"
+   },
+   {
+      "dest": "perl-libs/XML-NamespaceSupport",
+      "sha256": "47e995859f8dd0413aa3f22d350c4a62da652e854267aa0586ae544ae2bae5ef",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/P/PE/PERIGRIN/XML-NamespaceSupport-1.12.tar.gz"
+   },
+   {
+      "dest": "perl-libs/XML-SAX",
+      "sha256": "4506c387043aa6a77b455f00f57409f3720aa7e553495ab2535263b4ed1ea12a",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/G/GR/GRANTM/XML-SAX-1.02.tar.gz"
+   },
+   {
+      "dest": "perl-libs/XML-LibXML",
+      "sha256": "010ba395c38711f9c233ee23d0b0b18b761e6d99a762125f7e6180d068851619",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/S/SH/SHLOMIF/XML-LibXML-2.0206.tar.gz"
+   },
+   {
+      "commands": [
+         "set -e",
+         "function make_install {",
+         "    mod_dir=$1",
+         "    cd $mod_dir",
+         "    if [ -f 'Makefile.PL' ]; then",
+         "        perl Makefile.PL && make install",
+         "    elif [ -f 'Build.PL' ]; then",
+         "        perl Build.PL && ./Build && ./Build install",
+         "    else",
+         "        echo 'No Makefile.PL or Build.PL found. Do not know how to install this module'",
+         "        exit 1",
+         "    fi",
+         "}",
+         "(make_install perl-libs/File-Which)",
+         "(make_install perl-libs/FFI-CheckLib)",
+         "(make_install perl-libs/File-chdir)",
+         "(make_install perl-libs/Capture-Tiny)",
+         "(make_install perl-libs/Path-Tiny)",
+         "(make_install perl-libs/Alien-Build)",
+         "(make_install perl-libs/Alien-Libxml2)",
+         "(make_install perl-libs/XML-SAX-Base)",
+         "(make_install perl-libs/XML-NamespaceSupport)",
+         "(make_install perl-libs/XML-SAX)",
+         "(make_install perl-libs/XML-LibXML)"
+      ],
+      "dest-filename": "perl-libs/install.sh",
+      "type": "script"
+   }
+]
