@@ -1,0 +1,49 @@
+{
+  "name": "vala",
+  "build-options": {
+    "env": [
+      "VALAC=/app/vala-bootstrap/bin/valac"
+    ]
+  },
+  "config-opts": [
+    "NOCONFIGURE=1",
+    "PACKAGE_VERSION=0.52.0"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://gitlab.gnome.org/GNOME/vala/-/archive/0.52.0/vala-0.52.0.tar.gz",
+      "sha256": "b29ede997865f7fc9f27de4c125ba6f1665ef6dbfa3981023e7e110667c88f47"
+    }
+  ],
+  "modules": [
+    {
+      "name": "vala-bootstrap",
+      "build-options": {
+        "env": [
+          "VALAC=/no-valac"
+        ]
+      },
+      "config-opts": [
+        "--prefix=/app/vala-bootstrap"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://gitlab.gnome.org/Archive/vala-bootstrap/-/archive/b2beeaccdf2307ced172646c2ada9765e1747b28/vala-bootstrap-b2beeaccdf2307ced172646c2ada9765e1747b28.tar.gz",
+          "sha256": "120cc504c9d2b07087a3884be740261dbc3d542fbaa0abfb049f3277e2f07246"
+        },
+        {
+          "type": "shell",
+          "commands": [
+            "touch */*.stamp"
+          ]
+        }
+      ],
+      "cleanup": [
+        "*"
+      ]
+    },
+      "../graphviz/graphviz.json"
+  ]
+}
