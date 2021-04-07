@@ -1,0 +1,12 @@
+--- a/configure
++++ b/configure
+@@ -14090,9 +14090,6 @@
+ 
+ 
+ 
+-  if test "X$GCC" = "Xyes"; then
+-    GCC_CFLAGS="-Wall $Werror_maybe_uninitialized_IF_SUPPORTED $GCC_CFLAGS"
+-  fi
+ 
+ 
+ 

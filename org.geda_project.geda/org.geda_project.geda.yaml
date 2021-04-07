@@ -1,15 +1,10 @@
-# TODO: export desktop files
 # TODO: go through dependency tree
 # TODO: cleaning
-# TODO: bump runtime
 app-id: org.geda_project.geda
 runtime: org.freedesktop.Platform
-runtime-version: '19.08'
+runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
-#command:
-build-options:
-  no-debuginfo: true
-  strip: false
+command: /bin/sh
 finish-args:
   - --device=dri
   - --filesystem=home
@@ -22,8 +17,12 @@ cleanup:
   - /share/man
   - '*.a'
   - '*.la'
+  # TODO: find the culprit
+  - /share/icons/hicolor/icon-theme.cache
 modules:
   - name: geda-gaf
+    build-options:
+      cflags: -fcommon
     config-opts:
       - --disable-update-xdg-database
       - --without-libfam
@@ -35,6 +34,8 @@ modules:
         commands:
           - sed -i 's|^.*<fam.h>|//&|' gschem/src/gschem_change_notification.c
           - sed -i 's| enum FAMCodes | int |' gschem/src/gschem_change_notification.c
+      - type: patch
+        path: geda-gaf-remove-gccflags.patch
     modules:
     - ../flathub-shared-modules/gtk2/gtk2.json
     - ../flathub-shared-modules/python2.7/python-2.7.json
@@ -81,16 +82,7 @@ modules:
           commands:
             - autoreconf --force --install
 #   - perl-xml-parser
-  - name: graphviz
-    config-opts:
-      - --enable-python3=yes
-      - --disable-python
-    sources:
-      - type: archive
-        url: https://www2.graphviz.org/Packages/stable/portable_source/graphviz-2.44.1.tar.gz
-        sha256: 8e1b34763254935243ccdb83c6ce108f531876d7a5dfd443f255e6418b8ea313
-    modules:
-      - ../shared-modules/ghostscript/ghostscript.json
+  - ../shared-modules/graphviz/graphviz.json
   - name: imagemagick
     sources:
       - type: archive
@@ -113,53 +105,27 @@ modules:
           - type: archive
             url: https://github.com/libgd/libgd/releases/download/gd-2.3.0/libgd-2.3.0.tar.xz
             sha256: ecd9155b9a417fb3f837f29e5966323796de247789163761dd72dbf83bfcac58
-      - name: tk
-        subdir: unix
+      - ../shared-modules/tk/tk.json
+      - name: gtkglext
         config-opts:
-          - --enable-threads
-          - --disable-rpath
-          - --enable-64bit
-        post-install:
-          - ln -s wish8.6 /app/bin/wish
+          - --disable-static
         sources:
           - type: archive
-            url: https://downloads.sourceforge.net/sourceforge/tcl/tk8.6.10-src.tar.gz
-            sha256: 63df418a859d0a463347f95ded5cd88a3dd3aaa1ceecaeee362194bc30f3e386
-        modules:
-          - name: tcl
-            subdir: unix
-            build-options:
-              strip: false
-            config-opts:
-              - --enable-threads
-              - --enable-64bit
-            post-install:
-              - ln -s tclsh8.6 /app/bin/tclsh
-            sources:
-              - type: archive
-                url: https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.10-src.tar.gz
-                sha256: 5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed
-              - type: shell
-                commands:
-                  -  rm -rf pkgs/sqlite3*
-          - name: gtkglext
-            config-opts:
-              - --disable-static
-            sources:
-              - type: archive
-                url: https://downloads.sourceforge.net/sourceforge/gtkglext/gtkglext-1.2.0.tar.bz2
-                sha256: 16bd736074f6b14180f206b7e91263fc721b49912ea3258ab5f094cfa5497f51
-              - type: patch
-                path: gtkglext-kill-pangox.patch
-              - type: patch
-                path: gtkglext-gtk2.20.patch
-              - type: patch
-                path: gtkglext-gcc8.patch
-              - type: shell
-                commands:
-                  - sed '/AC_PATH_XTRA/d' -i configure.in
-                  - autoreconf -vi
+            url: https://downloads.sourceforge.net/sourceforge/gtkglext/gtkglext-1.2.0.tar.bz2
+            sha256: 16bd736074f6b14180f206b7e91263fc721b49912ea3258ab5f094cfa5497f51
+          - type: patch
+            path: gtkglext-kill-pangox.patch
+          - type: patch
+            path: gtkglext-gtk2.20.patch
+          - type: patch
+            path: gtkglext-gcc8.patch
+          - type: shell
+            commands:
+              - sed '/AC_PATH_XTRA/d' -i configure.in
+              - autoreconf -vi
   - name: gerbv
+    build-options:
+      cflags: -fcommon
     config-opts:
       - --disable-update-desktop-database
     sources:
@@ -168,18 +134,10 @@ modules:
         sha256: c5ee808c4230ce6be3ad10ab63c547098386d43022704de25ddb9378e62053b4
 #   modules:
 #     - name: dconf
-  - name: gtkwave
-    build-options:
-      strip: true
-    config-opts:
-      - --disable-tcl
-      - --with-gsettings
-      - --disable-mime-update
-    sources:
-      - type: archive
-        url: http://gtkwave.sourceforge.net/gtkwave-3.3.104.tar.gz
-        sha256: d20dd1a9307b908439c68122a9f81d3ff434a6bfa5439f0cb01398fec650894f
+  - ../shared-modules/gtkwave/gtkwave-gtk3.json
   - name: iverilog
+    build-options:
+      cflags: -fcommon
     sources:
       - type: archive
         url: https://github.com/steveicarus/iverilog/archive/v10_3.tar.gz
@@ -211,3 +169,21 @@ modules:
           - type: archive
             url: http://ftp.debian.org/debian/pool/main/c/chrpath/chrpath_0.16.orig.tar.gz
             sha256: bb0d4c54bac2990e1bdf8132f2c9477ae752859d523e141e72b3b11a12c26e7b
+  - name: package
+    buildsystem: simple
+    build-commands:
+      - |
+          cd /app/share
+          for app in {geda-gattrib,geda-gschem,gerbv,gtkwave,pcb}; do
+            pushd applications
+            mv {,${FLATPAK_ID}.}${app}.desktop
+            desktop-file-edit --set-icon=${FLATPAK_ID}.${app} ${FLATPAK_ID}.${app}.desktop
+            popd
+
+            pushd icons/hicolor
+            for f in $(find ./ -name "${app}.png" -o -name "${app}.svg"); do
+              echo Found image file $f
+              mv ${f} $(dirname $f)/${FLATPAK_ID}.$(basename $f)
+            done
+            popd
+          done
