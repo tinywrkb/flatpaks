@@ -9,8 +9,8 @@
     {
       "type": "git",
       "url": "https://github.com/ytdl-org/youtube-dl.git",
-      "tag": "2021.03.31",
-      "commit": "8f493de9fb3a7f123bdf887163efa06ce9d6b051"
+      "tag": "2021.04.07",
+      "commit": "72a2c0a9ede04c6b82235e453b1a933faf072a76"
     }
   ]
 }
