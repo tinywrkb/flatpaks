@@ -1,0 +1,14 @@
+{
+  "name": "python-cairo",
+  "buildsystem": "meson",
+  "config-opts": [
+    "-Doption=false"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/pygobject/pycairo/archive/refs/tags/v1.20.0.tar.gz",
+      "sha256": "b5ee5318ad10e6f0b5aeedd4ff4b66b341b8fb1a348076812d0f7751f7691ddf"
+    }
+  ]
+}
