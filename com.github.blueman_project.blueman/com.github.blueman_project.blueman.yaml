@@ -1,7 +1,7 @@
 app-id: com.github.blueman_project.blueman
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: blueman-applet
 rename-icon: blueman
 rename-desktop-file: blueman-manager.desktop
@@ -9,18 +9,19 @@ finish-args:
   - --allow=bluetooth
   - --device=dri
   - --filesystem=home
-  - --own-name=org.blueman.*
+  - --own-name=org.blueman.Applet
+  - --own-name=org.bluez.AgentManager1
+  - --own-name=org.bluez.obex
   - --own-name=org.kde.*
   - --share=ipc
-  - --socket=wayland
   - --socket=fallback-x11
-  - --system-talk-name=org.bluez.*
-  - --talk-name=org.bluez
-  - --talk-name=org.bluez.*
+  - --socket=wayland
+  - --system-own-name=org.blueman.Mechanism
+  - --system-talk-name=org.bluez
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
 cleanup:
-  - /lib/pkgconfig
+  - /include
   - /lib/pkgconfig
   - '*.a'
   - '*.la'
@@ -36,21 +37,22 @@ modules:
       #- --enable-polkit=yes
     sources:
       - type: archive
-        url: https://github.com/blueman-project/blueman/releases/download/2.1.3/blueman-2.1.3.tar.xz
-        sha256: 3bd02e0cc9e2c1424df1fc2015da710a280ef4c657515727e47eafabf8c2cfde
+        url: https://github.com/blueman-project/blueman/releases/download/2.1.4/blueman-2.1.4.tar.xz
+        sha256: 1d9c3d39a564d88851aa8de509f16bfa586b0b50f4307dc6c6347ba4833664da
 #     - type: shell
 #       commands:
 #         - sed -i '/^dbusdir =/ s/sysconfdir/datadir/' data/configs/Makefile.{am,in}
     post-install:
       - glib-compile-schemas /app/share/glib-2.0/schemas
+      - sed -i '/^SystemdService.*/d' /app/share/dbus-1/services/*.service
     cleanup:
       - /share/doc
       - /share/man
       - /share/Thunar
     modules:
       - ../flathub-shared-modules/intltool/intltool-0.51.json
-      # appindicator doesn't work
-      #- ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      - ../shared-modules/python-gobject/python-gobject.json
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-introspection-12.10.json
       - name: iproute2
         make-install-args:
           #- DESTDIR=/
@@ -77,8 +79,8 @@ modules:
           - python3 setup.py install --root=/ --prefix=app/
         sources:
           - type: archive
-            url: https://github.com/cython/cython/archive/0.29.19.tar.gz
-            sha256: 9d27b6261ce8bffdf811a713df7f0be5a168b46b229db334592f8ecf8976f07b
+            url: https://github.com/cython/cython/archive/0.29.22.tar.gz
+            sha256: 7647e026aa044ca28dca875188bed0f13120a8874047b2d1b4309b9c9c2f900b
       - name: bluez
         config-opts:
           - --sysconfdir=/app/etc
@@ -98,8 +100,8 @@ modules:
           - --enable-experimental
         sources:
           - type: archive
-            url: https://www.kernel.org/pub/linux/bluetooth/bluez-5.54.tar.xz
-            sha256: 68cdab9e63e8832b130d5979dc8c96fdb087b31278f342874d992af3e56656dc
+            url: https://www.kernel.org/pub/linux/bluetooth/bluez-5.58.tar.xz
+            sha256: c8065e75a5eb67236849ef68a354b1700540305a8c88ef0a0fd6288f19daf1f1
         cleanup:
           - /include
           - /share/man
@@ -108,15 +110,83 @@ modules:
           - name: libical
             buildsystem: cmake
             config-opts:
+              - -DCMAKE_INSTALL_LIBEXECDIR=lib
               - -DENABLE_GTK_DOC=false
               - -DICAL_BUILD_DOCS=false
               - -DLIBICAL_BUILD_TESTING=false
               - -DSHARED_ONLY=true
             sources:
               - type: archive
-                url: https://github.com/libical/libical/archive/v3.0.8.tar.gz
-                sha256: 09fecacaf75ba5a242159e3a9758a5446b5ce4d0ab684f98a7040864e1d1286f
+                url: https://github.com/libical/libical/archive/v3.0.9.tar.gz
+                sha256: bd26d98b7fcb2eb0cd5461747bbb02024ebe38e293ca53a7dfdcb2505265a728
             cleanup:
               - /include
               - /lib/cmake
               - /share/gtk-doc
+      - name: libnm
+        buildsystem: meson
+        config-opts:
+          # paths
+          - -Dsystemdsystemunitdir=/app/lib/systemd/system
+          - -Dsystem_ca_path=/app/etc/ssl/certs
+          - -Dudev_dir=/app/lib/udev
+          - -Ddbus_conf_dir=/app/share
+          #- -Dkernel_firmware_dir=/lib/firmware
+          #- -Diptables=
+          #- -Ddnsmasq=
+          #- -Ddnssec_trigger=
+          # platform
+          - -Dsession_tracking_consolekit=false
+          - -Dsession_tracking=no
+          - -Dpolkit=false
+          - -Dselinux=false
+          - -Dsystemd_journal=false
+          - -Dlibaudit=no
+          # features
+          - -Dwext=false
+          - -Dwifi=false
+          - -Diwd=false
+          - -Dppp=false
+          #- -Dpppd=
+          #- -Dpppd_plugin_dir=
+          - -Dmodem_manager=false
+          - -Dofono=false
+          - -Dconcheck=false
+          - -Dteamdctl=false
+          - -Dovs=false
+          - -Dnmcli=false
+          - -Dnmtui=false
+          - -Dnm_cloud_setup=false
+          - -Dbluez5_dun=true
+          - -Debpf=false
+          # resolv.conf
+          - -Dresolvconf=no
+          - -Dnetconfig=no
+          # dhcp
+          - -Ddhclient=no
+          - -Ddhcpcanon=no
+          - -Ddhcpcd=no
+          # misc
+          - -Dintrospection=true
+          - -Dvapi=false
+          - -Ddocs=false
+          - -Dtests=no
+          - -Dfirewalld_zone=false
+          - -Dmore_asserts=no
+          - -Dmore_logging=false
+          - -Dvalgrind=no
+          - -Dld_gc=false
+          - -Dlibpsl=false
+          - -Dqt=false
+        sources:
+          - type: archive
+            url: https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/archive/1.30.2/NetworkManager-1.30.2.tar.gz
+            sha256: 9d71a7af6a5b718c2c176895c8f8ad420bd348dfb04681763a6b484fe526f78e
+        cleanup:
+          - /bin
+        modules:
+          - name: libndp
+            sources:
+              - type: archive
+                url: https://github.com/jpirko/libndp/archive/v1.7.tar.gz
+                sha256: 44be73630ee785ed9f571f9aaaeba0e1d375fa337fd841270034c813b5b0e6fd
