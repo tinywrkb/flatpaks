@@ -36,105 +36,36 @@ modules:
   - name: chrome
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
-      - install -Dm755 chrome /app/bin/chrome
-      - install -Dm755 stub_sandbox /app/bin/stub_sandbox
-      - install -Dm644 chrome.svg /app/share/icons/hicolor/scalable/apps/com.google.chrome-unstable.svg
-      - install -Dm644 chrome.desktop /app/share/applications/com.google.chrome-unstable.desktop
-      - install -Dm644 appdata.xml /app/share/appdata/com.google.chrome-unstable.appdata.xml
-      - install -Dm755 /usr/bin/ar /app/bin
-      - mkdir -p /app/lib
-      - ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib
-      - ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4
+      - install -Dm755 apply_extra chrome -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.appdata.xml -t /app/share/appdata/
     sources:
-      - type: script
-        dest-filename: apply_extra
-        commands:
-          - ar x google-chrome-unstable_amd64.deb
-          - rm -f google-chrome-unstable_amd64.deb
-          - tar xJf data.tar.xz
-          - rm -f control.tar.xz data.tar.xz debian-binary
-          - mv usr/* .
-          - rmdir usr
-          - rm -rf bin etc share/{doc,gnome-control-center,man,menu}
-          - mv opt/google/chrome-unstable/* .
-          - rm -rf opt
-          - rm -f product_logo_*.png
-          - rm -rf cron
-          - cp /app/bin/stub_sandbox chrome-sandbox
-      - type: dir
-        path: resources
       - type: extra-data
-        filename: google-chrome-unstable_amd64.deb
+        filename: google-chrome.deb
         url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_91.0.4464.5-1_amd64.deb
         sha256: 54b0b74170fd01f8dcce480730224f42615d6409901ef37c856a08bc682d194f
         size: 79107396
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - bsdtar -Oxf google-chrome.deb data.tar.xz |
+              bsdtar -xJf - --strip-components=4 ./opt/google/chrome-unstable
+          - rm google-chrome.deb
+              product_logo_*.png
+          - rm -r cron
+          - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
+      - type: file
+        path: chrome
+      - type: file
+        path: com.google.chrome-unstable.appdata.xml
+      - type: file
+        path: com.google.chrome-unstable.desktop
+      - type: file
+        path: com.google.chrome-unstable.svg
     modules:
-      - name: zypak
-        sources:
-          - type: git
-            url: https://github.com/refi64/zypak
-            tag: v2021.02
-            commit: ae8b0423588479d8403c192feb630c582656bee6
-      - name: libsecret
-        buildsystem: meson
-        config-opts:
-          - -Dvapi=false
-          - -Dmanpage=false
-          - -Dgtk_doc=false
-        sources:
-          - type: archive
-            url: https://gitlab.gnome.org/GNOME/libsecret/-/archive/0.20.4/libsecret-0.20.4.tar.gz
-            sha256: ca34e69b210df221ae5da6692c2cb15ef169bb4daf42e204442f24fdb0520d4b
-        cleanup:
-          - /bin
-          - /include
-          - /lib/girepository-1.0
-          - /share/gir-1.0
-      - name: flextop
-        buildsystem: meson
-        sources:
-          - type: git
-            url: https://github.com/refi64/flextop
-            #branch: main
-            commit: 113bf403b70041fa21d30b7b6a61283b6c30ff41
-      - name: pipewire02
-        buildsystem: meson
-        config-opts:
-          - -D docs=false
-          - -D gstreamer=disabled
-          - -D man=false
-          - -D systemd=false
-        sources:
-          - type: archive
-            url: https://github.com/PipeWire/pipewire/archive/0.2.7.tar.gz
-            sha256: bfaa0f6ae6c0791e2e0b59234d399753bf24f1b33dbf587682363a8463dd8df1
-        cleanup:
-          - /bin
-          - /etc
-          - /include
-          - /lib/gstreamer-1.0
-          - /lib/pipewire-0.2/libpipewire-module-audio-dsp.so
-          - /lib/pipewire-0.2/libpipewire-module-autolink.so
-          - /lib/pipewire-0.2/libpipewire-module-link-factory.so
-          - /lib/pipewire-0.2/libpipewire-module-mixer.so
-          - /lib/pipewire-0.2/libpipewire-module-portal.so
-          - /lib/pipewire-0.2/libpipewire-module-rtkit.so
-          - /lib/pipewire-0.2/libpipewire-module-spa-monitor.so
-          - /lib/pipewire-0.2/libpipewire-module-spa-node-factory.so
-          - /lib/pipewire-0.2/libpipewire-module-spa-node.so
-          - /lib/pipewire-0.2/libpipewire-module-suspend-on-idle.so
-          - /lib/spa/alsa
-          - /lib/spa/audiomixer
-          - /lib/spa/audiotestsrc
-          - /lib/spa/ffmpeg
-          - /lib/spa/test
-          - /lib/spa/v4l2
-          - /lib/spa/videotestsrc
-          - /lib/spa/volume
-  - name: libva-utils
-    buildsystem: meson
-    sources:
-      - type: archive
-        url: https://github.com/intel/libva-utils/archive/2.10.0.tar.gz
-        sha256: cbb7f9f6eae21d772e31b67bc8c311be6e35fe9c65e63acc57f9b16d72bf8dc0
+      - ../shared-modules/zypak/zypak.json
+      - ../shared-modules/libsecret/libsecret.json
+      - ../shared-modules/flextop/flextop.json
+      - ../shared-modules/pipewire/pipewire-0.2.json
+  - ../shared-modules/libva-utils/libva-utils.json
