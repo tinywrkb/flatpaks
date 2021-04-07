@@ -1,0 +1,26 @@
+{
+  "name": "tcl",
+  "subdir": "unix",
+  "config-opts": [
+    "--enable-threads",
+    "--enable-64bit"
+  ],
+  "post-install": [
+    "ln -s tclsh8.6 /app/bin/tclsh",
+    /* no write permission breaks strip */
+    "chmod u+w /app/lib/libtcl*"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.10-src.tar.gz",
+      "sha256": "5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed"
+    },
+    {
+      "type": "shell",
+      "commands": [
+        "rm -rf pkgs/sqlite3*"
+      ]
+    }
+  ]
+}

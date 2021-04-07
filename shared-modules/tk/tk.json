@@ -1,0 +1,24 @@
+{
+  "name": "tk",
+  "subdir": "unix",
+  "config-opts": [
+    "--enable-threads",
+    "--disable-rpath",
+    "--enable-64bit"
+  ],
+  "post-install": [
+    "ln -s wish8.6 /app/bin/wish",
+    /* no write permission breaks strip */
+    "chmod u+w /app/lib/libtk*"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://downloads.sourceforge.net/sourceforge/tcl/tk8.6.10-src.tar.gz",
+      "sha256": "63df418a859d0a463347f95ded5cd88a3dd3aaa1ceecaeee362194bc30f3e386"
+    }
+  ],
+  "modules": [
+    "../tcl/tcl.json"
+  ]
+}
