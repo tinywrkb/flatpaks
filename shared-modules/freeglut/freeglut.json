@@ -1,6 +1,9 @@
 {
   "name": "freeglut",
   "buildsystem": "cmake",
+  "build-options": {
+    "cflags": "-fcommon"
+  },
   "config-opts": [
     "-DFREEGLUT_BUILD_STATIC_LIBS=OFF",
     "-DCMAKE_BUILD_TYPE=None"
