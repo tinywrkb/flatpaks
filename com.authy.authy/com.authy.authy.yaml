@@ -1,5 +1,3 @@
-# WARNING: this won't work without access to the snap package
-#          you need to put it on http server and update the url of authy.snap
 app-id: com.authy.authy
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
@@ -48,7 +46,7 @@ modules:
           - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
       - type: extra-data
         filename: authy.squashfs
-        url: http://files.net.private/authy.snap
+        url: https://api.snapcraft.io/api/v1/snaps/download/H8ZpNgIoPyvmkgxOWw5MSzsXK1wRZiHn_5.snap
         sha256: f6be2a19b96a23c626f15f6baa1b51674b84d4f4215495ac6a8155327c9ddbf9
         size: 64233472
       - type: script
