@@ -1,7 +1,7 @@
 app-id: io.mpv.player
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: mpv
 rename-desktop-file: mpv.desktop
 rename-icon: mpv
@@ -36,8 +36,8 @@ modules:
       - python3 waf install
     sources:
       - type: archive
-        url: https://github.com/mpv-player/mpv/archive/v0.33.0.tar.gz
-        sha256: f1b9baf5dc2eeaf376597c28a6281facf6ed98ff3d567e3955c95bf2459520b4
+        url: https://github.com/mpv-player/mpv/archive/v0.33.1.tar.gz
+        sha256: 100a116b9f23bdcda3a596e9f26be3a69f166a4f1d00910d1789b6571c46f3a9
       - type: file
         url: https://waf.io/waf-2.0.21
         sha256: 7cebf2c5efe53cbb9a4b5bdc4b49ae90ecd64a8fce7a3222d58e591b58215306
