@@ -64,7 +64,11 @@ modules:
             sha256: dbb82cb7e116a5f8025d35ef5b4f7d4a3cdd0a3909a146a39112095a2d229071
   - name: asco
     buildsystem: simple
+    build-options:
+      cflags: -fcommon
     build-commands:
+      - find ./ -name Makefile -exec
+          sed -i '/CFLAGS =.*/d' '{}' \;
       - make
       - install -Dm755 asco /app/bin/asco
     sources:
