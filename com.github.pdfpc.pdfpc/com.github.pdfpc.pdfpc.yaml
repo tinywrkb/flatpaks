@@ -7,11 +7,12 @@ sdk: org.gnome.Sdk
 command: pdfpc
 finish-args:
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
   - --own-name=io.github.pdfpc
   - --share=ipc
-  - --socket=wayland
   - --socket=fallback-x11
+  - --socket=wayland
 cleanup:
   - /include
   - /lib/pkgconfig
