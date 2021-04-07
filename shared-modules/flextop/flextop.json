@@ -1,0 +1,11 @@
+{
+  "name": "flextop",
+  "buildsystem": "meson",
+  "sources": [
+    {
+      "type": "git",
+      "url": "https://github.com/refi64/flextop",
+      "commit": "113bf403b70041fa21d30b7b6a61283b6c30ff41"
+    }
+  ]
+}
