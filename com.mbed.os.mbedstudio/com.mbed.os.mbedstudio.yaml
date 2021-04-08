@@ -59,36 +59,8 @@ modules:
         sha256: 99ecf7e3d3e3873fe2cf6b8a4f5f4dd2d060e00e7b8dde18def65aa2138ab6c5
         size: 43134135
     modules:
-      - name: unappimage
-        no-autogen: true
-        subdir: squashfs-tools
-        make-install-args:
-          - INSTALL_DIR=/app/bin
-        sources:
-          - type: git
-            url: https://github.com/refi64/unappimage
-            branch: master
-#     - name: zypak
-#       sources:
-#         - type: git
-#           url: https://github.com/refi64/zypak
-#           tag: v2020.02
-      - name: libsecret
-        buildsystem: meson
-        config-opts:
-          - -Dvapi=false
-          - -Dmanpage=false
-          - -Dgtk_doc=false
-        sources:
-          - type: archive
-            url: https://gitlab.gnome.org/GNOME/libsecret/-/archive/0.20.3/libsecret-0.20.3.tar.gz
-            sha256: 9a90f733d4cac1c5a937af1fc44ddfc52458a4bcb015891247ca75037f446f6d
-        cleanup:
-          - /bin
-          - /include
-          - /lib/girepository-1.0
-          - /share/gir-1.0
-      # TODO: replace embedded modules with built from source and remove embedded with init script
-#     - name: libappindicator
-#     - name: libnotify
-#     - name: libgconf
+      - ../shared-modules/unappimage/unappimage.json
+      - ../flathub-shared-modules/libsecret/libsecret.json
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+      - ../shared-modules/libnotify/libnotify.json
+      - ../shared-modules/gconf/gconf.json
