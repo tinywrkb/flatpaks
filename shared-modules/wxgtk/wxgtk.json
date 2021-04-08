@@ -1,0 +1,27 @@
+{
+  "name": "wxgtk",
+  "config-opts": [
+    "--disable-precomp-headers",
+    "--enable-graphics_ctx",
+    "--enable-mediactrl",
+    "--enable-unicode",
+    "--enable-webview",
+    "--with-gtk=3",
+    "--with-libjpeg=sys",
+    "--with-libpng=sys",
+    "--with-libtiff=sys",
+    "--with-libxpm=sys",
+    "--with-opengl",
+    "--with-regex=builtin"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.5.1/wxWidgets-3.0.5.1.tar.bz2",
+      "sha256": "440f6e73cf5afb2cbf9af10cec8da6cdd3d3998d527598a53db87099524ac807"
+    }
+  ],
+  "modules": [
+    "../../flathub-shared-modules/glu/glu-9.json"
+  ]
+}
