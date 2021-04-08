@@ -12,9 +12,9 @@
 app-id: org.virt_manager.virt-manager
 base: org.libvirt.libvirt.BaseApp
 #base-version: stable
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: virt-manager
 rename-icon: virt-manager
 rename-desktop-file: virt-manager.desktop
@@ -62,6 +62,8 @@ modules:
     modules:
       # build depends
       - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - ../shared-modules/python-gobject/python-gobject.json
+      - ../shared-modules/gtksourceview4/gtksourceview4.json
       # runtime depends: compiled
       - name: libosinfo
         buildsystem: meson
@@ -98,13 +100,15 @@ modules:
                   - '*'
       - name: vte3
         buildsystem: meson
-        build-options:
-          env:
-            - CXXFLAGS=-fno-exceptions
+        config-opts:
+          - -Dgtk4=false
+          - -Dsixel=false
+          - -D_systemd=false
+          - -Dvapi=false
         sources:
           - type: archive
-            url: https://download.gnome.org/sources/vte/0.60/vte-0.60.0.tar.xz
-            sha256: 72d1955eb40b4475b858892813a79545cee34409bac2af470606fb4b4d193a1b
+            url: https://gitlab.gnome.org/GNOME/vte/-/archive/0.64.0/vte-0.64.0.tar.gz
+            sha256: 2297503448325972cbe13b87f70f6882ac91836c6e2adbddfbe5323bfbb17547
         cleanup:
           - /bin
           - /etc

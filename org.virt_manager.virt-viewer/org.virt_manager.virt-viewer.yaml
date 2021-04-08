@@ -1,9 +1,8 @@
 app-id: org.virt_manager.virt-viewer
 base: org.libvirt.libvirt.BaseApp
-#base-version: stable
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: virt-viewer
 rename-icon: virt-viewer
 rename-desktop-file: remote-viewer.desktop

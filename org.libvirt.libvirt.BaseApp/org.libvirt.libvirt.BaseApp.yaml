@@ -1,19 +1,8 @@
 app-id: org.libvirt.libvirt.BaseApp
-#branch: stable
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 separate-locales: false
-#finish-args:
-# - --device=dri
-  # unix socket access
-# - --filesystem=/run/libvirt
-  # ssh-agent pid and socket
-  #- --filesystem=xdg-run/ssh
-# - --share=ipc
-# - --share=network
-# - --socket=wayland
-# - --socket=fallback-x11
 cleanup:
   - /share/bash-completion
   - /share/man
@@ -70,15 +59,7 @@ modules:
             sha256: 750f7e57b81407a25b707867e90d7ee80aeb53bf515b114fc218f3c78dc9a6e8
         cleanup:
           - '*'
-      - name: libtirpc
-        config-opts:
-          - --disable-static
-#       post-install:
-#         - ln -s tirpc/rpc /app/include/rpc
-        sources:
-          - type: archive
-            url: https://downloads.sourceforge.net/sourceforge/libtirpc/libtirpc-1.2.6.tar.bz2
-            sha256: 4278e9a5181d5af9cd7885322fdecebc444f9a3da87c526e7d47f7a12a37d1cc
+      - ../shared-modules/libtirpc/libtirpc.json
   - name: libvirt-glib
     config-opts:
       - --enable-vala=no
