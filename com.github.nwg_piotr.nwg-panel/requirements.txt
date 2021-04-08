@@ -1,0 +1,3 @@
+psutil
+setuptools-scm
+i3ipc
