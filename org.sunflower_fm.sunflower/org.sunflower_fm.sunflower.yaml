@@ -24,7 +24,7 @@ modules:
     buildsystem: simple
     build-commands:
       - python3 setup.py build
-      - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+      - python3 setup.py install --skip-build --prefix=/app --optimize=1
       - install -Dm644 Sunflower.desktop /app/share/applications/sunflower.desktop
       - install -Dm644 images/sunflower.png /app/share/pixmaps/sunflower.png
       - install -Dm644 images/sunflower.svg /app/share/pixmaps/sunflower.svg
