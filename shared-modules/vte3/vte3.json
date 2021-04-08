@@ -1,0 +1,27 @@
+{
+  "name": "vte3",
+  "buildsystem": "meson",
+  "config-opts": [
+    "-Dgtk4=false",
+    "-Dsixel=false",
+    "-D_systemd=false",
+    "-Dvapi=false"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://gitlab.gnome.org/GNOME/vte/-/archive/0.64.0/vte-0.64.0.tar.gz",
+      "sha256": "2297503448325972cbe13b87f70f6882ac91836c6e2adbddfbe5323bfbb17547"
+    }
+  ],
+  "cleanup": [
+    "/bin",
+    "/etc",
+    "/include",
+    "/lib/pkgconfig",
+    "/lib/systemd",
+    "/libexec",
+    "/share/gir-1.0",
+    "/share/vala"
+  ]
+}
