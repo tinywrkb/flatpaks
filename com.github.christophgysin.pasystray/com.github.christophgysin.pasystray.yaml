@@ -33,18 +33,7 @@ modules:
       - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
         # TODO: investigate avahi features of pasystray
      #- name: avahi
-      - name: libnotify
-        buildsystem: meson
-        config-opts:
-          - -Dtests=false
-          - -Dintrospection=disabled
-          - -Dman=false
-          - -Dgtk_doc=false
-          - -Ddocbook_docs=disabled
-        sources:
-          - type: git
-            url: https://gitlab.gnome.org/GNOME/libnotify.git
-            tag: 98a4bf483a69c6436311bcb9834d9d93235c96b7
+  - ../shared-modules/libnotify/libnotify.json
   - ../shared-modules/gtkmm3/gtkmm3-kde_runtime.json
 # gtkmm3 dependent apps: pavucontrol, paprefs
   - name: pavucontrol
