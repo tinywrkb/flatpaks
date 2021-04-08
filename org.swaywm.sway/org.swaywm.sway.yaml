@@ -1,8 +1,24 @@
+#
+# how to use?
+#
+#   to test applications with this sway package set WAYLAND_DISPLAY correctly
+#     usually it will be WAYLAND_DISPLAY=$XDG_RUNTIME_DIR/app/org.swaywm.sway/wayland-1
+#   for example:
+#     $ env WAYLAND_DISPLAY=$XDG_RUNTIME_DIR/app/org.swaywm.sway/wayland-1 \
+#         alacritty
+#
+#   to use with other flatpak app you need also to give access to $XDG_RUNTIME_DIR/app/org.swaywm.sway
+#   for example:
+#     $ flatpak run \
+#         --filesystem=xdg-run/app/org.swaywm.sway \
+#         --env=WAYLAND_DISPLAY=$XDG_RUNTIME_DIR/app/org.swaywm.sway/wayland-1 \
+#         org.gnome.gedit
+#
 app-id: org.swaywm.sway
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
-command: sway
+command: sway.sh
 finish-args:
   - --device=dri
   - --socket=wayland
@@ -80,3 +96,16 @@ modules:
                   - type: archive
                     url: https://freedesktop.org/software/libevdev/libevdev-1.11.0.tar.xz
                     sha256: 63f4ea1489858a109080e0b40bd43e4e0903a1e12ea888d581db8c495747c2d0
+  - name: package
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 sway.sh -t /app/bin/
+    sources:
+      - type: script
+        dest-filename: sway.sh
+        commands:
+          - |
+              export WAYLAND_DISPLAY=$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
+              export SWAYSOCK=$XDG_RUNTIME_DIR/app/org.swaywm.sway/sway-ipc.sock
+              export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR/app/org.swaywm.sway
+              exec sway "$@"
