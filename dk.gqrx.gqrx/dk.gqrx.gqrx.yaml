@@ -54,18 +54,17 @@ modules:
                 url:  https://github.com/gnuradio/gnuradio/releases/download/v3.8.1.0/gnuradio-3.8.1.0.tar.gz
                 sha256: e15311e7da9fe2bb790cc36321d7eb2d93b9dfa0c1552fa5d534dd99d22873be
             modules:
-              - ../flathub-shared-modules/glu/glu-9.json
               - ../shared-modules/boost/boost.json
               - ../shared-modules/lapack/lapack.json
               - ../shared-modules/swig/swig.json
               - ../shared-modules/qwt/qwt.json
-              # required by python-gobject
+              # required by python-opengl
               - shared-modules/freeglut/freeglut.json
               - ../shared-modules/pyqt5/pyqt5.json
               - ../shared-modules/python-gobject/python-gobject.json
               # required by python-yaml
               - ../shared-modules/libyaml/libyaml.json
-#             # required by libuhd
+              # required by libuhd
               - ../flathub-shared-modules/libusb/libusb.json
               - python-dependencies.json
               - name: codec2
