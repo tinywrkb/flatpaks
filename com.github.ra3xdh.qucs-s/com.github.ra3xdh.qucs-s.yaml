@@ -30,20 +30,7 @@ modules:
       - type: archive
         url: https://github.com/ra3xdh/qucs_s/releases/download/0.0.22/qucs-s-0.0.22.tar.gz
         sha256: 907a58e973e1851a356f726849560c2d6371d4e5108194f9470aa08c664d0ef5
-  - name: ngspice
-    # TODO: add ngspice shared lib
-    config-opts:
-      - --enable-xspice
-      - --enable-cider
-      - --enable-oldapps
-      - --enable-openmp
-    sources:
-      - type: archive
-        url: https://downloads.sourceforge.net/project/ngspice/ng-spice-rework/old-releases/32/ngspice-32.tar.gz
-        sha256: 3cd90c4e94516d87c5b4d02a3a6405b1136b25d05c871d4fee1fd7c4c0d03ef2
-    modules:
-      - ../shared-modules/libxaw/libxaw.json
-      - ../shared-modules/libedit/libedit.json
+  - ../shared-modules/ngspice/ngspice.json
   - name: asco
     buildsystem: simple
     build-options:
