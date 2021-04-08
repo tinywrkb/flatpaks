@@ -1,0 +1,20 @@
+#!/bin/bash
+
+flatpak run \
+  --filesystem=$PWD \
+  --command=flatpak-pip-generator \
+  io.github.flatpak.flatpak-builder-tools \
+  --requirements-file=python-cryptography-requirements.txt \
+  --output python-cryptography-dependencies
+
+curl -L \
+  $(grep 'https://github.com/pyca/cryptography/archive/' org.xpra.xpra.yaml | cut -d':' -f2-) |
+  tar -Oxz --strip-components=3 --wildcards '*/src/rust/Cargo.lock' | cat > python-cryptography-cargo.lock
+
+
+flatpak run \
+  --filesystem=$PWD \
+  --command=flatpak-cargo-generator.py \
+  io.github.flatpak.flatpak-builder-tools \
+  python-cryptography-cargo.lock \
+  --output python-cryptography-cargo-sources.json

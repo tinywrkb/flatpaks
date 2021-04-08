@@ -22,6 +22,8 @@ app-id: org.xpra.xpra
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
 command: /bin/sh
 finish-args:
   - --device=all
@@ -31,6 +33,8 @@ finish-args:
   - --socket=session-bus
   - --socket=wayland
   - --unset-env=XAUTHORITY
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin
 modules:
   - name: xpra
     buildsystem: simple
@@ -83,32 +87,30 @@ modules:
       - type: archive
         url: https://xorg.freedesktop.org/archive/individual/driver/xf86-video-dummy-0.3.8.tar.bz2
         sha256: 3712bb869307233491e4c570732d6073c0dc3d99adfdb9977396a3fdf84e95b9
-  - python3-python-uinput.json
-  - name: python-paramiko
-    buildsystem: simple
+  - name: python-cryptography
+    # python-paramiko dependency
     build-options:
-      build-args:
-        - --share=network
-    build-commands:
-      - pip3 install --prefix=/app --root=/ paramiko
-  - name: python-pillow
+     #build-args:
+     #  -  --share=network
+      env:
+        - CARGO_HOME=/run/build/python-cryptography/cargo
     buildsystem: simple
-    build-options:
-      build-args:
-        - --share=network
     build-commands:
-      - pip3 install --prefix=/app --root=/ pillow
-  - name: dbus-python
+     #- |
+     #    cd src/rust
+     #    cargo --offline fetch --manifest-path Cargo.toml --verbose
+     #    cargo --offline build --release --verbose
+     #- maturin build --release --strip --cargo-extra-args='--offline'
+     #- pip3 install --exists-action=i --no-index --find-links=file://${PWD}/target/wheels --prefix=${FLATPAK_DEST} cryptography --no-build-isolation
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
     sources:
       - type: archive
-        url: https://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.16.tar.gz
-        sha256: 11238f1d86c995d8aed2e22f04a1e3779f0d70e587caffeab4857f3c662ed5a4
-  - name: unappimage
-    no-autogen: true
-    subdir: squashfs-tools
-    make-install-args:
-      - INSTALL_DIR=/app/bin
-    sources:
-      - type: git
-        url: https://github.com/refi64/unappimage
-        branch: master
+        url: https://github.com/pyca/cryptography/archive/3.4.7.tar.gz
+        sha256: 91061d435edc1c44f1f1d69a81eddc22e5a4749165b0457724d70ab6642cb6ce
+      - python-cryptography-cargo-sources.json
+    modules:
+      - ../shared-modules/maturin/maturin.json
+      - python-cryptography-dependencies.json
+  - python-dependencies.json
+  - ../shared-modules/unappimage/unappimage.json
