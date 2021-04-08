@@ -11,7 +11,6 @@
 
 app-id: org.virt_manager.virt-manager
 base: org.libvirt.libvirt.BaseApp
-#base-version: stable
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
@@ -20,7 +19,12 @@ rename-icon: virt-manager
 rename-desktop-file: virt-manager.desktop
 finish-args:
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-public-share
+  - --filesystem=xdg-videos
   # unix socket access
   - --filesystem=/run/libvirt
   # ssh-agent pid and socket
@@ -34,6 +38,8 @@ finish-args:
 # - --talk-name=org.freedesktop.Notifications
 # - --talk-name=org.kde.StatusNotifierWatcher
 cleanup:
+  - /include
+  - /lib/pkgconfig
   - /share/bash-completion
   - /share/man
 cleanup-commands:
@@ -42,9 +48,6 @@ cleanup-commands:
 modules:
   - name: virt-manager
     buildsystem: simple
-#   ensure-writable:
-#     - /lib/python3.7/site-packages/easy-install.pth
-#     - /app/lib/python3.7/site-packages/easy-install.pth
     build-commands:
       - python3 setup.py configure --prefix=/app
       - python3 setup.py build
@@ -60,11 +63,11 @@ modules:
       - type: patch
         path: 0001-virt-manager-disable-man-pages.patch
     modules:
-      # build depends
       - ../flathub-shared-modules/intltool/intltool-0.51.json
       - ../shared-modules/python-gobject/python-gobject.json
       - ../shared-modules/gtksourceview4/gtksourceview4.json
-      # runtime depends: compiled
+      - ../shared-modules/vte3/vte3.json
+      - python-dependencies.json
       - name: libosinfo
         buildsystem: meson
         config-opts:
@@ -72,11 +75,9 @@ modules:
           - -Dwith-pci-ids-path=/app/share/hwdata/pci.ids
         sources:
           - type: archive
-            url: https://releases.pagure.org/libosinfo/libosinfo-1.7.1.tar.xz
-            sha256: bb26106ad4a9f8523f81b332d2aedb717cdcb0500b3f68ba7c6ff945c4d627e9
+            url: https://releases.pagure.org/libosinfo/libosinfo-1.9.0.tar.xz
+            sha256: b4f3418154ef3f43d9420827294916aea1827021afc06e1644fc56951830a359
         cleanup:
-          - /include
-          - /lib/pkgconfig
           - /share/gtk-doc
           - /share/vala
         modules:
@@ -86,86 +87,15 @@ modules:
               - osinfo-db-import --system osinfo-db.tar.xz
             sources:
               - type: file
-                url: https://releases.pagure.org/libosinfo/osinfo-db-20200515.tar.xz
-                sha256: 92e9373505b8ece6ccf8f626e592ad094819aa78f6d17429114eeab06a6d31d5
+                url: https://releases.pagure.org/libosinfo/osinfo-db-20210312.tar.xz
+                sha256: 7548ec09e445ca7378c5ceb99e39edca8857f8293831e0b3cb558f4230870e10
                 dest-filename: osinfo-db.tar.xz
             modules:
               - name: osinfo-db-tools
                 buildsystem: meson
                 sources:
                   - type: archive
-                    url: https://releases.pagure.org/libosinfo/osinfo-db-tools-1.7.0.tar.xz
-                    sha256: 4bddbec5f407436e0b62f0d7657e866adc980709acf5321aa0d4c3eb54aea823
+                    url: https://releases.pagure.org/libosinfo/osinfo-db-tools-1.9.0.tar.xz
+                    sha256: 255f1c878bacec70c3020ff5a9cb0f6bd861ca0009f24608df5ef6f62d5243c0
                 cleanup:
                   - '*'
-      - name: vte3
-        buildsystem: meson
-        config-opts:
-          - -Dgtk4=false
-          - -Dsixel=false
-          - -D_systemd=false
-          - -Dvapi=false
-        sources:
-          - type: archive
-            url: https://gitlab.gnome.org/GNOME/vte/-/archive/0.64.0/vte-0.64.0.tar.gz
-            sha256: 2297503448325972cbe13b87f70f6882ac91836c6e2adbddfbe5323bfbb17547
-        cleanup:
-          - /bin
-          - /etc
-          - /include
-          - /lib/pkgconfig
-          - /lib/systemd
-          - /libexec
-          - /share/gir-1.0
-          - /share/vala
-      # runtime depends: python
-      - name: python-requests
-        buildsystem: simple
-        build-commands:
-          - python3 setup.py build
-          - python3 setup.py install --root=/ --prefix=app/
-        sources:
-          - type: archive
-            url: https://github.com/psf/requests/archive/v2.23.0.tar.gz
-            sha256: bf063ded6c5c3f238f89189a791df4a22270d1ccd88b1a21687ecb6a9c6b1335
-        modules:
-      # available in the runtime
-          - name: python-urllib3
-            buildsystem: simple
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --root=/ --prefix=app/
-            sources:
-              - type: archive
-                url: https://github.com/shazow/urllib3/archive/1.25.9.tar.gz
-                sha256: 1f1bef30176d8361ba8ae0728316e76f5ec8fc1f336c5352165211b2cb0a53f7
-          - name: python-chardet
-            buildsystem: simple
-            ensure-writable:
-              - /lib/python3.7/site-packages/easy-install.pth
-            build-commands:
-              - python3 setup.py install --prefix=/app
-            sources:
-              - type: archive
-                url: https://pypi.io/packages/source/c/chardet/chardet-3.0.4.tar.gz
-                sha256: 84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae
-            cleanup:
-              - /bin
-          - name: python-certifi
-            buildsystem: simple
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --root=/ --prefix=app/
-            sources:
-              - type: archive
-                url: https://pypi.io/packages/source/c/certifi/certifi-2019.11.28.tar.gz
-                sha256: 25b64c7da4cd7479594d035c08c2d809eb4aab3a26e5a990ea98cc450c320f1f
-          - name: python-idna
-            buildsystem: simple
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --root=/ --prefix=app/
-            sources:
-              - type: archive
-                url: https://pypi.io/packages/source/i/idna/idna-2.9.tar.gz
-                sha256: 7588d1c14ae4c77d74036e8c22ff447b26d0fde8f007354fd48a7814db15b7cb
