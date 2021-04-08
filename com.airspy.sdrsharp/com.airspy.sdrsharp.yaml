@@ -59,8 +59,8 @@ modules:
         url: https://www.iz3mez.it/software/SDRSharp/SDRSharp_v1457.zip
         sha256: bdf853040110dbd72720cb63b7696d574e3b00d739b17839e8d93cab3e1df400
         strip-components: 0
-      - type: dir
-        path: resources
+      - type: file
+        path: program_init
     modules:
       - name: mono
         buildsystem: simple
