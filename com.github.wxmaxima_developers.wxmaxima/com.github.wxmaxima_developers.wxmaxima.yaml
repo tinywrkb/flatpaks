@@ -1,22 +1,20 @@
 # TODO ~/.wxMaxima config workaround
 app-id: com.github.wxmaxima_developers.wxmaxima
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: wxmaxima
 rename-desktop-file: io.github.wxmaxima_developers.wxMaxima.desktop
 rename-icon: io.github.wxmaxima_developers.wxMaxima
-#build-options:
-#  no-debuginfo: true
-#  # tcl workaround
-#  strip: false
 finish-args:
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
   - --persist=.maxima
   - --share=ipc
-  - --socket=wayland
   - --socket=fallback-x11
+  - --socket=wayland
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -36,26 +34,7 @@ modules:
         url: https://github.com/wxMaxima-developers/wxmaxima/archive/Version-20.07.0.tar.gz
         sha256: 0ab31006eb00e978ba8ecc840097272b401c294c0dbf69919ec8d6c02558e6f0
     modules:
-      - name: wxgtk
-        config-opts:
-          - --disable-precomp-headers
-          - --enable-graphics_ctx
-          - --enable-mediactrl
-          - --enable-unicode
-          - --enable-webview
-          - --with-gtk=3
-          - --with-libjpeg=sys
-          - --with-libpng=sys
-          - --with-libtiff=sys
-          - --with-libxpm=sys
-          - --with-opengl
-          - --with-regex=builtin
-        sources:
-          - type: archive
-            url: https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.5.1/wxWidgets-3.0.5.1.tar.bz2
-            sha256: 440f6e73cf5afb2cbf9af10cec8da6cdd3d3998d527598a53db87099524ac807
-        modules:
-          - ../flathub-shared-modules/glu/glu-9.json
+      - ../shared-modules/wxgtk/wxgtk.json
       - name: maxima
 #       config-opts:
 #         - --libexecdir=/app/lib
@@ -140,32 +119,4 @@ modules:
 #             - type: shell
 #               commands:
 #                 - autoreconf -vi
-#         - name: tk
-#           subdir: unix
-#           config-opts:
-#             - --enable-threads
-#             - --disable-rpath
-#             - --enable-64bit
-#           post-install:
-#             - ln -s wish8.6 /app/bin/wish
-#           sources:
-#             - type: archive
-#               url: https://downloads.sourceforge.net/sourceforge/tcl/tk8.6.10-src.tar.gz
-#               sha256: 63df418a859d0a463347f95ded5cd88a3dd3aaa1ceecaeee362194bc30f3e386
-#           modules:
-#             - name: tcl
-#               subdir: unix
-#               build-options:
-#                 strip: false
-#               config-opts:
-#                 - --enable-threads
-#                 - --enable-64bit
-#               post-install:
-#                 - ln -s tclsh8.6 /app/bin/tclsh
-#               sources:
-#                 - type: archive
-#                   url: https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.10-src.tar.gz
-#                   sha256: 5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed
-#                 - type: shell
-#                   commands:
-#                     -  rm -rf pkgs/sqlite3*
+#         - ../shared-modules/tk/tk.json
