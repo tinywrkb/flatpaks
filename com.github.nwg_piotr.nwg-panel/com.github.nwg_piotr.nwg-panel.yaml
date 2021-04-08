@@ -1,7 +1,7 @@
 app-id: com.github.nwg_piotr.nwg-panel
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: nwg-panel
 finish-args:
   - --device=dri
@@ -58,12 +58,7 @@ modules:
         url: https://github.com/nwg-piotr/nwg-panel.git
         tag: v0.2.1
         commit: 9056837d7682211146be5475fe22c82399e1b92a
-  - name: gtk-layer-shell
-    buildsystem: meson
-    sources:
-      - type: archive
-        url: https://github.com/wmww/gtk-layer-shell/archive/refs/tags/v0.6.0.tar.gz
-        sha256: 9a0ba72cea90e092d6b10ba47e627cd873271d287d9af80a6f66ab131fb34cac
+  - ../shared-modules/gtk-layer-shell/gtk-layer-shell.json
   - name: python-psutil
     buildsystem: simple
     build-commands:
