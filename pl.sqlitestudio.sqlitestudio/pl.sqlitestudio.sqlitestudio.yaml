@@ -5,9 +5,6 @@ sdk: org.kde.Sdk
 command: sqlitestudio
 rename-desktop-file: sqlitestudio.desktop
 rename-icon: sqlitestudio
-build-options:
-  no-debuginfo: true
-  strip: false
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -56,20 +53,5 @@ modules:
             sha256: bb0d4c54bac2990e1bdf8132f2c9477ae752859d523e141e72b3b11a12c26e7b
         cleanup:
           - '*'
-      - name: tcl
-        subdir: unix
-        build-options:
-          strip: false
-        config-opts:
-          - --enable-threads
-          - --enable-64bit
-        post-install:
-          - ln -s tclsh8.6 /app/bin/tclsh
-        sources:
-          - type: archive
-            url: https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.10-src.tar.gz
-            sha256: 5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed
-          - type: shell
-            commands:
-              -  rm -rf pkgs/sqlite3*
+      - ../shared-modules/tcl/tcl.json
 #     - name: termcap
