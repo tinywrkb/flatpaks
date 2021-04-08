@@ -127,68 +127,22 @@ modules:
           - type: archive
             url: https://github.com/gabime/spdlog/archive/v1.8.2.tar.gz
             sha256: e20e6bd8f57e866eaf25a5417f0a38a116e537f1a77ac7b5409ca2b180cec0d5
-  - name: sway
-    buildsystem: meson
-    config-opts:
-      - -Ddefault-wallpaper=false
-      - -Dzsh-completions=false
-      - -Dbash-completions=false
-      - -Dfish-completions=false
-      - -Dxwayland=disabled
-      - -Dtray=disabled
-      - -Dgdk-pixbuf=disabled
-      - -Dman-pages=disabled
-    cleanup:
-      - /bin/sway
-      - /bin/swaybar
-      - /bin/swaynag
+  - name: swaymsg
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 swaymsg -t /app/bin/
     sources:
-      - type: archive
-        url: https://github.com/swaywm/sway/releases/download/1.5.1/sway-1.5.1.tar.gz
-        sha256: 095f983c9a5f80d761bc2fb19df8166839b9290124ccd47f3e74119a1335490f
-    modules:
-      - name: wlroots
-        buildsystem: meson
-        config-opts:
-          - --libdir=lib
-          - -Dlogind=disabled
-          - -Dlibseat=disabled
-          - -Dxwayland=disabled
-          - -Dx11-backend=disabled
-          - -Dexamples=false
-        sources:
-          - type: archive
-            url: https://github.com/swaywm/wlroots/archive/0.12.0.tar.gz
-            sha256: c9e9f4f6d2f526d0b2886daf3ec37e64831773059aa669fb98a88522a1626bdb
-        modules:
-          - name: libinput
-            buildsystem: meson
-            config-opts:
-              - -Dtests=false
-              - -Ddocumentation=false
-              - -Dlibwacom=false
-              - -Ddebug-gui=false
-              - --libexec=lib
-            sources:
-              - type: archive
-                url: https://freedesktop.org/software/libinput/libinput-1.16.4.tar.xz
-                sha256: 65923a06d5a8970e4a999c4668797b9b689614b62b1d44432ab1c87b65e39e29
-            modules:
-              - name: mtdev
-                config-opts:
-                  - --disable-static
-                sources:
-                  - type: archive
-                    url: https://bitmath.org/code/mtdev/mtdev-1.1.6.tar.bz2
-                    sha256: 15d7b28da8ac71d8bc8c9287c2045fd174267bc740bec10cfda332dc1204e0e0
-              - name: libevdev
-                config-opts:
-                  - --disable-static
-                sources:
-                  - type: archive
-                    url: https://freedesktop.org/software/libevdev/libevdev-1.10.0.tar.xz
-                    sha256: 3522c26e2c148be0ad68ce26fbced408a4185dea90bfe8079dc82b8ace962d4a
-      - ../shared-modules/json-c/json-c.json
+      - type: script
+        dest-filename: swaymsg
+        commands:
+          - |
+
+              unset _FS_ARGS
+              if [ "$SWAYSOCK" ]; then
+                _FS_ARGS+="--env=SWAYSOCK=$SWAYSOCK"
+              fi
+
+              flatpak-spawn --host $_FS_ARGS swaymsg "$@"
   - name: jq
     sources:
       - type: archive
