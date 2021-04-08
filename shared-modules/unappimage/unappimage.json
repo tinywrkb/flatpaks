@@ -1,0 +1,16 @@
+{
+  "name": "unappimage",
+  "no-autogen": true,
+  "subdir": "squashfs-tools",
+  "make-install-args": [
+    "INSTALL_DIR=/app/bin"
+  ],
+  "sources": [
+    {
+      "type": "git",
+      "url": "https://github.com/refi64/unappimage",
+      "branch": "master",
+      "commit": "d7f86f2a0d7ec3a69211125207d5f127386b849a"
+    }
+  ]
+}
