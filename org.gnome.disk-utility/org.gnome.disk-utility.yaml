@@ -1,8 +1,8 @@
 # source: https://gitlab.gnome.org/GNOME/gnome-disk-utility/-/blob/master/flatpak/org.gnome.DiskUtility.json
 app-id: org.gnome.disk-utility
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: gnome-disks
 finish-args:
   - --device=dri
@@ -49,7 +49,7 @@ modules:
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/libgudev.git
-        branch: master
+        #branch: master
         commit: 1c7e05b40b92b67dac7a6cd27b70ba08956e4815
   - name: kmod
     buildsystem: autotools
@@ -192,6 +192,8 @@ modules:
         sha256: c2b671e67e0c288a69fc33dc1b6f1b534d07882c2aceed37004bf48c601afa72
   - name: libhandy
     buildsystem: meson
+    config-opts:
+      - -Dvapi=false
     sources:
       - type: archive
         url: https://gitlab.gnome.org/GNOME/libhandy/-/archive/1.0.3/libhandy-1.0.3.tar.gz
@@ -213,6 +215,8 @@ modules:
       - type: archive
         url: https://github.com/storaged-project/udisks/archive/udisks-2.9.1.tar.gz
         sha256: 8a6f0c14bbbeac0a37ec0a92b3fcfffb633c86a508d561a7ba84d55339772443
+  - ../shared-modules/libnotify/libnotify.json
+  - ../shared-modules/libsecret/libsecret.json
   - name: gnome-disk-utility
     buildsystem: meson
     builddir: true
@@ -221,4 +225,5 @@ modules:
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/gnome-disk-utility.git
-        branch: master
+        #branch: master
+        commit: 26372ac390168791bf7bd2bd84c5a5fcbf4fbff4
