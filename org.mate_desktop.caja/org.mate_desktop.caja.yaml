@@ -1,7 +1,7 @@
 app-id: org.mate_desktop.caja
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: caja
 #rename-icon: caja
 rename-desktop-file: caja.desktop
@@ -13,8 +13,10 @@ finish-args:
   - --own-name=org.mate.Caja
   - --share=ipc
   - --share=network
-  - --socket=wayland
-  - --socket=fallback-x11
+  # wayland is broken
+# - --socket=fallback-x11
+# - --socket=wayland
+  - --socket=x11
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
 modules:
@@ -25,25 +27,52 @@ modules:
       - --disable-update-mimedb
     sources:
       - type: archive
-        url: https://pub.mate-desktop.org/releases/1.24/caja-1.24.0.tar.xz
-        sha256: 80e17a55739561b213197f547cc1b30ca977206980cfa1e2d892331810f1ceb2
+        url: https://pub.mate-desktop.org/releases/1.24/caja-1.24.1.tar.xz
+        sha256: e50b0147ce4c43107d4dadddafd2fa3928f7522515663b6bc58fef3016598f7a
     modules:
-#     - name: exempi
-#       sources:
-#         - type: git
-#           url: https://anongit.freedesktop.org/git/exempi
-#           commit: 7a76fd69978049795fa7ece796d64330530cd4e0
-#       modules:
-#         - name: boost
-#           sources:
-#             - type: archive
-#               url: https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2
-#               sha256: 59c9b274bc451cf91a9ba1dd2c7fdcaf5d60b1b3aa83f2c9fa143417cc660722
-#           modules:
-#             - python-numpy
-#             - openmpi
-#             - zstd
-#         - name: autoconf-archive
+      - ../shared-modules/libnotify/libnotify.json
+      - name: exempi
+        config-opts:
+          - --disable-unittest
+        sources:
+          - type: archive
+            url: https://gitlab.freedesktop.org/libopenraw/exempi/-/archive/2.5.2/exempi-2.5.2.tar.gz
+            sha256: e274c885386a74a33d03a5ea05fcd6e0ce91918f5c4482ea6420cbf2d14d75d6
+      - name: gvfs
+        buildsystem: meson
+        config-opts:
+          - -Dsystemduserunitdir=no
+          - -Dtmpfilesdir=no
+          - -Dadmin=false
+          - -Dafc=false
+          - -Dapf=false
+          - -Darchive=false
+          - -Dcdda=false
+          - -Ddnssd=false
+          - -Dgoa=false
+          - -Dgoogle=false
+          - -Dgphoto2=false
+          - -Dhttp=false
+          - -Dmtp=false
+          - -Dnfs=false
+          - -Dsftp=false
+          - -Dsmb=false
+          - -Dudisks2=false
+          - -Dbluray=false
+          - -Dfuse=false
+          - -Dgcr=false
+          - -Dgcrypt=false
+          - -Dgudev=false
+          - -Dkeyring=false
+          - -Dlogind=false
+          - -Dlibusb=false
+          - -Ddevel_utils=false
+          - -Dinstalled_tests=false
+          - -Dman=false
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/gvfs/-/archive/1.44.1/gvfs-1.44.1.tar.gz
+            sha256: b34829f21a88d4709df34d8674de042752533c669d457ceb0540d5e8fb7d9be8
       - name: mate-desktop
         config-opts:
           - --disable-schemas-compile
@@ -72,11 +101,12 @@ modules:
         url: http://pub.mate-desktop.org/releases/1.24/python-caja-1.24.0.tar.xz
         sha256: efe1910938f016e72b8806d5b222e5074d998da42cdad1bc1ef93f460c0ee6f2
     modules:
+      - ../shared-modules/python-gobject/python-gobject.json
       - name: mate-common
         sources:
           - type: archive
-            url: https://pub.mate-desktop.org/releases/1.24/mate-common-1.24.0.tar.xz
-            sha256: e7ef908d7955cf7252330c87f6416b3fdcb833bb682b7bf9b42e1f2e662d821b
+            url: https://pub.mate-desktop.org/releases/1.24/mate-common-1.24.1.tar.xz
+            sha256: d9a6346710c89d7358ae433568c43167343a5d2f9e4c6ca9e8e73743c534f7b5
   - name: insync-caja
     buildsystem: simple
     build-commands:
