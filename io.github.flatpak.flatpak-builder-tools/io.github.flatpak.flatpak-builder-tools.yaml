@@ -1,6 +1,6 @@
 # This manifest allows building in online or offline mode.
 #
-# In online mode you will always fetch the latest tools.
+# In online mode you will always fetch the latest dependencies versions.
 #
 # To update the modules for offline/cached mode:
 # * Uncomment the dependencies-online-install and generate-dependencies modules.
