@@ -1,0 +1,10 @@
+{
+  "name": "gaw3",
+  "sources": [
+    {
+      "type": "archive",
+      "url": "http://download.tuxfamily.org/gaw/download/gaw3-20190716.tar.gz",
+      "sha256": "890a4c01d7987c504f653cfc87cfaee655fa72e7e801fb7d83e6f2ee35f10568"
+    }
+  ]
+}
