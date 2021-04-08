@@ -9,11 +9,16 @@ rename-desktop-file: qimgv.desktop
 copy-icon: true
 finish-args:
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
   - --share=ipc
+  - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
-  - --socket=fallback-x11
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
 cleanup:
   - /lib/pkgconfig
   - '*.a'
@@ -26,9 +31,9 @@ modules:
       - -DOPENCV_SUPPORT=ON
       - -DCMAKE_BUILD_TYPE=Release
     sources:
-      - type: git
-        url: https://github.com/easymodo/qimgv
-        tag: v0.9.1
+      - type: archive
+        url: https://github.com/easymodo/qimgv/archive/v0.9.1.tar.gz
+        sha256: 728b05b0e26d0188b3d25eb564effab4a77dd0c7453d82e024f1eaa8781e8f4b
       - type: patch
         path: fix_libstdc++fs.patch
     modules:
@@ -74,10 +79,10 @@ modules:
           - /lib/cmake
           - /share/licenses
           - /share/opencv4
-      - name: mpv
+      - name: libmpv
         buildsystem: simple
         build-commands:
-          - python3 waf configure --prefix=/app --enable-libmpv-shared
+          - python3 waf configure --prefix=/app --enable-libmpv-shared --disable-cplayer
           - python3 waf build
           - python3 waf install
         sources:
@@ -108,3 +113,13 @@ modules:
                 sha256: 8d5a5c920b90b70a108007ffcd2289ac652c0e03fc88e6eecefa37df0f2e7fdf
             cleanup:
               - /include
+  - name: mpv
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 mpv -t /app/bin/
+    sources:
+      - type: script
+        dest-filename: mpv
+        commands:
+          - |
+              flatpak-spawn --host flatpak run io.mpv.player "$@"
