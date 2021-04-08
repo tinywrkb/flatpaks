@@ -1,0 +1,82 @@
+app-id: org.swaywm.sway
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: sway
+finish-args:
+  - --device=dri
+  - --socket=wayland
+modules:
+  - name: sway
+    buildsystem: meson
+    config-opts:
+      - -Ddefault-wallpaper=false
+      - -Dzsh-completions=false
+      - -Dbash-completions=false
+      - -Dfish-completions=false
+      - -Dxwayland=disabled
+      - -Dtray=disabled
+      - -Dgdk-pixbuf=disabled
+      - -Dman-pages=disabled
+    sources:
+      - type: archive
+        url: https://github.com/swaywm/sway/releases/download/1.6/sway-1.6.tar.gz
+        sha256: 9ecfd2f38239f7e90922a13cd348fc95fc059e8fa0e4b75b8ffcc7b61685a5fb
+    modules:
+      - ../shared-modules/json-c/json-c.json
+      - name: wlroots
+        build-options:
+          env:
+            # workaround to use the updated meson version
+            - PYTHONPATH=/app/lib/python3.8/site-packages
+        buildsystem: meson
+        config-opts:
+          - --libdir=lib
+          - -Dlogind=disabled
+          - -Dlibseat=disabled
+          - -Dxwayland=disabled
+          - -Dx11-backend=disabled
+          - -Dexamples=false
+        sources:
+          - type: archive
+            url: https://github.com/swaywm/wlroots/archive/0.13.0.tar.gz
+            sha256: f6bea37fd4a6f5e5f552b83d61adae8c73e64b0bcb9ae0ab464ebcd9309d3cf3
+        modules:
+          - name: meson
+            buildsystem: simple
+            build-commands:
+              - python setup.py build
+              - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+            sources:
+              - type: archive
+                url: https://github.com/mesonbuild/meson/releases/download/0.57.1/meson-0.57.1.tar.gz
+                sha256: 72e1c782ba9bda204f4a1ed57f98d027d7b6eb9414c723eebbd6ec7f1955c8a6
+            cleanup:
+              - '*'
+          - name: libinput
+            buildsystem: meson
+            config-opts:
+              - -Dtests=false
+              - -Ddocumentation=false
+              - -Dlibwacom=false
+              - -Ddebug-gui=false
+              - --libexec=lib
+            sources:
+              - type: archive
+                url: https://freedesktop.org/software/libinput/libinput-1.17.1.tar.xz
+                sha256: e51c50f3ce253961bed452d9f93102cc26128406975ab88ff9ec9e6c3b875137
+            modules:
+              - name: mtdev
+                config-opts:
+                  - --disable-static
+                sources:
+                  - type: archive
+                    url: https://bitmath.org/code/mtdev/mtdev-1.1.6.tar.bz2
+                    sha256: 15d7b28da8ac71d8bc8c9287c2045fd174267bc740bec10cfda332dc1204e0e0
+              - name: libevdev
+                config-opts:
+                  - --disable-static
+                sources:
+                  - type: archive
+                    url: https://freedesktop.org/software/libevdev/libevdev-1.11.0.tar.xz
+                    sha256: 63f4ea1489858a109080e0b40bd43e4e0903a1e12ea888d581db8c495747c2d0
