@@ -1,28 +1,30 @@
 app-id: org.sunflower_fm.sunflower
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: sunflower
 rename-icon: sunflower
 rename-desktop-file: sunflower.desktop
 finish-args:
   - --device=dri
-  - --filesystem=home
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
   - --own-name=org.sunflower
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=fallback-x11
+  - --socket=wayland
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
 modules:
   - name: sunflower
     buildsystem: simple
-    ensure-writable:
-      - /lib/python3.8/site-packages/easy-install.pth
     build-commands:
       - python3 setup.py build
-      - python3 setup.py install --skip-build --prefix=/app
+      - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
       - install -Dm644 Sunflower.desktop /app/share/applications/sunflower.desktop
       - install -Dm644 images/sunflower.png /app/share/pixmaps/sunflower.png
       - install -Dm644 images/sunflower.svg /app/share/pixmaps/sunflower.svg
@@ -32,34 +34,7 @@ modules:
         url: https://sunflower-fm.org/pub/sunflower-0.4-62.tgz
         sha256: f2c47e58efb460f18b4bbaf839a9765ac0e2ae1805d7cbd04b3e345d2d74e900
     modules:
-      - name: python-chardet
-        # actually available in the runtime & sdk but setup.py fail to find it
-        buildsystem: simple
-        ensure-writable:
-          - /lib/python3.8/site-packages/easy-install.pth
-        build-commands:
-          - python3 setup.py install --prefix=/app
-        sources:
-          - type: archive
-            url: https://pypi.io/packages/source/c/chardet/chardet-3.0.4.tar.gz
-            sha256: 84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae
-        cleanup:
-          - /bin
-      - name: vte3
-        buildsystem: meson
-        build-options:
-          env:
-            - CXXFLAGS=-fno-exceptions
-        sources:
-          - type: archive
-            url: https://download.gnome.org/sources/vte/0.60/vte-0.60.0.tar.xz
-            sha256: 72d1955eb40b4475b858892813a79545cee34409bac2af470606fb4b4d193a1b
-        cleanup:
-          - /bin
-          - /etc
-          - /include
-          - /lib/pkgconfig
-          - /lib/systemd
-          - /libexec
-          - /share/gir-1.0
-          - /share/vala
+      - ../shared-modules/python-gobject/python-gobject.json
+      - ../shared-modules/vte3/vte3.json
+      - ../shared-modules/libnotify/libnotify-gir.json
+      - python-dependencies.json
