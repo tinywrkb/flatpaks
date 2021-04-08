@@ -28,9 +28,9 @@
 #     Make sure /usr/share/terminfo is still being used
 #       $ export TERMINFO_DIRS+=":
 app-id: com.github.thestinger.termite
-runtime: org.gnome.Platform
-runtime-version: '3.38'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: termite
 rename-desktop-file: termite.desktop
 finish-args:
