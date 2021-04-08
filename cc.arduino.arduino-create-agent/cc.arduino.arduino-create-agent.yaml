@@ -1,3 +1,6 @@
+#
+# WARNING: this manifest will only with a flatpak user installation, see bug report for more details
+#
 # Related issues
 #   * https://github.com/arduino/arduino-create-agent/issues/554
 
@@ -21,11 +24,15 @@ modules:
   - name: arduino-create-agent
     buildsystem: simple
     build-commands:
-      - install -Dm755 apply_extra -t /app/bin/
-      - install -Dm755 arduino-create-agent -t /app/bin/
+      - install -Dm755 apply_extra arduino-create-agent -t /app/bin/
       - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
       - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
     sources:
+      - type: extra-data
+        url: https://github.com/arduino/arduino-create-agent/releases/download/1.2.1/ArduinoCreateAgent-1.2.1-linux-amd64-installer-chrome.tar.gz
+        size: 26749372
+        sha256: b545bf510f886a62c60dc979104cc41f532efb66104afeab9991af96e707bbba
+        filename: installer.tar.gz
       - type: script
         dest-filename: apply_extra
         commands:
@@ -34,12 +41,11 @@ modules:
           - ./installer.run --mode unattended 2>/dev/null
           - ./installer.run --version|awk '{print $2}' > .release
           - rm -f installer.{tar.gz,run} InstallerIcon.png uninstall{,.dat} Uninstall*desktop
-      - type: dir
-        path: resources
-      - type: extra-data
-        filename: installer.tar.gz
-        url: https://github.com/arduino/arduino-create-agent/releases/download/1.2.1/ArduinoCreateAgent-1.2.1-linux-amd64-installer-chrome.tar.gz
-        size: 26749372
-        sha256: b545bf510f886a62c60dc979104cc41f532efb66104afeab9991af96e707bbba
+      - type: file
+        path: arduino-create-agent
+      - type: file
+        path: cc.arduino.arduino-create-agent.desktop
+      - type: file
+        path: cc.arduino.arduino-create-agent.svg
     modules:
       - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
