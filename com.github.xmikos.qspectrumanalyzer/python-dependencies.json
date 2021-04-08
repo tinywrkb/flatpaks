@@ -1,0 +1,135 @@
+{
+    "name": "python-dependencies",
+    "buildsystem": "simple",
+    "build-commands": [],
+    "modules": [
+        {
+            "name": "python3-Qt.py",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"Qt.py\" --no-build-isolation"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/eb/e4/c395eecc0d8a1706213b60e2ab0090d482dffa55011de9639aca69483ac0/Qt.py-1.3.3.tar.gz",
+                    "sha256": "601606127f70be9adc82c248d209d696cccbd1df242c24d3fb1a9e399f3ecaf1"
+                }
+            ]
+        },
+        {
+            "name": "python3-pyqtgraph",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"pyqtgraph\" --no-build-isolation"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/82/a8/1e0f86ae3f13f7ce260e9f782764c16559917f24382c74edfb52149897de/numpy-1.20.2.zip",
+                    "sha256": "878922bf5ad7550aa044aa9301d417e2d3ae50f0f577de92051d739ac6096cee"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/fc/1d/7f1bc6a6df0e297b87807447791ed5c203adcf46783d27e628986b188a34/pyqtgraph-0.12.1.tar.gz",
+                    "sha256": "d2ef3b5289184fb48dfe5f44ccb58d9d64ffb5452fc524a2bd7a640a36b3874d"
+                }
+            ]
+        },
+        {
+            "name": "python3-PyOpenGL",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"PyOpenGL\" --no-build-isolation"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/b8/73/31c8177f3d236e9a5424f7267659c70ccea604dab0585bfcd55828397746/PyOpenGL-3.1.5.tar.gz",
+                    "sha256": "4107ba0d0390da5766a08c242cf0cf3404c377ed293c5f6d701e457c57ba3424"
+                }
+            ]
+        },
+        {
+            "name": "python3-numpy",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"numpy\" --no-build-isolation"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/82/a8/1e0f86ae3f13f7ce260e9f782764c16559917f24382c74edfb52149897de/numpy-1.20.2.zip",
+                    "sha256": "878922bf5ad7550aa044aa9301d417e2d3ae50f0f577de92051d739ac6096cee"
+                }
+            ]
+        },
+        {
+            "name": "python3-soapy_power",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"soapy_power\" --no-build-isolation"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/8d/ef/cf739f7ba571e336189a4a704b844ae08eaf3641a4eb0d24b2c04db3eea5/SimpleSpectral-1.0.0.tar.gz",
+                    "sha256": "869326949870faed82bf21890603569e5c834a8599be5d55c38cb3b41bef0362"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/82/a8/1e0f86ae3f13f7ce260e9f782764c16559917f24382c74edfb52149897de/numpy-1.20.2.zip",
+                    "sha256": "878922bf5ad7550aa044aa9301d417e2d3ae50f0f577de92051d739ac6096cee"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/f4/2e/513dbf91a65f6783556efa90544b30d8c77390970ec7a3a04e3a9a1946f8/SimpleSoapy-1.5.1.tar.gz",
+                    "sha256": "14923538128676eb18d6f7e094c91d77e54a3d1199efdbf5b95520f94b15002e"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/16/2e/d8791898ae324b0df1c7225c9fec7b2819a3522c096b97f4bdf8ec1373a1/soapy_power-1.6.1.tar.gz",
+                    "sha256": "b5e54841ac2aa85addd60c11077efedad1800a27b998e90fbc656fcc9eaf52e5"
+                }
+            ]
+        },
+        {
+            "name": "python3-SimpleSoapy",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"SimpleSoapy\" --no-build-isolation"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/82/a8/1e0f86ae3f13f7ce260e9f782764c16559917f24382c74edfb52149897de/numpy-1.20.2.zip",
+                    "sha256": "878922bf5ad7550aa044aa9301d417e2d3ae50f0f577de92051d739ac6096cee"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/f4/2e/513dbf91a65f6783556efa90544b30d8c77390970ec7a3a04e3a9a1946f8/SimpleSoapy-1.5.1.tar.gz",
+                    "sha256": "14923538128676eb18d6f7e094c91d77e54a3d1199efdbf5b95520f94b15002e"
+                }
+            ]
+        },
+        {
+            "name": "python3-SimpleSpectral",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"SimpleSpectral\" --no-build-isolation"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/82/a8/1e0f86ae3f13f7ce260e9f782764c16559917f24382c74edfb52149897de/numpy-1.20.2.zip",
+                    "sha256": "878922bf5ad7550aa044aa9301d417e2d3ae50f0f577de92051d739ac6096cee"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/8d/ef/cf739f7ba571e336189a4a704b844ae08eaf3641a4eb0d24b2c04db3eea5/SimpleSpectral-1.0.0.tar.gz",
+                    "sha256": "869326949870faed82bf21890603569e5c834a8599be5d55c38cb3b41bef0362"
+                }
+            ]
+        }
+    ]
+}

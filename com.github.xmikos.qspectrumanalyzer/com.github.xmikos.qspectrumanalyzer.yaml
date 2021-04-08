@@ -1,3 +1,30 @@
+#
+# TODO:
+#   more dependencies for python-numpy:
+#     * python-nose
+#     * openblas
+#     * lapack
+#     * blas, need gcc-fortran
+#
+#   more dependencies for python-simplespectral:
+#     * python-scipy, need gcc-fortran
+#
+#   more dependencies for soapysdr:
+#     * soapyrtlsdr
+#     * soapyairspy
+#     * soapyhackrf
+#     * soapybladerf
+#     * soapyuhd
+#     * soapylms7
+#     * soapyosmo
+#     * soapyremote
+#     * python-scipy
+#
+#   more top-level modules
+#     * hackrf
+#     * rtl-sdr
+#     * rx_tools
+#
 app-id: com.github.xmikos.qspectrumanalyzer
 runtime: org.kde.Platform
 runtime-version: '5.15'
@@ -34,226 +61,14 @@ modules:
         url: https://github.com/xmikos/qspectrumanalyzer/archive/v2.2.0.tar.gz
         sha256: d50e13fa4951a67ed4f56362fb74daff9faeda88d7fc3f9d98cffb8d63c6311d
     modules:
-      - name: python-pyqt5
-        config-opts:
-          - --assume-shared
-          - --concatenate
-          - --confirm-license
-          - --no-designer-plugin
-          - --no-dist-info
-          - --no-docstrings
-          - --no-qml-plugin
-          - --no-stubs
-          - --no-tools
-          - --disable=QtQuick
-          - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.8'
-          - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.8'
-          - --qsci-api
-          - --qsci-api-destdir=/app/share/qt/qsci
+      - ../shared-modules/pyqt5/pyqt5.json
+      # required by python-opengl
+      - ../shared-modules/freeglut/freeglut.json
+      - name: soapysdr
+        # required by python-simplesoapy
+        buildsystem: cmake
         sources:
           - type: archive
-            url: https://pypi.python.org/packages/source/P/PyQt5/PyQt5-5.15.0.tar.gz
-            sha256: c6f75488ffd5365a65893bc64ea82a6957db126fbfe33654bcd43ae1c30c52f9
-          - type: script
-            commands:
-            - processed=`sed -e 's|prefix|sysroot|' <<< $@`
-            - python3 configure.py $processed
-            dest-filename: configure
-        cleanup:
-          - /lib/debug
-          - /share/sip
-        modules:
-          - name: sip5
-            buildsystem: simple
-            ensure-writable:
-              - /lib/python3.8/site-packages/easy-install.pth
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --skip-build --prefix=/app --root=/
-            sources:
-              - type: archive
-                url: https://pypi.python.org/packages/source/s/sip/sip-5.3.0.tar.gz
-                sha256: 03a44e20b252ef03ca2891e9439d238af3fd8245f65cdcff238a843d4f455b80
-#           cleanup:
-#             - /bin
-#             - /include
-            modules:
-              - name: python-toml
-                buildsystem: simple
-                ensure-writable:
-                  - /lib/python3.8/site-packages/easy-install.pth
-                build-commands:
-                  - python3 setup.py build
-                  - python3 setup.py install --skip-build --prefix=/app
-                sources:
-                  - type: archive
-                    url: https://files.pythonhosted.org/packages/source/t/toml/toml-0.10.1.tar.gz
-                    sha256: 926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f
-              - name: python-packaging
-                buildsystem: simple
-                ensure-writable:
-                  - /lib/python3.8/site-packages/easy-install.pth
-                build-commands:
-                  - python3 setup.py build
-                  - python3 setup.py install --skip-build --prefix=/app
-                sources:
-                  - type: archive
-                    url: https://pypi.io/packages/source/p/packaging/packaging-20.4.tar.gz
-                    sha256: 4357f74f47b9c12db93624a82154e9b120fa8293699949152b22065d556079f8
-                modules:
-                  - name: python-pyparsing
-                    buildsystem: simple
-                    ensure-writable:
-                      - /lib/python3.8/site-packages/easy-install.pth
-                    build-commands:
-                      - python3 setup.py build
-                      - python3 setup.py install --skip-build --prefix=/app
-                    sources:
-                      - type: archive
-                        url: https://github.com/pyparsing/pyparsing/archive/pyparsing_2.4.7.tar.gz
-                        sha256: 6deecf4b95a49a5a9c89b4a4b1fcb73c1cba0e3265ec7b858adffcced229ba05
-          - name: pyqt-builder
-            buildsystem: simple
-            ensure-writable:
-              - /lib/python3.8/site-packages/easy-install.pth
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --skip-build --prefix=/app --root=/
-            sources:
-              - type: archive
-                url: https://pypi.io/packages/source/P/PyQt-builder/PyQt-builder-1.4.0.tar.gz
-                sha256: be7fb8436e6ffb21b7e42266f0fa4776b7d62b0c7e06c63f8a066ff90554fcdc
-          - name: python-pyqt5-sip
-            buildsystem: simple
-            ensure-writable:
-              - /lib/python3.8/site-packages/easy-install.pth
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --skip-build --prefix=/app --root=/
-            sources:
-              - type: archive
-                url: https://pypi.python.org/packages/source/P/PyQt5-sip/PyQt5_sip-12.8.0.tar.gz
-                sha256: 0a34b6596bdd28d52da3a51fa8d9bb0b287bcb605c2512aa3251b9028cc71f4d
-      - name: python-qt.py
-        buildsystem: simple
-        ensure-writable:
-          - /lib/python3.8/site-packages/easy-install.pth
-        build-commands:
-          - python3 setup.py build
-          - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
-        sources:
-          - type: archive
-            url: https://github.com/mottosso/Qt.py/archive/1.2.5.tar.gz
-            sha256: 6ff8b9fa106db9d7e04015def3bb09f8e4552a9a70065513a8af8eb43d87c5b8
-      - name: python-pyqtgraph
-        buildsystem: simple
-        ensure-writable:
-          - /lib/python3.8/site-packages/easy-install.pth
-        build-commands:
-          - python3 setup.py build
-          - python3 setup.py install --skip-build --prefix=/app
-        sources:
-          - type: archive
-            url: https://github.com/pyqtgraph/pyqtgraph/archive/pyqtgraph-0.11.0.tar.gz
-            sha256: 082cdec1e559644e083cd8c5752fc06a18582fb2bebb83cdf6eb8ad33c735535
-        modules:
-          - name: python-opengl
-            buildsystem: simple
-            ensure-writable:
-              - /lib/python3.8/site-packages/easy-install.pth
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --skip-build --prefix=/app --root=/
-            sources:
-              - type: archive
-                url: https://pypi.python.org/packages/source/P/PyOpenGL/PyOpenGL-3.1.5.tar.gz
-                sha256: 4107ba0d0390da5766a08c242cf0cf3404c377ed293c5f6d701e457c57ba3424
-            modules:
-              - name: freeglut
-                build-options:
-                  cflags: -fcommon
-                buildsystem: cmake
-                config-opts:
-                  - -DFREEGLUT_BUILD_STATIC_LIBS=OFF
-                  - -DCMAKE_BUILD_TYPE=None
-                sources:
-                  - type: archive
-                    url: https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz
-                    sha256: d4000e02102acaf259998c870e25214739d1f16f67f99cb35e4f46841399da68
-                cleanup:
-                  - /include
-                  - /lib/cmake
-                modules:
-                  - ../flathub-shared-modules/glu/glu-9.json
-          - name: python-numpy
-            buildsystem: simple
-            ensure-writable:
-              - /lib/python3.8/site-packages/easy-install.pth
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
-            sources:
-              - type: archive
-                url: https://github.com/numpy/numpy/archive/v1.19.1.tar.gz
-                sha256: 65123e53a00b84d03a5a18ae049f4647d1fd100c9010ca1fdf997900ee13875d
-#           modules
-#             - name: python-nose
-#             - name: openblas
-#             - name: lapack
-      - name: soapy_power
-        buildsystem: simple
-        ensure-writable:
-          - /lib/python3.8/site-packages/easy-install.pth
-        build-commands:
-          - python3 setup.py build
-          - python3 setup.py install --skip-build --prefix=/app
-        sources:
-          - type: archive
-            url: https://github.com/xmikos/soapy_power/archive/v1.6.1.tar.gz
-            sha256: fcf80fb3eca178ff8ea2ce87bc5cc390fa2b17f8dc72fa9e1213ca4022f469e4
-        modules:
-#         - name: python-numpy
-          - name: python-simplesoapy
-            buildsystem: simple
-            ensure-writable:
-              - /lib/python3.8/site-packages/easy-install.pth
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --skip-build --prefix=/app
-            sources:
-              - type: archive
-                url: https://github.com/xmikos/simplesoapy/archive/v1.5.1.tar.gz
-                sha256: 4006fb23997693266fbeee0b92d7461c3801c677a6dd2931a9539f34f37aa5b2
-            modules:
-              - name: soapysdr
-                buildsystem: cmake
-                sources:
-                  - type: archive
-                    url: https://github.com/pothosware/SoapySDR/archive/soapy-sdr-0.7.2.tar.gz
-                    sha256: 6eb4143fed115911884bdbbe6fe32dbd99b4ada210c9e126ac3c49c24414347a
-          - name: python-simplespectral
-            buildsystem: simple
-            ensure-writable:
-              - /lib/python3.8/site-packages/easy-install.pth
-            build-commands:
-              - python3 setup.py build
-              - python3 setup.py install --skip-build --prefix=/app
-            sources:
-              - type: archive
-                url: https://github.com/xmikos/simplespectral/archive/v1.0.0.tar.gz
-                sha256: 4342741f7054c71f7c5fb9d38df49e048e0a4e20eb53cefd247e47937644cad0
-#           modules:
-#             - name: python-numpy
-#             - name: python-scipy
-#         - name: soapyrtlsdr
-#         - name: soapyairspy
-#         - name: soapyhackrf
-#         - name: soapybladerf
-#         - name: soapyuhd
-#         - name: soapylms7
-#         - name: soapyosmo
-#         - name: soapyremote
-#         - name: python-scipy
-# - name: hackrf
-# - name: rtl-sdr
-# - name: rx_tools
+            url: https://github.com/pothosware/SoapySDR/archive/soapy-sdr-0.7.2.tar.gz
+            sha256: 6eb4143fed115911884bdbbe6fe32dbd99b4ada210c9e126ac3c49c24414347a
+      - python-dependencies.json
