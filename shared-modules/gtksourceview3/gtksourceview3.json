@@ -1,0 +1,31 @@
+{
+  "name": "gtksourceview3",
+  "build-options": {
+    "env": [
+      "NOCONFIGURE=1"
+    ]
+  },
+  "config-opts": [
+    "--disable-Werror",
+    "--disable-glade-catalog",
+    "--disable-static",
+    "--enable-gtk-doc=no",
+    "--enable-vala=no",
+    "--enable-valgrind=no"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://gitlab.gnome.org/GNOME/gtksourceview/-/archive/73e57b5787ac60776c57032e05a4cc32207f9cf6/gtksourceview-73e57b5787ac60776c57032e05a4cc32207f9cf6.tar.gz",
+      "sha256": "209f97e206f0d328ed8885325a804843fbaa1c3699ea2ccfcce23b28eee76c1c"
+    },
+    {
+      "type": "shell",
+      "commands": [
+        "find . -name Makefile.am -exec sed -i \"/@CODE_COVERAGE_RULES@/d\" {} +",
+        /* configure without vala */
+        "sed -i '\\|^AC_CONFIG_MACRO_DIR.*|a m4_include(m4/vapigen.m4)' configure.ac"
+      ]
+    }
+  ]
+}
