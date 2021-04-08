@@ -25,17 +25,4 @@ modules:
         url: https://github.com/KDAB/hotspot/releases/download/v1.3.0/hotspot-v1.3.0.tar.gz
         sha256: 7651c5f504138f6438d0cacaea041550bddb30a4ab2128abe3111fc827af4fc8
     modules:
-      - name: zstd
-        no-autogen: true
-        make-install-args:
-          - PREFIX=/app
-        sources:
-          - type: archive
-            url: https://github.com/facebook/zstd/releases/download/v1.4.9/zstd-1.4.9.tar.gz
-            sha256: 29ac74e19ea28659017361976240c4b5c5c24db3b89338731a6feb97c038d293
-        cleanup:
-          - /bin
-          - /include
-          - /lib/pkgconfig
-          - /share/man
-          - '*.a'
+      - ../shared-modules/zstd/zstd.json
