@@ -10,7 +10,6 @@
 #  * i haven't tested much of the features of virt-manager yet so there might be other issues.
 
 app-id: org.virt_manager.virt-manager
-base: org.libvirt.libvirt.BaseApp
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
@@ -41,11 +40,196 @@ cleanup:
   - /include
   - /lib/pkgconfig
   - /share/bash-completion
+  - /share/icons/hicolor/icon-theme.cache
   - /share/man
-cleanup-commands:
-  - /app/cleanup-BaseApp.sh
-  - rm -f /app/cleanup-BaseApp.sh
+  - '*.la'
 modules:
+  - name: libvirt
+    builddir: true
+    config-opts:
+      - --libexec=/app/lib/libvirt
+      - --sbindir=/app/bin
+      - --with-runstatedir=/run
+      - --localstatedir=/var
+      - --with-qemu-group=kvm
+      - with_storage_mpath=no
+      - CFLAGS=-I/app/include/tirpc
+      - --with-firewalld=no
+      - --with-firewalld-zone=no
+      - --with-sysctl=no
+    sources:
+      - type: archive
+        url: https://libvirt.org/sources/libvirt-6.4.0.tar.xz
+        sha256: 586ebcf220369d08a07c6cc17035e8a91bb3741e4300199459904e9e02478be7
+      - type: shell
+#       commands:
+#         - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(localstatedir).*/d' {} \;
+#         - find ./ -name Makefile.inc.am -exec sed -i '/.*$(MKDIR_P).*$(DESTDIR)$(runstatedir).*/d' {} \;
+#         - sed '/case $lv_cv_xdr_cflags in/i     lv_cv_xdr_cflags=-I/app/include/tirpc' -i configure
+    cleanup:
+      - /etc/logrotate.d
+      - /share/doc
+    modules:
+      - name: libnl
+        config-opts:
+          - --enable-cli=no
+          - --disable-static
+        sources:
+          - type: archive
+            url: https://github.com/thom311/libnl/releases/download/libnl3_5_0/libnl-3.5.0.tar.gz
+            sha256: 352133ec9545da76f77e70ccb48c9d7e5324d67f6474744647a7ed382b5e05fa
+      - name: python-docutils
+        buildsystem: simple
+        build-commands:
+          - python3 setup.py build
+          - python3 setup.py install --root=/ --prefix=app/
+        sources:
+          - type: archive
+            url: http://downloads.sourceforge.net/docutils/docutils-0.16.tar.gz
+            sha256: 7d4e999cca74a52611773a42912088078363a30912e8822f7a3d38043b767573
+        cleanup:
+          - '*'
+      - name: rpcsvc-proto
+        sources:
+          - type: archive
+            url: https://github.com/thkukuk/rpcsvc-proto/archive/v1.4.1.tar.gz
+            sha256: 750f7e57b81407a25b707867e90d7ee80aeb53bf515b114fc218f3c78dc9a6e8
+        cleanup:
+          - '*'
+      - ../shared-modules/libtirpc/libtirpc.json
+  - name: libvirt-glib
+    config-opts:
+      - --enable-vala=no
+    sources:
+      - type: archive
+        url: https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
+        sha256: 7fff8ca9a2b723dbfd04223b1c7624251c8bf79eb57ec27362a7301b2dd9ebfe
+    cleanup:
+      - /share/gtk-doc
+    modules:
+      - name: libcap-ng
+        config-opts:
+          - --enable-static=no
+        sources:
+          - type: archive
+            url: https://github.com/stevegrubb/libcap-ng/archive/v0.7.10.tar.gz
+            sha256: c3c156a215e5be5430b2f3b8717bbd1afdabe458b6068a8d163e71cefe98fc32
+        cleanup:
+          - /bin
+          - /share/aclocal
+  - name: gtk-vnc
+    buildsystem: meson
+    config-opts:
+      - -Dwith-vala=false
+    sources:
+      - type: git
+        url: https://gitlab.gnome.org/GNOME/gtk-vnc.git
+        tag: v1.0.0
+    #modules:
+    #  - name: perl-text-csv
+  - name: spice-gtk
+    buildsystem: meson
+    config-opts:
+      - -Dcelt051=disabled
+      - -Dgtk_doc=disabled
+      - -Dvapi=disabled
+    sources:
+      - type: archive
+        url: https://www.spice-space.org/download/gtk/spice-gtk-0.38.tar.xz
+        sha256: 5ae974731baf2b41316d4f0b3ae0c2e47f00bff91a5a617e189cd3dedcd96d8e
+    modules:
+      - name: python-pyparsing
+        buildsystem: simple
+        build-commands:
+          - python3 setup.py build
+          - python3 setup.py install --root=/ --prefix=app/
+        sources:
+          - type: archive
+            url: https://github.com/pyparsing/pyparsing/archive/pyparsing_2.4.7.tar.gz
+            sha256: 6deecf4b95a49a5a9c89b4a4b1fcb73c1cba0e3265ec7b858adffcced229ba05
+        cleanup:
+          - '*'
+      - name: libcacard
+        sources:
+          - type: archive
+            url: https://www.spice-space.org/download/libcacard/libcacard-2.7.0.tar.xz
+            sha256: 16b1a0847d5f9d2290e0785eca40f2e49d1ed80814bfc758c05c76b3c89cdb6f
+      - name: phodav
+        buildsystem: meson
+        config-opts:
+          - -Dgtk_doc=disabled
+          - -Dsystemd=disabled
+          - -Dudev=disabled
+          - -Dsbindir=bin
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/phodav/2.4/phodav-2.4.tar.xz
+            sha256: 7dddc2b75e04d0866bb9c9a83028a597ebd73ef4c37bd6ebe1032a870b43b8c3
+          - type: shell
+      - name: libusb
+        config-opts:
+          - --enable-static=no
+        sources:
+          - type: archive
+            url: https://github.com/libusb/libusb/releases/download/v1.0.23/libusb-1.0.23.tar.bz2
+            sha256: db11c06e958a82dac52cf3c65cb4dd2c3f339c8a988665110e0d24d19312ad8d
+      - name: usbredir
+        config-opts:
+          - --enable-static=no
+          - --sbindir=/app/bin
+        sources:
+          - type: archive
+            url: https://spice-space.org/download/usbredir/usbredir-0.8.0.tar.bz2
+            sha256: 87bc9c5a81c982517a1bec70dc8d22e15ae197847643d58f20c0ced3c38c5e00
+      - name: usbutils
+        config-opts:
+          - --datadir=/app/share/hwdata
+          - --disable-zlib
+        sources:
+          - type: archive
+            url: https://www.kernel.org/pub/linux/utils/usb/usbutils/usbutils-012.tar.xz
+            sha256: 88634625f91840bc1993d2731cc081ee8d3b13d56069a95bdd6ac6ef0e063e46
+        modules:
+          - name: hwids
+            buildsystem: simple
+            build-commands:
+              - for ids in pci.ids usb.ids; do install -Dm644 "$ids" /app/share/hwdata/${ids}; done
+            sources:
+              - type: git
+                url: https://github.com/gentoo/hwids.git
+                tag: hwids-20200306
+    # TODO
+    #   meson doesn't find usbutils
+    #   add polkit-gobject?
+      - name: spice-protocol
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.1/spice-protocol-v0.14.1.tar.gz
+            sha256: 67d8842de66f02dfa7ec512d607dc99164b465ee6772d48782f1de935cb19ee6
+  - name: libgovirt
+    config-opts:
+      - --enable-static=no
+    sources:
+      - type: archive
+        url: https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.7/libgovirt-v0.3.7.tar.gz
+        sha256: c7311f8c4518fe8407bfe5bf7de3d84a548ddb41943cc64670821abfaec98fd8
+    modules:
+      - name: rest
+        sources:
+          - type: archive
+            url: https://gitlab.gnome.org/GNOME/librest/-/archive/0.8.1/librest-0.8.1.tar.gz
+            sha256: 2bdd1be07a9150b1c6ceea6e01dedf2efcff564381cae0cd6c7330403efe59d7
+  - name: libvirt-python
+    buildsystem: simple
+    build-commands:
+      - python3 setup.py clean
+      - python3 setup.py install --root=/ --prefix=app/
+    sources:
+      - type: archive
+        url: https://libvirt.org/sources/python/libvirt-python-6.4.0.tar.gz
+        sha256: b13e6dddea8876a7a6c43482d275a84f082d72427302ecb76683c1279b865cec
+  - ../flathub-shared-modules/intltool/intltool-0.51.json
   - name: virt-manager
     buildsystem: simple
     build-commands:
@@ -61,13 +245,12 @@ modules:
         url: https://github.com/virt-manager/virt-manager/archive/v3.2.0.tar.gz
         sha256: 74bf899e25ef2751e6b9b7b46a4e79760cd3e8adb5a5fc474944507a4587e0fd
       - type: patch
-        path: 0001-virt-manager-disable-man-pages.patch
+        path: virt-manager-disable-man-pages.patch
     modules:
-      - ../flathub-shared-modules/intltool/intltool-0.51.json
       - ../shared-modules/python-gobject/python-gobject.json
       - ../shared-modules/gtksourceview4/gtksourceview4.json
       - ../shared-modules/vte3/vte3.json
-      - python-dependencies.json
+      - virt-manager-python-dependencies.json
       - name: libosinfo
         buildsystem: meson
         config-opts:
@@ -99,3 +282,26 @@ modules:
                     sha256: 255f1c878bacec70c3020ff5a9cb0f6bd861ca0009f24608df5ef6f62d5243c0
                 cleanup:
                   - '*'
+  - name: virt-viewer
+    post-install:
+      - |
+          _MODULE_ID=virt-viewer
+          _FP_MOD_URI=${FLATPAK_ID}.${_MODULE_ID}
+          cd /app/share
+
+          pushd applications
+          mv remote-viewer.desktop ${_FP_MOD_URI}.desktop
+          desktop-file-edit --set-icon=${_FP_MOD_URI} ${_FP_MOD_URI}.desktop
+          popd
+
+          pushd icons/hicolor
+          for f in $(find ./ -name "${_MODULE_ID}.png" -o -name "${_MODULE_ID}.svg"); do
+            mv ${f} $(dirname $f)/${_FP_MOD_URI}.${f##*.}
+          done
+          popd
+
+          mv mime/packages/${_MODULE_ID}-mime.xml mime/packages/${_FP_MOD_URI}-mime.xml
+    sources:
+      - type: archive
+        url: https://virt-manager.org/download/sources/virt-viewer/virt-viewer-8.0.tar.gz
+        sha256: dcf358ed5d7a4900215133135a6492c04311d84332816d930df9a89d6195b6ed
