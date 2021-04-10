@@ -1,5 +1,5 @@
 {
-    "name": "python-modules",
+    "name": "python-dependencies",
     "buildsystem": "simple",
     "build-commands": [],
     "modules": [

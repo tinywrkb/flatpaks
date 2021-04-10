@@ -53,7 +53,8 @@ modules:
 #           - PERL5LIB=/app/lib/perl5
 #       build-commands:
 #         - cpanm -l /app
-#             Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
+#             Getopt::Long::Descriptive JSON::MaybeXS LWP::Protocol::https LWP::UserAgent
+#             MetaCPAN::Client Capture::Tiny
 #       post-install:
 #         # workaround for cpanm acting silly and install files without write permission
 #         - find /app -type f ! -perm -0200 -exec
@@ -108,7 +109,8 @@ modules:
 #       build-commands:
 #         - flatpak-cpan-generator.pl -o perl-dependencies-sources.json
 #             App::cpanminus
-#             Getopt::Long::Descriptive JSON::MaybeXS LWP::UserAgent MetaCPAN::Client Capture::Tiny
+#             Getopt::Long::Descriptive JSON::MaybeXS LWP::Protocol::https LWP::UserAgent
+#             MetaCPAN::Client Capture::Tiny
 #       sources:
 #         # workaround to always rebuild and not use cache
 #         - type: dir
