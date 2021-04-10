@@ -1,7 +1,7 @@
 app-id: com.github.tinywrkb.trxo
-runtime: org.gnome.Platform
-runtime-version: '40'
-sdk: org.gnome.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
 command: trxo
 finish-args:
   - --share=network
@@ -37,3 +37,4 @@ modules:
         modules:
           - ../shared-modules/libevent/libevent.json
           - ../flathub-shared-modules/intltool/intltool-0.51.json
+          - ../shared-modules/libnotify/libnotify.json
