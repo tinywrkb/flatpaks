@@ -1,3 +1,4 @@
+# WARNING: libvlc is missing so there's no video player functionality
 app-id: io.github.cimbali.pympress
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
