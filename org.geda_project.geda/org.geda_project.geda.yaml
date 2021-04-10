@@ -182,7 +182,6 @@ modules:
 
             pushd icons/hicolor
             for f in $(find ./ -name "${app}.png" -o -name "${app}.svg"); do
-              echo Found image file $f
               mv ${f} $(dirname $f)/${FLATPAK_ID}.$(basename $f)
             done
             popd
