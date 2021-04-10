@@ -1,0 +1,7 @@
+App::cpanminus
+Capture::Tiny
+Getopt::Long::Descriptive
+JSON::MaybeXS
+LWP::Protocol::https
+LWP::UserAgent
+MetaCPAN::Client
