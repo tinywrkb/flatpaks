@@ -1,0 +1,14 @@
+#!/bin/bash
+
+unset _perl_mods
+
+while read -r line; do
+  _perl_mods+=" $line"
+done < perl-requirements.txt
+
+flatpak run \
+  --filesystem=$PWD \
+  --command=flatpak-cpan-generator.pl \
+  io.github.flatpak.flatpak-builder-tools \
+  --output perl-dependencies-sources.json \
+  $_perl_mods
