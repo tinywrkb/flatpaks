@@ -45,23 +45,28 @@ cleanup:
   - '*.la'
 modules:
   - name: libvirt
-    builddir: true
+    buildsystem: meson
+    build-options:
+      cflags: -I/app/include/tirpc
     config-opts:
       - --libexec=/app/lib/libvirt
       - --sbindir=/app/bin
-      - --with-runstatedir=/run
       - --localstatedir=/var
-      - --with-qemu-group=kvm
-      - with_storage_mpath=no
-      - CFLAGS=-I/app/include/tirpc
-      - --with-firewalld=no
-      - --with-firewalld-zone=no
-      - --with-sysctl=no
+      - -Drunstatedir=/run
+      - -Drpath=enabled
+      - -Dqemu_group=kvm
+      # python-libvirt need libvirt-api.xml
+      - -Ddocs=enabled
+      - -Dtests=disabled
+      - -Dstorage_mpath=disabled
+      - -Dfirewalld=disabled
+      - -Dfirewalld-zone=disabled
+      - -Dinit_script=none
+      - -Dsysctl_config=disabled
     sources:
       - type: archive
-        url: https://libvirt.org/sources/libvirt-6.4.0.tar.xz
-        sha256: 586ebcf220369d08a07c6cc17035e8a91bb3741e4300199459904e9e02478be7
-      - type: shell
+        url: https://libvirt.org/sources/libvirt-7.2.0.tar.xz
+        sha256: 01f459d0c7ba5009622a628dba1a026200e8f4a299fea783b936a71d7e0ed1d0
     cleanup:
       - /etc/logrotate.d
       - /share/doc
@@ -81,18 +86,27 @@ modules:
       - name: rpcsvc-proto
         sources:
           - type: archive
-            url: https://github.com/thkukuk/rpcsvc-proto/archive/v1.4.1.tar.gz
-            sha256: 750f7e57b81407a25b707867e90d7ee80aeb53bf515b114fc218f3c78dc9a6e8
+            url: https://github.com/thkukuk/rpcsvc-proto/archive/v1.4.2.tar.gz
+            sha256: 9f309fa25507836b0c5de8a9d755c1428bde5554610bf92eb21e32078134aef5
+          - type: script
+            dest-filename: autogen.sh
+            commands:
+              - autoreconf -fi
         cleanup:
           - '*'
       - ../shared-modules/libtirpc/libtirpc.json
   - name: libvirt-glib
+    buildsystem: meson
     config-opts:
-      - --enable-vala=no
+      - -Drpath=enabled
+      - -Ddocs=disabled
+      - -Dtests=disabled
+      - -Dintrospection=enabled
+      - -Dvapi=disabled
     sources:
       - type: archive
-        url: https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
-        sha256: 7fff8ca9a2b723dbfd04223b1c7624251c8bf79eb57ec27362a7301b2dd9ebfe
+        url: https://libvirt.org/sources/glib/libvirt-glib-4.0.0.tar.xz
+        sha256: 8423f7069daa476307321d1c11e2ecc285340cd32ca9fc05207762843edeacbd
     cleanup:
       - /share/gtk-doc
     modules:
@@ -101,21 +115,24 @@ modules:
           - --enable-static=no
         sources:
           - type: archive
-            url: https://github.com/stevegrubb/libcap-ng/archive/v0.7.10.tar.gz
-            sha256: c3c156a215e5be5430b2f3b8717bbd1afdabe458b6068a8d163e71cefe98fc32
+            url: https://github.com/stevegrubb/libcap-ng/archive/v0.8.2.tar.gz
+            sha256: 65b86885b8d873e55c05bd49427fd370d559b26f0c2089ac9194828e6a2fe233
         cleanup:
           - /bin
           - /share/aclocal
   - name: gtk-vnc
+    # TODO: bump to latest commit and test zoom levels
     buildsystem: meson
     config-opts:
       - -Dwith-vala=false
     sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/gtk-vnc.git
-        tag: v1.0.0
-    #modules:
-    #  - name: perl-text-csv
+      - type: archive
+        url: https://gitlab.gnome.org/GNOME/gtk-vnc/-/archive/v1.0.0/gtk-vnc-v1.0.0.tar.gz
+        sha256: fca1d84d9430d4efd510c65f1270f27025ceb5c6cb9ebc8a8cc585450ebe97d8
+      - type: archive
+        url: https://gitlab.com/keycodemap/keycodemapdb/-/archive/6280c94f306df6a20bbc100ba15a5a81af0366e6/keycodemapdb-6280c94f306df6a20bbc100ba15a5a81af0366e6.tar.gz
+        sha256: eec0777e0bf5efd2548881f820f2d36daa86effb4af43d5b2fb5c4541b747f55
+        dest: subprojects/keycodemapdb
   - name: spice-gtk
     buildsystem: meson
     config-opts:
@@ -124,8 +141,8 @@ modules:
       - -Dvapi=disabled
     sources:
       - type: archive
-        url: https://www.spice-space.org/download/gtk/spice-gtk-0.38.tar.xz
-        sha256: 5ae974731baf2b41316d4f0b3ae0c2e47f00bff91a5a617e189cd3dedcd96d8e
+        url: https://www.spice-space.org/download/gtk/spice-gtk-0.39.tar.xz
+        sha256: 23acbee197eaaec9bce6e6bfd885bd8f79708332639243ff04833020865713cd
     modules:
       - name: python-pyparsing
         buildsystem: simple
@@ -152,9 +169,8 @@ modules:
           - -Dsbindir=bin
         sources:
           - type: archive
-            url: https://download.gnome.org/sources/phodav/2.4/phodav-2.4.tar.xz
-            sha256: 7dddc2b75e04d0866bb9c9a83028a597ebd73ef4c37bd6ebe1032a870b43b8c3
-          - type: shell
+            url: https://download.gnome.org/sources/phodav/2.5/phodav-2.5.tar.xz
+            sha256: 71f0a9cd70afd4dd1412a0298331dbb8ac71c0377f52117afc15eb88dc6fb910
       - ../flathub-shared-modules/libusb/libusb.json
       - name: usbredir
         config-opts:
@@ -162,25 +178,25 @@ modules:
           - --sbindir=/app/bin
         sources:
           - type: archive
-            url: https://spice-space.org/download/usbredir/usbredir-0.8.0.tar.bz2
-            sha256: 87bc9c5a81c982517a1bec70dc8d22e15ae197847643d58f20c0ced3c38c5e00
+            url: https://spice-space.org/download/usbredir/usbredir-0.9.0.tar.xz
+            sha256: a3e167bf42bc7fe02c3c9db27d7767f1b8ce41b99ad14a4b0d0a60abe8bf56a6
       - name: usbutils
         config-opts:
           - --datadir=/app/share/hwdata
           - --disable-zlib
         sources:
           - type: archive
-            url: https://www.kernel.org/pub/linux/utils/usb/usbutils/usbutils-012.tar.xz
-            sha256: 88634625f91840bc1993d2731cc081ee8d3b13d56069a95bdd6ac6ef0e063e46
+            url: https://www.kernel.org/pub/linux/utils/usb/usbutils/usbutils-013.tar.xz
+            sha256: 9e23494fcc78b7a80ee29a07dd179c95ae2f71509c35728dbbabc2d1cca41338
         modules:
           - name: hwids
             buildsystem: simple
             build-commands:
               - for ids in pci.ids usb.ids; do install -Dm644 "$ids" /app/share/hwdata/${ids}; done
             sources:
-              - type: git
-                url: https://github.com/gentoo/hwids.git
-                tag: hwids-20200306
+              - type: archive
+                url: https://github.com/gentoo/hwids/archive/hwids-20201207.tar.gz
+                sha256: 43a8af154769c33871582caea31546a8b91cefb6f0acdf53d08660237ae57e37
     # TODO
     #   meson doesn't find usbutils
     #   add polkit-gobject?
@@ -188,15 +204,15 @@ modules:
         buildsystem: meson
         sources:
           - type: archive
-            url: https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.1/spice-protocol-v0.14.1.tar.gz
-            sha256: 67d8842de66f02dfa7ec512d607dc99164b465ee6772d48782f1de935cb19ee6
+            url: https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.3/spice-protocol-v0.14.3.tar.gz
+            sha256: 80ae89643e253dc5ddc5b2120cd3cf9d9565d00026ff261dd140d4b8c5deaa64
   - name: libgovirt
     config-opts:
       - --enable-static=no
     sources:
       - type: archive
-        url: https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.7/libgovirt-v0.3.7.tar.gz
-        sha256: c7311f8c4518fe8407bfe5bf7de3d84a548ddb41943cc64670821abfaec98fd8
+        url: https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.7/libgovirt-v0.3.8.tar.gz
+        sha256: a391df1503a5c72fa42f4b3ff0cea9cb20487b61668634922efc1be7186325c5
     modules:
       - name: rest
         sources:
@@ -210,8 +226,8 @@ modules:
       - python3 setup.py install --root=/ --prefix=app/
     sources:
       - type: archive
-        url: https://libvirt.org/sources/python/libvirt-python-6.4.0.tar.gz
-        sha256: b13e6dddea8876a7a6c43482d275a84f082d72427302ecb76683c1279b865cec
+        url: https://libvirt.org/sources/python/libvirt-python-7.2.0.tar.gz
+        sha256: c0c3bac54c55622e17927b09cd9843869600d71842fb072c99491fe2608dcee7
   - ../flathub-shared-modules/intltool/intltool-0.51.json
   - name: virt-manager
     buildsystem: simple
@@ -286,5 +302,5 @@ modules:
           mv mime/packages/${_MODULE_ID}-mime.xml mime/packages/${_FP_MOD_URI}-mime.xml
     sources:
       - type: archive
-        url: https://virt-manager.org/download/sources/virt-viewer/virt-viewer-8.0.tar.gz
-        sha256: dcf358ed5d7a4900215133135a6492c04311d84332816d930df9a89d6195b6ed
+        url: https://virt-manager.org/download/sources/virt-viewer/virt-viewer-9.0.tar.gz
+        sha256: 91b43383a0bd4cf3173269e674d65fd205f7c34bc5a8cb4fb3640deb7f1d4825
