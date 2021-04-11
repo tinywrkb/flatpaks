@@ -26,13 +26,13 @@ modules:
   - name: sway
     buildsystem: meson
     config-opts:
-      - -Ddefault-wallpaper=false
+      - -Ddefault-wallpaper=true
       - -Dzsh-completions=false
       - -Dbash-completions=false
       - -Dfish-completions=false
       - -Dxwayland=disabled
       - -Dtray=disabled
-      - -Dgdk-pixbuf=disabled
+      - -Dgdk-pixbuf=enabled
       - -Dman-pages=disabled
     sources:
       - type: archive
