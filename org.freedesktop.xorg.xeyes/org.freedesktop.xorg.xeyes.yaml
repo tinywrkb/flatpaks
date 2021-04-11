@@ -1,0 +1,22 @@
+app-id: org.freedesktop.xorg.xeyes
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: xeyes
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: xeyes
+    sources:
+      - type: archive
+        url: https://xorg.freedesktop.org/archive/individual/app/xeyes-1.1.2.tar.bz2
+        sha256: 57bcec0d2d167af9e5d44d0dbd74c6d7c0f0591cd0608952b23c749fdd910553
+    modules:
+      - ../shared-modules/libxmu/libxmu.json
