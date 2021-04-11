@@ -1,0 +1,27 @@
+app-id: org.mesa3d.mesa-demos
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: /bin/sh
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: mesa-demos
+    config-opts:
+      - --disable-osmesa
+    sources:
+      - type: archive
+        url: "https://mesa.freedesktop.org/archive/demos/mesa-demos-8.4.0.tar.bz2"
+        sha256: 01e99c94a0184e63e796728af89bfac559795fb2a0d6f506fa900455ca5fff7d
+    modules:
+      - ../flathub-shared-modules/glew/glew.json
+      - ../flathub-shared-modules/glu/glu-9.json
+      - ../shared-modules/freeglut/freeglut.json
