@@ -56,8 +56,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/nwg-piotr/nwg-panel.git
-        tag: v0.2.1
-        commit: 9056837d7682211146be5475fe22c82399e1b92a
+        tag: v0.2.2
+        commit: bae8a65ba2d73881617a97186d6cba054b035bc8
   - ../shared-modules/gtk-layer-shell/gtk-layer-shell.json
   - python-dependencies.json
   - name: light
