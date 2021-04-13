@@ -13,8 +13,11 @@ finish-args:
   - --device=dri
   # TODO: is it possible to use spice to connect usb device from the client to the remote?
   #       can this work automatically with proper udev rules and group membership for user?
-  #       what about an suid helper on the host and flatpak-spawn wrapper in sandbox? policykit?
-  #       probably handling usbredirserver calls
+  #       what about an suid helper on the host and flatpak-spawn wrapper in sandbox? polkit?
+  #       polkit rules can't work in the sandbox, need to document all the polkit helpers, those
+  #         propbably should be available on the host with their polkit rules,
+  #         supply hardlinked binaries to run on the host? rules can be dropped into /etc
+  #       handling usbredirserver calls? or spice-client-glib-usb-acl-helper from spice-gtk?
   # remotely connect usb devices
   #--device=all
   - --filesystem=xdg-documents
@@ -48,6 +51,8 @@ finish-args:
   #     the socket in this mentioned dir, that you will also need to create, or in another location
   #     and then you should add the suitable filesystem permission.
   #     just make sure to only bind-mount an existing folder, and don't directly bind-mount the socket.
+  #   see example in the ssh-agents section in the archwiki ssh keys page
+  #     https://wiki.archlinux.org/index.php/SSH_keys#SSH_agents
   - --socket=ssh-auth
   #   custom ssh socket location
   #- --filesystem=xdg-run/ssh
@@ -223,7 +228,8 @@ modules:
                 url: https://github.com/gentoo/hwids/archive/hwids-20201207.tar.gz
                 sha256: 43a8af154769c33871582caea31546a8b91cefb6f0acdf53d08660237ae57e37
     # TODO: meson doesn't find usbutils
-    # TODO: add polkit-gobject?
+    # TODO: add polkit-gobject? needed for spice-client-glib-usb-acl-helper and we can't use polkit
+    #         in the sandbox
       - name: spice-protocol
         buildsystem: meson
         sources:
