@@ -59,6 +59,7 @@ modules:
         tag: v0.2.2
         commit: bae8a65ba2d73881617a97186d6cba054b035bc8
   - ../shared-modules/gtk-layer-shell/gtk-layer-shell.json
+  - ../shared-modules/python-gobject/python-gobject.json
   - python-dependencies.json
   - name: light
     config-opts:
