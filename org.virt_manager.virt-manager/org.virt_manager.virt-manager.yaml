@@ -1,13 +1,6 @@
-# Known issues:
-#  * ~/.ssh is not saved between running sessions
-#    you might need to override it with:
-#      --filesystem=~/.ssh which bind mount the folder from the host to the container
-#    or with:
-#      --persist=.ssh which saves the folder content between running sessions.
-#    i prefer the latter as on my host i use a patched openssh build with the user dir at ~/.config/ssh,
-#    and instead of giving direct access to my ssh key files  i'm sharing the ssh-agent pid and socket
-#    with the container by bind mounting xdg-run/ssh.
-#  * i haven't tested much of the features of virt-manager yet so there might be other issues.
+#
+# WARNING: this app wasn't thoroughly tested, there are most likely limitations and bugs.
+#
 
 app-id: org.virt_manager.virt-manager
 runtime: org.freedesktop.Platform
@@ -18,6 +11,12 @@ rename-icon: virt-manager
 rename-desktop-file: virt-manager.desktop
 finish-args:
   - --device=dri
+  # TODO: is it possible to use spice to connect usb device from the client to the remote?
+  #       can this work automatically with proper udev rules and group membership for user?
+  #       what about an suid helper on the host and flatpak-spawn wrapper in sandbox? policykit?
+  #       probably handling usbredirserver calls
+  # remotely connect usb devices
+  #--device=all
   - --filesystem=xdg-documents
   - --filesystem=xdg-download
   - --filesystem=xdg-music
@@ -26,16 +25,42 @@ finish-args:
   - --filesystem=xdg-videos
   # unix socket access
   - --filesystem=/run/libvirt
+  # ssh configuration dir access, includes config, known_hosts, and etc.
+  #   not xdg dirs spec compliant, devs are die hard unixers, so with the proper filesystem access
+  #     permission teh ssh configuration won't be save between running sessions.
+  #   enabled by default, if you don't like giving the sandbox this access then override it with
+  #     flatpak-override of flatseal and add a `--persist=.ssh` to keep the ssh config dir in
+  #     HOME/.var/app/org.virt_manager.virt-manager/.ssh
+  #   using persist also means that the sandbox won't have access to your private key files so it
+  #     won't be able to change them, if this is even something to be concerned about
+  #     instead of giving access to the keys, give access to the ssh-agent
+  #   i'm using a patched openssh build on the host to set the ssh config folder in .config/ssh so
+  #     i'm forced to set `--persist=.ssh`
+  - --filesystem=.ssh
+  #- --persist=.ssh
   # ssh-agent pid and socket
+  #   access to the running ssh-agent on the host
+  #   it's presumed that SSH_AGENT_PID and SSH_AUTH_SOCK are known in the sandbox, and that
+  #     SSH_AUTH_SOCK is accessible in the sandbox
+  #   the default, `--socket=ssh-auth`, bind-mounts the xdg-run/ssh-auth, only used by gnome-keyring's
+  #     ssh agent but it's a good location as any to put the ssh-agent file socket
+  #   if you're not use gnome-keyring's ssh agent then you gonna need to force your ssh-agent to create
+  #     the socket in this mentioned dir, that you will also need to create, or in another location
+  #     and then you should add the suitable filesystem permission.
+  #     just make sure to only bind-mount an existing folder, and don't directly bind-mount the socket.
+  - --socket=ssh-auth
+  #   custom ssh socket location
   #- --filesystem=xdg-run/ssh
   - --own-name=org.virt-manager.virt-manager
   - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
-  - --socket=fallback-x11
-# - --talk-name=org.freedesktop.Notifications
-# - --talk-name=org.kde.StatusNotifierWatcher
+  # TODO: figure out if notifications and system tray are needed
+  #- --talk-name=org.freedesktop.Notifications
+  #- --talk-name=org.kde.StatusNotifierWatcher
+  # TODO: also enable pcsc and cups?
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -197,9 +222,8 @@ modules:
               - type: archive
                 url: https://github.com/gentoo/hwids/archive/hwids-20201207.tar.gz
                 sha256: 43a8af154769c33871582caea31546a8b91cefb6f0acdf53d08660237ae57e37
-    # TODO
-    #   meson doesn't find usbutils
-    #   add polkit-gobject?
+    # TODO: meson doesn't find usbutils
+    # TODO: add polkit-gobject?
       - name: spice-protocol
         buildsystem: meson
         sources:
