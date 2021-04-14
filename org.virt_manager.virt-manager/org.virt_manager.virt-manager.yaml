@@ -167,9 +167,9 @@ modules:
   - name: spice-gtk
     buildsystem: meson
     config-opts:
-      - -Dcelt051=disabled
       - -Dgtk_doc=disabled
       - -Dvapi=disabled
+      - -Dusb-acl-helper-dir=/app/lib
     sources:
       - type: archive
         url: https://www.spice-space.org/download/gtk/spice-gtk-0.39.tar.xz
@@ -228,9 +228,6 @@ modules:
               - type: archive
                 url: https://github.com/gentoo/hwids/archive/hwids-20201207.tar.gz
                 sha256: 43a8af154769c33871582caea31546a8b91cefb6f0acdf53d08660237ae57e37
-    # TODO: meson doesn't find usbutils
-    # TODO: add polkit-gobject? needed for spice-client-glib-usb-acl-helper and we can't use polkit
-    #         in the sandbox
       - name: spice-protocol
         buildsystem: meson
         sources:
