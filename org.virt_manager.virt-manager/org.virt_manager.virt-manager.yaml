@@ -12,6 +12,8 @@ rename-desktop-file: virt-manager.desktop
 finish-args:
   - --device=dri
   # TODO: is it possible to use spice to connect usb device from the client to the remote?
+  #       usb redirection seems to work when the app runs on the same machine as teh libvirt remote
+  #         but the app isn't very stable so i didn't set `--device=all` as default.
   #       can this work automatically with proper udev rules and group membership for user?
   #       what about an suid helper on the host and flatpak-spawn wrapper in sandbox? polkit?
   #       polkit rules can't work in the sandbox, need to document all the polkit helpers, those
