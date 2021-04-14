@@ -1,0 +1,16 @@
+#!/bin/sh
+
+GDK_BACKEND=wayland xpra \
+  --xvfb=/app/bin/Xvfb \
+  start \
+  --encoding=rgb \
+  --compress=0 \
+  --attach=yes \
+  --splash=no \
+  --env=DISPLAY=:11 \
+  --exit-with-children=yes \
+  --start-child-after-connect=/app/extra/DesignLab \
+  :11 &
+
+export GDK_BACKEND=wayland
+GDK_BACKEND=wayland xpra attach --splash=no --window-close=disconnect :11
