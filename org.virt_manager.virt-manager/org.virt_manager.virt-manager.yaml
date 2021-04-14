@@ -263,13 +263,14 @@ modules:
   - name: virt-manager
     buildsystem: simple
     build-commands:
-      - python3 setup.py configure --prefix=/app
-      - python3 setup.py build
-      - python3 setup.py install --root /
-#     - ln -s ../../var/run /app/var/run
-#     - python3 setup.py --no-update-icon-cache --no-compile-schemas install --root /
-#     - python3 -m compileall /app/share/virt-manager
-#     - python3 -O -m compileall /app/share/virt-manager
+      - python setup.py configure --prefix=/app
+      - python setup.py build
+      #- python setup.py install --root=/
+      - python setup.py --no-update-icon-cache --no-compile-schemas install --root /
+      - python -m compileall /app/share/virt-manager
+      - python -O -m compileall /app/share/virt-manager
+      # workaround for runstatedir issue
+      #- ln -s ../../var/run /app/var/run
     sources:
       - type: archive
         url: https://github.com/virt-manager/virt-manager/archive/v3.2.0.tar.gz
