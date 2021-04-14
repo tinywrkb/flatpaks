@@ -1,4 +1,3 @@
-# TODO: bump runtime
 app-id: net.gadgetfactory.papilio-designlab
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
@@ -6,18 +5,17 @@ sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk8
 command: designlab
-rename-desktop-file: designlab.desktop
-rename-icon: designlab
 finish-args:
   - --device=all
   - --device=dri
   - --env=PATH=/app/bin:/usr/bin:/app/jre/bin
 # - --filesystem=~/DesignLab
-  - --filesystem=home
+  - --filesystem=xdg-download
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-pictures
   - --persist=.designlab
 # - --persist=DesignLab
   - --share=ipc
-  - --socket=wayland
   - --socket=x11
 cleanup:
   - /include
@@ -33,10 +31,9 @@ modules:
   - name: designlab
     buildsystem: simple
     build-commands:
-      - install -Dm755 apply_extra /app/bin/apply_extra
-      - install -Dm755 designlab /app/bin/designlab
-      - install -Dm644 designlab.desktop /app/share/applications/designlab.desktop
-      - install -Dm644 designlab.png /app/share/icons/hicolor/256x256/apps/designlab.png
+      - install -Dm755 apply_extra designlab -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/256x256/apps/
       - install -Dm644 udev.rules /app/docs/udev_rules/papilio.rules
     sources:
       - type: script
@@ -49,5 +46,11 @@ modules:
         sha256: a6b17263d3c798935501c4e9697605200a8064fedd4777c9bf0f3cad84cfda49
         size: 183205579
         filename: designlab.tar.gz
-      - type: dir
-        path: resources
+      - type: file
+        path: designlab
+      - type: file
+        path: net.gadgetfactory.papilio-designlab.desktop
+      - type: file
+        path: net.gadgetfactory.papilio-designlab.png
+      - type: file
+        path: udev.rules

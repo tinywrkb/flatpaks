@@ -2,6 +2,7 @@
 Name=Papilio DesignLab IDE
 Comment=Make custom SOC designs for Papilo FPGA's boards
 Exec=designlab %U
+Icon=net.gadgetfactory.papilio-designlab
 Terminal=false
 Type=Application
 StartupNotify=true
