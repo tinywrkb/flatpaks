@@ -11,17 +11,16 @@ rename-icon: virt-manager
 rename-desktop-file: virt-manager.desktop
 finish-args:
   - --device=dri
-  # TODO: is it possible to use spice to connect usb device from the client to the remote?
-  #       usb redirection seems to work when the app runs on the same machine as teh libvirt remote
-  #         but the app isn't very stable so i didn't set `--device=all` as default.
-  #       can this work automatically with proper udev rules and group membership for user?
-  #       what about an suid helper on the host and flatpak-spawn wrapper in sandbox? polkit?
-  #       polkit rules can't work in the sandbox, need to document all the polkit helpers, those
-  #         propbably should be available on the host with their polkit rules,
-  #         supply hardlinked binaries to run on the host? rules can be dropped into /etc
-  #       handling usbredirserver calls? or spice-client-glib-usb-acl-helper from spice-gtk?
-  # remotely connect usb devices
-  #--device=all
+  # TODO: thoroughly test usb redirection, it seems to work somehow without workarounds.
+  #       are workaround are still needed?
+  #         * udev rules and group membership for user?
+  #         * an suid helper on the host and flatpak-spawn wrapper in sandbox? polkit?
+  #         * polkit rules can't work in the sandbox, need to document all the polkit helpers, those
+  #           probably should be available on the host with their polkit rules,
+  #         * supply hardlinked binaries to run on the host? rules can be dropped into /etc
+  #         * handling usbredirserver calls? or spice-client-glib-usb-acl-helper from spice-gtk?
+  # usb device redirection
+  - --device=all
   - --filesystem=xdg-documents
   - --filesystem=xdg-download
   - --filesystem=xdg-music
@@ -41,7 +40,7 @@ finish-args:
   #     instead of giving access to the keys, give access to the ssh-agent
   #   i'm using a patched openssh build on the host to set the ssh config folder in .config/ssh so
   #     i'm forced to set `--persist=.ssh`
-  - --filesystem=.ssh
+  - --filesystem=~/.ssh
   #- --persist=.ssh
   # ssh-agent pid and socket
   #   access to the running ssh-agent on the host
