@@ -266,7 +266,7 @@ modules:
       - python setup.py configure --prefix=/app
       - python setup.py build
       #- python setup.py install --root=/
-      - python setup.py --no-update-icon-cache --no-compile-schemas install --root /
+      - python setup.py --no-update-icon-cache install --root /
       - python -m compileall /app/share/virt-manager
       - python -O -m compileall /app/share/virt-manager
     sources:
