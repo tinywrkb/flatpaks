@@ -38,6 +38,8 @@ modules:
       - type: archive
         url: https://github.com/swaywm/sway/releases/download/1.6/sway-1.6.tar.gz
         sha256: 9ecfd2f38239f7e90922a13cd348fc95fc059e8fa0e4b75b8ffcc7b61685a5fb
+      #- type: patch
+      #  path: sway-implement-input_method_v2-popups.patch
     modules:
       - ../shared-modules/json-c/json-c.json
       - name: wlroots
@@ -57,6 +59,8 @@ modules:
           - type: archive
             url: https://github.com/swaywm/wlroots/archive/0.13.0.tar.gz
             sha256: f6bea37fd4a6f5e5f552b83d61adae8c73e64b0bcb9ae0ab464ebcd9309d3cf3
+          #- type: patch
+          # path: wlroots-implement-input_method_v2-popups.patch
         modules:
           - name: meson
             buildsystem: simple
