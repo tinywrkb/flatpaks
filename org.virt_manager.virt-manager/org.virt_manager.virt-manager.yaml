@@ -57,15 +57,18 @@ finish-args:
   - --socket=ssh-auth
   #   custom ssh socket location
   #- --filesystem=xdg-run/ssh
+  - --own-name=org.kde.*
   - --own-name=org.virt-manager.virt-manager
   - --share=ipc
   - --share=network
   - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
-  # TODO: figure out if notifications and system tray are needed
+  # virt-manager implements fetching secrets over dbus without importing libsecret, so no added dependency
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.kde.StatusNotifierWatcher
+  # TODO: figure out if notifications is needed
   #- --talk-name=org.freedesktop.Notifications
-  #- --talk-name=org.kde.StatusNotifierWatcher
   # TODO: also enable pcsc and cups?
 cleanup:
   - /include
@@ -272,10 +275,13 @@ modules:
         sha256: 74bf899e25ef2751e6b9b7b46a4e79760cd3e8adb5a5fc474944507a4587e0fd
       - type: patch
         path: virt-manager-disable-man-pages.patch
+      - type: patch
+        path: virt-manager-systray-icon-use-reverse-dns-naming-convention.patch
     modules:
       - ../shared-modules/python-gobject/python-gobject.json
       - ../shared-modules/gtksourceview4/gtksourceview4.json
       - ../shared-modules/vte3/vte3.json
+      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-introspection-12.10.json
       - virt-manager-python-dependencies.json
       - name: libosinfo
         buildsystem: meson
