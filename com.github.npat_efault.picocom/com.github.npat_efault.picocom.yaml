@@ -1,0 +1,32 @@
+#
+# Notes:
+#   * User has to be in the uucp group in order to connect to serial and usb-to-serial devices
+#   * App uses flock to lock access to the connected device
+#
+app-id: com.github.npat_efault.picocom
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: picocom
+finish-args:
+  - --device=all
+modules:
+  - name: picocom
+    no-autogen: true
+    no-make-install: true
+    build-commands:
+      - install -Dm755 -t /app/bin/
+          picocom
+          pc{asc,xm,ym,zm}
+      - install -Dm655 picocom.1 -t /app/share/man/man1/
+      - install -Dm655 -t /app/share/docs/
+          lowerrts.md
+          picocom.1.{html,md,pdf}
+          README.md
+          termios2.txt
+      - install -Dm655 bash_completion/picocom -t /app/share/bash-completion/
+    sources:
+      - type: git
+        url: https://github.com/npat-efault/picocom.git
+        branch: master
+        commit: 1acf1ddabaf3576b4023c4f6f09c5a3e4b086fb8
