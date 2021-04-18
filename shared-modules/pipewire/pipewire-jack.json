@@ -1,7 +1,6 @@
 {
   "name": "pipewire-jack",
   "buildsystem": "meson",
-  "subdir": "pipewire",
   "config-opts": [
     "-Ddocs=disabled",
     "-Dexamples=disabled",
@@ -12,6 +11,7 @@
     "-Dsystemd=disabled",
     "-Dpipewire-alsa=disabled",
     "-Dpipewire-jack=enabled",
+    "-Djack-devel=enabled",
     "-Dlibjack-path=/app/lib",
     "-Dalsa=disabled",
     "-Dbluez5=disabled",
@@ -26,27 +26,11 @@
     {
       "type": "git",
       "url": "https://gitlab.freedesktop.org/pipewire/pipewire.git",
-      "tag": "0.3.25",
-      "commit": "c324107211718043553337cb10d022fe9d2d12d8",
-      "dest": "pipewire"
+      "commit": "acce4f4c165a0707a033dc0c0f9600007fcb0b50"
     },
     {
-      "type": "git",
-      "url": "https://github.com/jackaudio/headers",
-      "branch": "master",
-      "commit": "ab27e5a59fe5294cf09d50ffa2414d1542cf245e",
-      "dest": "jack-headers"
-    },
-    {
-      "type": "file",
-      "path": "pipewire-jack.pc"
-    },
-    {
-      "type": "shell",
-      "commands": [
-        "install -Dm644 jack-headers/*.h -t /app/include/jack/",
-        "install -Dm644 pipewire-jack.pc /app/lib/pkgconfig/jack.pc"
-      ]
+      "type": "patch",
+      "path": "pipewire-install-jack-headers.patch"
     }
   ],
   "cleanup": [
