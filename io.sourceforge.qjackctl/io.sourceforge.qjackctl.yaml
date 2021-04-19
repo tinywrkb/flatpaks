@@ -19,4 +19,4 @@ modules:
         url: https://download.sourceforge.net/qjackctl/qjackctl-0.9.2.tar.gz
         sha256: 867c088ed819f61d2eb1e550d4bb8f6330d8f247ab99843a584d81825f1a5d24
     modules:
-      - ../shared-modules/pipewire/pipewire-jack.json
+      - ../shared-modules/pipewire/pipewire.json
