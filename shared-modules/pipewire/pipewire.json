@@ -1,5 +1,5 @@
 {
-  "name": "pipewire-jack",
+  "name": "pipewire",
   "buildsystem": "meson",
   "config-opts": [
     "-Ddocs=disabled",
