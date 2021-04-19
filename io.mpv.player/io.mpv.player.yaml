@@ -43,7 +43,7 @@ modules:
         sha256: 7cebf2c5efe53cbb9a4b5bdc4b49ae90ecd64a8fce7a3222d58e591b58215306
         dest-filename: waf
     modules:
-      - ../shared-modules/pipewire/pipewire-jack.json
+      - ../shared-modules/pipewire/pipewire.json
       - name: luajit
         no-autogen: true
         cleanup:
