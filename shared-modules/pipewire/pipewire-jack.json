@@ -26,11 +26,7 @@
     {
       "type": "git",
       "url": "https://gitlab.freedesktop.org/pipewire/pipewire.git",
-      "commit": "acce4f4c165a0707a033dc0c0f9600007fcb0b50"
-    },
-    {
-      "type": "patch",
-      "path": "pipewire-install-jack-headers.patch"
+      "commit": "18c4af9add71a319a073ea3617dbcd1201d78e6d"
     }
   ],
   "cleanup": [
