@@ -73,6 +73,7 @@ finish-args:
 cleanup:
   - /include
   - /lib/pkgconfig
+  - /share/applications/mimeinfo.cache
   - /share/bash-completion
   - /share/icons/hicolor/icon-theme.cache
   - /share/man
@@ -315,6 +316,9 @@ modules:
                 cleanup:
                   - '*'
   - name: virt-viewer
+    buildsystem: meson
+    config-opts:
+      - -Dbash_completion=disabled
     post-install:
       - |
           _MODULE_ID=virt-viewer
@@ -335,5 +339,5 @@ modules:
           mv mime/packages/${_MODULE_ID}-mime.xml mime/packages/${_FP_MOD_URI}-mime.xml
     sources:
       - type: archive
-        url: https://virt-manager.org/download/sources/virt-viewer/virt-viewer-9.0.tar.gz
-        sha256: 91b43383a0bd4cf3173269e674d65fd205f7c34bc5a8cb4fb3640deb7f1d4825
+        url: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v10.0/virt-viewer-v10.0.tar.gz
+        sha256: 5671bc0d3f97386a43057ed1bb47bf64cc429f064fcf3609367bdb7aafbbab5a
