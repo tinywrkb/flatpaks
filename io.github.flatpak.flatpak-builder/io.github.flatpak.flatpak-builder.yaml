@@ -1,0 +1,60 @@
+#
+# TODO: finish adding modules
+# TODO: package flatpak? possible sources of pain: ro-fuse, reflinks?
+# TODO: figure out builder usage of ostree, if it's alright to drop ro-fuse
+# TODO: ostree cleanup
+# TODO: ostree features
+#
+app-id: io.github.flatpak.flatpak-builder
+branch: '20.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: flatpak-builder
+finish-args:
+  - --allow=devel
+  - --share=network
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
+modules:
+  - name: flatpak-builder
+    sources:
+      - type: archive
+        url: https://github.com/flatpak/flatpak-builder/releases/download/1.0.12/flatpak-builder-1.0.12.tar.xz
+        sha256: 4780c1b8e0838ffb64e9639bd7801417964fd818c7c6d5e9afca4d5511ded2c8
+      - type: shell
+        commands:
+          - sed -i 's/\(FLATPAK_VERSION=\).*/\1100.0.0/' configure
+    modules:
+      - ../shared-modules/libyaml/libyaml.json
+      - name: ostree
+        config-opts:
+          - --disable-rofiles-fuse
+        sources:
+          - type: archive
+            url: https://github.com/ostreedev/ostree/releases/download/v2021.2/libostree-2021.2.tar.xz
+            sha256: 854008e7c71d44f6b3670f0e9b8500db0f08ff8b297d0b30a7cb9a66f34c5d7c
+      - name: breezy
+        buildsystem: simple
+        build-commands:
+          - python setup.py build
+          - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+        sources:
+          - type: archive
+            url: https://github.com/breezy-team/breezy/archive/3.1.0-8.tar.gz
+            sha256: a2781e9af980ceb62087a78894c2706b17f2ea044253dff7d03fc14f1e4f75d9
+        modules:
+          - breezy-python-dependencies.json
+      - name: flatpak
+        buildsystem: simple
+        build-commands:
+          - install -Dm755 flatpak -t /app/bin/
+        sources:
+          - type: script
+            dest-filename: flatpak
+            commands:
+              - flatpak-spawn --host flatpak "$@"
+#     - name: rpmextract / rpm2cpio
+#     - name: intltool (make)
+#     - name: libdwarf (make)
+#     - name: xmlto (make)
