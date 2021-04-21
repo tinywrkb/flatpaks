@@ -1,0 +1,13 @@
+{
+  "name": "fusermount",
+  "buildsystem": "simple",
+  "build-commands": [
+    "install -Dm755 fusermount -t /app/bin/"
+  ],
+  "sources": [
+    {
+      "type": "file",
+      "path": "fusermount"
+    }
+  ]
+}
