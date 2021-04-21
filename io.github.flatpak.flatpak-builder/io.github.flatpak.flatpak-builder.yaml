@@ -46,17 +46,7 @@ modules:
           - /lib/tmpfiles.d
           - /share
         modules:
-          - name: fuse2
-            config-opts:
-              - MOUNT_FUSE_PATH=/app/bin
-            sources:
-              - type: archive
-                url: https://github.com/libfuse/libfuse/releases/download/fuse-2.9.9/fuse-2.9.9.tar.gz
-                sha256: d0e69d5d608cc22ff4843791ad097f554dd32540ddc9bed7638cc6fea7c1b4b5
-            cleanup:
-              - /bin/ulockmgr_server
-              - /share/man
-          - ../shared-modules/flatpak-spawn-wrappers/fusermount.json
+          - ../shared-modules/fuse/fuse2.json
       - name: breezy
         buildsystem: simple
         build-commands:
