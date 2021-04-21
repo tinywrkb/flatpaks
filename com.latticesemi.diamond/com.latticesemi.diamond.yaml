@@ -51,13 +51,4 @@ modules:
 #       size: 75751048
 #       filename: diamond-update.rpm
     modules:
-      - name: rpmextract
-        buildsystem: simple
-        build-commands:
-          - install -Dm755 rpmextract.sh /app/bin/rpmextract.sh
-          - install -Dm755 rpm2cpio /app/bin/rpm2cpio
-        sources:
-          - type: archive
-            url: https://archive.archlinux.org/packages/r/rpmextract/rpmextract-1.0-8-any.pkg.tar.xz
-            sha256: 1b6d5b08c4cffbe8db2289ad3ae99cff2c0d93b04eb730322bc813cc946b535e
-            strip-components: 2
+      - ../shared-modules/rpmextract/rpmextract.json
