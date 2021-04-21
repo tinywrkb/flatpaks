@@ -1,0 +1,22 @@
+{
+  "name": "breezy",
+  "buildsystem": "simple",
+  "build-commands": [
+    "python setup.py build",
+    "python setup.py install --skip-build --prefix=/app --root=/ --install-data=app/share --optimize=1",
+    "ln -s brz /app/bin/bzr"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/breezy-team/breezy/archive/3.1.0-8.tar.gz",
+      "sha256": "a2781e9af980ceb62087a78894c2706b17f2ea044253dff7d03fc14f1e4f75d9"
+    }
+  ],
+  "cleanup": [
+    "/share/man"
+  ],
+  "modules": [
+    "python-dependencies.json"
+  ]
+}
