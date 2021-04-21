@@ -1,6 +1,6 @@
 #
 # TODO: package flatpak? possible sources of pain: rofiles-fuse, maybe reflinks?
-# TODO: find out why rofiles lock is not being cleaned when early exit
+# TODO: find out why rofiles lock is not being cleaned on early exit
 #
 app-id: io.github.flatpak.flatpak-builder
 branch: '20.08'
