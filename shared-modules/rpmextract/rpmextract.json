@@ -1,0 +1,21 @@
+{
+  "name": "rpmextract",
+  "buildsystem": "simple",
+  "build-commands": [
+    "install -Dm755 rpm2cpio rpmextract.sh -t /app/bin/"
+  ],
+  "sources": [
+    {
+      "type": "file",
+      "url": "https://git.archlinux.org/svntogit/packages.git/plain/rpmextract/repos/extra-any/rpm2cpio",
+      "dest-filename": "rpm2cpio",
+      "sha256": "5b9133774a969e9b2c4b18c77b340ed1e591e13ba1336fd4a4c15a96ad436dee"
+    },
+    {
+      "type": "file",
+      "url": "https://git.archlinux.org/svntogit/packages.git/plain/rpmextract/repos/extra-any/rpmextract.sh",
+      "dest-filename": "rpmextract.sh",
+      "sha256": "f319f14d27b909bd891adde4ccb4a8e910e15f9f4977b3e9bf78fbf7f2444866"
+    }
+  ]
+}
