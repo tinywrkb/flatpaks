@@ -16,6 +16,17 @@
       "sha256": "b29ede997865f7fc9f27de4c125ba6f1665ef6dbfa3981023e7e110667c88f47"
     }
   ],
+  "cleanup": [
+    "/bin",
+    "/lib/vala-*",
+    "/lib/valadoc-*",
+    "/share/aclocal",
+    "/share/devhelp",
+    "/share/man",
+    "/share/vala",
+    "/share/vala-*",
+    "/share/valadoc-*"
+  ],
   "modules": [
     {
       "name": "vala-bootstrap",
