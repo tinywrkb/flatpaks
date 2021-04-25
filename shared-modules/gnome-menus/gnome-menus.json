@@ -1,0 +1,17 @@
+{
+  "name": "gnome-menus",
+  "make-install-args": [
+    "girdir=/app/share/gir-1.0",
+    "typelibdir=/app/lib/girepository-1.0"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://gitlab.gnome.org/GNOME/gnome-menus/-/archive/3.36.0/gnome-menus-3.36.0.tar.gz",
+      "sha256": "c5b25bc2fcf2cb805f389c0c9650fd270c1bd881e080dfecfa8a4bb14bc7ec38"
+    }
+  ],
+  "modules": [
+    "../gnome-common/gnome-common.json"
+  ]
+}
