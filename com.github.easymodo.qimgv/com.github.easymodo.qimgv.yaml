@@ -113,13 +113,4 @@ modules:
                 sha256: 8d5a5c920b90b70a108007ffcd2289ac652c0e03fc88e6eecefa37df0f2e7fdf
             cleanup:
               - /include
-  - name: mpv
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 mpv -t /app/bin/
-    sources:
-      - type: script
-        dest-filename: mpv
-        commands:
-          - |
-              flatpak-spawn --host flatpak run io.mpv.player "$@"
+  - ../shared-modules/flatpak-spawn-wrappers/mpv.json
