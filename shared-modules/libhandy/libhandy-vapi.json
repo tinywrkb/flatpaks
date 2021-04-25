@@ -1,0 +1,25 @@
+{
+  "name": "libhandy-vaapi",
+  "buildsystem": "meson",
+  "config-opts": [
+    "-Dvapi=true",
+    "-Dtests=false",
+    "-Dexamples=false",
+    "-Dglade_catalog=disabled"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://gitlab.gnome.org/GNOME/libhandy/-/archive/1.0.3/libhandy-1.0.3.tar.gz",
+      "sha256": "80c7f015b8ed0888f0f6a5cb15015d120cdf0dfcacf9dddb06d4e93bd8ffef1f"
+    }
+  ],
+  "cleanup":
+  [
+    "/share/vala"
+  ],
+  "modules":
+  [
+    "../vala/vala.json"
+  ]
+}
