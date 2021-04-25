@@ -1,0 +1,16 @@
+{
+  "name": "mpv",
+  "buildsystem": "simple",
+  "build-commands": [
+    "install -Dm755 mpv -t /app/bin/"
+  ],
+  "sources": [
+    {
+      "type": "script",
+      "dest-filename": "mpv",
+      "commands": [
+        "flatpak-spawn --host flatpak run io.mpv.player \"$@\""
+      ]
+    }
+  ]
+}

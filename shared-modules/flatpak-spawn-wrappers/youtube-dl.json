@@ -1,0 +1,16 @@
+{
+  "name": "youtube-dl",
+  "buildsystem": "simple",
+  "build-commands": [
+    "install -Dm755 youtube-dl -t /app/bin/"
+  ],
+  "sources": [
+    {
+      "type": "script",
+      "dest-filename": "youtube-dl",
+      "commands": [
+        "flatpak-spawn --host flatpak run org.ytdl.youtube-dl \"$@\""
+      ]
+    }
+  ]
+}

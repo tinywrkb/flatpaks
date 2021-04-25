@@ -1,0 +1,16 @@
+{
+  "name": "ffmpeg",
+  "buildsystem": "simple",
+  "build-commands": [
+    "install -Dm755 ffmpeg -t /app/bin/"
+  ],
+  "sources": [
+    {
+      "type": "script",
+      "dest-filename": "ffmpeg",
+      "commands": [
+        "flatpak-spawn --host flatpak run org.ffmpeg.ffmpeg \"$@\""
+      ]
+    }
+  ]
+}

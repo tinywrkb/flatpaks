@@ -1,0 +1,22 @@
+{
+  "name": "swaymsg",
+  "buildsystem": "simple",
+  "build-commands": [
+    "install -Dm755 swaymsg -t /app/bin/"
+  ],
+  "sources": [
+    {
+      "type": "script",
+      "dest-filename": "swaymsg",
+      "commands": [
+        "",
+        "unset _FS_ARGS",
+        "if [ \"$SWAYSOCK\" ]; then",
+        "  _FS_ARGS+=\"--env=SWAYSOCK=$SWAYSOCK\"",
+        "fi",
+        "",
+        "flatpak-spawn --host $_FS_ARGS swaymsg \"$@\""
+      ]
+    }
+  ]
+}
