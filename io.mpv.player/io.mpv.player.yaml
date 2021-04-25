@@ -85,15 +85,7 @@ modules:
           - type: archive
             url: https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.7.tar.xz
             sha256: 3fc79408ae1d84b406922fa9319ce005631c95ca0f34b205fad867e8b30e45b1
-  - name: youtube-dl
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 youtube-dl -t /app/bin/
-    sources:
-      - type: script
-        dest-filename: youtube-dl
-        commands:
-          - flatpak-spawn --host flatpak run org.ytdl.youtube-dl "$@"
+  - ../shared-modules/flatpak-spawn-wrappers/youtube-dl.json
   - name: mpv-mpris
     buildsystem: simple
     build-commands:
