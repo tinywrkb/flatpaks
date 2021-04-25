@@ -1,0 +1,41 @@
+app-id: com.github.hcsubser.hybridbar
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: hybridbar
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-data/flatpak/exports/share:ro
+  - --filesystem=/var/lib/flatpak/exports/share:ro
+  - --socket=session-bus
+  - --socket=system-bus
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: hybridbar
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/hcsubser/hybridbar.git
+        branch: main
+    cleanup:
+      - /share/vala
+    modules:
+      # vala is already included as a depedency of libgee and libhandy-vapi
+      - ../shared-modules/libgee/libgee.json
+      # required by the menu indicator
+      - ../shared-modules/libhandy/libhandy-vapi-novala.json
+      - ../shared-modules/gtk-layer-shell/gtk-layer-shell.json
+      # required by the menu indicator
+      - ../shared-modules/gnome-menus/gnome-menus.json
+  - name: hybridbar-menu
+    subdir: indicators/menu
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/hcsubser/hybridbar.git
+        branch: main
