@@ -190,14 +190,7 @@ modules:
       - type: archive
         url: http://0pointer.de/lennart/projects/libcanberra/libcanberra-0.30.tar.xz
         sha256: c2b671e67e0c288a69fc33dc1b6f1b534d07882c2aceed37004bf48c601afa72
-  - name: libhandy
-    buildsystem: meson
-    config-opts:
-      - -Dvapi=false
-    sources:
-      - type: archive
-        url: https://gitlab.gnome.org/GNOME/libhandy/-/archive/1.0.3/libhandy-1.0.3.tar.gz
-        sha256: 80c7f015b8ed0888f0f6a5cb15015d120cdf0dfcacf9dddb06d4e93bd8ffef1f
+  - ../shared-modules/libhandy/libhandy.json
   - name: udisks2
     buildsystem: autotools
     config-opts:
