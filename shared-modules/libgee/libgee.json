@@ -16,7 +16,10 @@
       "sha256": "e67c66f4b96db7d09ce29502ddb4ac0ba45be4a631810e1b5c5d6eb9d6bbefb4"
     }
   ],
+  "cleanup": [
+    "/share/vala"
+  ],
   "modules": [
-    "../shared-modules/vala/vala.json"
+    "../vala/vala.json"
   ]
 }
