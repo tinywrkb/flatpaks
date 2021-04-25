@@ -121,22 +121,7 @@ modules:
           - type: archive
             url: https://github.com/gabime/spdlog/archive/v1.8.2.tar.gz
             sha256: e20e6bd8f57e866eaf25a5417f0a38a116e537f1a77ac7b5409ca2b180cec0d5
-  - name: swaymsg
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 swaymsg -t /app/bin/
-    sources:
-      - type: script
-        dest-filename: swaymsg
-        commands:
-          - |
-
-              unset _FS_ARGS
-              if [ "$SWAYSOCK" ]; then
-                _FS_ARGS+="--env=SWAYSOCK=$SWAYSOCK"
-              fi
-
-              flatpak-spawn --host $_FS_ARGS swaymsg "$@"
+  - ../shared-modules/flatpak-spawn-wrappers/swaymsg.json
   - name: jq
     sources:
       - type: archive
