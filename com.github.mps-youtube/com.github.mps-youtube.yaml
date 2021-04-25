@@ -20,21 +20,5 @@ modules:
         commit: da798cf4f80513ebb424257e3fed9e9dd72c980b
     modules:
       - ../shared-modules/python-pafy/python-pafy.json
-      - name: ffmpeg
-        buildsystem: simple
-        build-commands:
-          - install -Dm755 ffmpeg -t /app/bin/
-        sources:
-          - type: script
-            dest-filename: ffmpeg
-            commands:
-              - flatpak-spawn --host flatpak run org.ffmpeg.ffmpeg "$@"
-      - name: mpv
-        buildsystem: simple
-        build-commands:
-          - install -Dm755 mpv -t /app/bin/
-        sources:
-          - type: script
-            dest-filename: mpv
-            commands:
-              - flatpak-spawn --host flatpak run io.mpv.player "$@"
+      - ../shared-modules/flatpak-spawn-wrappers/ffmpeg.json
+      - ../shared-modules/flatpak-spawn-wrappers/mpv.json
