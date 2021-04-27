@@ -1,0 +1,21 @@
+app-id: org.pyinstaller.pyinstaller
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: pyinstaller
+finish-args:
+  - --allow=devel
+  - --share=network
+modules:
+  - pyinstaller.json
+  - name: fixup
+    buildsystem: simple
+    build-commands:
+      - |
+          _pyver=$(python -c 'import sys; print("%s.%s" %sys.version_info[0:2])')
+          __pyver=$(python -c 'import sys; print("%s%s" %sys.version_info[0:2])')
+          cd /app/lib/python${_pyver}/site-packages/PyInstaller/loader
+
+          for f in pyimod0{1_os_path,2_archive,3_importers}; do
+            ln -s __pycache__/${f}.cpython-${__pyver}.pyc ${f}.pyc
+          done
