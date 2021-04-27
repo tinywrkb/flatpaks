@@ -1,0 +1,33 @@
+app-id: io.thp.urlwatch
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: urlwatch
+finish-args:
+  - --share=network
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+# - /share/doc/jq
+  - /share/man/man1/jq.1
+cleanup-commands:
+  - rm -r /app/share/doc/jq
+  - rmdir /app/share/doc
+modules:
+  - name: urlwatch
+    # TODO remove this as soon as the keyring issue is fixed
+    build-options:
+      build-args:
+        - --share=network
+    buildsystem: simple
+    build-commands:
+      - pip3 install --root=/ --prefix=/app urlwatch
+    modules:
+      # required by PyYAML
+      - ../shared-modules/libyaml/libyaml.json
+      - ../shared-modules/jq/jq.json
+      # urlwatch is commented-out in requirements.txt because keyring installation fails
+      #   due to metadata version mismatch, need to wait for post 23.0.1 release
+      - python-dependencies.json

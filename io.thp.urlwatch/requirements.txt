@@ -1,0 +1,32 @@
+#urlwatch
+
+#beautify filter
+beautifulsoup4
+jsbeautifier
+cssbeautifier
+
+#jq filter
+# required when installing jq via pip
+#requests
+# tries to download oniguruma even though its already installed
+#jq
+
+# pdf2text filter
+#pdf2text
+
+# ocr filter
+#pytesseract
+#Pillow
+
+# browser job kind
+#pyppeteer
+
+# Pushover reporter
+#chump
+
+# Pushbullet reporter
+#pushbullet.py
+
+# Matrix reporter
+#matrix_client
+#markdown2
