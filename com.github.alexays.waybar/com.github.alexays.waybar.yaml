@@ -128,13 +128,7 @@ modules:
         url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-1.6.tar.gz
         sha256: 5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
     modules:
-      - name: oniguruma
-        config-opts:
-          - --enable-posix-api
-        sources:
-          - type: archive
-            url: https://github.com/kkos/oniguruma/releases/download/v6.9.6/onig-6.9.6.tar.gz
-            sha256: bd0faeb887f748193282848d01ec2dad8943b5dfcb8dc03ed52dcc963549e819
+      - ../shared-modules/oniguruma/oniguruma.json
   # dependency of mediaplayer.py: custom media module
   - name: playerctl
     buildsystem: meson
