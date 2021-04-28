@@ -1,17 +1,18 @@
 # flatpaks
 
-A few Flatpaks that I hastly packaged. These are not thoroughly tested so use at your own risk!  
+A few Flatpaks that I hastly packaged. These are not thoroughly tested so use at your own discretion.  
 Packaging was adapted mainly from Arch Linux's official PKGBUILDs and the AUR.  
 Most of these are PoC, not maintained, might need some cleanup, missing a feature here and there,
 and in general are not ready to publish via Flathub.  
 The catalyst for packaging these apps is to prove that it's possible to convert to, and as a precondition
-for switching to stateless distributed system, an  os that has a clear seperation between the stateless
+for switching to immutable system, an OS that has a clear seperation between the stateless
 read-only distributed OS files and the stateful data and configs.
 
 ### Not usable or too buggy
 
-* Blueman
+* Blueman: working with a few warnings, and the applet's singleton mistaken dbus name remnant as an active session.
 * QtPass
+* byobu/tmux in terminal emulators and other cli apps: might be a freedesktop runtime regression or it's just my local system config which broke it for me.
 
 ### How to build
 
@@ -33,7 +34,7 @@ flatpak-builder --install --user --force-clean --state-dir=build/flatpak-builder
 
 ### Font packages
 
-Flatpak does not support font packages or extensions, in order for Flatpak and host apps to make use of fonts install via Flatpak we need a few workarounds.
+Flatpak does not support font packages or extensions, in order for Flatpak and host apps to make use of fonts installed via Flatpak we need a few workarounds.
 
 
 1. Give all our Flatpak apps access to the user's fontconfig configuration file and where the font package is installed.  
@@ -48,15 +49,16 @@ $ flatpak override --user \
 ```
 
 2. Adding the following to `$XDG_CONFIG_HOME/fontconfig/fonts.conf` will tell fontconfig to include the Flatpak font package in its scan.  
-The first directive is required because fc-cache omits the default font locations when scanning inside a Flatpak sandbox, and that's due to our use of `FONTCONFIG_FILE` variable.
+The first directive is required because fc-cache omits the default font locations when scanning inside a Flatpak sandbox, and that's due to our use of `FONTCONFIG_FILE` variable.  
+Note that you need to replace `{FontName}` with the name of the font as defined in the Flatpak app ID, see the Noto fonts packages.
 
 ```
 <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
 
-<dir prefix="default">.local/share/flatpak/app/org.freedesktop.Platform.Fonts.<FontName>/current/active/files/share/fonts</dir>
-<dir>/var/lib/flatpak/app/org.freedesktop.Platform.Fonts.<FontName>/current/active/files/share/fonts</dir>
-<include prefix="default" ignore_missing="yes">.local/share/flatpak/app/org.freedesktop.Platform.Fonts.<FontName>/current/active/files/share/fonts/conf.d</include>
-<include ignore_missing="yes">/var/lib/flatpak/app/org.freedesktop.Platform.Fonts.<FontName>/current/active/files/share/fonts/conf.d</include>
+<dir prefix="default">.local/share/flatpak/app/org.freedesktop.Platform.Fonts.{FontName}/current/active/files/share/fonts</dir>
+<dir>/var/lib/flatpak/app/org.freedesktop.Platform.Fonts.{FontName}/current/active/files/share/fonts</dir>
+<include prefix="default" ignore_missing="yes">.local/share/flatpak/app/org.freedesktop.Platform.Fonts.{FontName}/current/active/files/share/fonts/conf.d</include>
+<include ignore_missing="yes">/var/lib/flatpak/app/org.freedesktop.Platform.Fonts.{FontName}/current/active/files/share/fonts/conf.d</include>
 ```
 
 3. Now we can update the host font cache.
@@ -72,3 +74,4 @@ fc-cache
 
 * [Flatpak: Expose host fontconfig conf.d?](https://github.com/flatpak/flatpak/issues/1563)
 * [Flatpak: Expose xdg-config/fontconfig to sandbox by default](https://github.com/flatpak/flatpak/issues/3947)
+* [freedesktop-sdk: Support font extensions](https://gitlab.com/freedesktop-sdk/freedesktop-sdk/-/issues/1141)
