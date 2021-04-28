@@ -1,0 +1,15 @@
+app-id: org.asciinema.asciinema
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: asciinema
+finish-args:
+  - --share=network
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - asciinema.json
+  - ../shared-modules/byobu/byobu.json
