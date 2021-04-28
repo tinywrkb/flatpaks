@@ -1,0 +1,18 @@
+app-id: io.github.kislyuk.yq
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: yq
+finish-args:
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - ../shared-modules/flatpak-spawn-wrappers/jq.json
+  # required by pyYAML
+  - ../shared-modules/libyaml/libyaml.json
+  - yq.json
