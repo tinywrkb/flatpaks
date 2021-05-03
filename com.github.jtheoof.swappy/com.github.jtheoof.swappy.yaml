@@ -24,23 +24,12 @@ modules:
       - install -Dm644 ../com.github.jtheoof.swappy.*.desktop -t /app/share/applications/
     sources:
       - type: archive
-        url: https://github.com/jtheoof/swappy/archive/v1.2.1.tar.gz
-        sha256: b48ca60e4a2a9c274b1e52b35de800e342f79481aef3f90825d55250e210c040
+        url: https://github.com/jtheoof/swappy/archive/v1.3.1.tar.gz
+        sha256: 215c48b77eebfc2a4de41ce1a4058b5da1bace8455baba743b9142bb0e96afb1
       - type: dir
         path: resources
     modules:
-      - name: libnotify
-        buildsystem: meson
-        config-opts:
-          - -Dtests=false
-          - -Dintrospection=disabled
-          - -Dman=false
-          - -Dgtk_doc=false
-          - -Ddocbook_docs=disabled
-        sources:
-          - type: git
-            url: https://gitlab.gnome.org/GNOME/libnotify.git
-            tag: 98a4bf483a69c6436311bcb9834d9d93235c96b7
+      - ../shared-modules/libnotify/libnotify.json
   - name: wl-clipboard
     # TODO: mailcap needed?
     buildsystem: meson
@@ -60,13 +49,13 @@ modules:
       - -Dman-pages=disabled
     sources:
       - type: archive
-        url: https://github.com/emersion/grim/releases/download/v1.3.1/grim-1.3.1.tar.gz
-        sha256: b1ab720b5dbcd560cfa34bbd7e0cbe85330f701c471b12e2489dfec15bcf216e
+        url: https://github.com/emersion/grim/releases/download/v1.3.2/grim-1.3.2.tar.gz
+        sha256: 42c2952e98389506156c08e40e0c37afdc2ec5ef4d55a5a4febde6acdac4d1c8
   - name: slurp
     buildsystem: meson
     config-opts:
       - -Dman-pages=disabled
     sources:
       - type: archive
-        url: https://github.com/emersion/slurp/releases/download/v1.3.1/slurp-1.3.1.tar.gz
-        sha256: afe8714c6782a0e548b0f539676783a922ac61e7ba3fc7c0815644e72293fa3a
+        url: https://github.com/emersion/slurp/releases/download/v1.3.2/slurp-1.3.2.tar.gz
+        sha256: 005dd8601d4bada9728f434728c7a57c955f90f9b9f53d1ffb051abdbabb9876
