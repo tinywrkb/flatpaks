@@ -54,10 +54,9 @@ modules:
       - install -Dm644 nwg-panel-config.desktop /app/share/applications/${FLATPAK_ID}.desktop
       - desktop-file-edit --set-icon=$FLATPAK_ID /app/share/applications/${FLATPAK_ID}.desktop
     sources:
-      - type: git
-        url: https://github.com/nwg-piotr/nwg-panel.git
-        tag: v0.2.2
-        commit: bae8a65ba2d73881617a97186d6cba054b035bc8
+      - type: archive
+        url: https://github.com/nwg-piotr/nwg-panel/archive/refs/tags/v0.2.3.tar.gz
+        sha256: 483cbb667baf1120e1d57cd95e3ffc1374c04a4356843729362253994e48ebc6
   - ../shared-modules/gtk-layer-shell/gtk-layer-shell.json
   - ../shared-modules/python-gobject/python-gobject.json
   - python-dependencies.json
