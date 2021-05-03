@@ -35,9 +35,9 @@ modules:
         path: resources
       - type: extra-data
         filename: digital.zip
-        url: https://github.com/hneemann/Digital/releases/download/v0.25/Digital.zip
-        sha256: 855670949e09443fa550e0c82230f8c2b42c8e6dbdc7e0b4914fbc412a6555c1
-        size: 9143153
+        url: https://github.com/hneemann/Digital/releases/download/v0.27/Digital.zip
+        sha256: a93b9dd70ed5b051bf04aacc37f2794c3c3d17f214ab99f0c8f4a36e55bbe835
+        size: 10602519
       - type: script
         dest-filename: apply_extra
         commands:
