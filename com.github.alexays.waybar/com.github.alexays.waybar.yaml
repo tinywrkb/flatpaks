@@ -63,8 +63,8 @@ modules:
       - install -Dm755 ../resources/custom_modules/mediaplayer.py -t /app/bin/
     sources:
       - type: archive
-        url: https://github.com/Alexays/Waybar/archive/0.9.5.tar.gz
-        sha256: 74d783d4da01c1c3a90a00968d74f47c2193a6952c3b2e0584cf3ddfa1ae4254
+        url: https://github.com/Alexays/Waybar/archive/0.9.7.tar.gz
+        sha256: 0d23573e0f6ce6e3f3eb4d1d7313848b924429268f3becd81649a391ae7703e7
     modules:
       - name: chrono-date
         buildsystem: cmake
@@ -122,13 +122,8 @@ modules:
             url: https://github.com/gabime/spdlog/archive/v1.8.2.tar.gz
             sha256: e20e6bd8f57e866eaf25a5417f0a38a116e537f1a77ac7b5409ca2b180cec0d5
   - ../shared-modules/flatpak-spawn-wrappers/swaymsg.json
-  - name: jq
-    sources:
-      - type: archive
-        url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-1.6.tar.gz
-        sha256: 5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
-    modules:
-      - ../shared-modules/oniguruma/oniguruma.json
+  # TODO: maybe switch to the flatpak-spawn wrapper
+  - ../shared-modules/jq/jq.json
   # dependency of mediaplayer.py: custom media module
   - name: playerctl
     buildsystem: meson
@@ -136,6 +131,7 @@ modules:
       - type: archive
         url: https://github.com/altdesktop/playerctl/archive/v2.3.1.tar.gz
         sha256: 62b55123fe0fcbb5add8b7abdf7b039d2d74662f851def77b482bd1ca0440608
+# TODO: enable this
 # - name: waybar-mpris
 #   buildsystem: simple
 #   build-options:
