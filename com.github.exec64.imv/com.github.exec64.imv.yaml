@@ -1,0 +1,82 @@
+app-id: com.github.exec64.imv
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: imv
+rename-desktop-file: imv.desktop
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: imv
+    buildsystem: meson
+    config-opts:
+      - -Dtest=disabled
+      - -Dman=disabled
+    sources:
+      - type: archive
+        url: https://github.com/eXeC64/imv/archive/v4.2.0.tar.gz
+        sha256: 7d3de0462ce0cd705a719b12648661c8d91245cc7732eac4e459c465bc6b3d94
+    modules:
+      - name: freeimage
+        no-autogen: true
+        make-install-args:
+          - INCDIR=/app/include
+          - INSTALLDIR=/app/lib
+        sources:
+          - type: archive
+            url: http://downloads.sourceforge.net/freeimage/FreeImage3180.zip
+            sha256: f41379682f9ada94ea7b34fe86bf9ee00935a3147be41b6569c9605a53e438fd
+          - type: shell
+            commands:
+              - sed -i 's/-o root -g root//g' Makefile.gnu
+      - ../flathub-shared-modules/glu/glu-9.json
+      - name: inih
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://github.com/benhoyt/inih/archive/r53.tar.gz
+            sha256: 01b0366fdfdf6363efc070c2f856f1afa33e7a6546548bada5456ad94a516241
+      - name: libheif
+        buildsystem: cmake
+        sources:
+          - type: archive
+            url: https://github.com/strukturag/libheif/releases/download/v1.11.0/libheif-1.11.0.tar.gz
+            sha256: c550938f56ff6dac83702251a143f87cb3a6c71a50d8723955290832d9960913
+        cleanup:
+          - /lib/cmake
+      - name: libnsgif
+        no-autogen: true
+        make-args:
+          - PREFIX=/app
+          - COMPONENT_TYPE=lib-shared
+        make-install-args:
+          - PREFIX=/app
+          - COMPONENT_TYPE=lib-shared
+        sources:
+          - type: archive
+            url: http://download.netsurf-browser.org/libs/releases/libnsgif-0.2.1-src.tar.gz
+            sha256: 9eaea534cd70b53c5aaf45317ae957701685a6b4a88dbe34ed26f4faae879a4b
+        modules:
+          - name: netsurf-buildsystem
+            no-autogen: true
+            make-install-args:
+              - PREFIX=/app
+              - COMPONENT_TYPE=lib-shared
+            sources:
+              - type: archive
+                url: https://source.netsurf-browser.org/buildsystem.git/snapshot/buildsystem-release/1.9.tar.gz
+                sha256: 47346cdadde5197e5bc1bd70f2f1b4daf1295a8993d70618966a36bf3d8bc012
+                strip-components: 2
+            cleanup:
+              - '*'
