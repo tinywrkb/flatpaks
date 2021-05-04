@@ -1,0 +1,9 @@
+app-id: com.github.sivel.speedtest-cli
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: speedtest-cli
+finish-args:
+  - --share=network
+modules:
+  - speedtest-cli.json
