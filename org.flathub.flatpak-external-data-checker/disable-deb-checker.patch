@@ -1,0 +1,15 @@
+--- a/src/checkers/__init__.py	2021-05-08 00:28:55.132345381 +0300
++++ b/src/checkers/__init__.py	2021-05-08 00:29:11.502484408 +0300
+@@ -1,4 +1,3 @@
+-from .debianrepochecker import DebianRepoChecker
+ from .jsonchecker import JSONChecker
+ from .urlchecker import URLChecker
+ from .htmlchecker import HTMLChecker
+@@ -14,7 +13,6 @@
+ # For each ExternalData, checkers are run in the order listed here, stopping once data.state is
+ # set to something other than UNKNOWN.
+ ALL_CHECKERS = [
+-    DebianRepoChecker,
+     HTMLChecker,
+     JetBrainsChecker,
+     SnapcraftChecker,

@@ -1,0 +1,43 @@
+# TODO: add python-apt
+app-id: org.flathub.flatpak-external-data-checker
+branch: '20.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: flatpak-external-data-checker
+finish-args:
+  - --share=network
+modules:
+  - name: flatpak-external-data-checker
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 -t /app/flatpak-external-data-checker/
+          canonicalize-manifest
+          flatpak-external-data-checker
+      - install -Dm644 -t /app/flatpak-external-data-checker/
+          README.md
+      - cp -r --preserve=mode src /app/flatpak-external-data-checker/src
+      - install -Dm755 flatpak-external-data-checker.sh /app/bin/flatpak-external-data-checker
+    sources:
+      - type: git
+        url: https://github.com/flathub/flatpak-external-data-checker.git
+        branch: master
+      - type: script
+        dest-filename: flatpak-external-data-checker.sh
+        commands:
+          - exec /app/flatpak-external-data-checker/flatpak-external-data-checker "$@"
+      - type: patch
+        path: disable-deb-checker.patch
+    modules:
+      - ../shared-modules/python-gobject/python-gobject.json
+      - python-dependencies.json
+      # the pip method generates a broken module so we need to build this manually
+      - name: python-pynacl
+        buildsystem: simple
+        build-commands:
+          - python setup.py build
+          - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+        sources:
+          - type: archive
+            url: https://github.com/pyca/pynacl/archive/1.4.0.tar.gz
+            sha256: 2ecfed5cba7a53aa1ca8f2b46002a47402e53d75b2e2615d3bd54934712cd60a

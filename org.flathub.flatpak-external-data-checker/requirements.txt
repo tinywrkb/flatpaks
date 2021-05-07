@@ -1,0 +1,8 @@
+#python-apt
+defusedxml
+requests
+PyGithub
+ruamel.yaml
+toml
+pyelftools
+aiohttp
