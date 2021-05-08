@@ -128,6 +128,7 @@ modules:
                 sources:
                   - type: archive
                     url: https://salsa.debian.org/dpkg-team/dpkg/-/archive/1.20.7.1/dpkg-1.20.7.1.tar.bz2
+                    #url: https://git.dpkg.org/git/dpkg/dpkg.git
                     sha256: a83444ecd04939143a87d8f4af612a9f089c75e881a8f12e5190d012325f6ab3
                   # TODO: remove this
                   - type: shell
