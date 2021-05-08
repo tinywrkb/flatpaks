@@ -28,12 +28,15 @@ modules:
           README.md
       - cp -r --preserve=mode src /app/flatpak-external-data-checker/src
       - install -Dm755 flatpak-external-data-checker.sh /app/bin/flatpak-external-data-checker
+      - install -Dm755 apt-xdg.sh /app/bin/apt-xdg
     sources:
       - type: git
         url: https://github.com/flathub/flatpak-external-data-checker.git
         branch: master
       - type: file
         path: flatpak-external-data-checker.sh
+      - type: file
+        path: apt-xdg.sh
       - type: patch
         path: deb-use-xdg-dirs-instead-of-localstatedir.patch
       #- type: patch
