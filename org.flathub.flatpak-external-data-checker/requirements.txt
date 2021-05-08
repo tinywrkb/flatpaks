@@ -1,8 +1,7 @@
-#python-apt
-defusedxml
-requests
 PyGithub
+aiohttp
+defusedxml
+pyelftools
+requests
 ruamel.yaml
 toml
-pyelftools
-aiohttp
