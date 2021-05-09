@@ -1,3 +1,4 @@
+# TODO: deb checker: sources.list is re-written so there's no need to use xdg dirs, switch back to /var or support both
 app-id: org.flathub.flatpak-external-data-checker
 branch: '20.08'
 runtime: org.freedesktop.Sdk
