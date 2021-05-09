@@ -1,0 +1,50 @@
+# TODO: fix gui
+app-id: com.github.sahib.rmlint
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: rmlint
+rename-desktop-file: shredder.desktop
+rename-icon: shredder
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-public-share
+  - --filesystem=xdg-videos
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+modules:
+  - name: rmlint
+    buildsystem: simple
+    build-commands:
+      - scons config --prefix=/app
+      - scons
+      - scons --prefix=/app install
+    sources:
+      - type: archive
+        url: https://github.com/sahib/rmlint/archive/v2.10.1.tar.gz
+        sha256: 10e72ba4dd9672d1b6519c0c94eae647c5069c7d11f1409a46e7011dd0c6b883
+    modules:
+      # TODO: move to shared-module
+      - name: scons
+        buildsystem: simple
+        build-commands:
+          - python scripts/scons.py
+          - python setup.py build
+          - python setup.py install --install-data=/app/share --skip-build --prefix=/app --root=/ --optimize=1
+        sources:
+          - type: archive
+            url: https://github.com/SCons/scons/archive/4.1.0.tar.gz
+            sha256: 7662af76d971bae3e9c01e6d025d4ff0f547b64cac081298fc19015c9c242311
+        cleanup:
+          - '*'
+      - ../shared-modules/python-gobject/python-gobject.json
+      # for building rmlint man page
+      # has an added cleanup entry
+      - sphinx.json
