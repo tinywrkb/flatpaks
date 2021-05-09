@@ -1,0 +1,29 @@
+# TODO: switch to offline/cached build
+app-id: com.github.cli
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
+command: gh
+modules:
+  - name: github-cli
+    build-options:
+      build-args:
+        - --share=network
+      env:
+        - GOBIN=/app/bin
+        - GOPATH=/run/build/github-cli/gohome
+        - GOROOT=/usr/lib/sdk/golang
+      append-path: /usr/lib/sdk/golang/bin
+    no-autogen: true
+    make-install-args:
+      - prefix=/app
+    post-install:
+      # workaround for go annoyance
+      - find /run/build/github-cli ! -perm -0200 -exec
+          chmod u+w '{}' \;
+    sources:
+      - type: archive
+        url: https://github.com/cli/cli/archive/v1.9.2.zip
+        sha256: e1347bec9840abe09cab488350dd964020d5f995e9c8038dd253e555afb8b575
