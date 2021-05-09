@@ -1,0 +1,14 @@
+app-id: io.github.hebcal.hebcal
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: hebcal
+modules:
+  - name: hebcal
+    sources:
+      - type: archive
+        url: https://github.com/hebcal/hebcal/archive/v4.25.tar.gz
+        sha256: 9a7ad6da379bb82784fcf5d32a428aeb220c8475a3e354f6d4879432e698288b
+      - type: shell
+        commands:
+          - autoreconf -ivd
