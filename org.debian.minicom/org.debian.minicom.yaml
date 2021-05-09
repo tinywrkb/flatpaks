@@ -1,0 +1,34 @@
+app-id: org.debian.minicom
+branch: '20.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: minicom
+finish-args:
+  - --device=all
+  - --filesystem=/tmp
+modules:
+  - name: minicom
+    config-opts:
+      - --enable-lock-dir=/tmp/.flatpak-minicom-lock
+    sources:
+      - type: archive
+        url: https://salsa.debian.org/minicom-team/minicom/-/archive/2.8/minicom-2.8.tar.gz
+        sha256: 9e8dee8e7e1f6d6115d0e1955da5b801e44b91289f6b3e320842949488d4b22f
+      # TODO: switch patch to use xdg-run
+      - type: patch
+        path: minicom-lock.patch
+      - type: shell
+        commands:
+          - rm configure
+    cleanup:
+      - /bin/xminicom
+      - /share/man/man1/xminicom.1
+    modules:
+      - name: lrzsz
+        config-opts:
+          - --mandir=/app/share/man
+        sources:
+          - type: archive
+            url: https://www.ohse.de/uwe/releases/lrzsz-0.12.20.tar.gz
+            sha256: c28b36b14bddb014d9e9c97c52459852f97bd405f89113f30bee45ed92728ff1

@@ -1,0 +1,34 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -217,7 +217,12 @@
+ 
+ AC_MSG_CHECKING(for com line lock directory)
+ 
+-if test "x$UUCPLOCK" != x
++if test "x$UUCPLOCK" = "x/tmp/.flatpak-minicom-lock"
++then
++	AC_DEFINE_UNQUOTED(UUCPLOCK, "$UUCPLOCK", [Lock directory])
++fi
++
++if test "x$UUCPLOCK" != "x/tmp/.flatpak-minicom-lock"
+ then
+ 	if test -d $UUCPLOCK
+ 	then
+--- a/src/updown.c
++++ b/src/updown.c
+@@ -463,10 +463,15 @@
+ int lockfile_create(int no_msgs)
+ {
+   int n;
++  struct stat st = {0};
+ 
+   if (portfd_is_socket)
+     return 0;
+ 
++  if (stat(UUCPLOCK, &st) == -1) {
++    mkdir(UUCPLOCK, 0750);
++  }
++
+ #if !HAVE_LOCKDEV
+   if (!lockfile[0])
+     return 0;
