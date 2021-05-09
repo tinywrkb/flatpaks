@@ -1,0 +1,19 @@
+# TODO: add more optional depends
+app-id: org.soimort.translate-shell
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: trans
+finish-args:
+  - --share=network
+modules:
+  - name: translate-shell
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: https://github.com/soimort/translate-shell/archive/v0.9.6.12.tar.gz
+        sha256: 4c4843a8c66276190535b8435775ecb5d9c8286083a33cdbe2db608eba93ca97
+    modules:
+      - ../shared-modules/flatpak-spawn-wrappers/mpv.json
