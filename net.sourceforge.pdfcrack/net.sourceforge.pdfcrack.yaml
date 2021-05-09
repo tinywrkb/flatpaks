@@ -1,0 +1,20 @@
+app-id: net.sourceforge.pdfcrack
+branch: '20.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: pdfcrack
+finish-args:
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+modules:
+  - name: pdfcrack
+    no-autogen: true
+    no-make-install: true
+    build-commands:
+      - install -Dm755 pdfcrack -t /app/bin/
+      - install -Dm644 pdfcrack.1 -t /app/share/man/man1/
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/pdfcrack/pdfcrack-0.19.tar.gz
+        sha256: 3115206998b7cddf13971dd4b50946c077fc96e220aca1c0734798d907a2c0ed
