@@ -1,0 +1,20 @@
+app-id: com.github.merces.pev
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: readpe
+cleanup:
+ - /include
+ - /lib/pkgconfig
+ - '*.a'
+ - '*.la'
+modules:
+  - name: pev
+    no-autogen: true
+    make-install-args:
+      - prefix=/app
+    sources:
+      - type: git
+        url: https://github.com/merces/pev.git
+        tag: v0.81
+        commit: 095c19012cddf8d5b9e3a4a90e2f9584f1ad56bd
