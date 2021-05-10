@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# process singleton
+export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+
+exec zypak-wrapper /app/extra/github-desktop "$@"

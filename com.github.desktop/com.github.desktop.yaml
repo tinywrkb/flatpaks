@@ -1,0 +1,67 @@
+app-id: com.github.desktop
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '20.08'
+# TODO: build from source
+#sdk-extensions:
+#  - org.freedesktop.Sdk.Extension.node14
+separate-locales: false
+command: github-desktop
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --share=network
+  # wayland not enabled by default, requires passing `--enable-features=UseOzonePlatform --ozone-platform=wayland`
+  #   so keep x11 socket for the time being
+  #- --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+modules:
+  - name: desktop
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra github-desktop stub_sandbox -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - |
+          for s in 32 64 128 256 512; do
+            install -Dm644 ${FLATPAK_ID}-${s}.png /app/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+          done
+    sources:
+      - type: extra-data
+        filename: github-desktop.deb
+        url: https://github.com/shiftkey/desktop/releases/download/release-2.8.1-linux2/GitHubDesktop-linux-2.8.1-linux2.deb
+        sha256: 892f59f961c9eb241dd7856052e719b052bac29856b30486a9800c44f8a1178f
+        size: 70458136
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - bsdtar -Oxf github-desktop.deb data.tar.xz |
+              bsdtar -xJf - --strip-components=4 ./usr/lib/github-desktop
+          - rm github-desktop.deb
+          - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
+      - type: script
+        dest-filename: stub_sandbox
+        commands:
+          - |
+              echo Stub sandbox ignoring command: $@
+              exit 1
+      - type: file
+        path: github-desktop
+      - type: file
+        path: com.github.desktop.desktop
+      - type: file
+        path: com.github.desktop-32.png
+      - type: file
+        path: com.github.desktop-64.png
+      - type: file
+        path: com.github.desktop-128.png
+      - type: file
+        path: com.github.desktop-256.png
+      - type: file
+        path: com.github.desktop-512.png
