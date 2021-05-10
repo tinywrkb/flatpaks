@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=UEFITool
+GenericName=UEFITool
+Comment=UEFI firmware image viewer and editor
+Icon=com.github.longsoft.uefitool
+Categories=Development
+Exec=UEFITool
+TryExec=UEFITool
+Terminal=false

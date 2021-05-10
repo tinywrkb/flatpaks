@@ -1,0 +1,54 @@
+app-id: com.github.longsoft.uefitool
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: UEFITool
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+modules:
+  - name: uefitool
+    buildsystem: qmake
+    builddir: true
+    build-commands:
+      - install -Dm755 UEFITool -t /app/bin/
+      - install -Dm644 ../${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ../${FLATPAK_ID}.png -t /app/share/icons/hicolor/512x512/apps/
+      - install -Dm644 ../${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
+    sources:
+      - type: git
+        url: https://github.com/LongSoft/UEFITool.git
+        #branch: master
+        commit: 44cafebbecb6485d183e8ed268d6d309682fe395
+      - type: file
+        path: com.github.longsoft.uefitool.desktop
+      - type: file
+        path: com.github.longsoft.uefitool.png
+      - type: file
+        path: com.github.longsoft.uefitool.svg
+  - name: uefipatch
+    buildsystem: qmake
+    builddir: true
+    subdir: UEFIPatch
+    build-commands:
+      - install -Dm755 UEFIPatch -t /app/bin/
+      - install -Dm755 ../patches{-misc,}.txt -t /app/share/uefitool/
+    sources:
+      - type: git
+        url: https://github.com/LongSoft/UEFITool.git
+        #branch: master
+        commit: 44cafebbecb6485d183e8ed268d6d309682fe395
+  - name: uefireplace
+    buildsystem: qmake
+    builddir: true
+    subdir: UEFIReplace
+    build-commands:
+      - install -Dm755 UEFIReplace -t /app/bin/
+    sources:
+      - type: git
+        url: https://github.com/LongSoft/UEFITool.git
+        #branch: master
+        commit: 44cafebbecb6485d183e8ed268d6d309682fe395
