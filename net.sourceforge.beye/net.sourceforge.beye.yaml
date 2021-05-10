@@ -1,0 +1,14 @@
+app-id: net.sourceforge.beye
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: biew
+modules:
+  - name: beye
+    sources:
+      - type: archive
+        url: http://downloads.sourceforge.net/project/beye/biew/6.1.0/biew-610-src.tar.bz2
+        sha256: 2e85f03c908dd6ec832461fbfbc79169a33f4caccf48c8fe60cbd29f5fb06d17
+      - type: shell
+        commands:
+          - sed -i 's|\(man/man1\)|share/\1|' makefile
