@@ -1,0 +1,21 @@
+app-id: net.dettus.dhex
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: dhex
+cleanup:
+ - /include
+ - /lib/pkgconfig
+ - '*.a'
+ - '*.la'
+modules:
+  - name: dhex
+    no-autogen: true
+    sources:
+      - type: archive
+        url: http://www.dettus.net/dhex/dhex_0.69.tar.gz
+        sha256: 52730bcd1cf16bd4dae0de42531be9a4057535ec61ca38c0804eb8246ea6c41b
+      - type: patch
+        path: dhex.patch
+    modules:
+      - ../shared-modules/ncurses/libncurses.json
