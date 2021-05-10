@@ -1,0 +1,19 @@
+app-id: net.tortall.yasm
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: yasm
+cleanup:
+ - /include
+modules:
+  - name: yasm
+    buildsystem: cmake
+    config-opts:
+      - -DYASM_BUILD_TESTS=OFF
+    post-install:
+      - install -Dm644 yasm.1 -t /app/share/man/man1/
+      - install -Dm644 yasm_{arch,dbgfmts,objfmts,parsers}.7 -t /app/share/man/man7/
+    sources:
+      - type: archive
+        url: https://github.com/yasm/yasm/releases/download/v1.3.0/yasm-1.3.0.tar.gz
+        sha256: 3dce6601b495f5b3d45b59f7d2492a340ee7e84b5beca17e48f862502bd5603f
