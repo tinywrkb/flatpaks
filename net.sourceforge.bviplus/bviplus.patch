@@ -1,0 +1,20 @@
+--- a/Makefile
++++ b/Makefile
+@@ -76,7 +76,7 @@
+ # Build all the prereqs and generate dependencies (-MMD)
+ $(OBJDIR)/%.o: %.c
+ 	$(SHORT) "CC $<"
+-	$(QUIET)$(CC) $(EXTRA_CFLAGS) $(addprefix -I, $(INCLUDES)) -MMD -c $< -o $@
++	$(QUIET)$(CC) $(CFLAGS) $(addprefix -I, $(INCLUDES)) -MMD -c $< -o $@
+ 
+ # Produce our binary
+ all: mkobjdir $(TARGET)
+@@ -86,7 +86,7 @@
+ 
+ $(TARGET): $(BUILD_OBJS)
+ 	$(SHORT) "LD $@"
+-	$(QUIET)$(CC) $(EXTRA_CFLAGS) $^ $(addprefix -l,$(LIBS)) -o $@
++	$(QUIET)$(CC) $(LDFLAGS) $^ $(addprefix -l,$(LIBS)) -o $@
+ 
+ clean:
+ 	rm -rf $(OBJDIR) $(TARGET)

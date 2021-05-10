@@ -1,0 +1,28 @@
+app-id: net.sourceforge.bviplus
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: bviplus
+cleanup:
+ - /include
+ - /lib/pkgconfig
+ - '*.a'
+ - '*.la'
+modules:
+  - name: bviplus
+    build-options:
+      ldflags: -L/app/lib
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    sources:
+      - type: archive
+        url: http://downloads.sourceforge.net/project/bviplus/bviplus/1.0/bviplus-1.0.tgz
+        sha256: 2f2ba4925098cb95377e869b736841ed91db25dac35e5cae5e4be5187d730223
+      - type: patch
+        path: bviplus.patch
+      - type: shell
+        commands:
+          - sed -i 's/inline \(void compute_percent_complete\)/\1/' vf_backend.c
+    modules:
+      - ../shared-modules/ncurses/libncurses.json
