@@ -1,0 +1,23 @@
+# TODO: add optional depends?
+app-id: net.sshguard.sshguard
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: sshguard
+finish-args:
+  - --share=network
+modules:
+  - name: sshguard
+    config-opts:
+      - --libexec=/app/lib
+      - --prefix=/app
+      - --sbindir=/app/bin
+    sources:
+      - type: archive
+        url: https://bitbucket.org/sshguard/sshguard/get/v2.4.2.tar.gz
+        sha256: 31f7f880bc4bb3aee32682e42ec02f17cb1dfc5894ea676009085bdb373c4b59
+      - type: shell
+        commands:
+          - autoreconf -ivd
+    modules:
+      - python-docutils.json
