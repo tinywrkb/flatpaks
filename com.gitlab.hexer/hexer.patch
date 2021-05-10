@@ -1,0 +1,40 @@
+--- a/Makefile
++++ b/Makefile
+@@ -8,9 +8,9 @@
+ #  -- Where? --
+ #  The following lines determine where the binaries and manual pages for
+ #  hexer are going to live.
+-PREFIX ?= /usr/local
++PREFIX ?= /app
+ BINDIR ?= $(PREFIX)/bin
+-MANDIR ?= $(PREFIX)/man/man1
++MANDIR ?= $(PREFIX)/share/man/man1
+ 
+ #  -- Which terminal library? --
+ #  (It's probably save to leave the following lines unchanged.)
+@@ -19,20 +19,20 @@
+ #LTERMCAP ?= -ltermcap
+ #
+ #  ...or this one if you want to use curses.
+-LTERMCAP ?= -lcurses
++LTERMCAP = -lncurses
+ 
+ CPPFLAGS_STD ?= -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 \
+ 		-D_FILE_OFFSET_BITS=64
+ 
+ #  If you want to add some system specific defines, it's probably more
+ #  appropriate to put them into `config.h'.
+-CPPFLAGS += $(CPPFLAGS_STD) -DHEXER_VERSION=\"1.0.6\"
++CPPFLAGS += -DHEXER_VERSION=\"1.0.6\"
+ 
+ #  -- Which compiler? --
+-CC ?= cc
++#CC ?= cc
+ CC_FOR_BUILD ?= $(CC)
+-CFLAGS ?= -O
+-LDFLAGS ?=
++#CFLAGS ?= -O
++#LDFLAGS ?=
+ LDLIBS = $(LTERMCAP) -lm
+ #
+ #  Uncomment the following lines if you want to use the GNU compiler.
