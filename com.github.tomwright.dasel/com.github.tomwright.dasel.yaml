@@ -1,0 +1,26 @@
+# TODO: switch to offline/cached build
+app-id: com.github.tomwright.dasel
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
+command: dasel
+modules:
+  - name: dasel
+    build-options:
+      build-args:
+        - --share=network
+      env:
+        - GOBIN=/app/bin
+        - GOPATH=/run/build/dasel/gohome
+        - GOROOT=/usr/lib/sdk/golang
+      append-path: /usr/lib/sdk/golang/bin
+    buildsystem: simple
+    build-commands:
+      - go get github.com/tomwright/dasel/cmd/dasel@latest
+      - go install github.com/tomwright/dasel/cmd/dasel@latest
+    post-install:
+      # workaround for go annoyance
+      - find $FLATPAK_BUILDER_BUILDDIR ! -perm -0200 -exec
+          chmod u+w '{}' \;
