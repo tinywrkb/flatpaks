@@ -1,0 +1,23 @@
+app-id: com.github.sharkdp.hexyl
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: hexyl
+modules:
+  - name: hexyl
+    build-options:
+      env:
+        - CARGO_HOME=/run/build/hexyl/cargo
+      prepend-path: /usr/lib/sdk/rust-stable/bin
+    buildsystem: simple
+    build-commands:
+      - cargo --offline fetch --manifest-path Cargo.toml --verbose
+      - cargo --offline build --release --verbose
+      - install -Dm755 target/release/hexyl -t /app/bin/
+    sources:
+      - type: archive
+        url: https://github.com/sharkdp/hexyl/archive/v0.8.0.tar.gz
+        sha256: b2e69b4ca694afd580c7ce22ab83a207174d2bbc9dabbad020fee4a98a1205be
+      - cargo-sources.json
