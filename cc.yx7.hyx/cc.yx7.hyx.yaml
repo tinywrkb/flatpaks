@@ -1,0 +1,15 @@
+app-id: cc.yx7.hyx
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: hyx
+modules:
+  - name: hyx
+    no-autogen: true
+    no-make-install: true
+    build-commands:
+      - install -Dm755 hyx -t /app/bin/
+    sources:
+      - type: archive
+        url: https://yx7.cc/code/hyx/hyx-2020.12.24.tar.xz
+        sha256: 9fc88f58047013101bd6f1320510e77669d2d198be0b9a4c1b690642ba2f4c03
