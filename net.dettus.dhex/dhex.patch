@@ -29,7 +29,7 @@
 -	cp dhex_searchlog.5 $(DESTDIR)/man/man5
 -
 -	
-+	install -Dm644 dhex -t $(DESTDIR)/bin/
++	install -Dm755 dhex -t $(DESTDIR)/bin/
 +	install -Dm644 dhex.1 -t $(DESTDIR)/share/man/man1/
 +	install -Dm644 -t $(DESTDIR)/share/man/man5/ \
 +		dhexrc.5 \
