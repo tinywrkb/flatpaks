@@ -1,0 +1,38 @@
+app-id: io.redasm.redasm
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: REDasm
+rename-desktop-file: REDasm.desktop
+rename-icon: redasm
+finish-args:
+  - --device=dri
+  # TODO: fix the lib issue correctly without ld.so hacks
+  - --env=LD_LIBRARY_PATH=/app/lib
+  - --filesystem=home
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+cleanup:
+  - /include
+cleanup-commands:
+  # TODO: maybe capstone should be kept
+  - rm /app/lib64/libcapstone.a
+  - rmdir /app/lib64
+modules:
+  - name: redasm
+    buildsystem: cmake
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_INSTALL_PREFIX=/app
+    build-commands:
+      - install -Dm755 REDasm -t /app/bin/
+      - install -Dm755 LibREDasm.so -t /app/lib/
+      - install -Dm644 ../ci/REDasm.desktop -t /app/share/applications/
+      - install -Dm644 ../res/logo.png /app/share/icons/hicolor/256x256/apps/redasm.png
+    sources:
+      - type: git
+        url: https://github.com/REDasmOrg/REDasm.git
+        tag: v2.1.1-fix
+        commit: b8c52e624b4f192bace8790dddf594ba6120c12c
