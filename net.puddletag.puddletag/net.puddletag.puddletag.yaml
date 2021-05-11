@@ -1,0 +1,47 @@
+app-id: net.puddletag.puddletag
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: puddletag
+rename-desktop-file: puddletag.desktop
+rename-icon: puddletag
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: puddletag
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+      - install -Dm644 /app/share/{pixmaps,icons/hicolor/256x256/apps}/puddletag.png
+      - rm -r /app/share/pixmaps
+    sources:
+      - type: archive
+        url: https://github.com/puddletag/puddletag/releases/download/2.0.1/puddletag-2.0.1.tar.gz
+        sha256: f5c39b7168df34fb4e919d3f57660888f7a2218c6924979895e2b91ff9ba6a07
+    modules:
+      # TODO: add missing python-pillow optional depends:
+      #       libimagequant (improved color quantization)?
+      #       libraqm (complex text layout support), most likely won't be used by puddletag
+      - python-dependencies.json
+      - ../shared-modules/pyqt5/pyqt5.json
+      - name: chromaprint
+        buildsystem: cmake
+        config-opts:
+          - -DBUILD_TOOLS=ON
+        sources:
+          - type: archive
+            url: https://github.com/acoustid/chromaprint/releases/download/v1.5.0/chromaprint-1.5.0.tar.gz
+            sha256: 573a5400e635b3823fc2394cfa7a217fbb46e8e50ecebd4a61991451a8af766a
