@@ -23,6 +23,7 @@ finish-args:
   - --talk-name=org.freedesktop.Flatpak
   - --talk-name=org.freedesktop.Flatpak.*
 modules:
+  - ../shared-modules/libva-utils/libva-utils.json
   - name: mpv
     cleanup:
       - /include
