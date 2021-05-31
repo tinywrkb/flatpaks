@@ -68,4 +68,3 @@ modules:
       - ../shared-modules/libsecret/libsecret.json
       - ../shared-modules/flextop/flextop.json
       - ../shared-modules/pipewire/pipewire-0.2.json
-  - ../shared-modules/libva-utils/libva-utils.json
