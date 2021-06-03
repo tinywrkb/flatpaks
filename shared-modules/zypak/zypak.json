@@ -6,8 +6,8 @@
   "sources": [
     {
       "type": "archive",
-      "url": "https://github.com/refi64/zypak/archive/refs/tags/v2021.02.tar.gz",
-      "sha256": "f56bad5c5c41af5ad456b257c72c206a8e6a6ba1020a19218a0e742ae751579d"
+      "url": "https://github.com/refi64/zypak/archive/89dd114427a114028f249ed9b2824d083f459eb5.tar.gz",
+      "sha256": "3082737d51326257ca7a5b587e55d396a3f0571245da1f351e9313e8eeaef235"
     },
     {
       "type": "archive",
