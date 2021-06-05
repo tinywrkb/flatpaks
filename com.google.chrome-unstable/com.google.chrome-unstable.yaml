@@ -46,6 +46,12 @@ modules:
         url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_92.0.4515.40-1_amd64.deb
         sha256: 7dd54b65b6fcd8466421528f29582399b79f8bd5ff85c846de994207defb6e8a
         size: 80196800
+        x-checker-data:
+          type: debian-repo
+          package-name: google-chrome-unstable
+          root: http://dl.google.com/linux/chrome/deb
+          dist: stable
+          component: main
       - type: script
         dest-filename: apply_extra
         commands:
