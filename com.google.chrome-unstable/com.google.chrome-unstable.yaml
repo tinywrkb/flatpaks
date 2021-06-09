@@ -43,9 +43,9 @@ modules:
     sources:
       - type: extra-data
         filename: google-chrome.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_93.0.4530.5-1_amd64.deb
-        sha256: 45a8f59f59273c880fdb8504bf1d9d2f32e16cca769ee7574850c7a8a0abdf91
-        size: 81337172
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_93.0.4535.3-1_amd64.deb
+        sha256: 192930b20df3bf22a95787c089e2ad0b2e58680125dee18115b92e2028d2099b
+        size: 81522808
         x-checker-data:
           type: debian-repo
           package-name: google-chrome-unstable
@@ -55,10 +55,9 @@ modules:
       - type: script
         dest-filename: apply_extra
         commands:
-          - bsdtar -Oxf google-chrome.deb data.tar.xz |
-              bsdtar -xJf - --strip-components=4 ./opt/google/chrome-unstable
-          - rm google-chrome.deb
-              product_logo_*.png
+          - bsdtar -Oxf google-chrome.deb data.tar.xz | bsdtar -xJf - --strip-components=4
+            ./opt/google/chrome-unstable
+          - rm google-chrome.deb product_logo_*.png
           - rm -r cron
           - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
       - type: file
