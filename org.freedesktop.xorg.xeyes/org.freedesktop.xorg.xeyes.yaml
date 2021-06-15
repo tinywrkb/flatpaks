@@ -14,9 +14,18 @@ cleanup:
   - '*.la'
 modules:
   - name: xeyes
+    post-install:
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
     sources:
       - type: archive
         url: https://xorg.freedesktop.org/archive/individual/app/xeyes-1.1.2.tar.bz2
         sha256: 57bcec0d2d167af9e5d44d0dbd74c6d7c0f0591cd0608952b23c749fdd910553
+      - type: file
+        path: org.freedesktop.xorg.xeyes.desktop
+      - type: file
+        # source: https://commons.wikimedia.org/wiki/File:X.Org_Logo.svg
+        # license: CC BY-SA 3.0
+        path: org.freedesktop.xorg.xeyes.svg
     modules:
       - ../shared-modules/libxmu/libxmu.json

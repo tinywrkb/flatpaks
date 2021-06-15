@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Xorg Xeyes
+GenericName=Xorg Xeyes
+Comment=A "follow the mouse" X demo, using the X SHAPE extension
+Icon=org.freedesktop.xorg.xeyes
+Categories=Utility
+Exec=xeyes
+TryExec=xeyes
+Terminal=false
