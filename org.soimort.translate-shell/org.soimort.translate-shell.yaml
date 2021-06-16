@@ -1,4 +1,5 @@
-# TODO: add more optional depends
+# TODO: add more optional depends: mpg123(minimal), espeak, rlwrap, aspell or hunspell
+# TODO: maybe drop mpv wrapper in favor of packaged audio player
 app-id: org.soimort.translate-shell
 runtime: org.freedesktop.Platform
 runtime-version: '20.08'
@@ -6,6 +7,8 @@ sdk: org.freedesktop.Sdk
 command: trans
 finish-args:
   - --share=network
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
 modules:
   - name: translate-shell
     no-autogen: true
