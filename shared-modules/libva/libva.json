@@ -8,7 +8,8 @@
         {
           "type": "git",
           "url": "https://github.com/intel/libva.git",
-          "tag": "64d75c08a720b73f4474b9265ca6dc99f947af8b"
+          "tag": "2.11.0",
+          "commit": "64d75c08a720b73f4474b9265ca6dc99f947af8b"
         }
       ]
     },
