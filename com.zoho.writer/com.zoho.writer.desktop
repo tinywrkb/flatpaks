@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Writer
+Exec=writer %U
+Terminal=false
+Type=Application
+Icon=com.zoho.writer
+StartupWMClass=Writer
+MimeType=x-scheme-handler/writer;
+Comment=Create - Share - Collabrate
+Categories=Office;

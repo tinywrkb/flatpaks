@@ -1,0 +1,57 @@
+app-id: com.zoho.writer
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: writer
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-public-share
+  - --filesystem=xdg-videos
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  # needs electron v11 (chromium v87) or newer with ozone enabled
+  # https://github.com/electron/electron/issues/10915
+  # - --socket=wayland
+  - --socket=x11
+modules:
+  - name: writer
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 -t /app/bin/ apply_extra writer
+      #- install -Dm644 ${FLATPAK_ID}.appdata.xml -t /app/share/appdata/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/256x256/apps/
+    sources:
+      - type: extra-data
+        filename: app.deb
+        url: https://files-accl.zohopublic.com/public/zohowriter/download/linux
+        sha256: 57fc0f07248f315cae821592ce99e3dd1ff4dd01b42cc498260c09517db1f73b
+        size: 45109974
+        # doesn't work, seems like failing on timestamp extraction
+        #x-checker-data:
+        #  type: rotating-url
+        #  url: https://files-accl.zohopublic.com/public/zohowriter/download/linux
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - bsdtar -Oxf app.deb data.tar.xz | bsdtar -xJf - --strip-components=3
+            ./opt/Writer
+          - rm -f app.deb
+          - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
+      - type: script
+        dest-filename: writer
+        commands:
+          - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+          - exec zypak-wrapper /app/extra/writer "$@"
+#     - type: file
+#       path: com.zoho.writer.appdata.xml
+      - type: file
+        path: com.zoho.writer.desktop
+      - type: file
+        path: com.zoho.writer.png
+    modules:
+      - ../shared-modules/zypak/zypak.json
