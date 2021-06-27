@@ -1,7 +1,11 @@
 PyGithub
+aiodns
 aiohttp
+brotli
+chardet
 defusedxml
 pyelftools
 requests
 ruamel.yaml
+#semver
 toml
