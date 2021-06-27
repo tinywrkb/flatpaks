@@ -52,13 +52,19 @@ modules:
           - type: archive
             url: https://github.com/google/brotli/archive/v1.0.9.tar.gz
             sha256: f9e8d81d0405ba66d181529af42a3354f838c939095ff99930da6aa9cdf6fe46
+            x-checker-data:
+              type: anitya
+              project-id: 15235
+              url-template: https://github.com/google/brotli/archive/v$version.tar.gz
       # TODO: check again if this really needed
       - name: c-ares
         buildsystem: cmake
         sources:
+          # TODO: f-e-d-c
           - type: archive
             url: https://github.com/c-ares/c-ares/releases/download/cares-1_17_1/c-ares-1.17.1.tar.gz
             sha256: d73dd0f6de824afd407ce10750ea081af47eba52b8a6cb307d220131ad93fc40
+      # TODO: automate module update
       - python-dependencies.json
       # TODO: try again to move this into python-dependencies
       - name: python-semver
@@ -70,6 +76,10 @@ modules:
           - type: archive
             url: https://github.com/python-semver/python-semver/archive/2.13.0.tar.gz
             sha256: 3a3b1b34da5f772f07445f4817eb596a9d42efed730213c527a51070bc88b799
+            x-checker-data:
+              type: anitya
+              project-id: 12989
+              url-template: https://github.com/python-semver/python-semver/archive/$version.tar.gz
       # the pip method generates a broken module so we need to build this manually
       - name: python-pynacl
         buildsystem: simple
@@ -80,16 +90,23 @@ modules:
           - type: archive
             url: https://github.com/pyca/pynacl/archive/1.4.0.tar.gz
             sha256: 2ecfed5cba7a53aa1ca8f2b46002a47402e53d75b2e2615d3bd54934712cd60a
+            x-checker-data:
+              type: anitya
+              project-id: 12703
+              url-template: https://github.com/pyca/pynacl/archive/$version.tar.gz
       - name: python-apt
         buildsystem: simple
         build-commands:
           - python setup.py build
           - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
         sources:
-          - type: git
-            url: https://salsa.debian.org/apt-team/python-apt
-            tag: 2.1.7
-            commit: 4f249a6357ba91dd33e2a455c7f5288e036d7ceb
+          - type: archive
+            url: https://salsa.debian.org/apt-team/python-apt/-/archive/2.2.0/python-apt-2.2.0.tar.gz
+            sha256: fe230c8ea3008bc65633e6d6987626f1c5a637ab7c05969b3a4038ccad12b87d
+            x-checker-data:
+              type: anitya
+              project-id: 215998
+              url-template: https://salsa.debian.org/apt-team/python-apt/-/archive/$version/python-apt-$version.tar.gz
         modules:
           - name: apt
             buildsystem: cmake
@@ -105,10 +122,13 @@ modules:
               - -DWITH_DOC=OFF
               - -DWITH_TESTS=OFF
             sources:
-              - type: git
-                url: https://salsa.debian.org/apt-team/apt
-                tag: 2.2.3
-                commit: 2b557da5b5f2cd0a26fbee098050fa3fe8278891
+              - type: archive
+                url: https://salsa.debian.org/apt-team/apt/-/archive/2.3.6/apt-2.3.6.tar.gz
+                sha265: 1444af4462ee808b5900f154ee09d7ee4546b645d1b0c110dcbdce90b550de02
+                x-checker-data:
+                  type: anitya
+                  project-id: 7208
+                  url-template: https://salsa.debian.org/apt-team/apt/-/archive/$version/apt-$version.tar.gz
               - type: shell
                 commands:
                   - sed -i 's/add_subdirectory(doc)//' CMakeLists.txt
@@ -118,12 +138,14 @@ modules:
                 build-commands:
                   - install -Dm755 triehash.pl /app/bin/triehash
                 sources:
+                  # TODO: f-e-d-c
                   - type: archive
                     url: https://github.com/julian-klode/triehash/archive/v0.3.tar.gz
                     sha256: 289a0966c02c2008cd263d3913a8e3c84c97b8ded3e08373d63a382c71d2199c
               - name: db
                 subdir: build_unix
                 sources:
+                  # TODO: f-e-d-c
                   - type: archive
                     url: https://download.oracle.com/berkeley-db/db-5.3.28.tar.gz
                     sha256: e0a992d740709892e81f9d93f06daf305cf73fb81b545afe72478043172c3628
@@ -139,6 +161,10 @@ modules:
                   - type: archive
                     url: https://github.com/Cyan4973/xxHash/archive/v0.8.0.tar.gz
                     sha256: 7054c3ebd169c97b64a92d7b994ab63c70dd53a06974f1f630ab782c28db0f4f
+                    x-checker-data:
+                      type: anitya
+                      project-id: 17583
+                      url-template: https://github.com/Cyan4973/xxHash/archive/v$version.tar.gz
               - name: dpkg
                 config-opts:
                   - --libexecdir=/app/lib
@@ -155,6 +181,10 @@ modules:
                   - type: archive
                     url: https://salsa.debian.org/dpkg-team/dpkg/-/archive/1.20.7.1/dpkg-1.20.7.1.tar.bz2
                     sha256: a83444ecd04939143a87d8f4af612a9f089c75e881a8f12e5190d012325f6ab3
+                    x-checker-data:
+                      type: anitya
+                      project-id: 8127
+                      url-template: https://salsa.debian.org/dpkg-team/dpkg/-/archive/$version/dpkg-$version.tar.bz2
                   # TODO: remove this
                   - type: shell
                     commands:
