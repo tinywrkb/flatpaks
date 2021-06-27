@@ -22,11 +22,9 @@ modules:
   - name: flatpak-external-data-checker
     buildsystem: simple
     build-commands:
-      - install -Dm755 -t /app/flatpak-external-data-checker/
-          canonicalize-manifest
-          flatpak-external-data-checker
-      - install -Dm644 -t /app/flatpak-external-data-checker/
-          README.md
+      - install -Dm755 -t /app/flatpak-external-data-checker/ canonicalize-manifest
+        flatpak-external-data-checker
+      - install -Dm644 -t /app/flatpak-external-data-checker/ README.md
       - cp -r --preserve=mode src /app/flatpak-external-data-checker/src
       - install -Dm755 flatpak-external-data-checker.sh /app/bin/flatpak-external-data-checker
       - install -Dm755 apt-xdg.sh /app/bin/apt-xdg
@@ -74,8 +72,8 @@ modules:
           - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
         sources:
           - type: archive
-            url: https://github.com/python-semver/python-semver/archive/2.13.0.tar.gz
-            sha256: 3a3b1b34da5f772f07445f4817eb596a9d42efed730213c527a51070bc88b799
+            url: https://github.com/python-semver/python-semver/archive/3.0.0-dev.1.tar.gz
+            sha256: dd9b6e00c4cb948211ecd2d63ee701a3151501dd4291238cda3a14b1ea8814ee
             x-checker-data:
               type: anitya
               project-id: 12989
@@ -124,7 +122,7 @@ modules:
             sources:
               - type: archive
                 url: https://salsa.debian.org/apt-team/apt/-/archive/2.3.6/apt-2.3.6.tar.gz
-                sha265: 1444af4462ee808b5900f154ee09d7ee4546b645d1b0c110dcbdce90b550de02
+                sha256: 1444af4462ee808b5900f154ee09d7ee4546b645d1b0c110dcbdce90b550de02
                 x-checker-data:
                   type: anitya
                   project-id: 7208
@@ -179,8 +177,8 @@ modules:
                   - --disable-update-alternatives
                 sources:
                   - type: archive
-                    url: https://salsa.debian.org/dpkg-team/dpkg/-/archive/1.20.7.1/dpkg-1.20.7.1.tar.bz2
-                    sha256: a83444ecd04939143a87d8f4af612a9f089c75e881a8f12e5190d012325f6ab3
+                    url: https://salsa.debian.org/dpkg-team/dpkg/-/archive/1.20.9/dpkg-1.20.9.tar.bz2
+                    sha256: 41f97c410311df5812f2a7792aa6f1ce6cd5e929e4b0092ac284220faf3ae1bc
                     x-checker-data:
                       type: anitya
                       project-id: 8127
