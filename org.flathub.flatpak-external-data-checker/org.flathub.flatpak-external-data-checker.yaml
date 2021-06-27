@@ -54,6 +54,7 @@ modules:
               type: anitya
               project-id: 15235
               url-template: https://github.com/google/brotli/archive/v$version.tar.gz
+              stable-only: true
       # TODO: check again if this really needed
       - name: c-ares
         buildsystem: cmake
@@ -72,12 +73,13 @@ modules:
           - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
         sources:
           - type: archive
-            url: https://github.com/python-semver/python-semver/archive/3.0.0-dev.1.tar.gz
-            sha256: dd9b6e00c4cb948211ecd2d63ee701a3151501dd4291238cda3a14b1ea8814ee
+            url: https://github.com/python-semver/python-semver/archive/2.13.0.tar.gz
+            sha256: 3a3b1b34da5f772f07445f4817eb596a9d42efed730213c527a51070bc88b799
             x-checker-data:
               type: anitya
               project-id: 12989
               url-template: https://github.com/python-semver/python-semver/archive/$version.tar.gz
+              stable-only: true
       # the pip method generates a broken module so we need to build this manually
       - name: python-pynacl
         buildsystem: simple
@@ -92,6 +94,7 @@ modules:
               type: anitya
               project-id: 12703
               url-template: https://github.com/pyca/pynacl/archive/$version.tar.gz
+              stable-only: true
       - name: python-apt
         buildsystem: simple
         build-commands:
@@ -105,6 +108,7 @@ modules:
               type: anitya
               project-id: 215998
               url-template: https://salsa.debian.org/apt-team/python-apt/-/archive/$version/python-apt-$version.tar.gz
+              stable-only: true
         modules:
           - name: apt
             buildsystem: cmake
@@ -127,6 +131,7 @@ modules:
                   type: anitya
                   project-id: 7208
                   url-template: https://salsa.debian.org/apt-team/apt/-/archive/$version/apt-$version.tar.gz
+                  stable-only: true
               - type: shell
                 commands:
                   - sed -i 's/add_subdirectory(doc)//' CMakeLists.txt
@@ -163,6 +168,7 @@ modules:
                       type: anitya
                       project-id: 17583
                       url-template: https://github.com/Cyan4973/xxHash/archive/v$version.tar.gz
+                      stable-only: true
               - name: dpkg
                 config-opts:
                   - --libexecdir=/app/lib
@@ -183,6 +189,7 @@ modules:
                       type: anitya
                       project-id: 8127
                       url-template: https://salsa.debian.org/dpkg-team/dpkg/-/archive/$version/dpkg-$version.tar.bz2
+                      stable-only: true
                   # TODO: remove this
                   - type: shell
                     commands:
