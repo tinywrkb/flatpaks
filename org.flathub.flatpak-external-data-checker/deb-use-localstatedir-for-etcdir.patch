@@ -1,0 +1,34 @@
+diff --git a/src/checkers/debianrepochecker.py b/src/checkers/debianrepochecker.py
+index 7ff8572..67d8cff 100644
+--- a/src/checkers/debianrepochecker.py
++++ b/src/checkers/debianrepochecker.py
+@@ -45,9 +45,9 @@ from ..lib.utils import get_timestamp_from_url
+ apt_pkg.init()
+ 
+ APT_NEEDED_DIRS = (
+-    "etc/apt/apt.conf.d",
+-    "etc/apt/preferences.d",
+-    "etc/apt/trusted.gpg.d",
++    "var/lib/apt/apt.conf.d",
++    "var/lib/apt/preferences.d",
++    "var/lib/apt/trusted.gpg.d",
+     "var/lib/apt/lists/partial",
+     "var/cache/apt/archives/partial",
+     "var/log/apt",
+@@ -156,7 +156,7 @@ class DebianRepoChecker(Checker):
+                 os.makedirs(os.path.join(root, path), exist_ok=True)
+ 
+             # Create sources.list
+-            sources_list = os.path.join(root, "etc/apt/sources.list")
++            sources_list = os.path.join(root, "var/lib/apt/sources.list")
+             with open(sources_list, "w") as f:
+                 # FIXME: import GPG key, remove 'trusted=yes' which skips GPG
+                 # verification
+@@ -176,6 +176,7 @@ class DebianRepoChecker(Checker):
+             apt_pkg.init()
+             apt_pkg.config.set("Dir", root)
+             apt_pkg.config.set("Dir::State::status", dpkg_status)
++            apt_pkg.config.set("Dir::Etc", os.path.join(root, 'var/lib/apt'))
+             apt_pkg.config.set("Acquire::Languages", "none")
+             progress = LoggerAcquireProgress(LOG)
+ 

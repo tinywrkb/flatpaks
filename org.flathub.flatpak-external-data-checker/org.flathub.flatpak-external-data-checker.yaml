@@ -36,6 +36,8 @@ modules:
         path: flatpak-external-data-checker.sh
       - type: file
         path: apt-xdg.sh
+      #- type: patch
+      #  path: deb-use-localstatedir-for-etcdir.patch
       - type: patch
         path: deb-use-xdg-dirs-instead-of-localstatedir.patch
       #- type: patch
