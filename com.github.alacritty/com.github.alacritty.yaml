@@ -41,8 +41,8 @@ modules:
           - ./install.sh --components=rustc,cargo,rust-std-x86_64-unknown-linux-gnu --prefix=/app
         sources:
           - type: archive
-            url: https://static.rust-lang.org/dist/rust-1.44.0-x86_64-unknown-linux-gnu.tar.gz
-            sha256: eaa34271b4ac4d2c281831117d4d335eed0b37fe7a34477d9855a6f1d930a624
+            url: https://static.rust-lang.org/dist/rust-1.45.0-x86_64-unknown-linux-gnu.tar.gz
+            sha256: c34ed8722759fd60c94dbc9069833da5b3b873dcd19afaa9b34c1ce2c2cfa229
             dest-filename: rust-x86_64-unknown-linux-gnu.tar.gz
         cleanup:
           - '*'
