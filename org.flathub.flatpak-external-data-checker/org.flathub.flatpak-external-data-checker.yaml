@@ -1,4 +1,6 @@
-# TODO: deb checker: sources.list is re-written so there's no need to use xdg dirs, switch back to /var or support both
+# WARNING: This packaging is not maintained, use instead the flathub app
+# TODO: consider again upstreaming the localstatedir patch if flatpak will link /var/{cache,config,data}
+#       to their xdg dirs counterparts.
 app-id: org.flathub.flatpak-external-data-checker
 branch: '20.08'
 runtime: org.freedesktop.Sdk
