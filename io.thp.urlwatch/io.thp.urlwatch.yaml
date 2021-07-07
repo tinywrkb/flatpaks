@@ -12,9 +12,10 @@ cleanup:
   - '*.la'
 # - /share/doc/jq
   - /share/man/man1/jq.1
-cleanup-commands:
-  - rm -r /app/share/doc/jq
-  - rmdir /app/share/doc
+# jq is disabled
+#cleanup-commands:
+#  - rm -r /app/share/doc/jq
+#  - rmdir /app/share/doc
 modules:
   - name: urlwatch
     # TODO remove this as soon as the keyring issue is fixed
@@ -27,7 +28,23 @@ modules:
     modules:
       # required by PyYAML
       - ../shared-modules/libyaml/libyaml.json
-      - ../shared-modules/jq/jq.json
+      # jq is disabled due to jq.py static packaging
+      #- ../shared-modules/jq/jq.json
       # urlwatch is commented-out in requirements.txt because keyring installation fails
       #   due to metadata version mismatch, need to wait for post 23.0.1 release
       - python-dependencies.json
+      - name: jq.py
+        build-options:
+          # cython module with static linking, using outdated libs
+          # give network access instead of trying to fix this
+          build-args:
+            - --share=network
+        buildsystem: simple
+        build-commands:
+          - cython jq.pyx
+          - python setup.py build
+          - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+        sources:
+          - type: archive
+            url: https://github.com/mwilliamson/jq.py/archive/refs/tags/1.1.3.tar.gz
+            sha256: b0f4de47d6ae4fb221b539463eca777d723f2e7b290af6e132d51d7ef89c824c
