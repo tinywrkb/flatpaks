@@ -7,7 +7,7 @@ cssbeautifier
 
 #jq filter
 # required when installing jq via pip
-#requests
+requests
 # tries to download oniguruma even though its already installed
 #jq
 

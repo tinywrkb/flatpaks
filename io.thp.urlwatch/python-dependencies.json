@@ -7,7 +7,7 @@
             "name": "python3-beautifulsoup4",
             "buildsystem": "simple",
             "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"beautifulsoup4\" --no-build-isolation"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"beautifulsoup4\" --no-build-isolation"
             ],
             "sources": [
                 {
@@ -26,7 +26,7 @@
             "name": "python3-jsbeautifier",
             "buildsystem": "simple",
             "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"jsbeautifier\" --no-build-isolation"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"jsbeautifier\" --no-build-isolation"
             ],
             "sources": [
                 {
@@ -36,8 +36,8 @@
                 },
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/ef/f9/cc78c6f98d7e80dea2fd51d8e4a54a436a17eeec33aee9c92ac43eb7e28d/jsbeautifier-1.13.13.tar.gz",
-                    "sha256": "8ef6d9fa015df8efa578ad7f210184c4a78903b939b5ac877da229ffa5573a12"
+                    "url": "https://files.pythonhosted.org/packages/56/3a/4f3bdfa7e6c472d347a04f267faa55d2ff1a5ab993b63f0c2ead1cdfa512/jsbeautifier-1.14.0.tar.gz",
+                    "sha256": "84fdb008d8af89619269a6aca702288b48f837a99427a0f529aa57ecfb36ee3c"
                 }
             ]
         },
@@ -45,13 +45,13 @@
             "name": "python3-cssbeautifier",
             "buildsystem": "simple",
             "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"cssbeautifier\" --no-build-isolation"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"cssbeautifier\" --no-build-isolation"
             ],
             "sources": [
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/ef/f9/cc78c6f98d7e80dea2fd51d8e4a54a436a17eeec33aee9c92ac43eb7e28d/jsbeautifier-1.13.13.tar.gz",
-                    "sha256": "8ef6d9fa015df8efa578ad7f210184c4a78903b939b5ac877da229ffa5573a12"
+                    "url": "https://files.pythonhosted.org/packages/56/3a/4f3bdfa7e6c472d347a04f267faa55d2ff1a5ab993b63f0c2ead1cdfa512/jsbeautifier-1.14.0.tar.gz",
+                    "sha256": "84fdb008d8af89619269a6aca702288b48f837a99427a0f529aa57ecfb36ee3c"
                 },
                 {
                     "type": "file",
@@ -60,8 +60,42 @@
                 },
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/56/a4/67cb96c79d35fbbbbee4139aba22f44b711809863525694a1fde9830e8bc/cssbeautifier-1.13.13.tar.gz",
-                    "sha256": "95a0953a9dcca96551a599e1fed9ff868b3f7812abea28006ca9d4e055e39591"
+                    "url": "https://files.pythonhosted.org/packages/74/7a/a76372316698898e763bb762936b1edd6b1f34c06735ea429a8f3a3ee27e/cssbeautifier-1.14.0.tar.gz",
+                    "sha256": "20be1f47f20762db32c78124ff44d351ba13894fa8e7cfe34014b672f9f6ecb2"
+                }
+            ]
+        },
+        {
+            "name": "python3-requests",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"requests\" --no-build-isolation"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/4f/5a/597ef5911cb8919efe4d86206aa8b2658616d676a7088f0825ca08bd7cb8/urllib3-1.26.6.tar.gz",
+                    "sha256": "f57b4c16c62fa2760b7e3d97c35b255512fb6b59a259730f36ba32ce9f8e342f"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/ea/b7/e0e3c1c467636186c39925827be42f16fee389dc404ac29e930e9136be70/idna-2.10.tar.gz",
+                    "sha256": "b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/ee/2d/9cdc2b527e127b4c9db64b86647d567985940ac3698eeabc7ffaccb4ea61/chardet-4.0.0.tar.gz",
+                    "sha256": "0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/6d/78/f8db8d57f520a54f0b8a438319c342c61c22759d8f9a1cd2e2180b5e5ea9/certifi-2021.5.30.tar.gz",
+                    "sha256": "2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee"
+                },
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/6b/47/c14abc08432ab22dc18b9892252efaf005ab44066de871e72a38d6af464b/requests-2.25.1.tar.gz",
+                    "sha256": "27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"
                 }
             ]
         }
