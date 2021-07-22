@@ -1,0 +1,60 @@
+app-id: pro.abi_laboratory.abi-compliance-checker
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: abi-compliance-checker
+finish-args:
+  - --allow=devel
+  - --filesystem=host
+modules:
+  - name: vtable-dumper
+    no-autogen: true
+    make-install-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/lvc/vtable-dumper/archive/1.2.tar.gz
+        sha256: 6993781b6a00936fc5f76dc0db4c410acb46b6d6e9836ddbe2e3c525c6dd1fd2
+        x-checker-data:
+          type: anitya
+          project-id: 7870
+          stable-only: true
+          url-template: https://github.com/lvc/vtable-dumper/archive/$version.tar.gz
+  - name: abi-dumper
+    no-autogen: true
+    no-make-install: true
+    make-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/lvc/abi-dumper/archive/1.2.tar.gz
+        sha256: 8a9858c91b4e9222c89b676d59422053ad560fa005a39443053568049bd4d27e
+        x-checker-data:
+          type: anitya
+          project-id: 11
+          stable-only: true
+          url-template: https://github.com/lvc/abi-dumper/archive/$version.tar.gz
+    modules:
+      - name: ctags
+        sources:
+          - type: archive
+            url: https://github.com/universal-ctags/ctags/archive/p5.9.20210718.0.tar.gz
+            sha256: a374b8af3c99d22c63f8a3bdd79cc7dc4512bd2ab16bfa816d793999429bcffc
+            x-checker-data:
+              type: anitya
+              project-id: 223832
+              stable-only: true
+              url-template: https://github.com/universal-ctags/ctags/archive/p$version.tar.gz
+  - name: abi-compliance-checker
+    no-autogen: true
+    make-install-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/lvc/abi-compliance-checker/archive/2.3.tar.gz
+        sha256: b1e32a484211ec05d7f265ab4d2c1c52dcdb610708cb3f74d8aaeb7fe9685d64
+        x-checker-data:
+          type: anitya
+          project-id: 10
+          stable-only: true
+          url-template: https://github.com/lvc/abi-compliance-checker/archive/$version.tar.gz
