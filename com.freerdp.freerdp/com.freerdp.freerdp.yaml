@@ -43,6 +43,11 @@ modules:
       - type: archive
         url: https://github.com/FreeRDP/FreeRDP/releases/download/2.3.2/freerdp-2.3.2.tar.gz
         sha256: deb888034a441c7f76dc8b3ddea67fac3c0d815739fc2146e1243480ce56c91c
+        x-checker-data:
+          type: anitya
+          project-id: 10442
+          stable-only: true
+          url-template: https://github.com/FreeRDP/FreeRDP/releases/download/$version/freerdp-$version.tar.gz
     cleanup:
       - /lib/cmake
     modules:

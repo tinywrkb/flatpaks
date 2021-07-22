@@ -12,7 +12,13 @@
     {
       "type": "archive",
       "url": "https://downloads.sourceforge.net/freeglut/freeglut-3.2.1.tar.gz",
-      "sha256": "d4000e02102acaf259998c870e25214739d1f16f67f99cb35e4f46841399da68"
+      "sha256": "d4000e02102acaf259998c870e25214739d1f16f67f99cb35e4f46841399da68",
+      "x-checker-data": {
+        "type": "anitya",
+        "project-id": 846,
+        "stable-only": true,
+        "url-template": "https://downloads.sourceforge.net/freeglut/freeglut-$version.tar.gz"
+      }
     }
   ],
   "cleanup": [
