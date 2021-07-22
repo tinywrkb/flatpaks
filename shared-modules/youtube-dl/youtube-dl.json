@@ -10,7 +10,13 @@
       "type": "git",
       "url": "https://github.com/ytdl-org/youtube-dl.git",
       "tag": "2021.06.06",
-      "commit": "b224cf39d53bd16bcfda2ac493712c3ff449ecb8"
+      "commit": "b224cf39d53bd16bcfda2ac493712c3ff449ecb8",
+      "x-checker-data": {
+        "type": "anitya",
+        "project-id": 5292,
+        "stable-only": true,
+        "tag-template": "$version"
+      }
     }
   ]
 }

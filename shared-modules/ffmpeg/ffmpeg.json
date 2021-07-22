@@ -17,7 +17,13 @@
     {
       "type": "archive",
       "url": "https://ffmpeg.org/releases/ffmpeg-4.4.tar.xz",
-      "sha256": "06b10a183ce5371f915c6bb15b7b1fffbe046e8275099c96affc29e17645d909"
+      "sha256": "06b10a183ce5371f915c6bb15b7b1fffbe046e8275099c96affc29e17645d909",
+      "x-checker-data": {
+        "type": "anitya",
+        "project-id": 5405,
+        "stable-only": true,
+        "url-template": "https://ffmpeg.org/releases/ffmpeg-$version.tar.xz"
+      }
     }
   ],
   "modules": [
@@ -42,7 +48,13 @@
         {
           "type": "archive",
           "url": "https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.20.0.tar.bz2",
-          "sha256": "956118713f7ccb405c55c7088a6a2490c32d54300dd9a30d8d5008c28d3726f7"
+          "sha256": "956118713f7ccb405c55c7088a6a2490c32d54300dd9a30d8d5008c28d3726f7",
+          "x-checker-data": {
+            "type": "anitya",
+            "project-id": 9998,
+            "stable-only": true,
+            "url-template": "https://linuxtv.org/downloads/v4l-utils/v4l-utils-$version.tar.bz2"
+          }
         }
       ]
     },
@@ -60,7 +72,13 @@
           "type": "git",
           "url": "https://git.videolan.org/git/ffmpeg/nv-codec-headers.git",
           "tag": "n8.2.15.11",
-          "commit": "58c159153814260c02c580716677bc4e823dfeff"
+          "commit": "58c159153814260c02c580716677bc4e823dfeff",
+          "x-checker-data": {
+            "type": "anitya",
+            "project-id": 223796,
+            "stable-only": true,
+            "tag-template": "n$version"
+          }
         }
       ]
     }
