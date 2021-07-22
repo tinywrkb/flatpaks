@@ -47,4 +47,4 @@ modules:
       - ../shared-modules/python-gobject/python-gobject.json
       # for building rmlint man page
       # has an added cleanup entry
-      - sphinx.json
+      - ../shared-modules/python-sphinx/python-sphinx.json
