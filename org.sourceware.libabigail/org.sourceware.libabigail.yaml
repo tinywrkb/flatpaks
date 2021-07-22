@@ -1,0 +1,21 @@
+app-id: org.sourceware.libabigail
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+# TODO: possibly add a wrapper
+command: /usr/bin/sh
+finish-args:
+  - --allow=devel
+  - --filesystem=host
+modules:
+  - name: libabigail
+    sources:
+      - type: archive
+        url: http://mirrors.kernel.org/sourceware/libabigail/libabigail-1.8.2.tar.gz
+        sha256: 86347c9f0a8666f263fd63f8c3fe4c4f9cb1bdb3ec4260ecbaf117d137e89787
+        x-checker-data:
+          type: anitya
+          project-id: 223851
+          stable-only: true
+          # TODO: switch to git? tarball is too large, it's not being cached, so it slows down the check
+          url-template: http://mirrors.kernel.org/sourceware/libabigail/libabigail-$version.tar.gz
