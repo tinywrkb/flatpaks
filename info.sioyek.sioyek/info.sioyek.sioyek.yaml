@@ -1,0 +1,47 @@
+app-id: info.sioyek.sioyek
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: sioyek
+rename-desktop-file: sioyek.desktop
+finish-args:
+  - --device=dri
+  - --env=MESA_GL_VERSION_OVERRIDE=3.0
+  - --filesystem=xdg-documents
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/pixmaps
+  - '*.a'
+  - '*.la'
+modules:
+  - name: sioyek
+    buildsystem: qmake
+    config-opts:
+      - -after
+      - QMAKE_CC=gcc
+      - QMAKE_CXX=g++
+      - CONFIG+=link_pkgconfig
+      - PKGCONFIG+="harfbuzz mupdf"
+      - LIBS="-ldl"
+      - pdf_viewer_build_config.pro
+    post-install:
+      - desktop-file-edit --remove-key Icon ${FLATPAK_DEST}/share/applications/sioyek.desktop
+      - install -Dm644 -t ${FLATPAK_DEST}/bin/
+          tutorial.pdf
+          pdf_viewer/prefs.config
+          pdf_viewer/prefs_user.config
+          pdf_viewer/keys.config
+          pdf_viewer/keys_user.config
+      - install -dm755 ${FLATPAK_DEST}/bin/shaders
+      - install -Dm644 -t ${FLATPAK_DEST}/bin/shaders/
+          pdf_viewer/shaders/*
+    sources:
+      - type: archive
+        url: https://github.com/ahrm/sioyek/archive/v0.31.5.tar.gz
+        sha256: ff7e63244e95106b8c84dc24b779bb874d86646d970476a81b3a5d91514bcdd8
+    modules:
+      - ../shared-modules/mupdf/libmupdf.json
