@@ -1,0 +1,10 @@
+prefix=/app
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: mupdf
+Description: Library for rendering PDF documents
+Version: $$VERSION$$
+Libs: -L${libdir} -lmupdf
+Cflags: -I${includedir}

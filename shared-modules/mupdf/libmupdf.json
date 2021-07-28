@@ -1,0 +1,80 @@
+{
+  "name": "libmupdf",
+  "no-autogen": true,
+  "build-options": {
+    "cflags": "-fPIC",
+    "cxxflags": "-fPIC",
+    "env": {
+      "USE_SYSTEM_LIBS": "yes"
+    }
+  },
+  "make-args": [
+    "shared=yes",
+    "build=release",
+    "libs"
+  ],
+  "make-install-args": [
+    "shared=yes",
+    "build=release",
+    "libs",
+    "prefix=/app"
+  ],
+  "post-install": [
+    "libmupdf_ver=$(grep '#define FZ_VERSION' ${FLATPAK_DEST}/include/mupdf/fitz/version.h | head -1 | cut -d\\\" -f2); sed -i 's/\\$\\$VERSION\\$\\$/'${libmupdf_ver}'/' mupdf.pc",
+    "install -Dm644 mupdf.pc -t ${FLATPAK_DEST}/lib/pkgconfig/"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://mupdf.com/downloads/archive/mupdf-1.18.0-source.tar.xz",
+      "sha256": "592d4f6c0fba41bb954eb1a41616661b62b134d5b383e33bd45a081af5d4a59a"
+    },
+    {
+      "type": "file",
+      "path": "mupdf.pc"
+    },
+    {
+      "type": "shell",
+      "commands": [
+        "rm -rf thirdparty/{freeglut,freetype,harfbuzz,jbig2dec,libjpeg,openjpeg,zlib}"
+      ]
+    }
+  ],
+  "cleanup": [
+    "/bin",
+    "/share"
+  ],
+  "modules": [
+    "../freeglut/freeglut.json",
+    {
+      "name": "jbig2dec",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9530/jbig2dec-0.19.tar.gz",
+          "sha256": "279476695b38f04939aa59d041be56f6bade3422003a406a85e9792c27118a37"
+        },
+        {
+          "type": "shell",
+          "commands": [
+            "autoreconf -vfi"
+          ]
+        }
+      ],
+      "cleanup": [
+        "/bin",
+        "/share/man"
+      ]
+    },
+    {
+      "name": "gumbo-parser",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/google/gumbo-parser/archive/v0.10.1.tar.gz",
+          "sha256": "28463053d44a5dfbc4b77bcf49c8cee119338ffa636cc17fc3378421d714efad"
+        }
+      ]
+    }
+  ]
+}
