@@ -1,0 +1,15 @@
+{
+  "name": "libvirt-python",
+  "buildsystem": "simple",
+  "build-commands": [
+    "python3 setup.py clean",
+    "python3 setup.py install --root=/ --prefix=app/"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://libvirt.org/sources/python/libvirt-python-7.2.0.tar.gz",
+      "sha256": "c0c3bac54c55622e17927b09cd9843869600d71842fb072c99491fe2608dcee7"
+    }
+  ]
+}

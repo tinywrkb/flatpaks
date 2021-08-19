@@ -1,0 +1,40 @@
+{
+  "name": "libvirt-glib",
+  "buildsystem": "meson",
+  "config-opts": [
+    "-Drpath=enabled",
+    "-Ddocs=disabled",
+    "-Dtests=disabled",
+    "-Dintrospection=enabled",
+    "-Dvapi=disabled"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://libvirt.org/sources/glib/libvirt-glib-4.0.0.tar.xz",
+      "sha256": "8423f7069daa476307321d1c11e2ecc285340cd32ca9fc05207762843edeacbd"
+    }
+  ],
+  "cleanup": [
+    "/share/gtk-doc"
+  ],
+  "modules": [
+    {
+      "name": "libcap-ng",
+      "config-opts": [
+        "--enable-static=no"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/stevegrubb/libcap-ng/archive/v0.8.2.tar.gz",
+          "sha256": "65b86885b8d873e55c05bd49427fd370d559b26f0c2089ac9194828e6a2fe233"
+        }
+      ],
+      "cleanup": [
+        "/bin",
+        "/share/aclocal"
+      ]
+    }
+  ]
+}

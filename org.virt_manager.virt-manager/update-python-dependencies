@@ -5,5 +5,5 @@ flatpak run \
   --filesystem=$PWD \
   --command=flatpak-pip-generator \
   io.github.flatpak.flatpak-builder-tools \
-  --requirements-file=virt-manager-requirements.txt \
-  --output virt-manager-python-dependencies.json
+  --requirements-file=requirements.txt \
+  --output python-dependencies.json
