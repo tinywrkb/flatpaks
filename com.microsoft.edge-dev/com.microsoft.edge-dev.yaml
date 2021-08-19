@@ -6,6 +6,7 @@ command: edge
 finish-args:
   - --device=all
   - --device=dri
+  - --env=CHROME_VERSION_EXTRA=dev
   - --filesystem=xdg-download
   - --filesystem=xdg-run/pipewire-0:ro
   - --own-name=org.mpris.MediaPlayer2.edge.*
@@ -25,15 +26,14 @@ modules:
   - ../shared-modules/libsecret/libsecret.json
   - ../shared-modules/zypak/zypak.json
   - ../shared-modules/flextop/flextop.json
+  - ../shared-modules/cobalt/cobalt.json
   - name: edge
     buildsystem: simple
     build-commands:
-      - install -Dm755 edge.sh /app/bin/edge
-      - install -Dm755 apply_extra.sh /app/bin/apply_extra
-      - install -Dm755 stub_sandbox.sh /app/bin/stub_sandbox
-      - install -Dm644 -t /app/share/applications ${FLATPAK_ID}.desktop
+      - install -Dm755 -t /app/bin/ apply_extra edge
+      - install -Dm644 -t /app/etc/ cobalt.ini ld.so.conf
+      - install -Dm644 -t /app/share/applications/ ${FLATPAK_ID}.desktop
       - install -Dm644 -t /app/share/icons/hicolor/256x256/apps/ ${FLATPAK_ID}.png
-      - install -Dm644 -t /app/etc/ ld.so.conf
     sources:
       - type: extra-data
         # From https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev
@@ -48,18 +48,38 @@ modules:
           component: main
         size: 106399176
       - type: script
-        dest-filename: stub_sandbox.sh
+        dest-filename: apply_extra
         commands:
-          - 'echo "Stub sandbox ignoring command: $@"'
-          - exit 1
-      - type: file
-        path: edge.sh
-      - type: file
-        path: apply_extra.sh
+          - set -e
+          - |
+            bsdtar -Oxf edge.deb 'data.tar*' |
+              bsdtar -xf - \
+              --strip-components=4 \
+              --exclude='./opt/microsoft/msedge-dev/nacl*' \
+              ./opt/microsoft/msedge-dev
+          - rm edge.deb
+          - install -Dm755 /app/bin/stub_sandbox msedge-sandbox
+      # cobalt.ini
+      - type: shell
+        commands:
+          - |
+            cat << EOF > cobalt.ini
+            [Application]
+            EntryPoint=/app/extra/msedge
+            EOF
+      - type: script
+        dest-filename: edge
+        commands:
+          - exec cobalt "$@"
+      # ld.so.conf
+      # workaround for broken accelerated 3d graphics with ozone x11
+      - type: shell
+        commands:
+          - |
+            cat << EOF > ld.so.conf
+            /app/extra
+            EOF
       - type: file
         path: com.microsoft.edge-dev.desktop
       - type: file
         path: com.microsoft.edge-dev.png
-      # workaround for broken accelerated 3d graphics with ozone x11
-      - type: file
-        path: ld.so.conf
