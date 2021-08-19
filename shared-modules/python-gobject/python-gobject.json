@@ -7,8 +7,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://gitlab.gnome.org/GNOME/pygobject/-/archive/3.40.1/pygobject-3.40.1.tar.gz",
-            "sha256": "3cd4a350ee997978de3c7d73d008788eeb4149816395016f269bbfa51a01b69b",
+            "url": "https://download.gnome.org/sources/pygobject/3.40/pygobject-3.40.1.tar.xz",
+            "sha256": "00c6d591f4cb40c335ab1fd3e8c17869ba15cfda54416fe363290af766790035",
             "x-checker-data": {
                 "type": "gnome",
                 "name": "pygobject",
