@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Byobu Termite
-Comment=Advanced Command Line and Text Window Manager
-Icon=com.github.thestinger.termite.byobu
-Exec=termite -e byobu
-Type=Application
-Categories=GTK;System;Utility;TerminalEmulator;
-StartupWMClass=com.github.thestinger.termite.byobu
-StartupNotify=true
