@@ -1,17 +1,22 @@
 {
-  "name": "python-gobject",
-  "buildsystem": "meson",
-  "config-opts": [
-    "-Dpycairo=enabled"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://gitlab.gnome.org/GNOME/pygobject/-/archive/3.40.1/pygobject-3.40.1.tar.gz",
-      "sha256": "3cd4a350ee997978de3c7d73d008788eeb4149816395016f269bbfa51a01b69b"
-    }
-  ],
-  "modules": [
-    "../python-cairo/python-cairo.json"
-  ]
+    "name": "python-gobject",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dpycairo=enabled"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://gitlab.gnome.org/GNOME/pygobject/-/archive/3.40.1/pygobject-3.40.1.tar.gz",
+            "sha256": "3cd4a350ee997978de3c7d73d008788eeb4149816395016f269bbfa51a01b69b",
+            "x-checker-data": {
+                "type": "gnome",
+                "name": "pygobject",
+                "stable-only": true
+            }
+        }
+    ],
+    "modules": [
+        "../python-cairo/python-cairo.json"
+    ]
 }

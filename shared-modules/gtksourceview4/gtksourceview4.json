@@ -1,14 +1,22 @@
 {
-  "name": "gtksourceview4",
-  "buildsystem": "meson",
-  "config-opts": [
-    "-Dvapi=false"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://gitlab.gnome.org/GNOME/gtksourceview/-/archive/4.8.1/gtksourceview-4.8.1.tar.gz",
-      "sha256": "cbfde42161662525805be4a38102b085db5e991fe1263171a28a78c7da253760"
-    }
-  ]
+    "name": "gtksourceview4",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dvapi=false"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://gitlab.gnome.org/GNOME/gtksourceview/-/archive/4.8.1/gtksourceview-4.8.1.tar.gz",
+            "sha256": "cbfde42161662525805be4a38102b085db5e991fe1263171a28a78c7da253760",
+            "x-checker-data": {
+              "type": "gnome",
+              "name": "gtksourceview",
+                  "versions": {
+                  "<": "5.0.0"
+              },
+              "stable-only": true
+            }
+        }
+    ]
 }
