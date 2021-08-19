@@ -118,5 +118,8 @@ modules:
           project-id: 14846
           stable-only: true
           url-template: https://github.com/pwmt/zathura-pdf-mupdf/archive/$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/mupdfthird/d' meson.build
     modules:
       - ../shared-modules/mupdf/libmupdf.json
