@@ -65,12 +65,6 @@
                         "stable-only": true,
                         "url-template": "https://github.com/ArtifexSoftware/jbig2dec/archive/$version.tar.gz"
                     }
-                },
-                {
-                    "type": "shell",
-                    "commands": [
-                        "autoreconf -vfi"
-                    ]
                 }
             ],
             "cleanup": [
