@@ -16,7 +16,6 @@ finish-args:
 cleanup:
   - /include
   - /lib/pkgconfig
-  - /share/man
   - '*.a'
   - '*.la'
 modules:
@@ -38,6 +37,7 @@ modules:
       - /share/fish
       - /share/zsh
     modules:
+      - ../shared-modules/python-sphinx/python-sphinx.json
       - name: girara
         buildsystem: meson
         sources:
