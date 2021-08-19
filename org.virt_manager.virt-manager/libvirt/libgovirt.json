@@ -6,8 +6,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.7/libgovirt-v0.3.8.tar.gz",
-            "sha256": "a391df1503a5c72fa42f4b3ff0cea9cb20487b61668634922efc1be7186325c5",
+            "url": "https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.8/libgovirt-v0.3.8.tar.gz",
+            "sha256": "a3f00dd14553d4c85d1a1b31a8182642b5ead66314a1ed137c2242d46ecb5f32",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 229567,

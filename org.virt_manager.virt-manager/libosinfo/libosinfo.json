@@ -32,8 +32,8 @@
             "sources": [
                 {
                     "type": "file",
-                    "url": "https://releases.pagure.org/libosinfo/osinfo-db-20210312.tar.xz",
-                    "sha256": "7548ec09e445ca7378c5ceb99e39edca8857f8293831e0b3cb558f4230870e10",
+                    "url": "https://releases.pagure.org/libosinfo/osinfo-db-20210809.tar.xz",
+                    "sha256": "56696ca84ea69354d9f4cf0a048bf0ee156cea0b97302adb0e35f20e95d1ea99",
                     "dest-filename": "osinfo-db.tar.xz",
                     "x-checker-data": {
                         "type": "anitya",

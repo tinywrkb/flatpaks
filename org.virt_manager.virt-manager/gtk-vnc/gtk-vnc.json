@@ -1,14 +1,11 @@
 {
     "name": "gtk-vnc",
     "buildsystem": "meson",
-    "config-opts": [
-        "-Dwith-vala=false"
-    ],
     "sources": [
         {
             "type": "archive",
-            "url": "https://download.gnome.org/sources/gtk-vnc/1.0/gtk-vnc-1.0.0.tar.xz",
-            "sha256": "a81a1f1a79ad4618027628ffac27d3391524c063d9411c7a36a5ec3380e6c080",
+            "url": "https://download.gnome.org/sources/gtk-vnc/1.2/gtk-vnc-1.2.0.tar.xz",
+            "sha256": "7aaf80040d47134a963742fb6c94e970fcb6bf52dc975d7ae542b2ef5f34b94a",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 13142,

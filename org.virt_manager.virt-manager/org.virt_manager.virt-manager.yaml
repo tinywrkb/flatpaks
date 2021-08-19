@@ -96,7 +96,7 @@ modules:
           type: anitya
           project-id: 8183
           stable-only: true
-          url-template: 'https://github.com/virt-manager/virt-manager/archive/v$version.tar.gz'
+          url-template: https://github.com/virt-manager/virt-manager/archive/v$version.tar.gz
       - type: patch
         path: virt-manager-disable-man-pages.patch
       - type: patch
@@ -121,22 +121,22 @@ modules:
       - -Dbash_completion=disabled
     post-install:
       - |
-          _MODULE_ID=virt-viewer
-          _FP_MOD_URI=${FLATPAK_ID}.${_MODULE_ID}
-          cd /app/share
+        _MODULE_ID=virt-viewer
+        _FP_MOD_URI=${FLATPAK_ID}.${_MODULE_ID}
+        cd /app/share
 
-          pushd applications
-          mv remote-viewer.desktop ${_FP_MOD_URI}.desktop
-          desktop-file-edit --set-icon=${_FP_MOD_URI} ${_FP_MOD_URI}.desktop
-          popd
+        pushd applications
+        mv remote-viewer.desktop ${_FP_MOD_URI}.desktop
+        desktop-file-edit --set-icon=${_FP_MOD_URI} ${_FP_MOD_URI}.desktop
+        popd
 
-          pushd icons/hicolor
-          for f in $(find ./ -name "${_MODULE_ID}.png" -o -name "${_MODULE_ID}.svg"); do
-            mv ${f} $(dirname $f)/${_FP_MOD_URI}.${f##*.}
-          done
-          popd
+        pushd icons/hicolor
+        for f in $(find ./ -name "${_MODULE_ID}.png" -o -name "${_MODULE_ID}.svg"); do
+          mv ${f} $(dirname $f)/${_FP_MOD_URI}.${f##*.}
+        done
+        popd
 
-          mv mime/packages/${_MODULE_ID}-mime.xml mime/packages/${_FP_MOD_URI}-mime.xml
+        mv mime/packages/${_MODULE_ID}-mime.xml mime/packages/${_FP_MOD_URI}-mime.xml
     sources:
       - type: archive
         url: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v10.0/virt-viewer-v10.0.tar.gz
@@ -145,4 +145,4 @@ modules:
           type: anitya
           project-id: 15273
           stable-only: true
-          url-template: 'https://gitlab.com/virt-viewer/virt-viewer/-/archive/v$version/virt-viewer-v$version.tar.gz'
+          url-template: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v$version/virt-viewer-v$version.tar.gz
