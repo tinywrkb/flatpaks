@@ -1,52 +1,70 @@
 {
-  "name": "libosinfo",
-  "buildsystem": "meson",
-  "config-opts": [
-    "-Dwith-usb-ids-path=/app/share/hwdata/usb.ids",
-    "-Dwith-pci-ids-path=/app/share/hwdata/pci.ids"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://releases.pagure.org/libosinfo/libosinfo-1.9.0.tar.xz",
-      "sha256": "b4f3418154ef3f43d9420827294916aea1827021afc06e1644fc56951830a359"
-    }
-  ],
-  "cleanup": [
-    "/share/gtk-doc",
-    "/share/vala"
-  ],
-  "modules": [
-    {
-      "name": "osinfo-db",
-      "buildsystem": "simple",
-      "build-commands": [
-        "osinfo-db-import --system osinfo-db.tar.xz"
-      ],
-      "sources": [
+    "name": "libosinfo",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dwith-usb-ids-path=/app/share/hwdata/usb.ids",
+        "-Dwith-pci-ids-path=/app/share/hwdata/pci.ids"
+    ],
+    "sources": [
         {
-          "type": "file",
-          "url": "https://releases.pagure.org/libosinfo/osinfo-db-20210312.tar.xz",
-          "sha256": "7548ec09e445ca7378c5ceb99e39edca8857f8293831e0b3cb558f4230870e10",
-          "dest-filename": "osinfo-db.tar.xz"
-        }
-      ],
-      "modules": [
-        {
-          "name": "osinfo-db-tools",
-          "buildsystem": "meson",
-          "sources": [
-            {
-              "type": "archive",
-              "url": "https://releases.pagure.org/libosinfo/osinfo-db-tools-1.9.0.tar.xz",
-              "sha256": "255f1c878bacec70c3020ff5a9cb0f6bd861ca0009f24608df5ef6f62d5243c0"
+            "type": "archive",
+            "url": "https://releases.pagure.org/libosinfo/libosinfo-1.9.0.tar.xz",
+            "sha256": "b4f3418154ef3f43d9420827294916aea1827021afc06e1644fc56951830a359",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 155460,
+                "stable-only": true,
+                "url-template": "https://releases.pagure.org/libosinfo/libosinfo-$version.tar.xz"
             }
-          ],
-          "cleanup": [
-            "*"
-          ]
         }
-      ]
-    }
-  ]
+    ],
+    "cleanup": [
+        "/share/gtk-doc",
+        "/share/vala"
+    ],
+    "modules": [
+        {
+            "name": "osinfo-db",
+            "buildsystem": "simple",
+            "build-commands": [
+                "osinfo-db-import --system osinfo-db.tar.xz"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://releases.pagure.org/libosinfo/osinfo-db-20210312.tar.xz",
+                    "sha256": "7548ec09e445ca7378c5ceb99e39edca8857f8293831e0b3cb558f4230870e10",
+                    "dest-filename": "osinfo-db.tar.xz",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 226784,
+                        "stable-only": true,
+                        "url-template": "https://releases.pagure.org/libosinfo/osinfo-db-$version.tar.xz"
+                    }
+                }
+            ],
+            "modules": [
+                {
+                    "name": "osinfo-db-tools",
+                    "buildsystem": "meson",
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://releases.pagure.org/libosinfo/osinfo-db-tools-1.9.0.tar.xz",
+                            "sha256": "255f1c878bacec70c3020ff5a9cb0f6bd861ca0009f24608df5ef6f62d5243c0",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 226782,
+                                "stable-only": true,
+                                "url-template": "https://releases.pagure.org/libosinfo/osinfo-db-tools-$version.tar.xz"
+                            }
+                        }
+                    ],
+                    "cleanup": [
+                        "*"
+                    ]
+                }
+            ]
+        }
+    ]
 }

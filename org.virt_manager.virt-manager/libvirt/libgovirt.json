@@ -1,25 +1,37 @@
 {
-  "name": "libgovirt",
-  "config-opts": [
-    "--enable-static=no"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.7/libgovirt-v0.3.8.tar.gz",
-      "sha256": "a391df1503a5c72fa42f4b3ff0cea9cb20487b61668634922efc1be7186325c5"
-    }
-  ],
-  "modules": [
-    {
-      "name": "rest",
-      "sources": [
+    "name": "libgovirt",
+    "config-opts": [
+        "--enable-static=no"
+    ],
+    "sources": [
         {
-          "type": "archive",
-          "url": "https://gitlab.gnome.org/GNOME/librest/-/archive/0.8.1/librest-0.8.1.tar.gz",
-          "sha256": "2bdd1be07a9150b1c6ceea6e01dedf2efcff564381cae0cd6c7330403efe59d7"
+            "type": "archive",
+            "url": "https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.7/libgovirt-v0.3.8.tar.gz",
+            "sha256": "a391df1503a5c72fa42f4b3ff0cea9cb20487b61668634922efc1be7186325c5",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 229567,
+                "stable-only": true,
+                "url-template": "https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v$version/libgovirt-v$version.tar.gz"
+            }
         }
-      ]
-    }
-  ]
+    ],
+    "modules": [
+        {
+            "name": "rest",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://gitlab.gnome.org/GNOME/librest/-/archive/0.8.1/librest-0.8.1.tar.gz",
+                    "sha256": "2bdd1be07a9150b1c6ceea6e01dedf2efcff564381cae0cd6c7330403efe59d7",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 4194,
+                        "stable-only": true,
+                        "url-template": "https://gitlab.gnome.org/GNOME/librest/-/archive/$version/librest-$version.tar.gz"
+                    }
+                }
+            ]
+        }
+    ]
 }

@@ -1,20 +1,20 @@
 {
-  "name": "gtk-vnc",
-  "buildsystem": "meson",
-  "config-opts": [
-    "-Dwith-vala=false"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://gitlab.gnome.org/GNOME/gtk-vnc/-/archive/v1.0.0/gtk-vnc-v1.0.0.tar.gz",
-      "sha256": "fca1d84d9430d4efd510c65f1270f27025ceb5c6cb9ebc8a8cc585450ebe97d8"
-    },
-    {
-      "type": "archive",
-      "url": "https://gitlab.com/keycodemap/keycodemapdb/-/archive/6280c94f306df6a20bbc100ba15a5a81af0366e6/keycodemapdb-6280c94f306df6a20bbc100ba15a5a81af0366e6.tar.gz",
-      "sha256": "eec0777e0bf5efd2548881f820f2d36daa86effb4af43d5b2fb5c4541b747f55",
-      "dest": "subprojects/keycodemapdb"
-    }
-  ]
+    "name": "gtk-vnc",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dwith-vala=false"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://download.gnome.org/sources/gtk-vnc/1.0/gtk-vnc-1.0.0.tar.xz",
+            "sha256": "a81a1f1a79ad4618027628ffac27d3391524c063d9411c7a36a5ec3380e6c080",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 13142,
+                "stable-only": true,
+                "url-template": "https://download.gnome.org/sources/gtk-vnc/$version0.$version1/gtk-vnc-$version.tar.xz"
+            }
+        }
+    ]
 }

@@ -92,6 +92,11 @@ modules:
       - type: archive
         url: https://github.com/virt-manager/virt-manager/archive/v3.2.0.tar.gz
         sha256: 74bf899e25ef2751e6b9b7b46a4e79760cd3e8adb5a5fc474944507a4587e0fd
+        x-checker-data:
+          type: anitya
+          project-id: 8183
+          stable-only: true
+          url-template: 'https://github.com/virt-manager/virt-manager/archive/v$version.tar.gz'
       - type: patch
         path: virt-manager-disable-man-pages.patch
       - type: patch
@@ -136,3 +141,8 @@ modules:
       - type: archive
         url: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v10.0/virt-viewer-v10.0.tar.gz
         sha256: 5671bc0d3f97386a43057ed1bb47bf64cc429f064fcf3609367bdb7aafbbab5a
+        x-checker-data:
+          type: anitya
+          project-id: 15273
+          stable-only: true
+          url-template: 'https://gitlab.com/virt-viewer/virt-viewer/-/archive/v$version/virt-viewer-v$version.tar.gz'

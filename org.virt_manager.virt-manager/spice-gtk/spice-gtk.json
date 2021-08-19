@@ -1,119 +1,165 @@
 {
-  "name": "spice-gtk",
-  "buildsystem": "meson",
-  "config-opts": [
-    "-Dgtk_doc=disabled",
-    "-Dvapi=disabled",
-    "-Dusb-acl-helper-dir=/app/lib"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://www.spice-space.org/download/gtk/spice-gtk-0.39.tar.xz",
-      "sha256": "23acbee197eaaec9bce6e6bfd885bd8f79708332639243ff04833020865713cd"
-    }
-  ],
-  "modules": [
-    {
-      "name": "python-pyparsing",
-      "buildsystem": "simple",
-      "build-commands": [
-        "python3 setup.py build",
-        "python3 setup.py install --root=/ --prefix=app/"
-      ],
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://github.com/pyparsing/pyparsing/archive/pyparsing_2.4.7.tar.gz",
-          "sha256": "6deecf4b95a49a5a9c89b4a4b1fcb73c1cba0e3265ec7b858adffcced229ba05"
-        }
-      ],
-      "cleanup": [
-        "*"
-      ]
-    },
-    {
-      "name": "libcacard",
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://www.spice-space.org/download/libcacard/libcacard-2.7.0.tar.xz",
-          "sha256": "16b1a0847d5f9d2290e0785eca40f2e49d1ed80814bfc758c05c76b3c89cdb6f"
-        }
-      ]
-    },
-    {
-      "name": "phodav",
-      "buildsystem": "meson",
-      "config-opts": [
+    "name": "spice-gtk",
+    "buildsystem": "meson",
+    "config-opts": [
         "-Dgtk_doc=disabled",
-        "-Dsystemd=disabled",
-        "-Dudev=disabled",
-        "-Dsbindir=bin"
-      ],
-      "sources": [
+        "-Dvapi=disabled",
+        "-Dusb-acl-helper-dir=/app/lib"
+    ],
+    "sources": [
         {
-          "type": "archive",
-          "url": "https://download.gnome.org/sources/phodav/2.5/phodav-2.5.tar.xz",
-          "sha256": "71f0a9cd70afd4dd1412a0298331dbb8ac71c0377f52117afc15eb88dc6fb910"
-        }
-      ]
-    },
-    "../../flathub-shared-modules/libusb/libusb.json",
-    {
-      "name": "usbredir",
-      "config-opts": [
-        "--enable-static=no",
-        "--sbindir=/app/bin"
-      ],
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://spice-space.org/download/usbredir/usbredir-0.9.0.tar.xz",
-          "sha256": "a3e167bf42bc7fe02c3c9db27d7767f1b8ce41b99ad14a4b0d0a60abe8bf56a6"
-        }
-      ]
-    },
-    {
-      "name": "usbutils",
-      "config-opts": [
-        "--datadir=/app/share/hwdata",
-        "--disable-zlib"
-      ],
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://www.kernel.org/pub/linux/utils/usb/usbutils/usbutils-013.tar.xz",
-          "sha256": "9e23494fcc78b7a80ee29a07dd179c95ae2f71509c35728dbbabc2d1cca41338"
-        }
-      ],
-      "modules": [
-        {
-          "name": "hwids",
-          "buildsystem": "simple",
-          "build-commands": [
-            "for ids in pci.ids usb.ids; do install -Dm644 \"$ids\" /app/share/hwdata/${ids}; done"
-          ],
-          "sources": [
-            {
-              "type": "archive",
-              "url": "https://github.com/gentoo/hwids/archive/hwids-20201207.tar.gz",
-              "sha256": "43a8af154769c33871582caea31546a8b91cefb6f0acdf53d08660237ae57e37"
+            "type": "archive",
+            "url": "https://www.spice-space.org/download/gtk/spice-gtk-0.39.tar.xz",
+            "sha256": "23acbee197eaaec9bce6e6bfd885bd8f79708332639243ff04833020865713cd",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 11576,
+                "stable-only": true,
+                "url-template": "https://www.spice-space.org/download/gtk/spice-gtk-$version.tar.xz"
             }
-          ]
         }
-      ]
-    },
-    {
-      "name": "spice-protocol",
-      "buildsystem": "meson",
-      "sources": [
+    ],
+    "modules": [
         {
-          "type": "archive",
-          "url": "https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.3/spice-protocol-v0.14.3.tar.gz",
-          "sha256": "80ae89643e253dc5ddc5b2120cd3cf9d9565d00026ff261dd140d4b8c5deaa64"
+            "name": "python-pyparsing",
+            "buildsystem": "simple",
+            "build-commands": [
+                "python3 setup.py build",
+                "python3 setup.py install --root=/ --prefix=app/"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://files.pythonhosted.org/packages/c1/47/dfc9c342c9842bbe0036c7f763d2d6686bcf5eb1808ba3e170afdb282210/pyparsing-2.4.7.tar.gz",
+                    "sha256": "c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1",
+                    "x-checker-data": {
+                        "type": "pypi",
+                        "name": "pyparsing"
+                    }
+                }
+            ],
+            "cleanup": [
+                "*"
+            ]
+        },
+        {
+            "name": "libcacard",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.spice-space.org/download/libcacard/libcacard-2.7.0.tar.xz",
+                    "sha256": "16b1a0847d5f9d2290e0785eca40f2e49d1ed80814bfc758c05c76b3c89cdb6f",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 18776,
+                        "stable-only": true,
+                        "url-template": "https://www.spice-space.org/download/libcacard/libcacard-$version.tar.xz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "phodav",
+            "buildsystem": "meson",
+            "config-opts": [
+                "-Dgtk_doc=disabled",
+                "-Dsystemd=disabled",
+                "-Dudev=disabled",
+                "-Dsbindir=bin"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.gnome.org/sources/phodav/2.5/phodav-2.5.tar.xz",
+                    "sha256": "71f0a9cd70afd4dd1412a0298331dbb8ac71c0377f52117afc15eb88dc6fb910",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 9670,
+                        "stable-only": true,
+                        "url-template": "https://download.gnome.org/sources/phodav/$version0.$version1/phodav-$version.tar.xz"
+                    }
+                }
+            ]
+        },
+        "../../flathub-shared-modules/libusb/libusb.json",
+        {
+            "name": "usbredir",
+            "config-opts": [
+                "--enable-static=no",
+                "--sbindir=/app/bin"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://spice-space.org/download/usbredir/usbredir-0.9.0.tar.xz",
+                    "sha256": "a3e167bf42bc7fe02c3c9db27d7767f1b8ce41b99ad14a4b0d0a60abe8bf56a6",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 16012,
+                        "stable-only": true,
+                        "url-template": "https://spice-space.org/download/usbredir/usbredir-$version.tar.xz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "usbutils",
+            "config-opts": [
+                "--datadir=/app/share/hwdata",
+                "--disable-zlib"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.kernel.org/pub/linux/utils/usb/usbutils/usbutils-013.tar.xz",
+                    "sha256": "9e23494fcc78b7a80ee29a07dd179c95ae2f71509c35728dbbabc2d1cca41338",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 5061,
+                        "stable-only": true,
+                        "url-template": "https://www.kernel.org/pub/linux/utils/usb/usbutils/usbutils-$version.tar.xz"
+                    }
+                }
+            ],
+            "modules": [
+                {
+                    "name": "hwids",
+                    "buildsystem": "simple",
+                    "build-commands": [
+                        "for ids in pci.ids usb.ids; do install -Dm644 \"$ids\" /app/share/hwdata/${ids}; done"
+                    ],
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://github.com/gentoo/hwids/archive/hwids-20201207.tar.gz",
+                            "sha256": "43a8af154769c33871582caea31546a8b91cefb6f0acdf53d08660237ae57e37",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 233488,
+                                "stable-only": true,
+                                "url-template": "https://github.com/gentoo/hwids/archive/hwids-$version.tar.gz"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "spice-protocol",
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.3/spice-protocol-v0.14.3.tar.gz",
+                    "sha256": "80ae89643e253dc5ddc5b2120cd3cf9d9565d00026ff261dd140d4b8c5deaa64",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 14892,
+                        "stable-only": true,
+                        "url-template": "https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v$version/spice-protocol-v$version.tar.gz"
+                    }
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
