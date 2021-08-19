@@ -26,8 +26,8 @@ modules:
 #      - -Dsynctex=enabled
     sources:
       - type: archive
-        url: https://github.com/pwmt/zathura/archive/0.4.7.tar.gz
-        sha256: dbea0d5c42bfb813640af2587edbf04a93e6e87232f429e09845e5a9d0049ffb
+        url: https://github.com/pwmt/zathura/archive/0.4.8.tar.gz
+        sha256: 7b53921a90ff29319588f604575348ef78fa55816d866bbdf7687a8972536c8f
         x-checker-data:
           type: anitya
           project-id: 5298
@@ -42,8 +42,8 @@ modules:
         buildsystem: meson
         sources:
           - type: archive
-            url: https://pwmt.org/projects/girara/download/girara-0.3.5.tar.xz
-            sha256: e33ba2a21dd57606439d37c829d48466a14e3e50a698e6bd678b511f5c59f4b5
+            url: https://pwmt.org/projects/girara/download/girara-0.3.6.tar.xz
+            sha256: 494518fafc4a34b134572470c56d57c95dc54067dc164fad51786a922676e62a
             x-checker-data:
               type: anitya
               project-id: 6750
@@ -85,8 +85,8 @@ modules:
     buildsystem: meson
     sources:
       - type: archive
-        url: https://github.com/pwmt/zathura-ps/archive/0.2.6.tar.gz
-        sha256: 08c1927bfb8a40e201fa3638f9523d4b6d70e3444ef070bd4aa8a869b6574567
+        url: https://github.com/pwmt/zathura-ps/archive/0.2.7.tar.gz
+        sha256: e7092c831e345002edc87321911faa27c5dc3210dd6e3939dfbc49192a54d35e
         x-checker-data:
           type: anitya
           project-id: 14848
@@ -98,8 +98,8 @@ modules:
     buildsystem: meson
     sources:
       - type: archive
-        url: https://github.com/pwmt/zathura-cb/archive/0.1.8.tar.gz
-        sha256: 67206011fc375cd2f3d0bc0d7a36b182c10eb3c41961963910992393c34aa5d5
+        url: https://github.com/pwmt/zathura-cb/archive/0.1.9.tar.gz
+        sha256: 30d2cea3b1eb65e7386eb66ec305e455b2bed272c35530faaec541b47217fdcd
         x-checker-data:
           type: anitya
           project-id: 14845
@@ -111,8 +111,8 @@ modules:
       - -Dlink-external=true
     sources:
       - type: archive
-        url: https://github.com/pwmt/zathura-pdf-mupdf/archive/0.3.6.tar.gz
-        sha256: 94ab90b367c04e3a9dda52e3587e257e4c825b375bde13032f81b1f84becb4f1
+        url: https://github.com/pwmt/zathura-pdf-mupdf/archive/0.3.7.tar.gz
+        sha256: 3f2d341dfe3bdbfb7a51a33aee81f3763a684d0ea503dd20c726311125d7c08a
         x-checker-data:
           type: anitya
           project-id: 14846
