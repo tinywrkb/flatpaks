@@ -28,6 +28,11 @@ modules:
       - type: archive
         url: https://github.com/pwmt/zathura/archive/0.4.7.tar.gz
         sha256: dbea0d5c42bfb813640af2587edbf04a93e6e87232f429e09845e5a9d0049ffb
+        x-checker-data:
+          type: anitya
+          project-id: 5298
+          stable-only: true
+          url-template: https://github.com/pwmt/zathura/archive/$version.tar.gz
     cleanup:
       - /share/bash-completion
       - /share/fish
@@ -39,6 +44,11 @@ modules:
           - type: archive
             url: https://pwmt.org/projects/girara/download/girara-0.3.5.tar.xz
             sha256: e33ba2a21dd57606439d37c829d48466a14e3e50a698e6bd678b511f5c59f4b5
+            x-checker-data:
+              type: anitya
+              project-id: 6750
+              stable-only: true
+              url-template: https://pwmt.org/projects/girara/download/girara-$version.tar.xz
         modules:
           - ../shared-modules/json-c/json-c.json
 #      - name: libsynctex.so
@@ -51,6 +61,11 @@ modules:
       - type: archive
         url: https://github.com/pwmt/zathura-pdf-poppler/archive/0.3.0.tar.gz
         sha256: 2034f70a936d458ddc9276f769e77ff308ba3bb1b7a7cdc87bab8b9ef7ade84a
+        x-checker-data:
+          type: anitya
+          project-id: 14847
+          stable-only: true
+          url-template: https://github.com/pwmt/zathura-pdf-poppler/archive/$version.tar.gz
     modules:
       - ../shared-modules/poppler/poppler.json
   - name: zathura-pdf-djvu
@@ -59,22 +74,37 @@ modules:
       - type: archive
         url: https://github.com/pwmt/zathura-djvu/archive/0.2.9.tar.gz
         sha256: 84fae6da42e7cdc2e49ed4cd4f0315ac09716e95358b9c7487803a2cff47dbca
+        x-checker-data:
+          type: anitya
+          project-id: 11036
+          stable-only: true
+          url-template: https://github.com/pwmt/zathura-djvu/archive/$version.tar.gz
     modules:
       - ../shared-modules/djvulibre/djvulibre.json
-  - name: zathura-pdf-ps
+  - name: zathura-ps
     buildsystem: meson
     sources:
       - type: archive
         url: https://github.com/pwmt/zathura-ps/archive/0.2.6.tar.gz
         sha256: 08c1927bfb8a40e201fa3638f9523d4b6d70e3444ef070bd4aa8a869b6574567
+        x-checker-data:
+          type: anitya
+          project-id: 14848
+          stable-only: true
+          url-template: https://github.com/pwmt/zathura-ps/archive/$version.tar.gz
     modules:
       - ../shared-modules/libspectre/libspectre.json
-  - name: zathura-pdf-cb
+  - name: zathura-cb
     buildsystem: meson
     sources:
       - type: archive
         url: https://github.com/pwmt/zathura-cb/archive/0.1.8.tar.gz
         sha256: 67206011fc375cd2f3d0bc0d7a36b182c10eb3c41961963910992393c34aa5d5
+        x-checker-data:
+          type: anitya
+          project-id: 14845
+          stable-only: true
+          url-template: https://github.com/pwmt/zathura-cb/archive/$version.tar.gz
   - name: zathura-pdf-mupdf
     buildsystem: meson
     config-opts:
@@ -83,44 +113,10 @@ modules:
       - type: archive
         url: https://github.com/pwmt/zathura-pdf-mupdf/archive/0.3.6.tar.gz
         sha256: 94ab90b367c04e3a9dda52e3587e257e4c825b375bde13032f81b1f84becb4f1
+        x-checker-data:
+          type: anitya
+          project-id: 14846
+          stable-only: true
+          url-template: https://github.com/pwmt/zathura-pdf-mupdf/archive/$version.tar.gz
     modules:
-      - name: libmupdf
-        no-autogen: true
-        build-options:
-          cflags: -fPIC
-          cxxflags: -fPIC
-          env:
-            USE_SYSTEM_LIBS: yes
-        make-args:
-          - build=release
-          - libs
-        make-install-args:
-          - build=release
-          - prefix=/app
-        sources:
-          - type: archive
-            url: https://mupdf.com/downloads/archive/mupdf-1.18.0-source.tar.xz
-            sha256: 592d4f6c0fba41bb954eb1a41616661b62b134d5b383e33bd45a081af5d4a59a
-          - type: shell
-            commands:
-              - rm -rf thirdparty/{freeglut,freetype,harfbuzz,jbig2dec,libjpeg,openjpeg,zlib}
-        cleanup:
-          - /bin
-          - /share
-        modules:
-          - ../shared-modules/freeglut/freeglut.json
-          - name: jbig2dec
-            sources:
-              - type: archive
-                url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9530/jbig2dec-0.19.tar.gz
-                sha256: 279476695b38f04939aa59d041be56f6bade3422003a406a85e9792c27118a37
-              - type: shell
-                commands:
-                  - autoreconf -vfi
-            cleanup:
-              - /bin
-          - name: gumbo-parser
-            sources:
-              - type: archive
-                url: https://github.com/google/gumbo-parser/archive/v0.10.1.tar.gz
-                sha256: 28463053d44a5dfbc4b77bcf49c8cee119338ffa636cc17fc3378421d714efad
+      - ../shared-modules/mupdf/libmupdf.json
