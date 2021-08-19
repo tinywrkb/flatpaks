@@ -5,14 +5,14 @@ Packaging was adapted mainly from Arch Linux's official PKGBUILDs and the AUR.
 Most of these are PoC, not maintained, might need some cleanup, missing a feature here and there,
 and in general are not ready to publish via Flathub.  
 The catalyst for packaging these apps is to prove that it's possible to convert to, and as a precondition
-for switching to immutable system, an OS that has a clear seperation between the stateless
-read-only distributed OS files and the stateful data and configs.
+for switching to an immutable system, an OS that has a clear seperation between the stateless
+read-only distributed OS files, and the stateful data and configs.
 
 ### Not usable or too buggy
 
-* Blueman: working with a few warnings, and the applet's singleton mistaken dbus name remnant as an active session.
+* Blueman: working with a few warnings, and the applet's singleton considers the dbus name remnant as an active session.
 * QtPass
-* byobu/tmux in terminal emulators and other cli apps: might be a freedesktop runtime regression or it's just my local system config which broke it for me.
+* byobu/tmux in terminal emulators and other cli apps: might be a freedesktop runtime regression or my system config which broke it for me locally.
 
 ### How to build
 
@@ -34,12 +34,12 @@ flatpak-builder --install --user --force-clean --state-dir=build/flatpak-builder
 
 ### Font packages
 
-Flatpak does not support font packages or extensions, in order for Flatpak and host apps to make use of fonts installed via Flatpak we need a few workarounds.
+Flatpak does not support font packages or extensions. In order for Flatpak and host apps to use fonts installed as Flatpak package we need a few workarounds.
 
 
-1. Give all our Flatpak apps access to the user's fontconfig configuration file and where the font package is installed.  
-Due to the mismatch of `XDG_CONFIG_DIR` value between the host and the Flatpak sandbox (different path for each app), we need to set some environment variables.  
-Also note that the fontconfig variable value need to be an absolute path, meaning it needs to be expanded before given to `flatpak override` command.
+1. Give all our Flatpak apps access to the user's fontconfig configuration file, and also the font package installed path.  
+Due to a mismatch of `XDG_CONFIG_DIR` value between the host and the Flatpak sandbox (a different path for each app), we need to set some environment variables.  
+Also note that the fontconfig variable value need to be an absolute path, meaning it needs to be expanded before given to the `flatpak override` command.
 ```
 $ flatpak override --user \
     --filesystem=~/.local/share/flatpak:ro \
@@ -50,7 +50,7 @@ $ flatpak override --user \
 
 2. Adding the following to `$XDG_CONFIG_HOME/fontconfig/fonts.conf` will tell fontconfig to include the Flatpak font package in its scan.  
 The first directive is required because fc-cache omits the default font locations when scanning inside a Flatpak sandbox, and that's due to our use of `FONTCONFIG_FILE` variable.  
-Note that you need to replace `{FontName}` with the name of the font as defined in the Flatpak app ID, see the Noto fonts packages.
+Note that you need to replace `{FontName}` with the name of the font as defined in the Flatpak app ID, see for example the Noto fonts packages.
 
 ```
 <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
@@ -61,7 +61,7 @@ Note that you need to replace `{FontName}` with the name of the font as defined 
 <include ignore_missing="yes">/var/lib/flatpak/app/org.freedesktop.Platform.Fonts.{FontName}/current/active/files/share/fonts/conf.d</include>
 ```
 
-3. Now we can update the host font cache.
+3. Now we can update the host's font cache.
 
 ```
 cd ~
