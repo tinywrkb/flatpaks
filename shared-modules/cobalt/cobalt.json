@@ -1,0 +1,17 @@
+{
+  "name": "cobalt",
+  "buildsystem": "meson",
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/refi64/cobalt/archive/v2021.07.3.tar.gz",
+      "sha256": "6424564864af55a18603d75cee896a4eff2b1502972f7020ed48d8e8a55a2ca3",
+      "x-checker-data": {
+        "type": "anitya",
+        "project-id": 233431,
+        "stable-only": true,
+        "url-template": "https://github.com/refi64/cobalt/archive/v$version.tar.gz"
+      }
+    }
+  ]
+}
