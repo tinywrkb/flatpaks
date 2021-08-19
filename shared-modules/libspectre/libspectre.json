@@ -1,17 +1,23 @@
 {
-  "name": "libspectre",
-  "config-opts": [
-    "--prefix=/app",
-    "--disable-static"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://libspectre.freedesktop.org/releases/libspectre-0.2.9.tar.gz",
-      "sha256": "49ae9c52b5af81b405455c19fe24089d701761da2c45d22164a99576ceedfbed"
-    }
-  ],
-  "modules": [
-    "../ghostscript/ghostscript.json"
-  ]
+    "name": "libspectre",
+    "config-opts": [
+        "--prefix=/app",
+        "--disable-static"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://libspectre.freedesktop.org/releases/libspectre-0.2.9.tar.gz",
+            "sha256": "49ae9c52b5af81b405455c19fe24089d701761da2c45d22164a99576ceedfbed",
+            "x-checker-data": {
+              "type": "anitya",
+              "project-id": 1724,
+              "stable-only": true,
+              "url-template": "https://libspectre.freedesktop.org/releases/libspectre-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../ghostscript/ghostscript.json"
+    ]
 }
