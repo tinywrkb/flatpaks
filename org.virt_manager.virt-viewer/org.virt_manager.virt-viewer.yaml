@@ -1,0 +1,62 @@
+#
+# See comments in the package manifest of virt-manager
+#
+
+app-id: org.virt_manager.virt-viewer
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: remote-viewer
+rename-icon: virt-viewer
+rename-desktop-file: remote-viewer.desktop
+finish-args:
+  - --device=dri
+  # usb device redirection
+  - --device=all
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-public-share
+  - --filesystem=xdg-videos
+  # unix socket access
+  - --filesystem=/run/libvirt
+  - --filesystem=~/.ssh
+  - --socket=ssh-auth
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/applications/mimeinfo.cache
+  - /share/bash-completion
+  - /share/icons/hicolor/icon-theme.cache
+  - /share/man
+  - '*.la'
+modules:
+  - name: virt-viewer
+    buildsystem: meson
+    config-opts:
+      - -Dbash_completion=disabled
+    post-install:
+      - mv /app/share/mime/packages/{virt-viewer,${FLATPAK_ID}}-mime.xml
+    sources:
+      - type: archive
+        url: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v10.0/virt-viewer-v10.0.tar.gz
+        sha256: 5671bc0d3f97386a43057ed1bb47bf64cc429f064fcf3609367bdb7aafbbab5a
+        x-checker-data:
+          type: anitya
+          project-id: 15273
+          stable-only: true
+          url-template: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v$version/virt-viewer-v$version.tar.gz
+    modules:
+      - ../org.virt_manager.virt-manager/libvirt/libvirt.json
+      - ../org.virt_manager.virt-manager/libvirt/libvirt-glib.json
+      - ../org.virt_manager.virt-manager/libvirt/libgovirt.json
+      - ../org.virt_manager.virt-manager/gtk-vnc/gtk-vnc.json
+      - ../org.virt_manager.virt-manager/spice-gtk/spice-gtk.json
+      - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - ../shared-modules/vte3/vte3.json
