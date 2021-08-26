@@ -31,7 +31,15 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 -t /app/bin/ apply_extra edge
-      - install -Dm644 -t /app/etc/ cobalt.ini ld.so.conf
+      - |
+        install -Dm644 /dev/stdin /app/etc/cobalt.ini <<EOF
+        [Application]
+        EntryPoint=/app/extra/msedge
+        EOF
+      - |
+        install -Dm644 /dev/stdin /app/etc/ld.so.conf <<EOF
+        /app/extra
+        EOF
       - install -Dm644 -t /app/share/applications/ ${FLATPAK_ID}.desktop
       - install -Dm644 -t /app/share/icons/hicolor/256x256/apps/ ${FLATPAK_ID}.png
     sources:
@@ -59,26 +67,10 @@ modules:
               ./opt/microsoft/msedge-dev
           - rm edge.deb
           - install -Dm755 /app/bin/stub_sandbox msedge-sandbox
-      # cobalt.ini
-      - type: shell
-        commands:
-          - |
-            cat << EOF > cobalt.ini
-            [Application]
-            EntryPoint=/app/extra/msedge
-            EOF
       - type: script
         dest-filename: edge
         commands:
           - exec cobalt "$@"
-      # ld.so.conf
-      # workaround for broken accelerated 3d graphics with ozone x11
-      - type: shell
-        commands:
-          - |
-            cat << EOF > ld.so.conf
-            /app/extra
-            EOF
       - type: file
         path: com.microsoft.edge-dev.desktop
       - type: file
