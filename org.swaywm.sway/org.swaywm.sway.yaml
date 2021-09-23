@@ -16,16 +16,22 @@
 #
 app-id: org.swaywm.sway
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: sway.sh
 finish-args:
   - --device=dri
   - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: sway
     buildsystem: meson
     config-opts:
+      - -Dwerror=false
       - -Ddefault-wallpaper=true
       - -Dzsh-completions=false
       - -Dbash-completions=false
@@ -35,18 +41,17 @@ modules:
       - -Dgdk-pixbuf=enabled
       - -Dman-pages=disabled
     sources:
-      - type: archive
-        url: https://github.com/swaywm/sway/releases/download/1.6/sway-1.6.tar.gz
-        sha256: 9ecfd2f38239f7e90922a13cd348fc95fc059e8fa0e4b75b8ffcc7b61685a5fb
-      #- type: patch
-      #  path: sway-implement-input_method_v2-popups.patch
+      - type: git
+        url: https://github.com/swaywm/sway.git
+        # input_method_v2 popups: https://github.com/swaywm/sway/pull/5890
+        branch: pull/5890/head
     modules:
       - ../shared-modules/json-c/json-c.json
       - name: wlroots
         build-options:
           env:
             # workaround to use the updated meson version
-            - PYTHONPATH=/app/lib/python3.8/site-packages
+            - PYTHONPATH=/app/lib/python3.9/site-packages
         buildsystem: meson
         config-opts:
           - --libdir=lib
@@ -56,23 +61,11 @@ modules:
           - -Dx11-backend=disabled
           - -Dexamples=false
         sources:
-          - type: archive
-            url: https://github.com/swaywm/wlroots/archive/0.13.0.tar.gz
-            sha256: f6bea37fd4a6f5e5f552b83d61adae8c73e64b0bcb9ae0ab464ebcd9309d3cf3
-          #- type: patch
-          # path: wlroots-implement-input_method_v2-popups.patch
+          - type: git
+            url: https://github.com/swaywm/wlroots.git
+            branch: master
         modules:
-          - name: meson
-            buildsystem: simple
-            build-commands:
-              - python setup.py build
-              - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
-            sources:
-              - type: archive
-                url: https://github.com/mesonbuild/meson/releases/download/0.57.1/meson-0.57.1.tar.gz
-                sha256: 72e1c782ba9bda204f4a1ed57f98d027d7b6eb9414c723eebbd6ec7f1955c8a6
-            cleanup:
-              - '*'
+          - ../shared-modules/meson/meson.json
           # this doesn't work, wlroots hardcodes /tmp/.X11-unix and flatpak covers it with tmpfs
           #   so we need to proxy the x11 socket that is created in the sandbox
           #- name: xorg-xwayland
@@ -118,15 +111,28 @@ modules:
           - name: libinput
             buildsystem: meson
             config-opts:
-              - -Dtests=false
-              - -Ddocumentation=false
               - -Dlibwacom=false
               - -Ddebug-gui=false
+              - -Dtests=false
+              - -Ddocumentation=false
+              - -Dzshcompletiondir=no
               - --libexec=lib
             sources:
               - type: archive
-                url: https://freedesktop.org/software/libinput/libinput-1.17.1.tar.xz
-                sha256: e51c50f3ce253961bed452d9f93102cc26128406975ab88ff9ec9e6c3b875137
+                url: https://freedesktop.org/software/libinput/libinput-1.19.0.tar.xz
+                sha256: 3d3a2f12b4a65cd82684121ae4b33cdc3ad541c761a55e8eb73a8e5e443cccbb
+                x-checker-data:
+                  type: anitya
+                  project-id: 5781
+                  stable-only: true
+                  url-template: https://freedesktop.org/software/libinput/libinput-$version.tar.xz
+            cleanup:
+              - /bin
+              - /etc
+              - /lib/libinput
+              - /lib/udev
+              - /share/libinput
+              - /share/man
             modules:
               - name: mtdev
                 config-opts:
@@ -135,13 +141,44 @@ modules:
                   - type: archive
                     url: https://bitmath.org/code/mtdev/mtdev-1.1.6.tar.bz2
                     sha256: 15d7b28da8ac71d8bc8c9287c2045fd174267bc740bec10cfda332dc1204e0e0
+                    x-checker-data:
+                      type: anitya
+                      project-id: 8868
+                      stable-only: true
+                      url-template: https://bitmath.org/code/mtdev/mtdev-$version.tar.bz2
+                cleanup:
+                  - /bin
               - name: libevdev
+                buildsystem: meson
                 config-opts:
-                  - --disable-static
+                  - -Dtests=disabled
+                  - -Ddocumentation=disabled
                 sources:
                   - type: archive
                     url: https://freedesktop.org/software/libevdev/libevdev-1.11.0.tar.xz
                     sha256: 63f4ea1489858a109080e0b40bd43e4e0903a1e12ea888d581db8c495747c2d0
+                    x-checker-data:
+                      type: anitya
+                      project-id: 20540
+                      stable-only: true
+                      url-template: https://freedesktop.org/software/libevdev/libevdev-$version.tar.xz
+                cleanup:
+                  - /bin
+                  - /share/man
+          - name: libseat
+            buildsystem: meson
+            config-opts:
+              - -Dserver=disabled
+              - -Dman-pages=disabled
+            sources:
+              - type: archive
+                url: https://git.sr.ht/~kennylevinsen/seatd/archive/0.6.2.tar.gz
+                sha256: 1e2745ea39266de40d5beb24011782da95468b81ecfa410dd0db5ff75c665727
+                x-checker-data:
+                  type: anitya
+                  project-id: 234932
+                  stable-only: true
+                  url-template: https://git.sr.ht/~kennylevinsen/seatd/archive/$version.tar.gz
   - name: package
     buildsystem: simple
     build-commands:
