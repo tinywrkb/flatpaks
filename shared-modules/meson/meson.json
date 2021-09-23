@@ -1,0 +1,24 @@
+{
+    "name": "meson",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python setup.py build",
+        "python setup.py install --skip-build --prefix=/app --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/mesonbuild/meson/releases/download/0.59.1/meson-0.59.1.tar.gz",
+            "sha256": "db586a451650d46bbe10984a87b79d9bcdc1caebf38d8e189f8848f8d502356d",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 6472,
+                "stable-only": true,
+                "url-template": "https://github.com/mesonbuild/meson/releases/download/$version/meson-$version.tar.gz"
+            }
+        }
+    ],
+    "cleanup": [
+        "*"
+    ]
+}
