@@ -11,8 +11,8 @@ modules:
       - install -Dm755 hyx -t /app/bin/
     sources:
       - type: archive
-        url: https://yx7.cc/code/hyx/hyx-2020.12.24.tar.xz
-        sha256: 9fc88f58047013101bd6f1320510e77669d2d198be0b9a4c1b690642ba2f4c03
+        url: https://yx7.cc/code/hyx/hyx-2021.06.09.tar.xz
+        sha256: 8d4f14e58584d6cc8f04e43ca38042eed218882a389249c20b086730256da5eb
         x-checker-data:
           type: html
           url: https://yx7.cc/code/
