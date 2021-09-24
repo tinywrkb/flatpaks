@@ -29,9 +29,9 @@ modules:
       - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
     sources:
       - type: extra-data
-        url: https://github.com/arduino/arduino-create-agent/releases/download/1.2.3/ArduinoCreateAgent-1.2.3-linux-amd64-installer-chrome.tar.gz
-        size: 26763055
-        sha256: 135a43682deb00c37f5a86947027387005d2143fe266e48a2789cd47e9520538
+        url: https://github.com/arduino/arduino-create-agent/releases/download/1.2.4/ArduinoCreateAgent-1.2.4-linux-amd64-installer-chrome.run
+        size: 28712480
+        sha256: 49e8779a74685dfcfeb0d930f0c6570b7505e9c38c0e67723d9836db53e1827a
         filename: installer.tar.gz
         x-checker-data:
           type: json
