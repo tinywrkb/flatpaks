@@ -1,43 +1,36 @@
 {
-  "name": "unsquashfs",
-  "no-autogen": true,
-  "subdir": "squashfs-tools",
-  "make-args": [
-    "GZIP_SUPPORT=1",
-    "XZ_SUPPORT=1",
-    "LZO_SUPPORT=1",
-    "LZMA_XZ_SUPPORT=1",
-    "LZ4_SUPPORT=1",
-    "ZSTD_SUPPORT=1",
-    "XATTR_SUPPORT=1"
-  ],
-  "make-install-args": [
-    "INSTALL_DIR=/app/bin"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://github.com/plougher/squashfs-tools/archive/refs/tags/4.4-git.1.tar.gz",
-      "sha256": "9b89c3d2f0d0456e99fa3dd4429d45044044f0115acb0f15c441a4b9496d25a7"
-    }
-  ],
-  "cleanup": [
-    "/bin/mksquashfs"
-  ],
-  "modules": [
-    "../zstd/zstd.json",
-    {
-      "name": "lzo",
-      "sources": [
+    "name": "unsquashfs",
+    "no-autogen": true,
+    "subdir": "squashfs-tools",
+    "make-args": [
+        "GZIP_SUPPORT=1",
+        "XZ_SUPPORT=1",
+        "LZO_SUPPORT=1",
+        "LZMA_XZ_SUPPORT=1",
+        "LZ4_SUPPORT=1",
+        "ZSTD_SUPPORT=1",
+        "XATTR_SUPPORT=1"
+    ],
+    "make-install-args": [
+        "INSTALL_DIR=/app/bin"
+    ],
+    "sources": [
         {
-          "type": "archive",
-          "url": "https://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz",
-          "sha256": "c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072"
+            "type": "archive",
+            "url": "https://github.com/plougher/squashfs-tools/archive/refs/tags/4.4-git.1.tar.gz",
+            "sha256": "9b89c3d2f0d0456e99fa3dd4429d45044044f0115acb0f15c441a4b9496d25a7",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 4879,
+                "stable-only": true,
+                "url-template": "https://github.com/plougher/squashfs-tools/archive//$version.tar.gz"
+            }
         }
-      ],
-      "cleanup": [
-        "/share/doc"
-      ]
-    }
-  ]
+    ],
+    "cleanup": [
+        "/bin/mksquashfs"
+    ],
+    "modules": [
+        "../lzo/lzo.json"
+    ]
 }
