@@ -1,7 +1,9 @@
 app-id: com.authy.authy
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '21.08'
 command: authy
 finish-args:
   - --device=dri
@@ -26,41 +28,46 @@ modules:
   - name: authy
     buildsystem: simple
     build-commands:
-      - install -Dm755 -t /app/bin/
-          apply_extra authy
+      - install -Dm755 -t /app/bin/ apply_extra authy stub_sandbox
       - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/512x512/apps/
       - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
     sources:
+      - type: extra-data
+        filename: authy.squashfs
+        url: https://api.snapcraft.io/api/v1/snaps/download/H8ZpNgIoPyvmkgxOWw5MSzsXK1wRZiHn_6.snap
+        sha256: 09de30335d0015be91f23d38d2090f462923e0fd3e461713dfd42621eeab041e
+        size: 64262144
+        x-checker-data:
+          type: snapcraft
+          name: authy
+          channel: stable
       - type: script
         dest-filename: apply_extra
         commands:
           - unsquashfs -quiet -no-progress authy.squashfs
           - rm authy.squashfs
           - rm squashfs-root/{command,desktop-*}.sh
-          - rmdir squashfs-root/data-dir/{icons,sounds,themes}
-              squashfs-root/{data-dir,gnome-platform,scripts}
-          - rm -r squashfs-root/meta
-              squashfs-root/{lib,usr}
+          - rmdir squashfs-root/data-dir/{icons,sounds,themes} squashfs-root/{data-dir,gnome-platform,scripts}
+          - rm -r squashfs-root/meta squashfs-root/{lib,usr}
           - mv squashfs-root/* ./
           - rmdir squashfs-root
           - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
-      - type: extra-data
-        filename: authy.squashfs
-        url: https://api.snapcraft.io/api/v1/snaps/download/H8ZpNgIoPyvmkgxOWw5MSzsXK1wRZiHn_5.snap
-        sha256: f6be2a19b96a23c626f15f6baa1b51674b84d4f4215495ac6a8155327c9ddbf9
-        size: 64233472
       - type: script
         dest-filename: authy
         commands:
           - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
           - exec zypak-wrapper /app/extra/authy "$@"
+      - type: script
+        dest-filename: stub_sandbox
+        commands:
+          - |
+            echo Stub sandbox ignoring command: $@
+            exit 1
       - type: file
         path: com.authy.authy.desktop
       - type: file
         path: com.authy.authy.png
     modules:
       - ../shared-modules/unsquashfs/unsquashfs.json
-      - ../shared-modules/zypak/zypak.json
-      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
       - ../shared-modules/libbsd/libbsd.json
       - ../shared-modules/libkeyutils/libkeyutils.json
