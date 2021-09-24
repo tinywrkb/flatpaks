@@ -17,8 +17,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://github.com/plougher/squashfs-tools/archive/refs/tags/4.4-git.1.tar.gz",
-            "sha256": "9b89c3d2f0d0456e99fa3dd4429d45044044f0115acb0f15c441a4b9496d25a7",
+            "url": "https://github.com/plougher/squashfs-tools/archive//4.5.tar.gz",
+            "sha256": "b9e16188e6dc1857fe312633920f7d71cc36b0162eb50f3ecb1f0040f02edddd",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 4879,

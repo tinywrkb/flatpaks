@@ -3,8 +3,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://libbsd.freedesktop.org/releases/libbsd-0.10.0.tar.xz",
-            "sha256": "34b8adc726883d0e85b3118fa13605e179a62b31ba51f676136ecb2d0bc1a887",
+            "url": "https://libbsd.freedesktop.org/releases/libbsd-0.11.3.tar.xz",
+            "sha256": "ff95cf8184151dacae4247832f8d4ea8800fa127dbd15033ecfe839f285b42a1",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 1567,
@@ -16,5 +16,23 @@
     "cleanup": [
         "/include",
         "/share/man"
+    ],
+    "modules": [
+        {
+            "name": "libmd",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://libbsd.freedesktop.org/releases/libmd-1.0.3.tar.xz",
+                    "sha256": "5a02097f95cc250a3f1001865e4dbba5f1d15554120f95693c0541923c52af4a",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 15525,
+                        "stable-only": true,
+                        "url-template": "https://libbsd.freedesktop.org/releases/libmd-$version.tar.xz"
+                    }
+                }
+            ]
+        }
     ]
 }
