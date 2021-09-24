@@ -1,6 +1,6 @@
 app-id: cc.yx7.hyx
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: hyx
 modules:
@@ -13,3 +13,8 @@ modules:
       - type: archive
         url: https://yx7.cc/code/hyx/hyx-2020.12.24.tar.xz
         sha256: 9fc88f58047013101bd6f1320510e77669d2d198be0b9a4c1b690642ba2f4c03
+        x-checker-data:
+          type: html
+          url: https://yx7.cc/code/
+          version-pattern: hex editor \(current version ([\d\.-]+)\)
+          url-template: https://yx7.cc/code/hyx/hyx-$version.tar.xz
