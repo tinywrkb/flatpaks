@@ -1,6 +1,6 @@
 app-id: com.google.chrome-unstable
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: chrome
 cleanup:
@@ -49,9 +49,9 @@ modules:
     sources:
       - type: extra-data
         filename: google-chrome.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_95.0.4638.17-1_amd64.deb
-        sha256: 8b37906932cf6fbe9295e9ba08ad650ba37437fad9992c3d798d41698248f6ab
-        size: 89855056
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_96.0.4651.0-1_amd64.deb
+        sha256: e9e2f666767bca98a17a8574e184d861e83557cd881caa2920fc5c796dbb54bf
+        size: 88841160
         x-checker-data:
           type: debian-repo
           package-name: google-chrome-unstable
