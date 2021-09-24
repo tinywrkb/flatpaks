@@ -1,6 +1,6 @@
 app-id: com.microsoft.edge-dev
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: edge
 finish-args:
@@ -45,8 +45,8 @@ modules:
     sources:
       - type: extra-data
         # From https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev
-        url: https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/microsoft-edge-dev_95.0.1020.0-1_amd64.deb
-        sha256: 0f54fd1f43519afa932ae2f2547a2fa4ddf6e493382c68ee46ccc98c5d6f714d
+        url: https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/microsoft-edge-dev_95.0.1020.5-1_amd64.deb
+        sha256: b37ffb86fd647e534e996ee8df5b6d4728596515b9833a7b2b185f49c4d0173d
         filename: edge.deb
         x-checker-data:
           type: debian-repo
@@ -54,7 +54,7 @@ modules:
           root: https://packages.microsoft.com/repos/edge
           dist: stable
           component: main
-        size: 115147332
+        size: 115316476
       - type: script
         dest-filename: apply_extra
         commands:
