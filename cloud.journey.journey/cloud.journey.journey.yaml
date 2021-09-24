@@ -1,7 +1,9 @@
 app-id: cloud.journey.journey
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '21.08'
 command: journey
 finish-args:
   - --device=dri
@@ -27,10 +29,19 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 -t /app/bin/
-          apply_extra journey
+          apply_extra journey stub_sandbox
       - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/512x512/apps/
       - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
     sources:
+      - type: extra-data
+        filename: journey.squashfs
+        url: https://api.snapcraft.io/api/v1/snaps/download/TWwObnuGiM3Urabc9hR2Xg2bJs6J8f2Y_23.snap
+        sha256: 94286dc928e8d9cdf8b2d3897b70f009089838b7f45680172d366fc8a9cfd885
+        x-checker-data:
+          type: snapcraft
+          name: journey
+          channel: stable
+        size: 81227776
       - type: script
         dest-filename: apply_extra
         commands:
@@ -44,23 +55,22 @@ modules:
           - mv squashfs-root/* ./
           - rmdir squashfs-root
           - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
-      - type: extra-data
-        filename: journey.squashfs
-        url: https://api.snapcraft.io/api/v1/snaps/download/TWwObnuGiM3Urabc9hR2Xg2bJs6J8f2Y_23.snap
-        sha256: 94286dc928e8d9cdf8b2d3897b70f009089838b7f45680172d366fc8a9cfd885
-        size: 81227776
       - type: script
         dest-filename: journey
         commands:
           - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
           - exec zypak-wrapper /app/extra/journey "$@"
+      - type: script
+        dest-filename: stub_sandbox
+        commands:
+          - |
+            echo Stub sandbox ignoring command: $@
+            exit 1
       - type: file
         path: cloud.journey.journey.desktop
       - type: file
         path: cloud.journey.journey.png
     modules:
       - ../shared-modules/unsquashfs/unsquashfs.json
-      - ../shared-modules/zypak/zypak.json
-      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
       - ../shared-modules/libbsd/libbsd.json
-      - ../shared-modules/libkeyutils/libkeyutils.yaml
+      - ../shared-modules/libkeyutils/libkeyutils.json
