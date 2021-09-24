@@ -6,7 +6,7 @@
 
 app-id: cc.arduino.arduino-create-agent
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: arduino-create-agent
 finish-args:
@@ -33,6 +33,11 @@ modules:
         size: 26763055
         sha256: 135a43682deb00c37f5a86947027387005d2143fe266e48a2789cd47e9520538
         filename: installer.tar.gz
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/arduino/arduino-create-agent/releases
+          version-query: map(select(.prerelease==false)) | .[0].tag_name
+          url-query: .[] | select(.tag_name=="1.2.4").assets[] | select(.name | test("^ArduinoCreateAgent-.*-linux-amd64-installer-chrome.run")).browser_download_url
       - type: script
         dest-filename: apply_extra
         commands:
