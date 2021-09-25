@@ -1,6 +1,6 @@
 app-id: com.github.alacritty
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: alacritty
 rename-desktop-file: Alacritty.desktop
@@ -32,19 +32,30 @@ modules:
       - install -D -m644 extra/linux/io.alacritty.Alacritty.appdata.xml /app/share/appdata/io.alacritty.Alacritty.appdata.xml
       - install -D -m644 extra/logo/alacritty-term.svg /app/share/icons/hicolor/scalable/apps//Alacritty.svg
     sources:
-      - type: git
-        url: https://github.com/alacritty/alacritty
-        branch: master
+      - type: archive
+        url: https://github.com/alacritty/alacritty/archive/v0.9.0.tar.gz
+        sha256: 6d3aaac9e0477f903563b6fb26e089118407cdbfe952a1e2ffbf4e971b7062b3
+        x-checker-data:
+          type: anitya
+          project-id: 141678
+          stable-only: true
+          url-template: https://github.com/alacritty/alacritty/archive/v$version.tar.gz
     modules:
       - name: rust
         buildsystem: simple
         build-commands:
-          - ./install.sh --components=rustc,cargo,rust-std-x86_64-unknown-linux-gnu --prefix=/app
+          - ./install.sh --components=rustc,cargo,rust-std-x86_64-unknown-linux-gnu
+            --prefix=/app
         sources:
           - type: archive
-            url: https://static.rust-lang.org/dist/rust-1.49.0-x86_64-unknown-linux-gnu.tar.gz
-            sha256: 8b14446df82f3707d69cf58fed92f18e0bff91621c62baf89288ef70e3e92981
+            url: https://static.rust-lang.org/dist/rust-1.55.0-x86_64-unknown-linux-gnu.tar.gz
+            sha256: 2080253a2ec36ac8ed6e060d30802d888533124b8d16545cfd4af898b365eaac
             dest-filename: rust-x86_64-unknown-linux-gnu.tar.gz
+            x-checker-data:
+              type: anitya
+              project-id: 7635
+              stable-only: true
+              url-template: https://static.rust-lang.org/dist/rust-$version-x86_64-unknown-linux-gnu.tar.gz
         cleanup:
           - '*'
   - ../shared-modules/byobu/byobu.json
