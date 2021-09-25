@@ -37,23 +37,17 @@
             ],
             "modules": [
                 {
-                    "name": "slang",
-                    "no-parallel-make": true,
+                    "name": "gpm",
                     "config-opts": [
-                        "--with-pcreinc=/usr/include",
-                        "--with-pcrelib=/usr/lib/x86_64-linux-gnu"
+                        "--sbindir=/app/bin",
+                        "--sysconfdir=/app/etc"
                     ],
                     "sources": [
                         {
-                            "type": "archive",
-                            "url": "https://www.jedsoft.org/releases/slang/slang-2.3.2.tar.bz2",
-                            "sha256": "fc9e3b0fc4f67c3c1f6d43c90c16a5c42d117b8e28457c5b46831b8b5d3ae31a",
-                            "x-checker-data": {
-                                "type": "anitya",
-                                "project-id": 4829,
-                                "stable-only": true,
-                                "url-template": "https://www.jedsoft.org/releases/slang/slang-$version.tar.bz2"
-                            }
+                            "type": "git",
+                            "url": "https://github.com/telmich/gpm.git",
+                            "branch": "master",
+                            "commit": "e82d1a653ca94aa4ed12441424da6ce780b1e530"
                         }
                     ]
                 },
@@ -80,17 +74,39 @@
                     ]
                 },
                 {
-                    "name": "gpm",
+                    "name": "popt",
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "http://ftp.rpm.org/popt/releases/popt-1.x/popt-1.18.tar.gz",
+                            "sha256": "5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 3689,
+                                "stable-only": true,
+                                "url-template": "http://ftp.rpm.org/popt/releases/popt-1.x/popt-$version.tar.gz"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "slang",
+                    "no-parallel-make": true,
                     "config-opts": [
-                        "--sbindir=/app/bin",
-                        "--sysconfdir=/app/etc"
+                        "--with-pcreinc=/usr/include",
+                        "--with-pcrelib=/usr/lib/x86_64-linux-gnu"
                     ],
                     "sources": [
                         {
-                            "type": "git",
-                            "url": "https://github.com/telmich/gpm.git",
-                            "branch": "master",
-                            "commit": "e82d1a653ca94aa4ed12441424da6ce780b1e530"
+                            "type": "archive",
+                            "url": "https://www.jedsoft.org/releases/slang/slang-2.3.2.tar.bz2",
+                            "sha256": "fc9e3b0fc4f67c3c1f6d43c90c16a5c42d117b8e28457c5b46831b8b5d3ae31a",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 4829,
+                                "stable-only": true,
+                                "url-template": "https://www.jedsoft.org/releases/slang/slang-$version.tar.bz2"
+                            }
                         }
                     ]
                 }
@@ -114,6 +130,7 @@
             "modules": [
                 {
                     "name": "libutempter",
+                    "subdir": "libutempter",
                     "no-autogen": true,
                     "make-install-args": [
                         "libdir=/app/lib",
