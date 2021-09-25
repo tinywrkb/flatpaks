@@ -2,7 +2,7 @@
 # TODO: maybe drop mpv wrapper in favor of packaged audio player
 app-id: org.soimort.translate-shell
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: trans
 finish-args:
@@ -18,5 +18,10 @@ modules:
       - type: archive
         url: https://github.com/soimort/translate-shell/archive/v0.9.6.12.tar.gz
         sha256: 4c4843a8c66276190535b8435775ecb5d9c8286083a33cdbe2db608eba93ca97
+        x-checker-data:
+          type: anitya
+          project-id: 15342
+          stable-only: true
+          url-template: https://github.com/soimort/translate-shell/archive/v$version.tar.gz
     modules:
       - ../shared-modules/flatpak-spawn-wrappers/mpv.json
