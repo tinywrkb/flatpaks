@@ -1,7 +1,6 @@
 app-id: org.debian.minicom
-branch: '20.08'
 runtime: org.freedesktop.Sdk
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: minicom
 finish-args:
@@ -15,6 +14,11 @@ modules:
       - type: archive
         url: https://salsa.debian.org/minicom-team/minicom/-/archive/2.8/minicom-2.8.tar.gz
         sha256: 9e8dee8e7e1f6d6115d0e1955da5b801e44b91289f6b3e320842949488d4b22f
+        x-checker-data:
+          type: anitya
+          project-id: 1983
+          stable-only: true
+          url-template: https://salsa.debian.org/minicom-team/minicom/-/archive/$version/minicom-$version.tar.gz
       # TODO: switch patch to use xdg-run
       - type: patch
         path: minicom-lock.patch
@@ -25,6 +29,7 @@ modules:
       - /bin/xminicom
       - /share/man/man1/xminicom.1
     modules:
+      # TODO: f-e-d-c, upstream is outdated and fixes are in downstream, maybe use the debian source+patches
       - name: lrzsz
         config-opts:
           - --mandir=/app/share/man
