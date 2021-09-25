@@ -1,6 +1,6 @@
 app-id: com.github.jtheoof.swappy
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: swappy.sh
 rename-desktop-file: swappy.desktop
@@ -31,8 +31,12 @@ modules:
           project-id: 108607
           stable-only: true
           url-template: https://github.com/jtheoof/swappy/archive/v$version.tar.gz
-      - type: dir
-        path: resources
+      - type: file
+        path: com.github.jtheoof.swappy.capture-region.desktop
+      - type: file
+        path: com.github.jtheoof.swappy.capture-screen.desktop
+      - type: file
+        path: swappy.sh
     modules:
       - ../shared-modules/libnotify/libnotify.json
   - name: wl-clipboard
