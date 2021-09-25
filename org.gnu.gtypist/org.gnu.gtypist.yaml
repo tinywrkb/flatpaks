@@ -1,6 +1,6 @@
 app-id: org.gnu.gtypist
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: gtypist
 modules:
@@ -9,5 +9,10 @@ modules:
       - type: archive
         url: https://ftp.gnu.org/gnu/gtypist/gtypist-2.9.5.tar.gz
         sha256: 4059be9585683bbb84757dd4bbafa8ff4ecda2ed9eecd4e7594365843f05a266
+        x-checker-data:
+          type: anitya
+          project-id: 1275
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/gtypist/gtypist-$version.tar.gz
     modules:
       - ../shared-modules/ncurses/libncurses.json
