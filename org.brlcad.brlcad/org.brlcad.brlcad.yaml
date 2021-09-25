@@ -4,7 +4,7 @@
 #   * to start mged correctly from a desktop file, the Terminal option was defined as true.
 app-id: org.brlcad.brlcad
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: mged
 rename-desktop-file: brlcad.desktop
@@ -14,7 +14,6 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --socket=wayland
-  - --socket=fallback-x11
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -39,9 +38,16 @@ modules:
       - install -Dm644 brlcad.png /app/share/icons/hicolor/512x512/apps/brlcad.png
     sources:
       - type: archive
-        url: https://sourceforge.net/projects/brlcad/files/BRL-CAD%20Source/7.30.8/brlcad-7.30.8.tar.gz
-        sha256: 66b61a010b6b94d62a1efe7d2089653f4ad2e21106bce5db9ddb839c180f28ce
-      - type: patch
-        path: buildsystem.patch
-      - type: dir
-        path: resources
+        url: https://github.com/BRL-CAD/brlcad/archive/rel-7-32-4.tar.gz
+        sha256: 0f402e9b506942540c33cc655b2712e53eca39bd4fd6789b5ee33eb0072fbbea
+        x-checker-data:
+          type: anitya
+          project-id: 235081
+          stable-only: true
+          url-template: https://github.com/BRL-CAD/brlcad/archive/rel-$version.tar.gz
+      - type: file
+        path: brlcad.desktop
+      - type: file
+        path: brlcad.png
+      - type: file
+        path: brlcad.svg
