@@ -1,0 +1,11 @@
+--- a/doc/manuals/libabigail-overview.rst	2021-01-28 18:37:59.000000000 +0200
++++ b/doc/manuals/libabigail-overview.rst	2021-09-25 23:10:11.166129339 +0300
+@@ -1,6 +1,6 @@
+-####################
++#################################
+ Overview of the Abigail framework
+-####################
++#################################
+ 
+ **ABIGAIL** stands for the Application Binary Interface Generic
+ Analysis and Instrumentation Library.

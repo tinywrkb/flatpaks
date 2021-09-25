@@ -20,11 +20,12 @@ modules:
       - --enable-bash-completion
       - --enable-cxx11
       - --enable-manual
-    post-install:
-      - make -C doc/manuals man
-      - install -Dm644 doc/manuals/man/1/* -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 doc/manuals/man/7/* -t ${FLATPAK_DEST}/share/man/man7/
-      - install -Dm644 bash-completion/* -t ${FLATPAK_DEST}/share/bash-completion/
+# TODO: fix man pages generation
+#   post-install:
+#     - make -C doc/manuals man
+#     - install -Dm644 doc/manuals/man/1/* -t ${FLATPAK_DEST}/share/man/man1/
+#     - install -Dm644 doc/manuals/man/7/* -t ${FLATPAK_DEST}/share/man/man7/
+#     - install -Dm644 bash-completion/* -t ${FLATPAK_DEST}/share/bash-completion/
     sources:
       - type: archive
         url: http://mirrors.kernel.org/sourceware/libabigail/libabigail-1.8.2.tar.gz
@@ -35,5 +36,7 @@ modules:
           stable-only: true
           # TODO: switch to git? tarball is too large, it's not being cached, so it slows down the check
           url-template: http://mirrors.kernel.org/sourceware/libabigail/libabigail-$version.tar.gz
+      - type: patch
+        path: libabigail-doc_fixup.patch
     modules:
       - ../shared-modules/python-sphinx/python-sphinx.json
