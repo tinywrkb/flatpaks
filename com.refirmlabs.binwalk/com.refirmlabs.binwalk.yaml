@@ -1,6 +1,6 @@
 app-id: com.refirmlabs.binwalk
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: binwalk
 modules:
@@ -11,8 +11,13 @@ modules:
       - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
     sources:
       - type: archive
-        url: https://github.com/ReFirmLabs/binwalk/archive/v2.3.1.tar.gz
-        sha256: 7ec9d8fcb8686f4060d37e1096669e3ed8ce1194c91ad80199622448bcc01b19
+        url: https://github.com/ReFirmLabs/binwalk/archive/v2.3.3.tar.gz
+        sha256: 7e32b94dc77632b51d18732b5456e2a3ef85e4521d7d4a54410e36f93859501f
+        x-checker-data:
+          type: anitya
+          project-id: 5593
+          stable-only: true
+          url-template: https://github.com/ReFirmLabs/binwalk/archive/v$version.tar.gz
     modules:
       - ../shared-modules/unsquashfs/unsquashfs.json
         # TODO: fix arj
@@ -61,6 +66,11 @@ modules:
           - type: archive
             url: https://cabextract.org.uk/cabextract-1.9.1.tar.gz
             sha256: afc253673c8ef316b4d5c29cc4aa8445844bee14afffbe092ee9469405851ca7
+            x-checker-data:
+              type: anitya
+              project-id: 245
+              stable-only: true
+              url-template: https://cabextract.org.uk/cabextract-$version.tar.gz
         # TODO: more modules
       #- cpio or link to bsdcpio
       #- lhasa
