@@ -64,17 +64,10 @@ modules:
           # workaround for failing configure script, probably due to extra options given by flatpak-builder
           - ./configure
           - make
-          - |
-            make install
-            #DESTDIR=/
+          - make install
             PREFIX=/app
             CONFDIR=/app/share/iproute2
             SBINDIR=/app/bin
-            #ARPDDIR=/app/var/lib/arpd
-            #DATADIR=/app/share
-            #LIBDIR=/app/lib
-            #NETNS_ETC_DIR=/app/etc/netns
-            #NETNS_RUN_DIR=/run/netns
         sources:
           - type: archive
             url: https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.14.0.tar.xz
