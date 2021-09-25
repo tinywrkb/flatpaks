@@ -1,7 +1,7 @@
 # TODO: properly use qt from the runtime and fix wayland
 app-id: org.qcad.qcad
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: qcad
 rename-desktop-file: qcad.desktop
@@ -45,9 +45,25 @@ modules:
       - install -Dm755 qcad /app/bin/qcad
     sources:
       - type: archive
-        url: https://github.com/qcad/qcad/archive/v3.26.1.0.tar.gz
-        sha256: 7f5fddc779cea270880fb82e7bf1549b1ac5b42ac289249c4a75217b77f0308b
-      - type: dir
-        path: resources
+        url: https://github.com/qcad/qcad/archive/v3.26.4.8.tar.gz
+        sha256: a3f274b78912bf30c131a72d0237b5f6ee8b2fe770bafa78024a80706177206e
+        x-checker-data:
+          type: anitya
+          project-id: 235064
+          stable-only: true
+          url-template: https://github.com/qcad/qcad/archive/v$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i 's/$${QT_VERSION}/5.5.0/g' src/3rdparty/3rdparty.pro
+      - type: file
+        path: ld.so.conf
+      - type: file
+        path: qcad
+      - type: file
+        path: qcad.desktop
+      - type: file
+        path: qcad.png
+      - type: file
+        path: qcad.svg
     modules:
       - ../flathub-shared-modules/glu/glu-9.json
