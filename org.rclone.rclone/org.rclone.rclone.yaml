@@ -1,6 +1,7 @@
+# TODO: consider using a proper source for detecting changes with update build automation
 app-id: org.rclone.rclone
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.golang
