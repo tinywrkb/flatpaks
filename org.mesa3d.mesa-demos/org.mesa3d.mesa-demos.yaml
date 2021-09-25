@@ -1,6 +1,6 @@
 app-id: org.mesa3d.mesa-demos
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: /bin/sh
 finish-args:
@@ -19,8 +19,13 @@ modules:
       - --disable-osmesa
     sources:
       - type: archive
-        url: "https://mesa.freedesktop.org/archive/demos/mesa-demos-8.4.0.tar.bz2"
+        url: https://mesa.freedesktop.org/archive/demos/mesa-demos-8.4.0.tar.bz2
         sha256: 01e99c94a0184e63e796728af89bfac559795fb2a0d6f506fa900455ca5fff7d
+        x-checker-data:
+          type: anitya
+          project-id: 16781
+          stable-only: true
+          url-template: https://mesa.freedesktop.org/archive/demos/mesa-demos-$version.tar.bz2
     modules:
       - ../flathub-shared-modules/glew/glew.json
       - ../flathub-shared-modules/glu/glu-9.json
