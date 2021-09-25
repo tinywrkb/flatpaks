@@ -1,6 +1,6 @@
 app-id: uk.org.smartsim.smartsim
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: smartsim
 rename-desktop-file: smartsim.desktop
@@ -10,7 +10,6 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --socket=wayland
-  - --socket=fallback-x11
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -26,5 +25,8 @@ modules:
       - type: git
         url: https://github.com/ashleynewson/SmartSim.git
         branch: master
-      - type: dir
-        path: resources
+        commit: 13e0f52de238f7576e7a39bc79d517fca1141a2b
+      - type: file
+        path: smartsim.desktop
+      - type: file
+        path: smartsim.png
