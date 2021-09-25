@@ -1,6 +1,6 @@
 app-id: org.sunflower_fm.sunflower
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: sunflower
 rename-icon: sunflower
@@ -15,7 +15,6 @@ finish-args:
   - --own-name=org.sunflower
   - --share=ipc
   - --share=network
-  - --socket=fallback-x11
   - --socket=wayland
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
@@ -33,6 +32,11 @@ modules:
       - type: archive
         url: https://sunflower-fm.org/pub/sunflower-0.4-62.tgz
         sha256: f2c47e58efb460f18b4bbaf839a9765ac0e2ae1805d7cbd04b3e345d2d74e900
+        x-checker-data:
+          type: anitya
+          project-id: 235068
+          stable-only: true
+          url: https://sunflower-fm.org/pub/sunflower-$version.tgz
     modules:
       - ../shared-modules/python-gobject/python-gobject.json
       - ../shared-modules/vte3/vte3.json
