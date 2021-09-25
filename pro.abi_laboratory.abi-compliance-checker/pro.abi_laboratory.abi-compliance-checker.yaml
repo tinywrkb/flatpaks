@@ -1,6 +1,6 @@
 app-id: pro.abi_laboratory.abi-compliance-checker
 runtime: org.freedesktop.Sdk
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: abi-compliance-checker
 finish-args:
@@ -38,8 +38,8 @@ modules:
       - name: ctags
         sources:
           - type: archive
-            url: https://github.com/universal-ctags/ctags/archive/p5.9.20210718.0.tar.gz
-            sha256: a374b8af3c99d22c63f8a3bdd79cc7dc4512bd2ab16bfa816d793999429bcffc
+            url: https://github.com/universal-ctags/ctags/archive/p5.9.20210919.0.tar.gz
+            sha256: 56d8e6958135a0fbde7dc7ba607adc129053e3d95663d79e4b39e5860d440422
             x-checker-data:
               type: anitya
               project-id: 223832
