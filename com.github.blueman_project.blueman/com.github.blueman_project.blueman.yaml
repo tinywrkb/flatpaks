@@ -1,6 +1,6 @@
 app-id: com.github.blueman_project.blueman
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: blueman-applet
 rename-icon: blueman
@@ -37,8 +37,13 @@ modules:
       #- --enable-polkit=yes
     sources:
       - type: archive
-        url: https://github.com/blueman-project/blueman/releases/download/2.1.4/blueman-2.1.4.tar.xz
-        sha256: 1d9c3d39a564d88851aa8de509f16bfa586b0b50f4307dc6c6347ba4833664da
+        url: https://github.com/blueman-project/blueman/releases/download/2.2.2/blueman-2.2.2.tar.xz
+        sha256: 19ed59b1a134f584fc005f47295fef640a9709fd9b9b2307388e112a32ecd0f6
+        x-checker-data:
+          type: anitya
+          project-id: 6500
+          stable-only: true
+          url-template: https://github.com/blueman-project/blueman/releases/download/$version/blueman-$version.tar.xz
 #     - type: shell
 #       commands:
 #         - sed -i '/^dbusdir =/ s/sysconfdir/datadir/' data/configs/Makefile.{am,in}
@@ -54,33 +59,35 @@ modules:
       - ../shared-modules/python-gobject/python-gobject.json
       - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-introspection-12.10.json
       - name: iproute2
-        make-install-args:
-          #- DESTDIR=/
-          - PREFIX=/app
-          - CONFDIR=/app/share/iproute2
-          - SBINDIR=/app/bin
-          #- ARPDDIR=/app/var/lib/arpd
-          #- DATADIR=/app/share
-          #- LIBDIR=/app/lib
-          #- NETNS_ETC_DIR=/app/etc/netns
-          #- NETNS_RUN_DIR=/run/netns
+        buildsystem: simple
+        build-commands:
+          # workaround for failing configure script, probably due to extra options given by flatpak-builder
+          - ./configure
+          - make
+          - |
+            make install
+            #DESTDIR=/
+            PREFIX=/app
+            CONFDIR=/app/share/iproute2
+            SBINDIR=/app/bin
+            #ARPDDIR=/app/var/lib/arpd
+            #DATADIR=/app/share
+            #LIBDIR=/app/lib
+            #NETNS_ETC_DIR=/app/etc/netns
+            #NETNS_RUN_DIR=/run/netns
         sources:
           - type: archive
-            url: https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.7.0.tar.xz
-            sha256: 725dc7ba94aae54c6f8d4223ca055d9fb4fe89d6994b1c03bfb4411c4dd10f21
+            url: https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.14.0.tar.xz
+            sha256: 210fa785a52f3763c4287fd5ae63e246f6311bfaa48c424baab6d383bb7591d4
+            x-checker-data:
+              type: anitya
+              project-id: 1392
+              stable-only: true
+              url-template: https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-$version.tar.xz
         cleanup:
           - /include
           - /share/bash-completion
           - /share/man
-      - name: cython
-        buildsystem: simple
-        build-commands:
-          - python3 setup.py build
-          - python3 setup.py install --root=/ --prefix=app/
-        sources:
-          - type: archive
-            url: https://github.com/cython/cython/archive/0.29.22.tar.gz
-            sha256: 7647e026aa044ca28dca875188bed0f13120a8874047b2d1b4309b9c9c2f900b
       - name: bluez
         config-opts:
           - --sysconfdir=/app/etc
@@ -98,10 +105,16 @@ modules:
           #- --enable-sixaxis
           - --enable-btpclient
           - --enable-experimental
+          - --disable-manpages
         sources:
           - type: archive
-            url: https://www.kernel.org/pub/linux/bluetooth/bluez-5.58.tar.xz
-            sha256: c8065e75a5eb67236849ef68a354b1700540305a8c88ef0a0fd6288f19daf1f1
+            url: https://www.kernel.org/pub/linux/bluetooth/bluez-5.61.tar.xz
+            sha256: 83afd6c52179554bfeabbcb538fec2eb6be90a8ac3c40871b49d7ad8b49c423b
+            x-checker-data:
+              type: anitya
+              project-id: 10029
+              stable-only: true
+              url-template: https://www.kernel.org/pub/linux/bluetooth/bluez-$version.tar.xz
         cleanup:
           - /include
           - /share/man
@@ -117,8 +130,13 @@ modules:
               - -DSHARED_ONLY=true
             sources:
               - type: archive
-                url: https://github.com/libical/libical/archive/v3.0.9.tar.gz
-                sha256: bd26d98b7fcb2eb0cd5461747bbb02024ebe38e293ca53a7dfdcb2505265a728
+                url: https://github.com/libical/libical/archive/v3.0.10.tar.gz
+                sha256: f933b3e6cf9d56a35bb5625e8e4a9c3a50239a85aea05ed842932c1a1dc336b4
+                x-checker-data:
+                  type: anitya
+                  project-id: 1637
+                  stable-only: true
+                  url-template: https://github.com/libical/libical/archive/v$version.tar.gz
             cleanup:
               - /include
               - /lib/cmake
@@ -180,13 +198,23 @@ modules:
           - -Dqt=false
         sources:
           - type: archive
-            url: https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/archive/1.30.2/NetworkManager-1.30.2.tar.gz
-            sha256: 9d71a7af6a5b718c2c176895c8f8ad420bd348dfb04681763a6b484fe526f78e
+            url: https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/archive/1.32.12/NetworkManager-1.32.12.tar.gz
+            sha256: 77a2717c313004baef858a01bfb764cff12cb5984055adf3a15bf8ac5aa337bb
+            x-checker-data:
+              type: anitya
+              project-id: 21197
+              stable-only: true
+              url-template: https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/archive/$version/NetworkManager-$version.tar.gz
         cleanup:
           - /bin
         modules:
           - name: libndp
             sources:
               - type: archive
-                url: https://github.com/jpirko/libndp/archive/v1.7.tar.gz
-                sha256: 44be73630ee785ed9f571f9aaaeba0e1d375fa337fd841270034c813b5b0e6fd
+                url: https://github.com/jpirko/libndp/archive/v1.8.tar.gz
+                sha256: c3ea76e253def89869651686a827da75b56896fe94fabd87d8c14b1d4588fd05
+                x-checker-data:
+                  type: anitya
+                  project-id: 14944
+                  stable-only: true
+                  url-template: https://github.com/jpirko/libndp/archive/v$version.tar.gz
