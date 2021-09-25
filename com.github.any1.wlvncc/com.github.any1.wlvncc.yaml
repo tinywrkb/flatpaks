@@ -1,6 +1,6 @@
 app-id: com.github.any1.wlvncc
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: wlvncc
 finish-args:
@@ -35,11 +35,11 @@ modules:
           - type: git
             url: https://github.com/LibVNC/libvncserver.git
             branch: master
-            commit: c82b3abb369983cd737190331b897814a580a980
+            commit: 06b205a69d4263a52d8acc2a0e5f60d6ff8db0cc
       - name: aml
         buildsystem: meson
         sources:
           - type: git
             url: https://github.com/any1/aml
             branch: master
-            commit: 6e9c36089f4f82edf10eaf85446bfa0bccf5f6ca
+            commit: a1baa973e87b4c81681cdc22aa7cbbec35244d2a
