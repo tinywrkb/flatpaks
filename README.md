@@ -11,7 +11,6 @@ read-only distributed OS files, and the stateful data and configs.
 ### Not usable or too buggy
 
 * Blueman: working with a few warnings, and the applet's singleton considers the dbus name remnant as an active session.
-* QtPass
 * byobu/tmux in terminal emulators and other cli apps: might be a freedesktop runtime regression or my system config which broke it for me locally.
 
 ### How to build
