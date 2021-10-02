@@ -15,7 +15,6 @@ cleanup:
 finish-args:
   - --device=dri
   - --persist=.config/sqlitestudio
-  - --share=ipc
   - --share=network
   - --socket=wayland
 modules:
