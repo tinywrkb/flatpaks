@@ -23,8 +23,8 @@ modules:
       - -DENABLE_RUBY=OFF
     sources:
       - type: archive
-        url: https://github.com/weechat/weechat/archive/v3.0.tar.gz
-        sha256: bd23fe4c775fea5e140ad6aed696daa22dee97a298a37211d0da2b45935bf076
+        url: https://github.com/weechat/weechat/archive/v3.3.tar.gz
+        sha256: a9834f84d8b6b37bcea107fe5a283699f1312da6df9dd70d675e70df65cee7c9
         x-checker-data:
           type: anitya
           project-id: 5122
