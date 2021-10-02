@@ -1,22 +1,27 @@
 {
-  "name": "python-pafy",
-  "buildsystem": "simple",
-  "build-commands": [
-    "python3 setup.py build",
-    "python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1"
-  ],
-  "post-install": [
-    "rm /app/bin/youtube-dl"
-  ],
-  "sources": [
-    {
-      "type": "git",
-      "url": "https://github.com/mps-youtube/pafy.git",
-      "tag": "v0.5.5",
-      "commit": "0e325198113d4cfd0ec102351cdd8d71eb2ff8cc"
-    }
-  ],
-  "modules": [
-    "../youtube-dl/youtube-dl.json"
-  ]
+    "name": "python-pafy",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python3 setup.py build",
+        "python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1"
+    ],
+    "post-install": [
+        "rm /app/bin/youtube-dl"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/mps-youtube/pafy/archive/v0.5.5.tar.gz",
+            "sha256": "3b878d319dc63be2f2a84aca5df4ee08baf7256d26e61c94d92b6165b965994f",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 16947,
+                "stable-only": true,
+                "url-template": "https://github.com/mps-youtube/pafy/archive/v$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../youtube-dl/youtube-dl.json"
+    ]
 }
