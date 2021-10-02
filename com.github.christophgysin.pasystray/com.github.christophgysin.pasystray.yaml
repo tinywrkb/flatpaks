@@ -1,6 +1,6 @@
 app-id: com.github.christophgysin.pasystray
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: pasystray
 rename-desktop-file: pasystray.desktop
@@ -9,10 +9,10 @@ finish-args:
   - --device=dri
   - --own-name=org.kde.*
   - --own-name=org.pulseaudio.pavucontrol
-# - --share=ipc
   - --socket=pulseaudio
   - --socket=wayland
-# - --socket=x11
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
 modules:
@@ -29,54 +29,51 @@ modules:
       - type: archive
         url: https://github.com/christophgysin/pasystray/archive/pasystray-0.7.1.tar.gz
         sha256: efa5e762c7a60e1017474b87fec78d55cc0420dba3dae7f04f74b64160bd56a6
+        x-checker-data:
+          type: anitya
+          project-id: 11067
+          stable-only: true
+          url-template: https://github.com/christophgysin/pasystray/archive/pasystray-$version.tar.gz
     modules:
       - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
-        # TODO: investigate avahi features of pasystray
+      - ../shared-modules/libnotify/libnotify.json
+     # TODO: investigate avahi features of pasystray
      #- name: avahi
-  - ../shared-modules/libnotify/libnotify.json
-  - ../shared-modules/gtkmm3/gtkmm3-kde_runtime.json
-# gtkmm3 dependent apps: pavucontrol, paprefs
-  - name: pavucontrol
+  - name: pavucontrol-wrapper
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 -t $FLATPAK_DEST/bin/ pavucontrol
     sources:
-      - type: archive
-        url: http://freedesktop.org/software/pulseaudio/pavucontrol/pavucontrol-4.0.tar.xz
-        sha256: 8fc45bac9722aefa6f022999cbb76242d143c31b314e2dbb38f034f4069d14e2
-      - type: shell
+      - type: script
+        dest-filename: pavucontrol
         commands:
-          - ./bootstrap.sh
-    modules:
-      - ../flathub-shared-modules/intltool/intltool-0.51.json
-      - name: libcanberra
-        config-opts:
-          - --disable-oss
-          - --disable-static
-          - --enable-alsa
-          - --enable-gstreamer
-          - --enable-null
-          - --enable-pulse
-          - --with-builtin=dso
-          - --with-systemdsystemunitdir=/app/lib/systemd/system
-        sources:
-          - type: archive
-            url: http://0pointer.de/lennart/projects/libcanberra/libcanberra-0.30.tar.xz
-            sha256: c2b671e67e0c288a69fc33dc1b6f1b534d07882c2aceed37004bf48c601afa72
+          - |
+            if flatpak-spawn --host which pavucontrol &>/dev/null; then
+              flatpak-spawn --host pavucontrol
+            elif flatpak-spawn --host flatpak info com.github.christophgysin.pasystray &>/dev/null; then
+              flatpak-spawn --host flatpak run org.pulseaudio.pavucontrol
+            else
+              exit 1
+            fi
+# TODO: move out paprefs to its own flatpak package and use flatpak-spawn wrapper
 # TODO: get paprefs to do something useful, most config options are not available
-  - name: paprefs
-    buildsystem: meson
-    sources:
-      - type: archive
-        url: https://gitlab.freedesktop.org/pulseaudio/paprefs/-/archive/v1.1/paprefs-v1.1.tar.gz
-        sha256: 6fc604ffbe247367badf05285d01b10c1647229320fe61c644692023084f1661
-    modules:
-      - name: pulseaudio-gsettins-schema
-        buildsystem: simple
-        build-commands:
-          - install -Dm644 src/modules/gsettings/org.freedesktop.pulseaudio.gschema.xml -t /app/share/glib-2.0/schemas/
-          - glib-compile-schemas /app/share/glib-2.0/schemas
-        sources:
-          - type: archive
-            url: https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/archive/v13.0/pulseaudio-v13.0.tar.gz
-            sha256: 15bb355bf582ba7a5d456cd868cc39fb9b9fc7bff3506d2e88919d18e8fae95f
+# - name: paprefs
+#   buildsystem: meson
+#   sources:
+#     - type: archive
+#       url: https://gitlab.freedesktop.org/pulseaudio/paprefs/-/archive/v1.1/paprefs-v1.1.tar.gz
+#       sha256: 6fc604ffbe247367badf05285d01b10c1647229320fe61c644692023084f1661
+#   modules:
+#     - ../shared-modules/gtkmm3/gtkmm3.json
+#     - name: pulseaudio-gsettins-schema
+#       buildsystem: simple
+#       build-commands:
+#         - install -Dm644 src/modules/gsettings/org.freedesktop.pulseaudio.gschema.xml -t /app/share/glib-2.0/schemas/
+#         - glib-compile-schemas /app/share/glib-2.0/schemas
+#       sources:
+#         - type: archive
+#           url: https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/archive/v13.0/pulseaudio-v13.0.tar.gz
+#           sha256: 15bb355bf582ba7a5d456cd868cc39fb9b9fc7bff3506d2e88919d18e8fae95f
 # TODO: add gtkmm and enable relevant apps
 # gtkmm dependent apps: pavumeter , paman (libglademm)
  #- name: pavumeter
@@ -87,7 +84,7 @@ modules:
  #- name: paman
  #  modules:
  #    - name: libglademm
-# TODO: add pyqt5 and enable pulseaudio-equalizer
+# TODO: create pulseaudio-equalizer flatpak package
 # pyqt5 dependent apps: pulseaudio-equalizer
 # - name: pulseaudio-equalizer (qpaeq command)
 #   modules:
