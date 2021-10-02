@@ -1,0 +1,55 @@
+app_id: pro.abi_laboratory.abi_compliance_checker.lib-checker-example
+runtime: org.freedesktop.Sdk
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+base: pro.abi_laboratory.abi-compliance-checker
+base-version: master
+command: lib-checker
+finish-args:
+  - --allow=devel
+  - --filesystem=host
+modules:
+  - name: libxml2-icu
+    config-opts:
+      - --with-icu
+      - --with-python_install_dir=${FLATPAK_DEST}/lib/python3.9/site-packages
+    sources:
+      - type: archive
+        url: https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.9.12/libxml2-v2.9.12.tar.gz
+        sha256: 98bfa7a9a5e2a75638422050740448ee9f02bf4dc2075c9822d7747d5ff9e617
+    cleanup:
+      - '*.a'
+      - '*.la'
+  - name: compare-libs
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 -t ${FLATPAK_DEST}/bin/ lib-checker
+      - |
+        install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/libxml2-runtime.xml <<EOF
+        <version>
+        2.9.12
+        </version>
+        <headers>
+        /usr/include/libxml2
+        </headers>
+        <libs>
+        /usr/lib/${FLATPAK_ARCH}-linux-gnu
+        </libs>
+        EOF
+      - |
+        install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/libxml2-icu.xml <<EOF
+        <version>
+        2.9.12
+        </version>
+        <headers>
+        ${FLATPAK_DEST}/include/libxml2
+        </headers>
+        <libs>
+        ${FLATPAK_DEST}/lib
+        </libs>
+        EOF
+    sources:
+      - type: script
+        dest-filename: lib-checker
+        commands:
+          - abi-compliance-checker -lib libxml2 -old /app/share/libxml2-runtime.xml -new /app/share/libxml2-icu.xml
