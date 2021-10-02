@@ -14,9 +14,7 @@ finish-args:
   - --filesystem=xdg-videos
   - --filesystem=xdg-run/pipewire-0:ro
   - --own-name=org.mpris.MediaPlayer2.mpv
-  - --share=ipc
   - --share=network
-  - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
   - --system-talk-name=org.freedesktop.RealtimeKit1
