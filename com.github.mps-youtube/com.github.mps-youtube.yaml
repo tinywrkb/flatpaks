@@ -1,6 +1,6 @@
 app-id: com.github.mps-youtube
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: mpsyt
 finish-args:
@@ -14,10 +14,14 @@ modules:
       - python3 setup.py build
       - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
     sources:
-      - type: git
-        url: https://github.com/mps-youtube/mps-youtube
-        tag: v0.2.8
-        commit: da798cf4f80513ebb424257e3fed9e9dd72c980b
+      - type: archive
+        url: https://github.com/mps-youtube/mps-youtube/archive/v0.2.8.tar.gz
+        sha256: d5f2c4bc1f57f0566242c4a0a721a5ceaa6d6d407f9d6dd29009a714a0abec74
+        x-checker-data:
+          type: anitya
+          project-id: 92557
+          stable-only: true
+          url-template: https://github.com/mps-youtube/mps-youtube/archive/v$version.tar.gz
     modules:
       - ../shared-modules/python-pafy/python-pafy.json
       - ../shared-modules/flatpak-spawn-wrappers/ffmpeg.json
