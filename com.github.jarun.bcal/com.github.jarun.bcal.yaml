@@ -1,7 +1,7 @@
 app-id: com.github.jarun.bcal
 branch: '20.08'
 runtime: org.freedesktop.Sdk
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: bcal
 modules:
@@ -13,3 +13,8 @@ modules:
       - type: archive
         url: https://github.com/jarun/bcal/archive/v2.2.tar.gz
         sha256: 506d17d6df35fad636d3ced425afee5921cd2b21242099b78b369cfcb5716e23
+        x-checker-data:
+          type: anitya
+          project-id: 18296
+          stable-only: true
+          url-template: https://github.com/jarun/bcal/archive/v$version.tar.gz
