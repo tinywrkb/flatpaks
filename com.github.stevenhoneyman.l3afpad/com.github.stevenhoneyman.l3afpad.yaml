@@ -1,6 +1,6 @@
 app-id: com.github.stevenhoneyman.l3afpad
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: l3afpad
 rename-desktop-file: l3afpad.desktop
@@ -9,18 +9,17 @@ copy-icon: true
 finish-args:
   - --device=dri
   - --filesystem=home
-  - --share=ipc
   - --socket=wayland
-  - --socket=fallback-x11
 modules:
   - name: l3afpad
-    post-install:
-      - install -D ${FLATPAK_ID}.appdata.xml -t /app/share/appdata/
     sources:
       - type: archive
         url: https://github.com/stevenhoneyman/l3afpad/archive/v0.8.18.1.11.tar.gz
         sha256: 86f374b2f950b7c60dda50aa80a5034b8e3c80ded5cd3284c2d5921b31652793
-      - type: file
-        path: com.github.stevenhoneyman.l3afpad.appdata.xml
+        x-checker-data:
+          type: anitya
+          project-id: 10077
+          stable-only: true
+          url-template: https://github.com/stevenhoneyman/l3afpad/archive/v$version.tar.gz
     modules:
       - ../flathub-shared-modules/intltool/intltool-0.51.json
