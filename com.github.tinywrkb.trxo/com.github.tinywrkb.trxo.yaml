@@ -1,6 +1,6 @@
 app-id: com.github.tinywrkb.trxo
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: trxo
 finish-args:
@@ -29,6 +29,11 @@ modules:
           - type: archive
             url: https://github.com/transmission/transmission-releases/raw/master/transmission-3.00.tar.xz
             sha256: 9144652fe742f7f7dd6657716e378da60b751aaeda8bef8344b3eefc4db255f2
+            x-checker-data:
+              type: anitya
+              project-id: 5002
+              stable-only: true
+              url-template: https://github.com/transmission/transmission-releases/raw/master/transmission-$version.tar.xz
         cleanup:
           - /bin/transmission-create
           - /bin/transmission-edit
