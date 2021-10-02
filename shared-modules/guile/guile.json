@@ -7,8 +7,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://ftp.gnu.org/pub/gnu/guile/guile-2.2.6.tar.gz",
-            "sha256": "08c0e7487777740b61cdd97949b69e8a5e2997d8c2fe6c7e175819eb18444506",
+            "url": "https://ftp.gnu.org/pub/gnu/guile/guile-3.0.7.tar.gz",
+            "sha256": "c7935b7a29e42443f6a35d35cf20ffa7d028c399303f872cd1219598a83656ae",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 1277,
