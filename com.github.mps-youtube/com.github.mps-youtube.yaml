@@ -3,6 +3,7 @@ runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: mpsyt
+rename-desktop-file: mps-youtube.desktop
 finish-args:
   - --share=network
   - --talk-name=org.freedesktop.Flatpak
