@@ -13,7 +13,6 @@ finish-args:
   - --filesystem=xdg-pictures
   - --filesystem=xdg-videos
   - --own-name=org.sunflower
-  - --share=ipc
   - --share=network
   - --socket=wayland
   - --talk-name=org.freedesktop.Notifications
