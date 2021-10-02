@@ -8,7 +8,6 @@ rename-icon: librecad
 finish-args:
   - --device=dri
   - --filesystem=home
-  - --share=ipc
   - --socket=wayland
 cleanup:
   - /include
