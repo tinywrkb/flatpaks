@@ -1,6 +1,6 @@
 app-id: org.freedesktop.xorg.xeyes
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: xeyes
 finish-args:
@@ -19,8 +19,13 @@ modules:
       - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
     sources:
       - type: archive
-        url: https://xorg.freedesktop.org/archive/individual/app/xeyes-1.1.2.tar.bz2
-        sha256: 57bcec0d2d167af9e5d44d0dbd74c6d7c0f0591cd0608952b23c749fdd910553
+        url: https://xorg.freedesktop.org/archive/individual/app/xeyes-1.2.0.tar.bz2
+        sha256: f8a17e23146bef1ab345a1e303c6749e42aaa7bcf4f25428afad41770721b6db
+        x-checker-data:
+          type: anitya
+          project-id: 15025
+          stable-only: true
+          url-template: https://xorg.freedesktop.org/archive/individual/app/xeyes-$version.tar.bz2
       - type: file
         path: org.freedesktop.xorg.xeyes.desktop
       - type: file
