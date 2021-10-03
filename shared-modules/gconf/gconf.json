@@ -22,8 +22,7 @@
     }
   ],
   "modules": [
-    {
-    "../shared-modules/gnome-common/gnome-common.json",
+    "../gnome-common/gnome-common.json",
     "../../flathub-shared-modules/dbus-glib/dbus-glib-0.110.json"
   ]
 }
