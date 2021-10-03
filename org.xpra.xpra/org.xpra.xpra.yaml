@@ -69,6 +69,17 @@ modules:
           stable-only: false
           url-template: https://gitlab.freedesktop.org/xorg/xserver/-/archive/xorg-server-$version/xserver-xorg-server-$version.tar.gz
     modules:
+      - name: libxcvt
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://gitlab.freedesktop.org/xorg/lib/libxcvt/-/archive/libxcvt-0.1.0/libxcvt-libxcvt-0.1.0.tar.gz
+            sha256: d70264e7745fa3965cd6534917595287e46198913ad17ba26c761493747b3a7b
+            x-checker-data:
+              type: anitya
+              project-id: 235147
+              stable-only: true
+              url-template: https://gitlab.freedesktop.org/xorg/lib/libxcvt/-/archive/libxcvt-$version/libxcvt-libxcvt-$version.tar.gz
       - name: libxfont2
         sources:
           - type: archive
