@@ -21,7 +21,7 @@
 
 app-id: com.insynchq.insync
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: insync
 finish-args:
@@ -48,57 +48,63 @@ modules:
   - name: insync
     buildsystem: simple
     build-commands:
-      -  install -Dm755 apply_extra /app/bin/apply_extra
-      -  install -Dm755 insync /app/bin/insync
-      -  install -Dm644 com.insynchq.insync.svg /app/share/icons/hicolor/scalable/apps/com.insynchq.insync.svg
-      -  install -Dm644 com.insynchq.insync.desktop /app/share/applications/com.insynchq.insync.desktop
-      -  install -Dm644 insync-helper.desktop /app/share/applications/com.insynchq.insync.insync-helper.desktop
-      -  install -Dm644 insync-helper.xml /app/share/mime/packages/com.insynchq.insync.insync-helper.xml
+      - install -Dm755 apply_extra /app/bin/apply_extra
+      - install -Dm755 insync /app/bin/insync
+      - install -Dm644 com.insynchq.insync.svg /app/share/icons/hicolor/scalable/apps/com.insynchq.insync.svg
+      - install -Dm644 com.insynchq.insync.desktop /app/share/applications/com.insynchq.insync.desktop
+      - install -Dm644 insync-helper.desktop /app/share/applications/com.insynchq.insync.insync-helper.desktop
+      - install -Dm644 insync-helper.xml /app/share/mime/packages/com.insynchq.insync.insync-helper.xml
     sources:
       - type: script
         dest-filename: apply_extra
         commands:
-          - bsdtar -Oxf insync.deb data.tar.gz |
-              tar -xz ./usr/lib/insync --strip-components=4
-          - bsdtar -Oxf insync.deb data.tar.gz |
-              tar -xz ./usr/share/{applications,icons,mime} --strip-components=3
+          - bsdtar -Oxf insync.deb data.tar.gz | tar -xz ./usr/lib/insync --strip-components=4
+          - bsdtar -Oxf insync.deb data.tar.gz | tar -xz ./usr/share/{applications,icons,mime}
+            --strip-components=3
           - rm -f insync.deb
           - |
-             # remove mesa and drm libs, fixes wayland egl backend
-             libs=(drm GLdispatch GLX)
-             # remove x11 libs
-             libs+=(X11 Xau xcb Xcomposite Xcursor Xdamage Xdmcp Xext Xfixes Xi Xinerama xkbcommon Xrandr Xrender Xtst)
-             # remove wayland libs
-             libs+=(wayland)
-             # remove other libs
-             libs+=(atk atspi avahi
-                    bz2 blkid
-                    cairo cups com_err crypto
-                    datrie dbus
-                    epoxy expat
-                    fontconfig fribidi freetype
-                    gcc gcrypt gio girepository glib gmodule gmp gnutls gpg graphite2 gssapi gthread gdk gtk gobject
-                    harfbuzz hogweed idn2
-                    k5crypto keyutils krb5
-                    lz4 lzma
-                    mount
-                    ncursesw nettle
-                    p11-kit pango pixman panelw pcre png16
-                    readline
-                    selinux sqlite3 ssl stdc++ systemd
-                    tasn1 tinfo thai
-                    unistring uuid
-                    z)
-             for lib in ${libs[@]}; do
-               rm -f lib${lib}*.so*
-             done
+            # remove mesa and drm libs, fixes wayland egl backend
+            libs=(drm GLdispatch GLX)
+            # remove x11 libs
+            libs+=(X11 Xau xcb Xcomposite Xcursor Xdamage Xdmcp Xext Xfixes Xi Xinerama xkbcommon Xrandr Xrender Xtst)
+            # remove wayland libs
+            libs+=(wayland)
+            # remove other libs
+            libs+=(atk atspi avahi
+                   bz2 blkid
+                   cairo cups com_err crypto
+                   datrie dbus
+                   epoxy expat
+                   fontconfig fribidi freetype
+                   gcc gcrypt gio girepository glib gmodule gmp gnutls gpg graphite2 gssapi gthread gdk gtk gobject
+                   harfbuzz hogweed idn2
+                   k5crypto keyutils krb5
+                   lz4 lzma
+                   mount
+                   ncursesw nettle
+                   p11-kit pango pixman panelw pcre png16
+                   readline
+                   selinux sqlite3 ssl stdc++ systemd
+                   tasn1 tinfo thai
+                   unistring uuid
+                   z)
+            for lib in ${libs[@]}; do
+              rm -f lib${lib}*.so*
+            done
       - type: dir
         path: resources
       - type: extra-data
         filename: insync.deb
-        url: http://s.insynchq.com/builds/insync_3.3.9.40955-buster_amd64.deb
-        sha256: c412cd1a46021ad44bff3ac7e9fdbdf983fa62952f9872a162867e41b40da09c
-        size: 132421132
+        url: http://apt.insync.io/debian/pool/non-free/i/insync/insync_3.5.3.50123-buster_amd64.deb
+        # alturl: http://s.insynchq.com/builds/insync_$version_amd64.deb, e.g. version=3.3.9.40955-buster
+        sha256: 3c00b633a29b24a50e1b5c0065065014f0de4b38d6e50eafb97974939fd6a7c8
+        size: 132791050
+        x-checker-data:
+          type: debian-repo
+          package-name: insync
+          root: http://apt.insync.io/debian
+          dist: buster
+          component: non-free
 # workaround for missing libs
   - name: gvfs
     buildsystem: meson
@@ -129,18 +135,18 @@ modules:
       - -Dlogind=false
       - -Dlibusb=false
     sources:
-       - type: archive
-         url: https://gitlab.gnome.org/GNOME/gvfs/-/archive/1.38.1/gvfs-1.38.1.tar.gz
-         sha256: 736934b8710acb041881e91f482f695a7227684ff4d8c291dd53819639e654c7
+      - type: archive
+        url: https://gitlab.gnome.org/GNOME/gvfs/-/archive/1.38.1/gvfs-1.38.1.tar.gz
+        sha256: 736934b8710acb041881e91f482f695a7227684ff4d8c291dd53819639e654c7
   - name: glib-networking
     buildsystem: meson
     config-opts:
       - -Dlibproxy_support=true
       - -Dgnome_proxy_support=true
     sources:
-       - type: archive
-         url: https://gitlab.gnome.org/GNOME/glib-networking/-/archive/2.58.0/glib-networking-2.58.0.tar.gz
-         sha256: 44a66addbba9b28063f9bf4428df6bb573d85a3a95f261096e0d213cd28d4b32
-       - type: patch
-         path: gio_module_dir.patch
+      - type: archive
+        url: https://gitlab.gnome.org/GNOME/glib-networking/-/archive/2.58.0/glib-networking-2.58.0.tar.gz
+        sha256: 44a66addbba9b28063f9bf4428df6bb573d85a3a95f261096e0d213cd28d4b32
+      - type: patch
+        path: gio_module_dir.patch
   - ../shared-modules/libnotify/libnotify.json
