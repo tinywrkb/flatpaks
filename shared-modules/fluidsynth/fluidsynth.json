@@ -22,7 +22,7 @@
         "/lib/pkgconfig"
     ],
     "modules": [
-        "../pipewire/pipewire-jack.json",
+        "../pipewire/pipewire-jack-runtime.json",
         "../liblo/liblo.json"
     ]
 }
