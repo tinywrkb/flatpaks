@@ -1,27 +1,27 @@
 {
-  "name": "maturin",
-  "build-options": {
-    "env": [
-      "CARGO_HOME=/run/build/maturin/cargo"
+    "name": "maturin",
+    "build-options": {
+        "env": [
+            "CARGO_HOME=/run/build/maturin/cargo"
+        ],
+        "prepend-path": "/usr/lib/sdk/rust-stable/bin"
+    },
+    "buildsystem": "simple",
+    "build-commands": [
+        "cargo --offline fetch --manifest-path Cargo.toml --verbose",
+        "cargo --offline build --release --verbose",
+        "install -Dm755 target/release/maturin -t /app/bin/",
+        "install -Dm644 maturin/__init__.py -t /app/lib/python$(python -c 'import sys; print(\"%s.%s\" %sys.version_info[0:2])')/site-packages/maturin/"
     ],
-    "prepend-path": "/usr/lib/sdk/rust-stable/bin"
-  },
-  "buildsystem": "simple",
-  "build-commands": [
-    "cargo --offline fetch --manifest-path Cargo.toml --verbose",
-    "cargo --offline build --release --verbose",
-    "install -Dm755 target/release/maturin -t /app/bin/",
-    "install -Dm644 maturin/__init__.py -t /app/lib/python3.8/site-packages/maturin/"
-  ],
-  "sources": [
-    "maturin-cargo-sources.json",
-    {
-      "type": "archive",
-      "url": "https://github.com/PyO3/maturin/archive/v0.9.4.tar.gz",
-      "sha256": "130d39cc6ecae9b1cb5602d262c1a8a8230c8ddb3496d2397c49e565c0fc731a"
-    }
-  ],
-  "cleanup": [
-    "*"
-  ]
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/PyO3/maturin/archive/v0.11.4.tar.gz",
+            "sha256": "9d4fa5f0b556bd05204f27d465771573a0ff54262b118df0151cd3f13c3ec219"
+        },
+        "cargo-sources.json"
+    ],
+    "cleanup": [
+        "*"
+    ]
 }
