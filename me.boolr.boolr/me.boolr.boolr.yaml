@@ -3,7 +3,7 @@
 #   * no access to fllesystem
 app-id: me.boolr.boolr
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: boolr
 separate-locales: false
@@ -23,7 +23,6 @@ finish-args:
 modules:
   - ../flathub-shared-modules/gtk2/gtk2.json
   - ../shared-modules/gconf/gconf.json
-      - ../flathub-shared-modules/dbus-glib/dbus-glib-0.110.json
   - name: pango-1_42
     buildsystem: meson
     config-opts:
