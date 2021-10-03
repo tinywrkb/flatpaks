@@ -1,7 +1,7 @@
 app-id: net.sourceforge.pdfcrack
 branch: '20.08'
 runtime: org.freedesktop.Sdk
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: pdfcrack
 finish-args:
@@ -18,3 +18,8 @@ modules:
       - type: archive
         url: https://downloads.sourceforge.net/pdfcrack/pdfcrack-0.19.tar.gz
         sha256: 3115206998b7cddf13971dd4b50946c077fc96e220aca1c0734798d907a2c0ed
+        x-checker-data:
+          type: anitya
+          project-id: 9044
+          stable-only: true
+          url-template: https://downloads.sourceforge.net/pdfcrack/pdfcrack-$version.tar.gz
