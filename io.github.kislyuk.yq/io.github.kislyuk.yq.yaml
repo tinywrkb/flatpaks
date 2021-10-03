@@ -1,6 +1,6 @@
 app-id: io.github.kislyuk.yq
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: yq
 finish-args:
