@@ -1,6 +1,6 @@
 app-id: net.sourceforge.bviplus
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: bviplus
 cleanup:
@@ -16,6 +16,7 @@ modules:
     make-install-args:
       - PREFIX=/app
     sources:
+      # TODO: add f-e-d-c
       - type: archive
         url: http://downloads.sourceforge.net/project/bviplus/bviplus/1.0/bviplus-1.0.tgz
         sha256: 2f2ba4925098cb95377e869b736841ed91db25dac35e5cae5e4be5187d730223
