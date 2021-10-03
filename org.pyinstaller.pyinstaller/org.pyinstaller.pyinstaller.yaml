@@ -7,7 +7,15 @@ finish-args:
   - --allow=devel
   - --share=network
 modules:
-  - pyinstaller.json
+# disabled as it fails for some reason to be built
+# - pyinstaller.json
+  - name: pyinstaller.json
+    buildsystem: simple
+    build-options:
+      build-args:
+        - --share=network
+    build-commands:
+      - pip3 install --prefix=/app pyinstaller
   - name: fixup
     buildsystem: simple
     build-commands:
