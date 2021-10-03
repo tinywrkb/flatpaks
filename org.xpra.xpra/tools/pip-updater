@@ -1,8 +1,12 @@
 #!/bin/bash
 
+_mod=$1
+_req=${2:-requirements.txt}
+
 flatpak run \
+  --runtime=org.freedesktop.Sdk//21.08 \
   --filesystem=$PWD \
   --command=flatpak-pip-generator \
   io.github.flatpak.flatpak-builder-tools \
-  --requirements-file=requirements.txt \
-  --output python-dependencies
+  --requirements-file=$_req \
+  --output $_mod

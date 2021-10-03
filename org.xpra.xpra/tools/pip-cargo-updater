@@ -1,0 +1,55 @@
+#!/bin/bash
+
+[ $# -eq 1 ] || { echo missing module name; exit 1; }
+
+_mod=$1
+
+# add fedc
+#jq '.sources[0] += { "x-checker-data": { "type": "json", "url": "https://api.github.com/repos/user/repo/releases/latest", "tag-query": ".tag_name", "version-query": "$tag", "timestamp-query": ".published_at" } }' ${_mod}.json
+jq --indent 4 --join-output --argjson fedc "$(<fedc.json)" '.sources[0] += $fedc' ${_mod}.json > ${_mod}-fedc.json
+
+# look for an update
+flatpak run \
+  --filesystem=$PWD \
+  org.flathub.flatpak-external-data-checker \
+  --edit-only ${_mod}-fedc.json
+
+# disable fedc
+jq --indent 4 --join-output 'del(.sources[0]."x-checker-data")' ${_mod}-fedc.json > ${_mod}.json
+rm ${_mod}-fedc.json
+
+# TODO: test if ${_mod}.json is still valid
+# if module was updated then also fetch latest cargo dependencies
+git diff --exit-code ${_mod}.json &>/dev/null
+retval=$?
+if [ $retval -eq 1 ] ; then
+  _type=$(jq --raw-output '.sources[0].type' ${_mod}.json)
+
+  case $_type in
+    archive)
+      _ver=$(jq --raw-output '.sources[0].url' ${_mod}.json | sed 's#.*/##;s#\.tar\..*##')
+      _url=$(jq --raw-output '.sources[0].url' ${_mod}.json | sed 's#/archive/.*$##')
+      ;;
+    git)
+      _ver=$(jq --raw-output '.sources[0].tag' ${_mod}.json)
+      _url=$(jq --raw-output '.sources[0].url' ${_mod}.json | sed 's/\.git$//')
+      ;;
+    *)
+      echo 'pip-cargo-updater: Unknown version. Exiting...'
+      exit 1
+      ;;
+  esac
+
+  echo "$_ver" > version
+  curl -L ${_url}/raw/${_ver}/src/rust/Cargo.lock --output Cargo.lock || exit 1
+
+  flatpak run \
+    --filesystem=$PWD \
+    --command=flatpak-cargo-generator.py \
+    --runtime=org.freedesktop.Sdk//21.08 \
+    io.github.flatpak.flatpak-builder-tools \
+    Cargo.lock \
+    -o cargo-sources.json
+else
+  echo 'pip-cargo-updater: No update was found'
+fi
