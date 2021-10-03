@@ -1,6 +1,6 @@
 app-id: com.github.whoozle.android-file-transfer-linux
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: android-file-transfer
 rename-icon: android-file-transfer
@@ -20,6 +20,9 @@ finish-args:
   - --talk-name=org.gtk.vfs
   - --talk-name=org.gtk.vfs.*
   - --socket=session-bus
+  # flatpak-spawn wrapper host access
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
 cleanup:
   - /include
   - /lib/debug
@@ -31,19 +34,13 @@ modules:
   - name: android-file-transfer-linux
     buildsystem: cmake
     sources:
-      - type: git
-        url: https://github.com/whoozle/android-file-transfer-linux
-        tag: v3.9
+      - type: archive
+        url: https://github.com/whoozle/android-file-transfer-linux/archive/v4.2.tar.gz
+        sha256: cc607d68e8a18273c9b56975a70a0e68fbdf9d5b903b2727a345a605ff48a19f
+        x-checker-data:
+          type: anitya
+          project-id: 13988
+          stable-only: true
+          url-template: https://github.com/whoozle/android-file-transfer-linux/archive/v$version.tar.gz
     modules:
-      - name: libfuse2
-        config-opts:
-          - UDEV_RULES_PATH=/app/lib/udev/rules.d
-          - MOUNT_FUSE_PATH=/app/bin
-          - --enable-util
-          - --enable-lib
-          - --disable-static
-          - --disable-example
-        sources:
-          - type: archive
-            url: https://github.com/libfuse/libfuse/releases/download/fuse-2.9.9/fuse-2.9.9.tar.gz
-            sha256: d0e69d5d608cc22ff4843791ad097f554dd32540ddc9bed7638cc6fea7c1b4b5
+      - ../shared-modules/fuse/fuse2.json
