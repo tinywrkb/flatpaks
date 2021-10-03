@@ -1,6 +1,6 @@
 app-id: com.gitlab.hexer
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: hexer
 cleanup:
@@ -15,6 +15,11 @@ modules:
       - type: archive
         url: https://gitlab.com/hexer/hexer/-/archive/release/1.0.6/hexer-release-1.0.6.tar.gz
         sha256: 989d04fa7eab489dc91880f64e1b9691b5e19429dc42151106b4f6969343df5d
+        x-checker-data:
+          type: anitya
+          project-id: 10932
+          stable-only: true
+          url-template: https://gitlab.com/hexer/hexer/-/archive/release/$version/hexer-release-$version.tar.gz
       - type: patch
         path: hexer.patch
     modules:
