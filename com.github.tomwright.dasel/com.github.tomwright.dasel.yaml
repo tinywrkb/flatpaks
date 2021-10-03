@@ -1,7 +1,8 @@
 # TODO: switch to offline/cached build
+# TODO: use versioned source and add f-e-d-c
 app-id: com.github.tomwright.dasel
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.golang
