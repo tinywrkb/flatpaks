@@ -1,7 +1,7 @@
 # TODO: switch to offline/cached build
 app-id: io.github.coreos.butane
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.golang
@@ -22,10 +22,14 @@ modules:
       - install -Dm755 bin/amd64/butane -t /app/bin/
     post-install:
       # workaround for go annoyance
-      - find $FLATPAK_BUILDER_BUILDDIR ! -perm -0200 -exec
-          chmod u+w '{}' \;
+      - find $FLATPAK_BUILDER_BUILDDIR ! -perm -0200 -exec chmod u+w '{}' \;
     sources:
       - type: git
         url: https://github.com/coreos/butane.git
-        tag: v0.11.0
-        commit: 782fc8492b4ed2871ac8acd0f9a6e91c9477d846
+        tag: v0.13.1
+        commit: 97c6866efaafc46729640a24cd2336245890b63d
+        x-checker-data:
+          type: anitya
+          project-id: 190733
+          stable-only: true
+          tag-template: v$version
