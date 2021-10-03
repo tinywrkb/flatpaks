@@ -1,6 +1,6 @@
 app-id: net.dettus.dhex
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: dhex
 cleanup:
@@ -15,6 +15,11 @@ modules:
       - type: archive
         url: http://www.dettus.net/dhex/dhex_0.69.tar.gz
         sha256: 52730bcd1cf16bd4dae0de42531be9a4057535ec61ca38c0804eb8246ea6c41b
+        x-checker-data:
+          type: anitya
+          project-id: 429
+          stable-only: true
+          url-template: http://www.dettus.net/dhex/dhex_$version.tar.gz
       - type: patch
         path: dhex.patch
     modules:
