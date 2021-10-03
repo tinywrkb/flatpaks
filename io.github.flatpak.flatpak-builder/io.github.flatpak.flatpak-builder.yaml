@@ -1,7 +1,6 @@
 app-id: io.github.flatpak.flatpak-builder
-branch: '20.08'
 runtime: org.freedesktop.Sdk
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: flatpak-builder
 finish-args:
@@ -23,8 +22,13 @@ modules:
   - name: flatpak-builder
     sources:
       - type: archive
-        url: https://github.com/flatpak/flatpak-builder/releases/download/1.0.12/flatpak-builder-1.0.12.tar.xz
-        sha256: 4780c1b8e0838ffb64e9639bd7801417964fd818c7c6d5e9afca4d5511ded2c8
+        url: https://github.com/flatpak/flatpak-builder/releases/download/1.1.2/flatpak-builder-1.1.2.tar.xz
+        sha256: f5d8e954daba2a406341cfcfb32a28ddaa503b2cd936dc7b1871187221f7510d
+        x-checker-data:
+          type: anitya
+          project-id: 16046
+          stable-only: true
+          url-template: https://github.com/flatpak/flatpak-builder/releases/download/$version/flatpak-builder-$version.tar.xz
       - type: shell
         commands:
           - sed -i 's/\(FLATPAK_VERSION=\).*/\1100.0.0/' configure
@@ -35,8 +39,13 @@ modules:
           - --libexec=/app/lib
         sources:
           - type: archive
-            url: https://github.com/ostreedev/ostree/releases/download/v2021.2/libostree-2021.2.tar.xz
-            sha256: 854008e7c71d44f6b3670f0e9b8500db0f08ff8b297d0b30a7cb9a66f34c5d7c
+            url: https://github.com/ostreedev/ostree/releases/download/v2021.4/libostree-2021.4.tar.xz
+            sha256: db5ce01a1606af3466ec77236700f53a63ce20e4984a549d0eaba3f66a3d9361
+            x-checker-data:
+              type: anitya
+              project-id: 10899
+              stable-only: true
+              url-template: https://github.com/ostreedev/ostree/releases/download/v$version/libostree-$version.tar.xz
         cleanup:
           - /bin/ostree
           - /etc
