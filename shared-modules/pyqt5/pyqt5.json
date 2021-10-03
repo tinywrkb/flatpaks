@@ -1,80 +1,116 @@
 {
-  "name": "pyqt5",
-  "config-opts": [
-    "--assume-shared",
-    "--concatenate",
-    "--confirm-license",
-    "--enable=QtCore",
-    "--enable=QtGui",
-    "--enable=QtNetwork",
-    "--enable=QtOpenGL",
-    "--enable=QtPrintSupport",
-    "--enable=QtQml",
-    "--enable=QtQuick",
-    "--enable=QtSql",
-    "--enable=QtSvg",
-    "--enable=QtWebChannel",
-    "--enable=QtWidgets",
-    "--no-designer-plugin",
-    "--no-dist-info",
-    "--no-docstrings",
-    "--no-qml-plugin",
-    "--no-qsci-api",
-    "--no-stubs",
-    "QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.8/'",
-    "QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.8/'"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://pypi.python.org/packages/source/P/PyQt5/PyQt5-5.15.4.tar.gz",
-      "sha256": "2a69597e0dd11caabe75fae133feca66387819fc9bc050f547e5551bce97e5be"
-    },
-    {
-      "type": "script",
-      "commands": [
-        "processed=`sed -e 's|prefix|sysroot|' <<< $@`",
-        "python3 configure.py $processed"
-      ],
-      "dest-filename": "configure"
-    }
-  ],
-  "cleanup": [
-    "/lib/debug",
-    "/share/sip"
-  ],
-  "modules": [
-    {
-      "name": "sip",
-      "config-opts": [
-        "--no-dist-info",
-        "--no-stubs",
-        "--bindir=/app/bin",
-        "--destdir=/app/lib/python3.8/site-packages",
-        "--incdir=/app/include",
-        "--pyidir=/app/lib/python3.8/site-packages",
-        "--sipdir=/app/share/sip",
-        "--sip-module PyQt5.sip"
-      ],
-      "sources": [
+    "name": "pyqt5",
+    "config-opts": [
+        "--concatenate=1",
+        "--confirm-license",
+        "--debug",
+        "--enable=QtCore",
+        "--enable=QtDBus",
+        "--enable=QtGui",
+        "--enable=QtNetwork",
+        "--enable=QtOpenGL",
+        "--enable=QtPrintSupport",
+        "--enable=QtQml",
+        "--enable=QtQuick",
+        "--enable=QtSql",
+        "--enable=QtTest",
+        "--enable=QtWebChannel",
+        "--enable=QtWidgets",
+        "--no-designer-plugin",
+        "--no-docstrings",
+        "--no-make",
+        "--no-qml-plugin",
+        "--no-tools",
+        "--verbose",
+        "--api-dir=/app/share/qt/qsci/api/python",
+        "--qmake-setting=QMAKE_CFLAGS_RELEASE='-I/usr/include/python_pyver/'",
+        "--qmake-setting=QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python_pyver/'",
+        "--target-dir=/app/lib/python_pyver/site-packages",
+        "--qt-shared"
+    ],
+    "make-args": [
+        "--directory=build"
+    ],
+    "make-install-args": [
+        "--directory=build"
+    ],
+    "sources": [
         {
-          "type": "archive",
-          "url": "https://www.riverbankcomputing.com/static/Downloads/sip/4.19.25/sip-4.19.25.tar.gz",
-          "sha256": "b39d93e937647807bac23579edbff25fe46d16213f708370072574ab1f1b4211"
+            "type": "archive",
+            "url": "https://files.pythonhosted.org/packages/8e/a4/d5e4bf99dd50134c88b95e926d7b81aad2473b47fde5e3e4eac2c69a8942/PyQt5-5.15.4.tar.gz",
+            "sha256": "2a69597e0dd11caabe75fae133feca66387819fc9bc050f547e5551bce97e5be",
+            "x-checker-data": {
+                "type": "pypi",
+                "name": "PyQt5"
+            }
         },
         {
-          "type": "script",
-          "commands": [
-            "processed=`sed -e 's|--prefix=/app||' <<< $@`",
-            "python3 configure.py $processed"
-          ],
-          "dest-filename": "configure"
+            "type": "script",
+            "commands": [
+                "export _pyver=$(python -c 'import sys; print(\"%s.%s\" %sys.version_info[0:2])')",
+                "processed=$(sed 's|--prefix=/app||;s|_pyver|'${_pyver}'|g' <<< $@)",
+                "sip-build $processed",
+                "echo 'trick flatpak-builder into running make' > Makefile"
+            ],
+            "dest-filename": "configure"
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "echo '[tool.sip.bindings.QtGui]' >> pyproject.toml",
+                "echo 'disabled-features = [\"PyQt_Desktop_OpenGL\"]' >> pyproject.toml"
+            ],
+            "only-arches": [
+                "aarch64"
+            ]
         }
-      ],
-      "cleanup": [
-        "/bin",
-        "/include"
-      ]
-    }
-  ]
+    ],
+    "cleanup": [
+        "/share/qt"
+    ],
+    "modules": [
+        "../python-opengl/python-opengl.json",
+        "sip.json",
+        {
+            "name": "pyqt-builder",
+            "buildsystem": "simple",
+            "build-commands": [
+                "python setup.py build",
+                "python setup.py install --skip-build --prefix=$FLATPAK_DEST --root=/ --optimize=1"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://files.pythonhosted.org/packages/62/fd/e74d789fa6ca10be33f2d782a96482a4bcf0104c9287bac151f3062d3984/PyQt-builder-1.11.0.tar.gz",
+                    "sha256": "40f6df88c00e6aa9ac9a8bc5688f9fe2a4bd56c06cdb0a0b00ce8955ec34ffe5",
+                    "x-checker-data": {
+                        "type": "pypi",
+                        "name": "PyQt-builder"
+                    }
+                }
+            ],
+            "cleanup": [
+                "*"
+            ]
+        },
+        {
+            "name": "pyqt5-sip",
+            "buildsystem": "simple",
+            "build-commands": [
+                "python setup.py build",
+                "python setup.py install --skip-build --prefix=$FLATPAK_DEST --root=/ --optimize=1"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://files.pythonhosted.org/packages/b1/40/dd8f081f04a12912b65417979bf2097def0af0f20c89083ada3670562ac5/PyQt5_sip-12.9.0.tar.gz",
+                    "sha256": "d3e4489d7c2b0ece9d203ae66e573939f7f60d4d29e089c9f11daa17cfeaae32",
+                    "x-checker-data": {
+                        "type": "pypi",
+                        "name": "PyQt5-sip"
+                    }
+                }
+            ]
+        }
+    ]
 }
