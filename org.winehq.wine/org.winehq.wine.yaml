@@ -1,6 +1,6 @@
 app-id: org.winehq.wine
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
@@ -8,10 +8,10 @@ sdk-extensions:
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
-    version: '20.08'
+    version: '21.08'
   org.freedesktop.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
-    version: '20.08'
+    version: '21.08'
     no-autodownload: true
 x-compat-i386-opts: &compat_i386_opts
   prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
@@ -45,13 +45,18 @@ modules:
       - mkdir -p /app/src
       - cp -r $FLATPAK_BUILDER_BUILDDIR /app/src/wine64
     sources:
-     #- type: archive
-     #  url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
-     #  sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+#     - type: archive
+#       url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
+#       sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+#       x-checker-data:
+#         type: anitya
+#         project-id: 5134
+#         stable-only: true
+#         url-template: https://dl.winehq.org/wine/source/$version0.x/wine-$version.tar.xz
       - type: git
         url: https://gitlab.collabora.com/alf/wine.git
         branch: wayland
-        commit: ce0da9c9f646536df40c2fa2869482edee0b1b1e
+        commit: 175a4fa250ad0804826348ec091d26b5a8ea882c
     cleanup:
       - /share/applications
       - /share/man/*.UTF-8
@@ -65,13 +70,18 @@ modules:
       arch:
         x86_64: *compat_i386_opts
     sources:
-     #- type: archive
-     #  url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
-     #  sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+#     - type: archive
+#       url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
+#       sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+#       x-checker-data:
+#         type: anitya
+#         project-id: 5134
+#         stable-only: true
+#         url-template: https://dl.winehq.org/wine/source/$version0.x/wine-$version.tar.xz
       - type: git
         url: https://gitlab.collabora.com/alf/wine.git
         branch: wayland
-        commit: ce0da9c9f646536df40c2fa2869482edee0b1b1e
+        commit: 175a4fa250ad0804826348ec091d26b5a8ea882c
     cleanup:
       - /share/applications
       - /share/man/*.UTF-8
@@ -79,24 +89,36 @@ modules:
     buildsystem: simple
     build-commands:
       - install -dm755 /app/lib/i386-linux-gnu
-      - install -Dm644 ld.so.conf -t /app/etc/
+      - |
+        install -Dm644 /dev/stdin /app/etc/ld.so.conf <<EOF
+        /app/lib32
+        /app/lib/i386-linux-gnu
+        EOF
       - make -C /app/src/wine64 install
-    sources:
-      - type: dir
-        path: resources
   - name: wine-gecko
     buildsystem: simple
     build-commands:
       - install -Dm644 wine-gecko-x86*.msi -t /app/share/wine/gecko/
     sources:
+      # TODO: fix anitya checker at release-monitoring.org
       - type: file
         dest-filename: wine-gecko-x86.msi
         url: https://dl.winehq.org/wine/wine-gecko/2.47.2/wine-gecko-2.47.2-x86.msi
         sha256: e520ce7336cd420cd09c91337d87e74bb420300fd5cbc6f724c1802766b6a61d
+        x-checker-data:
+          type: anitya
+          project-id: 7640
+          stable-only: true
+          url-template: https://dl.winehq.org/wine/wine-gecko/$version/wine-gecko-$version-x86.msi
       - type: file
         dest-filename: wine-gecko-x86_64.msi
         url: https://dl.winehq.org/wine/wine-gecko/2.47.2/wine-gecko-2.47.2-x86_64.msi
         sha256: 0596761024823ff3c21f13e1cd5cd3e89dccc698294d62974d8930aeda86ce45
+        x-checker-data:
+          type: anitya
+          project-id: 7640
+          stable-only: true
+          url-template: https://dl.winehq.org/wine/wine-gecko/$version/wine-gecko-$version-x86_64.msi
   - name: wine-mone
     buildsystem: simple
     build-commands:
@@ -106,17 +128,32 @@ modules:
     sources:
       - type: file
         dest-filename: wine-mono-x86.msi
-        url: https://dl.winehq.org/wine/wine-mono/6.0.0/wine-mono-6.0.0-x86.msi
-        sha256: 5c7af5976d101be359a77045c9cc8fc40feac028263d00e731578864e8b183d0
+        url: https://github.com/madewokherd/wine-mono/releases/download/wine-mono-6.4.1/wine-mono-6.4.1-x86.msi
+        sha256: e7cb533e0ca6ff2753c1449661be5c8833522f156fd36b48fa5d881cf0354270
+        x-checker-data:
+          type: anitya
+          project-id: 7641
+          stable-only: true
+          url-template: https://github.com/madewokherd/wine-mono/releases/download/wine-mono-$version/wine-mono-$version-x86.msi
       - type: archive
         dest: wine-mono
-        url: https://dl.winehq.org/wine/wine-mono/6.0.0/wine-mono-6.0.0-x86.tar.xz
-        sha256: 3a101983af16aa2652262fff9c6b5365b884866a9d3c65ee6de0c6c1f300134c
+        url: https://github.com/madewokherd/wine-mono/releases/download/wine-mono-6.4.1/wine-mono-6.4.1-x86.tar.xz
+        sha256: a70c865e590058fa6fc3aa47425646405bdda27f78b9aa6d2030d2d2a8efadbb
+        x-checker-data:
+          type: anitya
+          project-id: 7641
+          stable-only: true
+          url-template: https://github.com/madewokherd/wine-mono/releases/download/wine-mono-$version/wine-mono-$version-x86.tar.xz
   - name: winetricks
     no-autogen: true
     make-install-args:
       - PREFIX=/app
     sources:
       - type: archive
-        url: https://github.com/Winetricks/winetricks/archive/20210206.tar.gz
-        sha256: 705421798b28696f577104ebdf03b068b9343ab096754150f47a6ec06fa8ae65
+        url: https://github.com/Winetricks/winetricks/archive/20210825.tar.gz
+        sha256: bac77918ef4d58c6465a1043fd996d09c3ee2c5a07f56ed089c4c65a71881277
+        x-checker-data:
+          type: anitya
+          project-id: 7258
+          stable-only: true
+          url-template: https://github.com/Winetricks/winetricks/archive/$version.tar.gz
