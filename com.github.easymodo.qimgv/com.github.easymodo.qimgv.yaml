@@ -37,8 +37,6 @@ modules:
           project-id: 235179
           stable-only: true
           url-template: https://github.com/easymodo/qimgv/archive/v$version.tar.gz
-      - type: patch
-        path: fix_libstdc++fs.patch
     modules:
       - name: exiv2
         buildsystem: cmake
