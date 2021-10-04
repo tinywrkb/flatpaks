@@ -1,6 +1,6 @@
 app-id: com.github.exec64.imv
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: imv
 rename-desktop-file: imv.desktop
@@ -9,8 +9,6 @@ finish-args:
   - --filesystem=xdg-documents
   - --filesystem=xdg-download
   - --filesystem=xdg-pictures
-  - --share=ipc
-  - --socket=fallback-x11
   - --socket=wayland
 cleanup:
   - /include
@@ -25,10 +23,17 @@ modules:
       - -Dman=disabled
     sources:
       - type: archive
-        url: https://github.com/eXeC64/imv/archive/v4.2.0.tar.gz
-        sha256: 7d3de0462ce0cd705a719b12648661c8d91245cc7732eac4e459c465bc6b3d94
+        url: https://github.com/eXeC64/imv/archive/v4.3.0.tar.gz
+        sha256: ad724a41366bb96d29e272f442f5378465fe163d16ec51d7abaa86b1fff7dbb6
+        x-checker-data:
+          type: anitya
+          project-id: 93177
+          stable-only: true
+          url-template: https://github.com/eXeC64/imv/archive/v$version.tar.gz
     modules:
       - name: freeimage
+        build-options:
+          cxxflags: -std=c++11
         no-autogen: true
         make-install-args:
           - INCDIR=/app/include
@@ -37,9 +42,38 @@ modules:
           - type: archive
             url: http://downloads.sourceforge.net/freeimage/FreeImage3180.zip
             sha256: f41379682f9ada94ea7b34fe86bf9ee00935a3147be41b6569c9605a53e438fd
+            x-checker-data:
+              type: anitya
+              project-id: 10655
+              stable-only: true
+              url-template: http://downloads.sourceforge.net/freeimage/FreeImage$major$minor$patch.zip
           - type: shell
             commands:
               - sed -i 's/-o root -g root//g' Makefile.gnu
+        modules:
+          - name: openexr
+            buildsystem: cmake
+            sources:
+              - type: archive
+                url: https://github.com/openexr/openexr/archive/v3.1.1.tar.gz
+                sha256: 045254e201c0f87d1d1a4b2b5815c4ae54845af2e6ec0ab88e979b5fdb30a86e
+                x-checker-data:
+                  type: anitya
+                  project-id: 13289
+                  stable-only: true
+                  url-template: https://github.com/openexr/openexr/archive/v$version.tar.gz
+            modules:
+              - name: imath
+                buildsystem: cmake
+                sources:
+                  - type: archive
+                    url: https://github.com/AcademySoftwareFoundation/Imath/archive/v3.1.3.tar.gz
+                    sha256: 0bf7ec51162c4d17a4c5b850fb3f6f7a195cff9fa71f4da7735f74d7b5124320
+                    x-checker-data:
+                      type: anitya
+                      project-id: 223366
+                      stable-only: true
+                      url-template: https://github.com/AcademySoftwareFoundation/Imath/archive/v$version.tar.gz
       - ../flathub-shared-modules/glu/glu-9.json
       - name: inih
         buildsystem: meson
@@ -47,12 +81,22 @@ modules:
           - type: archive
             url: https://github.com/benhoyt/inih/archive/r53.tar.gz
             sha256: 01b0366fdfdf6363efc070c2f856f1afa33e7a6546548bada5456ad94a516241
+            x-checker-data:
+              type: anitya
+              project-id: 11600
+              stable-only: true
+              url-template: https://github.com/benhoyt/inih/archive/r$version.tar.gz
       - name: libheif
         buildsystem: cmake
         sources:
           - type: archive
-            url: https://github.com/strukturag/libheif/releases/download/v1.11.0/libheif-1.11.0.tar.gz
-            sha256: c550938f56ff6dac83702251a143f87cb3a6c71a50d8723955290832d9960913
+            url: https://github.com/strukturag/libheif/releases/download/v1.12.0/libheif-1.12.0.tar.gz
+            sha256: e1ac2abb354fdc8ccdca71363ebad7503ad731c84022cf460837f0839e171718
+            x-checker-data:
+              type: anitya
+              project-id: 64439
+              stable-only: true
+              url-template: https://github.com/strukturag/libheif/releases/download/v$version/libheif-$version.tar.gz
         cleanup:
           - /lib/cmake
       - name: libnsgif
@@ -67,6 +111,11 @@ modules:
           - type: archive
             url: http://download.netsurf-browser.org/libs/releases/libnsgif-0.2.1-src.tar.gz
             sha256: 9eaea534cd70b53c5aaf45317ae957701685a6b4a88dbe34ed26f4faae879a4b
+            x-checker-data:
+              type: anitya
+              project-id: 7303
+              stable-only: true
+              url-template: http://download.netsurf-browser.org/libs/releases/libnsgif-$version-src.tar.gz
         modules:
           - name: netsurf-buildsystem
             no-autogen: true
@@ -77,6 +126,11 @@ modules:
               - type: archive
                 url: https://source.netsurf-browser.org/buildsystem.git/snapshot/buildsystem-release/1.9.tar.gz
                 sha256: 47346cdadde5197e5bc1bd70f2f1b4daf1295a8993d70618966a36bf3d8bc012
+                x-checker-data:
+                  type: anitya
+                  project-id: 2072
+                  stable-only: true
+                  url-template: https://source.netsurf-browser.org/buildsystem.git/snapshot/buildsystem-release/$version.tar.gz
                 strip-components: 2
             cleanup:
               - '*'
