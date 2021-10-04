@@ -1,11 +1,17 @@
 {
-  "name": "gtk-layer-shell",
-  "buildsystem": "meson",
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://github.com/wmww/gtk-layer-shell/archive/refs/tags/v0.6.0.tar.gz",
-      "sha256": "9a0ba72cea90e092d6b10ba47e627cd873271d287d9af80a6f66ab131fb34cac"
-    }
-  ]
+    "name": "gtk-layer-shell",
+    "buildsystem": "meson",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/wmww/gtk-layer-shell/archive/v0.6.0.tar.gz",
+            "sha256": "9a0ba72cea90e092d6b10ba47e627cd873271d287d9af80a6f66ab131fb34cac",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 198568,
+                "stable-only": true,
+                "url-template": "https://github.com/wmww/gtk-layer-shell/archive/v$version.tar.gz"
+            }
+        }
+    ]
 }
