@@ -29,12 +29,15 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://gitlab.gnome.org/GNOME/atkmm/-/archive/2.36.1/atkmm-2.36.1.tar.gz",
-                    "sha256": "d4b4d1157e88eaabec79dad7123e0227acdc8c0104f11d139ec8904ef2be7b79",
+                    "url": "https://gitlab.gnome.org/GNOME/atkmm/-/archive/2.28.2/atkmm-2.28.2.tar.gz",
+                    "sha256": "57b30016517ea7900d8da5d7ea2c9f0cf99cd390638e0606708efa5a3d0ed6cf",
                     "x-checker-data": {
                         "type": "anitya",
                         "project-id": 7962,
                         "stable-only": true,
+                        "versions": {
+                            "<": "2.29.0"
+                        },
                         "url-template": "https://gitlab.gnome.org/GNOME/atkmm/-/archive/$version/atkmm-$version.tar.gz"
                     }
                 }
@@ -50,12 +53,15 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://gitlab.gnome.org/GNOME/pangomm/-/archive/2.48.1/pangomm-2.48.1.tar.gz",
-                    "sha256": "caf88bad50e15c719368c2c3dfbf228c27258e5641b22ba649e733e4683101eb",
+                    "url": "https://gitlab.gnome.org/GNOME/pangomm/-/archive/2.46.1/pangomm-2.46.1.tar.gz",
+                    "sha256": "6724882a2acf14ce99672f8829caca2d923b58024108af2d0fca7c7980823b92",
                     "x-checker-data": {
                         "type": "anitya",
                         "project-id": 7958,
                         "stable-only": true,
+                        "versions": {
+                            "<": "2.47.0"
+                        },
                         "url-template": "https://gitlab.gnome.org/GNOME/pangomm/-/archive/$version/pangomm-$version.tar.gz"
                     }
                 }
@@ -69,12 +75,15 @@
                     "sources": [
                         {
                             "type": "archive",
-                            "url": "https://www.cairographics.org/releases/cairomm-1.16.1.tar.xz",
-                            "sha256": "6f6060d8e98dd4b8acfee2295fddbdd38cf487c07c26aad8d1a83bb9bff4a2c6",
+                            "url": "https://www.cairographics.org/releases/cairomm-1.14.3.tar.xz",
+                            "sha256": "0d37e067c5c4ca7808b7ceddabfe1932c5bd2a750ad64fb321e1213536297e78",
                             "x-checker-data": {
                                 "type": "anitya",
                                 "project-id": 7959,
                                 "stable-only": true,
+                                "versions": {
+                                    "<": "1.15.0"
+                                },
                                 "url-template": "https://www.cairographics.org/releases/cairomm-$version.tar.xz"
                             }
                         }
