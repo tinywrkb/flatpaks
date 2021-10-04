@@ -1,110 +1,86 @@
 {
-  "name": "gtkmm3",
-  "config-opts": [
-    "--enable-maintainer-mode"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://gitlab.gnome.org/GNOME/gtkmm/-/archive/3.24.2/gtkmm-3.24.2.tar.gz",
-      "sha256": "181f6160c072e80d075165217e56498594591eb64aa1b4a67451f00c606281aa"
-    }
-  ],
-  "modules": [
-    {
-      "name": "libsigcpp",
-      "buildsystem": "meson",
-      "config-opts": [
-        "-Dmaintainer-mode=true",
-        "-Dbuild-documentation=false"
-      ],
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://github.com/libsigcplusplus/libsigcplusplus/archive/2.10.3.tar.gz",
-          "sha256": "55aae7a4e4ca85d4a698518f2b932f88a750dcad8e6224fd2f2026734287edd8"
-        }
-      ],
-      "modules": [
-        {
-          "name": "mm-common",
-          "buildsystem": "meson",
-          "sources": [
-            {
-              "type": "archive",
-              "url": "https://gitlab.gnome.org/GNOME/mm-common/-/archive/1.0.1/mm-common-1.0.1.tar.gz",
-              "sha256": "c34ef0bc1182399c7777f9daabd62255ac57390f7dbd2e18900f0f80e433c020"
-            },
-            {
-              "type": "file",
-              "url": "https://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/libstdc++.tag",
-              "sha256": "f6c8c74e8293aefaefb4d25fd154d5f537b3bc80e7ceecaa02c5a01836fc09e6",
-              "dest-filename": "doctags/libstdc++.tag"
-            }
-          ],
-          "modules": [
-            "../graphviz/graphviz.json"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "glibmm",
-      "buildsystem": "meson",
-      "config-opts": [
-        "-Dmaintainer-mode=true",
-        "-Dbuild-documentation=false"
-      ],
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://gitlab.gnome.org/GNOME/glibmm/-/archive/2.64.2/glibmm-2.64.2.tar.gz",
-          "sha256": "53c1a6dcfb75f9d93fe44a346ba50fdef21187945762e00ae2cb04c13d75e647"
-        }
-      ]
-    },
-    {
-      "name": "atkmm",
-      "config-opts": [
+    "name": "gtkmm3",
+    "config-opts": [
         "--enable-maintainer-mode"
-      ],
-      "sources": [
+    ],
+    "sources": [
         {
-          "type": "archive",
-          "url": "https://gitlab.gnome.org/GNOME/atkmm/-/archive/2.28.0/atkmm-2.28.0.tar.gz",
-          "sha256": "a3161784d06273f3e656ba2be73ec439e6ed40e76e968e4dfb9795065346e30f"
-        }
-      ]
-    },
-    {
-      "name": "pangomm",
-      "buildsystem": "meson",
-      "config-opts": [
-        "-Dmaintainer-mode=true",
-        "-Dbuild-documentation=false"
-      ],
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://gitlab.gnome.org/GNOME/pangomm/-/archive/2.42.1/pangomm-2.42.1.tar.gz",
-          "sha256": "9ba1bb31901195064c92793a6ba7ad842dd891a290bc644f738d886e9917f5e8"
-        }
-      ],
-      "modules": [
-        {
-          "name": "cairomm",
-          "config-opts": [
-            "--enable-maintainer-mode"
-          ],
-          "sources": [
-            {
-              "type": "archive",
-              "url": "https://www.cairographics.org/releases/cairomm-1.12.2.tar.gz",
-              "sha256": "45c47fd4d0aa77464a75cdca011143fea3ef795c4753f6e860057da5fb8bd599"
+            "type": "archive",
+            "url": "https://gitlab.gnome.org/GNOME/gtkmm/-/archive/3.24.5/gtkmm-3.24.5.tar.gz",
+            "sha256": "b85c276b4833bb4354c0cf80de09bf4b8a1a8829289a450003a6333fb1e0d196",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 7963,
+                "stable-only": true,
+                "versions": {
+                    "<": "3.89.0"
+                },
+                "url-template": "https://gitlab.gnome.org/GNOME/gtkmm/-/archive/$version/gtkmm-$version.tar.gz"
             }
-          ]
         }
-      ]
-    }
-  ]
+    ],
+    "modules": [
+        "glibmm.json",
+        {
+            "name": "atkmm",
+            "config-opts": [
+                "--enable-maintainer-mode"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://gitlab.gnome.org/GNOME/atkmm/-/archive/2.36.1/atkmm-2.36.1.tar.gz",
+                    "sha256": "d4b4d1157e88eaabec79dad7123e0227acdc8c0104f11d139ec8904ef2be7b79",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 7962,
+                        "stable-only": true,
+                        "url-template": "https://gitlab.gnome.org/GNOME/atkmm/-/archive/$version/atkmm-$version.tar.gz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "pangomm",
+            "buildsystem": "meson",
+            "config-opts": [
+                "-Dmaintainer-mode=true",
+                "-Dbuild-documentation=false"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://gitlab.gnome.org/GNOME/pangomm/-/archive/2.48.1/pangomm-2.48.1.tar.gz",
+                    "sha256": "caf88bad50e15c719368c2c3dfbf228c27258e5641b22ba649e733e4683101eb",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 7958,
+                        "stable-only": true,
+                        "url-template": "https://gitlab.gnome.org/GNOME/pangomm/-/archive/$version/pangomm-$version.tar.gz"
+                    }
+                }
+            ],
+            "modules": [
+                {
+                    "name": "cairomm",
+                    "config-opts": [
+                        "--enable-maintainer-mode"
+                    ],
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://www.cairographics.org/releases/cairomm-1.16.1.tar.xz",
+                            "sha256": "6f6060d8e98dd4b8acfee2295fddbdd38cf487c07c26aad8d1a83bb9bff4a2c6",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 7959,
+                                "stable-only": true,
+                                "url-template": "https://www.cairographics.org/releases/cairomm-$version.tar.xz"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

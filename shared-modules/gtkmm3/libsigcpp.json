@@ -1,0 +1,27 @@
+{
+    "name": "libsigcpp",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dmaintainer-mode=true",
+        "-Dbuild-documentation=false"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/libsigcplusplus/libsigcplusplus/archive/2.10.7.tar.gz",
+            "sha256": "1e7a0e6f68870be45cd4f1abc84661cc316322fb46c94ffcae0ec1b6d8b04c75",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 7961,
+                "stable-only": true,
+                "versions": {
+                    "<": "2.99.0"
+                },
+                "url-template": "https://github.com/libsigcplusplus/libsigcplusplus/archive/$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "mm-common.json"
+    ]
+}

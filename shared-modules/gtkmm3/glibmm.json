@@ -1,0 +1,24 @@
+{
+    "name": "glibmm",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dmaintainer-mode=true",
+        "-Dbuild-documentation=false"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://gitlab.gnome.org/GNOME/glibmm/-/archive/2.68.1/glibmm-2.68.1.tar.gz",
+            "sha256": "b362c243fd06f61dd1965fb7702baa8a09931efe85b4ec07cf8a61a75f296d51",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 7960,
+                "stable-only": true,
+                "url-template": "https://gitlab.gnome.org/GNOME/glibmm/-/archive/$version/glibmm-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "libsigcpp.json"
+    ]
+}

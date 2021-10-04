@@ -1,0 +1,26 @@
+{
+    "name": "mm-common",
+    "buildsystem": "meson",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://download.gnome.org/sources/mm-common/1.0/mm-common-1.0.3.tar.xz",
+            "sha256": "e81596625899aacf1d0bf27ccc2fcc7f373405ec48735ca1c7273c0fbcdc1ef5",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 13152,
+                "stable-only": true,
+                "url-template": "https://download.gnome.org/sources/mm-common/$major.$minor/mm-common-$major.$minor.$patch.tar.xz"
+            }
+        },
+        {
+            "type": "file",
+            "url": "https://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/libstdc++.tag",
+            "sha256": "f6c8c74e8293aefaefb4d25fd154d5f537b3bc80e7ceecaa02c5a01836fc09e6",
+            "dest-filename": "doctags/libstdc++.tag"
+        }
+    ],
+    "modules": [
+        "../graphviz/graphviz.json"
+    ]
+}
