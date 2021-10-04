@@ -5,7 +5,7 @@
 
 app-id: net.launchpad.qpdfview
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: qpdfview
 rename-icon: qpdfview
@@ -15,9 +15,7 @@ copy-icon: true
 finish-args:
   - --device=dri
   - --filesystem=home
-  - --share=ipc
   - --socket=wayland
-  - --socket=fallback-x11
 cleanup:
   - /include
   - /lib/debug
