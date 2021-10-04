@@ -1,15 +1,13 @@
 app-id: com.kdab.hotspot
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: hotspot
 rename-desktop-file: hotspot.desktop
 rename-icon: hotspot
 finish-args:
-  - --share=ipc
   - --device=dri
   - --socket=wayland
-  - --socket=fallback-x11
 modules:
   - name: hotspot
     buildsystem: cmake
@@ -24,5 +22,8 @@ modules:
       - type: archive
         url: https://github.com/KDAB/hotspot/releases/download/v1.3.0/hotspot-v1.3.0.tar.gz
         sha256: 7651c5f504138f6438d0cacaea041550bddb30a4ab2128abe3111fc827af4fc8
-    modules:
-      - ../shared-modules/zstd/zstd.json
+        x-checker-data:
+          type: anitya
+          project-id: 15616
+          stable-only: true
+          url-template: https://github.com/KDAB/hotspot/releases/download/v$version/hotspot-v$version.tar.gz
