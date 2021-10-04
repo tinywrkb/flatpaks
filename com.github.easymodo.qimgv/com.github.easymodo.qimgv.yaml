@@ -1,10 +1,10 @@
 app-id: com.github.easymodo.qimgv
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: qimgv
 rename-icon: qimgv
-rename-appdata-file: qimgv.appdata.xml  
+rename-appdata-file: qimgv.appdata.xml
 rename-desktop-file: qimgv.desktop
 copy-icon: true
 finish-args:
@@ -13,8 +13,6 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-pictures
   - --filesystem=xdg-videos
-  - --share=ipc
-  - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
   - --talk-name=org.freedesktop.Flatpak
@@ -32,8 +30,13 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
     sources:
       - type: archive
-        url: https://github.com/easymodo/qimgv/archive/v0.9.1.tar.gz
-        sha256: 728b05b0e26d0188b3d25eb564effab4a77dd0c7453d82e024f1eaa8781e8f4b
+        url: https://github.com/easymodo/qimgv/archive/v1.0.2.tar.gz
+        sha256: ace75077c5b6f3cb2b0d40b24482b3778728d98dce75ed8186c7ae4282e57634
+        x-checker-data:
+          type: anitya
+          project-id: 235179
+          stable-only: true
+          url-template: https://github.com/easymodo/qimgv/archive/v$version.tar.gz
       - type: patch
         path: fix_libstdc++fs.patch
     modules:
@@ -45,8 +48,13 @@ modules:
           - -DEXIV2_ENABLE_NLS=ON
         sources:
           - type: archive
-            url: https://github.com/Exiv2/exiv2/archive/v0.27.2.tar.gz
-            sha256: 3dbcaf01fbc5b98d42f091d1ff0d4b6cd9750dc724de3d9c0d113948570b2934
+            url: https://github.com/Exiv2/exiv2/archive/v0.27.4.tar.gz
+            sha256: 9fb2752c92f63c9853e0bef9768f21138eeac046280f40ded5f37d06a34880d9
+            x-checker-data:
+              type: anitya
+              project-id: 769
+              stable-only: true
+              url-template: https://github.com/Exiv2/exiv2/archive/v$version.tar.gz
         cleanup:
           - /bin
           - /include
@@ -71,8 +79,13 @@ modules:
           - -DBUILD_LIST=imgproc,imgcodecs,objdetect,dnn
         sources:
           - type: archive
-            url: https://github.com/opencv/opencv/archive/4.3.0.tar.gz
-            sha256: 68bc40cbf47fdb8ee73dfaf0d9c6494cd095cf6294d99de445ab64cf853d278a
+            url: https://github.com/opencv/opencv/archive/4.5.3.tar.gz
+            sha256: 77f616ae4bea416674d8c373984b20c8bd55e7db887fd38c6df73463a0647bab
+            x-checker-data:
+              type: anitya
+              project-id: 6615
+              stable-only: true
+              url-template: https://github.com/opencv/opencv/archive/$version.tar.gz
         cleanup:
           - /bin/setup_vars_opencv4.sh
           - /include
@@ -87,12 +100,22 @@ modules:
           - python3 waf install
         sources:
           - type: archive
-            url: https://github.com/mpv-player/mpv/archive/v0.32.0.tar.gz
-            sha256: 9163f64832226d22e24bbc4874ebd6ac02372cd717bef15c28a0aa858c5fe592
+            url: https://github.com/mpv-player/mpv/archive/v0.33.1.tar.gz
+            sha256: 100a116b9f23bdcda3a596e9f26be3a69f166a4f1d00910d1789b6571c46f3a9
+            x-checker-data:
+              type: anitya
+              project-id: 5348
+              stable-only: true
+              url-template: https://github.com/mpv-player/mpv/archive/v$version.tar.gz
           - type: file
-            url: http://www.freehackers.org/~tnagy/release/waf-2.0.9
-            sha256: 2a8e0816f023995e557f79ea8940d322bec18f286917c8f9a6fa2dc3875dfa48
+            url: https://waf.io/waf-2.0.22
+            sha256: 0a09ad26a2cfc69fa26ab871cb558165b60374b5a653ff556a0c6aca63a00df1
             dest-filename: waf
+            x-checker-data:
+              type: anitya
+              project-id: 5116
+              stable-only: true
+              url-template: https://waf.io/waf-$version
         cleanup:
           - /etc
           - /include
@@ -109,8 +132,13 @@ modules:
               - --enable-fontconfig
             sources:
               - type: archive
-                url: https://github.com/libass/libass/releases/download/0.14.0/libass-0.14.0.tar.gz
-                sha256: 8d5a5c920b90b70a108007ffcd2289ac652c0e03fc88e6eecefa37df0f2e7fdf
+                url: https://github.com/libass/libass/releases/download/0.15.2/libass-0.15.2.tar.xz
+                sha256: 1be2df9c4485a57d78bb18c0a8ed157bc87a5a8dd48c661961c625cb112832fd
+                x-checker-data:
+                  type: anitya
+                  project-id: 1560
+                  stable-only: true
+                  url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.xz
             cleanup:
               - /include
   - ../shared-modules/flatpak-spawn-wrappers/mpv.json
