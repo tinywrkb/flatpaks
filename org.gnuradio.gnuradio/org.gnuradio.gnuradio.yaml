@@ -87,8 +87,8 @@ modules:
               url-template: https://github.com/EttusResearch/uhd/archive/v$version.tar.gz
         modules:
           - ../shared-modules/boost/boost.json
+          - ../shared-modules/libusb/libusb.json
           - ../shared-modules/python-numpy/python-numpy.json
-          - ../flathub-shared-modules/libusb/libusb.json
       - name: log4cpp
         config-opts:
           - --disable-doxygen
