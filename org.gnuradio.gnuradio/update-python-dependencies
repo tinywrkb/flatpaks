@@ -1,8 +1,0 @@
-#!/bin/bash
-
-flatpak run \
-  --filesystem=$PWD \
-  --command=flatpak-pip-generator \
-  io.github.flatpak.flatpak-builder-tools \
-  --requirements-file=requirements.txt \
-  --output python-dependencies

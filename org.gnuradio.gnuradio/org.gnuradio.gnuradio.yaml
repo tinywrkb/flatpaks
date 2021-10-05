@@ -1,6 +1,7 @@
+# TODO: split out to a base app
 app-id: org.gnuradio.gnuradio
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: gnuradio-companion
 rename-desktop-file: gnuradio-grc.desktop
@@ -11,13 +12,11 @@ finish-args:
   - --filesystem=home
   - --persist=.cache/grc_gnuradio
   - --persist=.gnuradio
-  - --share=ipc
   - --share=network
   - --socket=wayland
-  - --socket=fallback-x11
 cleanup:
-  - /include
-  - /lib/pkgconfig
+#  - /include
+#  - /lib/pkgconfig
   - /share/man
   - '*.a'
   - '*.la'
@@ -28,25 +27,29 @@ modules:
     post-install:
       - install -Dm644 ../grc/scripts/freedesktop/gnuradio_logo_icon-square.svg /app/share/icons/hicolor/scalable/apps/gnuradio-grc.svg
       - mv /app/share/mime/packages/gnuradio-grc.xml /app/share/mime/packages/org.gnuradio.gnuradio.xml
+# TODO: add udev_rules as docs?
 #     - install -Dm644 ../21-fcd.rules /app/docs/udev_rules/21-fcd.rules
     sources:
       - type: archive
-        url:  https://github.com/gnuradio/gnuradio/releases/download/v3.8.1.0/gnuradio-3.8.1.0.tar.gz
-        sha256: e15311e7da9fe2bb790cc36321d7eb2d93b9dfa0c1552fa5d534dd99d22873be
+        url: https://github.com/gnuradio/gnuradio/archive/v3.9.3.0.tar.gz
+        sha256: 4073ac72524f95fed4bda7dd553cb946f66d2e00bd07c4ae7758f1b787d507e0
+        x-checker-data:
+          type: anitya
+          project-id: 1217
+          stable-only: true
+          url-template: https://github.com/gnuradio/gnuradio/archive/v$version.tar.gz
     modules:
-      - ../shared-modules/boost/boost.json
+      - ../shared-modules/gsl/gsl.json
+      - ../shared-modules/gsm/gsm.json
       - ../shared-modules/lapack/lapack.json
-      - ../shared-modules/swig/swig.json
-      - ../shared-modules/qwt/qwt.json
-      # required by python-opengl
-      - shared-modules/freeglut/freeglut.json
+      - ../shared-modules/portaudio/portaudio.json
       - ../shared-modules/pyqt5/pyqt5.json
       - ../shared-modules/python-gobject/python-gobject.json
-      # required by python-yaml
-      - ../shared-modules/libyaml/libyaml.json
-      # required by libuhd
-      - ../flathub-shared-modules/libusb/libusb.json
-      - python-dependencies.json
+      - ../shared-modules/python-lxml/python-lxml.json
+      - ../shared-modules/python-yaml/python-yaml.json
+      - ../shared-modules/qwt/qwt.json
+      - ../shared-modules/swig/swig.json
+      - ../shared-modules/zeromq/zeromq.json
       - name: codec2
         buildsystem: cmake
         builddir: true
@@ -54,13 +57,38 @@ modules:
           - -DCMAKE_BUILD_TYPE=Release
         sources:
           - type: archive
-            url: https://github.com/drowe67/codec2/archive/v0.9.2.tar.gz
-            sha256: 19181a446f4df3e6d616b50cabdac4485abb9cd3242cf312a0785f892ed4c76c
-      - name: gsl
+            url: https://github.com/drowe67/codec2/archive/v1.0.1.tar.gz
+            sha256: 14227963940d79e0ec5af810f37101b30e1c7e8555abd96c56b3c0473abac8ef
+            x-checker-data:
+              type: anitya
+              project-id: 14605
+              stable-only: true
+              url-template: https://github.com/drowe67/codec2/archive/v$version.tar.gz
+      - name: libuhd
+        buildsystem: cmake
+        subdir: host
+        config-opts:
+          - -DENABLE_E100=ON
+          - -DENABLE_E300=ON
+          - -DENABLE_EXAMPLES=OFF
+          - -DENABLE_TESTS=OFF
+          - -DENABLE_UTILS=OFF
+# TODO: add udev_rules as docs?
+#       post-install:
+#         - install -Dm644 utils/uhd-usrp.rules /app/docs/udev_rules/10-uhd-usrp.rules
         sources:
           - type: archive
-            url: https://ftp.gnu.org/gnu/gsl/gsl-2.6.tar.gz
-            sha256: b782339fc7a38fe17689cb39966c4d821236c28018b6593ddb6fd59ee40786a8
+            url: https://github.com/EttusResearch/uhd/archive/v4.1.0.4.tar.gz
+            sha256: 44983dbc53b582af0040f22c5b18f9e63342d3b8fd26b3aabe60501e01554208
+            x-checker-data:
+              type: anitya
+              project-id: 12572
+              stable-only: true
+              url-template: https://github.com/EttusResearch/uhd/archive/v$version.tar.gz
+        modules:
+          - ../shared-modules/boost/boost.json
+          - ../shared-modules/python-numpy/python-numpy.json
+          - ../flathub-shared-modules/libusb/libusb.json
       - name: log4cpp
         config-opts:
           - --disable-doxygen
@@ -71,85 +99,69 @@ modules:
             url: https://downloads.sourceforge.net/log4cpp/log4cpp-1.1.3.tar.gz
             sha256: 2cbbea55a5d6895c9f0116a9a9ce3afb86df383cd05c9d6c1a4238e5e5c8f51d
             strip-components: 2
-      - name: libuhd
+            x-checker-data:
+              type: anitya
+              project-id: 21499
+              stable-only: true
+              url-template: https://downloads.sourceforge.net/log4cpp/log4cpp-$version.tar.gz
+      - name: python-click-plugins
+        buildsystem: simple
+        build-commands:
+          - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
+            --prefix=${FLATPAK_DEST} "click-plugins" --no-build-isolation
+        sources:
+          - type: file
+            url: https://files.pythonhosted.org/packages/5f/1d/45434f64ed749540af821fd7e42b8e4d23ac04b1eda7c26613288d6cd8a8/click-plugins-1.1.1.tar.gz
+            sha256: 46ab999744a9d831159c3411bb0c79346d94a444df9a3a3742e9ed63645f264b
+            x-checker-data:
+              type: pypi
+              name: click-plugins
+        modules:
+          - name: python-click
+            buildsystem: simple
+            build-commands:
+              - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
+                --prefix=${FLATPAK_DEST} "click" --no-build-isolation
+            sources:
+              - type: file
+                url: https://files.pythonhosted.org/packages/21/83/308a74ca1104fe1e3197d31693a7a2db67c2d4e668f20f43a2fca491f9f7/click-8.0.1.tar.gz
+                sha256: 8c04c11192119b1ef78ea049e0a6f0463e4c48ef00a30160c704337586f3ad7a
+                x-checker-data:
+                  type: pypi
+                  name: click
+      - name: volk
+        # depends on boost, in-tree volk can be used instead
         buildsystem: cmake
-        subdir: host
+        sources:
+          - type: archive
+            url: https://github.com/gnuradio/volk/releases/download/v2.5.0/volk-2.5.0.tar.xz
+            sha256: ddc84d2396e9d3899ff0411a0659f64ba19d75b2210cce83bc2eaa7767429252
+            x-checker-data:
+              type: anitya
+              project-id: 147733
+              stable-only: true
+              url-template: https://github.com/gnuradio/volk/releases/download/v$version/volk-$version.tar.xz
+      - name: pybind11
+        # TODO: revisit build steps or their order, setup.py can't find python init files
+        buildsystem: cmake
+        builddir: true
         config-opts:
-          - -DENABLE_E100=ON
-          - -DENABLE_E300=ON
-          - -DENABLE_EXAMPLES=OFF
-          - -DENABLE_TESTS=OFF
-          - -DENABLE_UTILS=OFF
-#       post-install:
-#         - install -Dm644 utils/uhd-usrp.rules /app/docs/udev_rules/10-uhd-usrp.rules
+          - -DPYBIND11_TEST=OFF
+          - -DPYBIND11_CMAKECONFIG_INSTALL_DIR=/app/lib/cmake/pybind11
+        post-install:
+          - |
+            cd ..
+            python setup.py build
+            python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
         sources:
           - type: archive
-            url: https://github.com/EttusResearch/uhd/archive/v3.15.0.0.tar.gz
-            sha256: eed4a77d75faafff56be78985950039f8d9d1eb9fcbd58b8862e481dd49825cd
-        modules:
-#         - boost
-          - name: orc
-            buildsystem: meson
-            sources:
-              - type: archive
-                url: https://gitlab.freedesktop.org/gstreamer/orc/-/archive/0.4.31/orc-0.4.31.tar.gz
-                sha256: f729fbbcc73aeb4579e7ade1dfc8d44b82d1e4d52dc419255ee4ade99109ec1d
-#         - name: python-mako
-      - name: zeromq
-        sources:
-          - type: archive
-            url: https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.tar.gz
-            sha256: ebd7b5c830d6428956b67a0454a7f8cbed1de74b3b01e5c33c5378e22740f763
-        modules:
-          - name: libsodium
-            sources:
-              - type: archive
-                url: https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
-                sha256: 6f504490b342a4f8a4c4a02fc9b866cbef8622d5df4e5452b46be121e46636c1
-          - name: libgpm
-            sources:
-              - type: archive
-                url: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/openpgm/libpgm-5.2.122.tar.gz
-                sha256: 6b895f550b95284dcde7189b01e04a9a1c1f94579af31b1eebd32c2207a1ba2c
-                strip-components: 3
-              - type: patch
-                path: libpgm-pkgconfig.patch
-              - type: shell
-                commands:
-                  - 2to3 -wn version_generator.py
-                  - sed -i "s#\#!/usr/bin/python#\#!/usr/bin/python3#" version_generator.py
-      - name: portaudio
-        config-opts:
-          - --enable-cxx
-        make-args:
-          - -j1
-        sources:
-          - type: archive
-            url: http://www.portaudio.com/archives/pa_stable_v190600_20161030.tgz
-            sha256: f5a21d7dcd6ee84397446fa1fa1a0675bb2e8a4a6dceb4305a8404698d8d1513
-#       modules:
-#         - name: jack
-#     - name: gsm
-#       build-options:
-#         env:
-#           - cflags: -fPIC
-#       no-autogen: true
-#       make-install-args:
-#         - -j1
-#         - INSTALL_ROOT=/app
-#         - GSM_INSTALL_INC=/app/include
-#       sources:
-#         - type: archive
-#           url: http://www.quut.com/gsm/gsm-1.0.19.tar.gz
-#           sha256: 4903652f68a8c04d0041f0d19b1eb713ddcd2aa011c5e595b3b8bca2755270f6
-#         - type: patch
-#           path: gsm-shared_lib.patch
-#     - name: python-lxml
-#     - name: python-depends
-#         - name: python-click-plugins
-#         - name: python-mako
-#     - name: libvolk // using internal volk instead
-#       modules:
-#         - name: orc
-#         - name: python-six
-#         - name: python-mako
+            url: https://github.com/pybind/pybind11/archive/v2.8.0.tar.gz
+            sha256: 9ca7770fc5453b10b00a4a2f99754d7a29af8952330be5f5602e7c2635fa3e79
+            x-checker-data:
+              type: anitya
+              project-id: 13384
+              stable-only: true
+              url-template: https://github.com/pybind/pybind11/archive/v$version.tar.gz
+          - type: shell
+            commands:
+              - sed -i 's/\(s.get_python_inc(plat_specific=\)True/\1False/' tools/FindPythonLibsNew.cmake
