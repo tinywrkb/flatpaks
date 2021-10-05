@@ -1,0 +1,32 @@
+{
+    "name": "gsm",
+    "no-autogen": true,
+    "make-install-args": [
+        "-j1",
+        "INSTALL_ROOT=/app",
+        "GSM_INSTALL_INC=/app/include"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "http://www.quut.com/gsm/gsm-1.0.19.tar.gz",
+            "sha256": "4903652f68a8c04d0041f0d19b1eb713ddcd2aa011c5e595b3b8bca2755270f6",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 12587,
+                "stable-only": true,
+                "url-template": "http://www.quut.com/gsm/gsm-$version.tar.gz"
+            }
+        },
+        {
+            "type": "patch",
+            "path": "gsm-shared_lib.patch"
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "sed -i 's/^\\(CCFLAGS .*\\)/\\1 -fPIC/' Makefile"
+            ]
+        }
+    ]
+}
