@@ -1,15 +1,21 @@
 {
-  "name": "patchelf",
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://github.com/NixOS/patchelf/archive/0.9.tar.gz",
-      "sha256": "cf0693e794229e19edcf2299427b5a352e0f4d4f06f9d3856e30ddb0344d5ce8"
-    }
-  ],
-  "cleanup": [
-    "/share/doc",
-    "/share/man",
-    "/share/aclocal"
-  ]
+    "name": "patchelf",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/NixOS/patchelf/archive/0.13.tar.gz",
+            "sha256": "60c6aeadb673de9cc1838b630c81f61e31c501de324ef7f1e8094a2431197d09",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 2598,
+                "stable-only": true,
+                "url-template": "https://github.com/NixOS/patchelf/archive/$version.tar.gz"
+            }
+        }
+    ],
+    "cleanup": [
+        "/share/doc",
+        "/share/man",
+        "/share/aclocal"
+    ]
 }
