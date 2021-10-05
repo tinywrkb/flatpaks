@@ -14,7 +14,6 @@
         }
     ],
     "cleanup": [
-        "/include",
         "/share/man"
     ],
     "modules": [

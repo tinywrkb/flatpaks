@@ -19,8 +19,6 @@
     ],
     "cleanup": [
         "/bin",
-        "/include",
-        "/lib/cmake",
-        "/lib/pkgconfig"
+        "/lib/cmake"
     ]
 }

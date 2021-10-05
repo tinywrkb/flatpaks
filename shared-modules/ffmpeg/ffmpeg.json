@@ -1,8 +1,6 @@
 {
     "name": "ffmpeg",
     "cleanup": [
-        "/include",
-        "/lib/pkgconfig",
         "/share/ffmpeg/examples"
     ],
     "config-opts": [
@@ -32,11 +30,9 @@
             "cleanup": [
                 "/sbin",
                 "/bin",
-                "/include",
                 "/lib/*.la",
                 "/lib/*/*.la",
                 "/lib*/*/*/*.la",
-                "/lib/pkgconfig",
                 "/share/man"
             ],
             "config-opts": [
@@ -60,9 +56,6 @@
         },
         {
             "name": "nv-codec-headers",
-            "cleanup": [
-                "*"
-            ],
             "no-autogen": true,
             "make-install-args": [
                 "PREFIX=/app"

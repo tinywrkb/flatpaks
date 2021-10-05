@@ -34,8 +34,6 @@
         }
     ],
     "cleanup": [
-        "/include",
-        "/lib/pkgconfig",
         "*.a"
     ]
 }

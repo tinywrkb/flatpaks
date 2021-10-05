@@ -22,8 +22,6 @@
     "cleanup": [
         "/bin",
         "/etc",
-        "/include",
-        "/lib/pkgconfig",
         "/lib/systemd",
         "/libexec",
         "/share/gir-1.0",

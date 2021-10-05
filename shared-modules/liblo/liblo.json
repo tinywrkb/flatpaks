@@ -12,10 +12,5 @@
                 "url-template": "https://github.com/radarsat1/liblo/archive/$version.tar.gz"
             }
         }
-    ],
-    "cleanup": [
-        "/include",
-        "/lib/pkgconfig",
-        "*.la"
     ]
 }

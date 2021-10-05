@@ -35,8 +35,6 @@
     ],
     "cleanup": [
         "/bin",
-        "/include",
-        "/lib/pkgconfig",
         "*.a"
     ]
 }

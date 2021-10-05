@@ -17,10 +17,6 @@
             }
         }
     ],
-    "cleanup": [
-        "/include",
-        "/lib/pkgconfig"
-    ],
     "modules": [
         "../pipewire/pipewire-jack-runtime.json",
         "../liblo/liblo.json"

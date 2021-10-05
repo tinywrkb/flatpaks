@@ -12,8 +12,5 @@
                 "url-template": "https://downloads.sourceforge.net/swig/swig-$version.tar.gz"
             }
         }
-    ],
-    "cleanup": [
-        "*"
     ]
 }
