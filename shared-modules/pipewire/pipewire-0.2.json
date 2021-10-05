@@ -17,7 +17,6 @@
   "cleanup": [
     "/bin",
     "/etc",
-    "/include",
     "/lib/gstreamer-1.0",
     "/lib/pipewire-0.2/libpipewire-module-audio-dsp.so",
     "/lib/pipewire-0.2/libpipewire-module-autolink.so",

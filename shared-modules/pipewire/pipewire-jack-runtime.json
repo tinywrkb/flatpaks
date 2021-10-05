@@ -28,8 +28,5 @@
             "dest-filename": "pipewire-jack-runtime.pc",
             "path": "pipewire-jack-runtime-aarch64.pc"
         }
-    ],
-    "cleanup": [
-        "*"
     ]
 }

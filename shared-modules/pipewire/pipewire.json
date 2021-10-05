@@ -31,8 +31,6 @@
     }
   ],
   "cleanup": [
-    "/bin",
-    "/include",
-    "/lib/pkgconfig"
+    "/bin"
   ]
 }
