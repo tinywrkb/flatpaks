@@ -1,0 +1,26 @@
+{
+    "name": "libpgm",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/steve-o/openpgm/archive/release-5-3-128.tar.gz",
+            "sha256": "8d707ef8dda45f4a7bc91016d7f2fed6a418637185d76c7ab30b306499c6d393",
+            "strip-components": 3,
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 6598,
+                "stable-only": true,
+                "url-template": "https://github.com/steve-o/openpgm/archive/release-$version.tar.gz"
+            }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "2to3 -wn version_generator.py",
+                "sed -i \"s#\\#!/usr/bin/python#\\#!/usr/bin/python3#\" version_generator.py",
+                "cp openpgm-5.2.pc.in openpgm-5.3.pc.in",
+                "./bootstrap.sh"
+            ]
+        }
+    ]
+}
