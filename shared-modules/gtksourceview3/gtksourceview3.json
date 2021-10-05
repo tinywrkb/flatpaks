@@ -1,31 +1,38 @@
 {
-  "name": "gtksourceview3",
-  "build-options": {
-    "env": [
-      "NOCONFIGURE=1"
-    ]
-  },
-  "config-opts": [
-    "--disable-Werror",
-    "--disable-glade-catalog",
-    "--disable-static",
-    "--enable-gtk-doc=no",
-    "--enable-vala=no",
-    "--enable-valgrind=no"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://gitlab.gnome.org/GNOME/gtksourceview/-/archive/73e57b5787ac60776c57032e05a4cc32207f9cf6/gtksourceview-73e57b5787ac60776c57032e05a4cc32207f9cf6.tar.gz",
-      "sha256": "209f97e206f0d328ed8885325a804843fbaa1c3699ea2ccfcce23b28eee76c1c"
+    "name": "gtksourceview3",
+    "build-options": {
+        "env": [
+            "NOCONFIGURE=1"
+        ]
     },
-    {
-      "type": "shell",
-      "commands": [
-        "find . -name Makefile.am -exec sed -i \"/@CODE_COVERAGE_RULES@/d\" {} +",
-        /* configure without vala */
-        "sed -i '\\|^AC_CONFIG_MACRO_DIR.*|a m4_include(m4/vapigen.m4)' configure.ac"
-      ]
-    }
-  ]
+    "config-opts": [
+        "--disable-Werror",
+        "--disable-glade-catalog",
+        "--disable-static",
+        "--enable-gtk-doc=no",
+        "--enable-vala=no",
+        "--enable-valgrind=no"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://download.gnome.org/sources/gtksourceview/3.24/gtksourceview-3.24.11.tar.xz",
+            "sha256": "691b074a37b2a307f7f48edc5b8c7afa7301709be56378ccf9cc9735909077fd",
+            "x-checker-data": {
+                "type": "gnome",
+                "name": "gtksourceview",
+                "versions": {
+                    "<": "4.0.0"
+                },
+                "stable-only": true
+            }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "find . -name Makefile.am -exec sed -i \"/@CODE_COVERAGE_RULES@/d\" {} +",
+                "sed -i '\\|^AC_CONFIG_MACRO_DIR.*|a m4_include(m4/vapigen.m4)' configure.ac  # configure without vala"
+            ]
+        }
+    ]
 }
