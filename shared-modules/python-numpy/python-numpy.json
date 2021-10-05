@@ -1,0 +1,21 @@
+{
+    "name": "python-numpy",
+    "buildsystem": "simple",
+    "build-commands": [
+        "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"numpy\" --no-build-isolation"
+    ],
+    "sources": [
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/3a/be/650f9c091ef71cb01d735775d554e068752d3ff63d7943b26316dc401749/numpy-1.21.2.zip",
+            "sha256": "423216d8afc5923b15df86037c6053bf030d15cc9e3224206ef868c2d63dd6dc",
+            "x-checker-data": {
+                "type": "pypi",
+                "name": "numpy"
+            }
+        }
+    ],
+    "modules": [
+        "../lapack/lapack.json"
+    ]
+}
