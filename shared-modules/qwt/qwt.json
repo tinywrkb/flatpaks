@@ -1,26 +1,32 @@
 {
-  "name": "qwt",
-  "build-options": {
-    "env": [
-      "QT_INSTALL_PREFIX=/app"
-    ]
-  },
-  "buildsystem": "qmake",
-  "config-opts": [
-    "QT_INSTALL_PREFIX=/app"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://downloads.sourceforge.net/qwt/qwt-6.1.5.tar.bz2",
-      "sha256": "4076de63ec2b5e84379ddfebf27c7b29b8dc9074f3db7e2ca61d11a1d8adc041"
+    "name": "qwt",
+    "build-options": {
+        "env": [
+            "QT_INSTALL_PREFIX=/app"
+        ]
     },
-    {
-      "type": "shell",
-      "commands": [
-        "sed -i \"/QWT_INSTALL_PREFIX    =.*/d\" qwtconfig.pri",
-        "sed -i \"s#QWT_INSTALL_PREFIX =.*#QWT_INSTALL_PREFIX = /app#\" qwtconfig.pri"
-      ]
-    }
-  ]
+    "buildsystem": "qmake",
+    "config-opts": [
+        "QT_INSTALL_PREFIX=/app"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://downloads.sourceforge.net/qwt/qwt-6.2.0.tar.bz2",
+            "sha256": "9194f6513955d0fd7300f67158175064460197abab1a92fa127a67a4b0b71530",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 4147,
+                "stable-only": true,
+                "url-template": "https://downloads.sourceforge.net/qwt/qwt-$version.tar.bz2"
+            }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "sed -i \"/QWT_INSTALL_PREFIX    =.*/d\" qwtconfig.pri",
+                "sed -i \"s#QWT_INSTALL_PREFIX =.*#QWT_INSTALL_PREFIX = /app#\" qwtconfig.pri"
+            ]
+        }
+    ]
 }
