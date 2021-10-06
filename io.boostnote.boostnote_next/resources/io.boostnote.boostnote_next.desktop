@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Boostnote Next
-Exec=boostnote %U
-Icon=io.boostnote.boostnote_next
-Type=Application
-StartupNotify=true
-Categories=Development;Utility;
