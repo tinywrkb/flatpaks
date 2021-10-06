@@ -38,10 +38,12 @@ modules:
           project-id: 1217
           stable-only: true
           url-template: https://github.com/gnuradio/gnuradio/archive/v$version.tar.gz
+      - type: patch
+        path: gnuradio-qwt-6.2.patch
     modules:
+      - ../shared-modules/fftw/fftw-single_precision.json
       - ../shared-modules/gsl/gsl.json
       - ../shared-modules/gsm/gsm.json
-      - ../shared-modules/lapack/lapack.json
       - ../shared-modules/portaudio/portaudio.json
       - ../shared-modules/pyqt5/pyqt5.json
       - ../shared-modules/python-gobject/python-gobject.json
@@ -129,20 +131,10 @@ modules:
                 x-checker-data:
                   type: pypi
                   name: click
-      - name: volk
-        # depends on boost, in-tree volk can be used instead
-        buildsystem: cmake
-        sources:
-          - type: archive
-            url: https://github.com/gnuradio/volk/releases/download/v2.5.0/volk-2.5.0.tar.xz
-            sha256: ddc84d2396e9d3899ff0411a0659f64ba19d75b2210cce83bc2eaa7767429252
-            x-checker-data:
-              type: anitya
-              project-id: 147733
-              stable-only: true
-              url-template: https://github.com/gnuradio/volk/releases/download/v$version/volk-$version.tar.xz
       - name: pybind11
         # TODO: revisit build steps or their order, setup.py can't find python init files
+        # TODO: maybe add eigen depend?
+        # depends on boost (make)
         buildsystem: cmake
         builddir: true
         config-opts:
@@ -165,3 +157,15 @@ modules:
           - type: shell
             commands:
               - sed -i 's/\(s.get_python_inc(plat_specific=\)True/\1False/' tools/FindPythonLibsNew.cmake
+      - name: volk
+        # depends on boost, in-tree volk can be used instead
+        buildsystem: cmake
+        sources:
+          - type: archive
+            url: https://github.com/gnuradio/volk/releases/download/v2.5.0/volk-2.5.0.tar.xz
+            sha256: ddc84d2396e9d3899ff0411a0659f64ba19d75b2210cce83bc2eaa7767429252
+            x-checker-data:
+              type: anitya
+              project-id: 147733
+              stable-only: true
+              url-template: https://github.com/gnuradio/volk/releases/download/v$version/volk-$version.tar.xz
