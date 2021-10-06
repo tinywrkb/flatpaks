@@ -1,6 +1,6 @@
 app-id: net.puddletag.puddletag
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: puddletag
 rename-desktop-file: puddletag.desktop
@@ -10,8 +10,6 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
-  - --share=ipc
-  - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
 cleanup:
@@ -31,6 +29,11 @@ modules:
       - type: archive
         url: https://github.com/puddletag/puddletag/releases/download/2.0.1/puddletag-2.0.1.tar.gz
         sha256: f5c39b7168df34fb4e919d3f57660888f7a2218c6924979895e2b91ff9ba6a07
+        x-checker-data:
+          type: anitya
+          project-id: 3727
+          stable-only: true
+          url-template: https://github.com/puddletag/puddletag/releases/download/$version/puddletag-$version.tar.gz
     modules:
       # TODO: add missing python-pillow optional depends:
       #       libimagequant (improved color quantization)?
@@ -45,3 +48,8 @@ modules:
           - type: archive
             url: https://github.com/acoustid/chromaprint/releases/download/v1.5.0/chromaprint-1.5.0.tar.gz
             sha256: 573a5400e635b3823fc2394cfa7a217fbb46e8e50ecebd4a61991451a8af766a
+            x-checker-data:
+              type: anitya
+              project-id: 286
+              stable-only: true
+              url-template: https://github.com/acoustid/chromaprint/releases/download/v$version/chromaprint-$version.tar.gz
