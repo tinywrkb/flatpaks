@@ -13,6 +13,7 @@
         "--enable=QtQml",
         "--enable=QtQuick",
         "--enable=QtSql",
+        "--enable=QtSvg",
         "--enable=QtTest",
         "--enable=QtWebChannel",
         "--enable=QtWidgets",
