@@ -1,14 +1,6 @@
 {
     "name": "qwt",
-    "build-options": {
-        "env": [
-            "QT_INSTALL_PREFIX=/app"
-        ]
-    },
     "buildsystem": "qmake",
-    "config-opts": [
-        "QT_INSTALL_PREFIX=/app"
-    ],
     "sources": [
         {
             "type": "archive",
@@ -24,8 +16,11 @@
         {
             "type": "shell",
             "commands": [
-                "sed -i \"/QWT_INSTALL_PREFIX    =.*/d\" qwtconfig.pri",
-                "sed -i \"s#QWT_INSTALL_PREFIX =.*#QWT_INSTALL_PREFIX = /app#\" qwtconfig.pri"
+                "sed -i '\\#^\\s*QWT_INSTALL_PREFIX# s#=.*#= /app#' qwtconfig.pri",
+                "sed -i '\\#^QWT_INSTALL_HEADERS# s#include#&/qwt#' qwtconfig.pri",
+                "sed -i '\\#^QWT_INSTALL_PLUGINS# s#plugins/designer#lib/qt/&#' qwtconfig.pri",
+                "sed -i '\\#^QWT_INSTALL_FEATURES# s#features#lib/qt/mkspecs/&#' qwtconfig.pri",
+                "sed -i \"/doc/d\" qwt.pro"
             ]
         }
     ]
