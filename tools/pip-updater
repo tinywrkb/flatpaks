@@ -1,6 +1,6 @@
 #!/bin/bash
 
-_mod=$1
+_mod=${1:-python-dependencies}
 _req=${2:-requirements.txt}
 
 flatpak run \
