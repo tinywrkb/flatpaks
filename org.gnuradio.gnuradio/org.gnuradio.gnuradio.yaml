@@ -1,4 +1,6 @@
 # TODO: split out to a base app
+# TODO: evaluate using extensions for blocks and device support libs
+# TODO: how to handle small GUI apps that depends on the gnuradio? e.g. gqrx
 app-id: org.gnuradio.gnuradio
 runtime: org.kde.Platform
 runtime-version: 5.15-21.08
@@ -50,6 +52,7 @@ modules:
       - ../shared-modules/python-lxml/python-lxml.json
       - ../shared-modules/python-yaml/python-yaml.json
       - ../shared-modules/qwt/qwt.json
+      # TODO: drop swig
       - ../shared-modules/swig/swig.json
       - ../shared-modules/zeromq/zeromq.json
       - name: codec2
@@ -169,21 +172,6 @@ modules:
               project-id: 147733
               stable-only: true
               url-template: https://github.com/gnuradio/volk/releases/download/v$version/volk-$version.tar.xz
-# gnuradio blocks
-# - name: gnuradio-fcdproplus
-#   # https://github.com/dl1ksv/gr-fcdproplus/issues/23
-#   buildsystem: cmake-ninja
-#   config-opts:
-#     - -DENABLE_DOXYGEN=OFF
-#   post-install:
-#     - install -Dm644 88-fcdproplus.rules /app/docs/udev_rules/88-fcdproplus.rules
-#   sources:
-#     - type: git
-#       url: https://github.com/dl1ksv/gr-fcdproplus.git
-#       branch: master
-#       commit: 575fcafbb8f36dc11d95a305f331660612a44596
-#     - type: file
-#       path: 88-fcdproplus.rules
   - name: gnuradio-iqbal
     buildsystem: cmake
     sources:
@@ -198,36 +186,42 @@ modules:
           versions:
             ">": 0.38.2
           tag-template: v$version
-# - name: gr-funcube
-#   buildsystem: cmake
-#   config-opts:
-#     # TODO: add missing pkgconfig to cmake files
-#     - -DLIBHIDAPI_PKG_INCLUDE_DIRS=/app/include/hidapi
-#     - -DLIBHIDAPI_PKG_LIBRARY_DIRS=/app/lib
-#     - -DLIBUSB_PKG_INCLUDE_DIRS=/app/include/libusb-1.0
-#     - -DLIBUSB_PKG_LIBRARY_DIRS=/app/lib
-#   sources:
-#     - type: archive
-#       url: https://github.com/dl1ksv/gr-funcube/archive/v1.0.0.tar.gz
-#       sha256: 67c804a7ba84bab63efb0e72cb8dd773a859376dd6a89498d86a4d12f3528041
-#       x-checker-data:
-#         type: anitya
-#         project-id: 231404
-#         stable-only: true
-#         url-template: https://github.com/dl1ksv/gr-funcube/archive/v$version.tar.gz
-#   modules:
-#     - name: hidapi
-#       sources:
-#         - type: archive
-#           url: https://github.com/libusb/hidapi/hidapi-$version.tar.gz
-#           sha256: 67c804a7ba84bab63efb0e72cb8dd773a859376dd6a89498d86a4d12f3528041
-#           x-checker-data:
-#             type: anitya
-#             project-id: 231404
-#             stable-only: true
-#             url-template: https://github.com/libusb/hidapi/hidapi-$version.tar.gz
+  - name: gr-funcube
+    # replacement for gnuradio-fcdproplus (previously in-tree gnuradio.fcd)
+    # https://github.com/dl1ksv/gr-fcdproplus/issues/23
+    # TODO: add udev rules as docs
+    buildsystem: cmake
+    config-opts:
+      # TODO: add missing pkgconfig to cmake files
+      - -DLIBHIDAPI_PKG_INCLUDE_DIRS=/app/include/hidapi
+      - -DLIBHIDAPI_PKG_LIBRARY_DIRS=/app/lib
+      - -DLIBUSB_PKG_INCLUDE_DIRS=/app/include/libusb-1.0
+      - -DLIBUSB_PKG_LIBRARY_DIRS=/app/lib
+    sources:
+      - type: archive
+        url: https://github.com/dl1ksv/gr-funcube/archive/v1.0.0.tar.gz
+        sha256: 67c804a7ba84bab63efb0e72cb8dd773a859376dd6a89498d86a4d12f3528041
+        x-checker-data:
+          type: anitya
+          project-id: 231404
+          stable-only: true
+          url-template: https://github.com/dl1ksv/gr-funcube/archive/v$version.tar.gz
+    modules:
+      # depends on libusb
+      # TODO: move out to a shared-module?
+      - name: hidapi
+        buildsystem: cmake
+        sources:
+          - type: archive
+            url: https://github.com/libusb/hidapi/archive/hidapi-0.11.0.tar.gz
+            sha256: 391d8e52f2d6a5cf76e2b0c079cfefe25497ba1d4659131297081fc0cd744632
+            x-checker-data:
+              type: anitya
+              project-id: 5594
+              stable-only: true
+              url-template: https://github.com/libusb/archive/hidapi/hidapi-$version.tar.gz
   - name: gnuradio-osmosdr
-    # depends on gnuradio-iqbal and optionally on gnuradio-fcdproplus
+    # depends on gnuradio-iqbal and optionally on gnuradio-fcdproplus or gr-funcube
     buildsystem: cmake
     sources:
       - type: git
