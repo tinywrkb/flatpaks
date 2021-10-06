@@ -7,13 +7,13 @@
             "name": "python3-python-vlc",
             "buildsystem": "simple",
             "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"python-vlc\" --no-build-isolation"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"python-vlc\" --no-build-isolation"
             ],
             "sources": [
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/e7/12/71c9f8251a91cb8e510d6085ed4c5bd854e33341060bf74db7f037a2cf9b/python-vlc-3.0.12117.tar.gz",
-                    "sha256": "dd512f8438c1bba032fe9d22a7f8f98423a537992141ce2d1b28e29aff30381d"
+                    "url": "https://files.pythonhosted.org/packages/6e/d7/216a63a732020da8fd668ebc8f4da29c53cd148a5a3263950e801ca99863/python-vlc-3.0.12118.tar.gz",
+                    "sha256": "566f2f7c303f6800851cacc016df1c6eeec094ad63e0a49d87db9d698094f1fb"
                 }
             ]
         },
@@ -21,13 +21,13 @@
             "name": "python3-watchdog",
             "buildsystem": "simple",
             "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"watchdog\" --no-build-isolation"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"watchdog\" --no-build-isolation"
             ],
             "sources": [
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/17/8c/fe6b8554e6a107437375ea6f76c62fbb0deb22288c2eb846c2f92b0d843e/watchdog-2.0.2.tar.gz",
-                    "sha256": "532fedd993e75554671faa36cd04c580ced3fae084254a779afbbd8aaf00566b"
+                    "url": "https://files.pythonhosted.org/packages/e8/a8/fc4edd7d768361b00ea850e5310211d157df6b5a1db6148dd434e787d898/watchdog-2.1.6.tar.gz",
+                    "sha256": "a36e75df6c767cbf46f61a91c70b3ba71811dfa0aca4a324d9407a06a8b7a2e7"
                 }
             ]
         },
@@ -35,18 +35,18 @@
             "name": "python3-babel",
             "buildsystem": "simple",
             "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"babel\" --no-build-isolation"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"babel\" --no-build-isolation"
             ],
             "sources": [
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/b0/61/eddc6eb2c682ea6fd97a7e1018a6294be80dba08fa28e7a3570148b4612d/pytz-2021.1.tar.gz",
-                    "sha256": "83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da"
+                    "url": "https://files.pythonhosted.org/packages/e3/8e/1cde9d002f48a940b9d9d38820aaf444b229450c0854bdf15305ce4a3d1a/pytz-2021.3.tar.gz",
+                    "sha256": "acad2d8b20a1af07d4e4c9d2e9285c5ed9104354062f275f3fcd88dcef4f1326"
                 },
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/41/1b/5ed6e564b9ca54318df20ebe5d642ab25da4118df3c178247b8c4b26fa13/Babel-2.9.0.tar.gz",
-                    "sha256": "da031ab54472314f210b0adcff1588ee5d1d1d0ba4dbd07b94dba82bde791e05"
+                    "url": "https://files.pythonhosted.org/packages/17/e6/ec9aa6ac3d00c383a5731cc97ed7c619d3996232c977bb8326bcbb6c687e/Babel-2.9.1.tar.gz",
+                    "sha256": "bc0c176f9f6a994582230df350aa6e05ba2ebe4b3ac317eab29d9be5d2768da0"
                 }
             ]
         },
@@ -54,23 +54,18 @@
             "name": "python3-pympress",
             "buildsystem": "simple",
             "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"pympress\" --no-build-isolation"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"pympress\" --no-build-isolation"
             ],
             "sources": [
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/17/8c/fe6b8554e6a107437375ea6f76c62fbb0deb22288c2eb846c2f92b0d843e/watchdog-2.0.2.tar.gz",
-                    "sha256": "532fedd993e75554671faa36cd04c580ced3fae084254a779afbbd8aaf00566b"
+                    "url": "https://files.pythonhosted.org/packages/e8/a8/fc4edd7d768361b00ea850e5310211d157df6b5a1db6148dd434e787d898/watchdog-2.1.6.tar.gz",
+                    "sha256": "a36e75df6c767cbf46f61a91c70b3ba71811dfa0aca4a324d9407a06a8b7a2e7"
                 },
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/e7/12/71c9f8251a91cb8e510d6085ed4c5bd854e33341060bf74db7f037a2cf9b/python-vlc-3.0.12117.tar.gz",
-                    "sha256": "dd512f8438c1bba032fe9d22a7f8f98423a537992141ce2d1b28e29aff30381d"
-                },
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/92/80/c63ad7748e877dfeb5d7d756c1bdd4c2657e5a857814b4d6edf96d44678c/pympress-1.5.3.tar.gz",
-                    "sha256": "d8c10c286d1de2210c19a3e752542b61c8bcc592c48553f7c7043e943a87d05d"
+                    "url": "https://files.pythonhosted.org/packages/30/15/076cbcb2fcd828da499db28bda2699bdadc73c16953c564fee6e3b6c28c8/pympress-1.6.4.tar.gz",
+                    "sha256": "f84b9dc4da0defab1dc3c39ba91837f51af7837b775194f0057d0045c8d2b04f"
                 }
             ]
         }
