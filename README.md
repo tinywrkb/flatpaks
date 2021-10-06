@@ -10,7 +10,7 @@ read-only distributed OS files, and the stateful data and configs.
 
 ### Not usable or too buggy
 
-* byobu/tmux in terminal emulators and other cli apps: might be a freedesktop runtime regression or my system config which broke it for me locally.
+* byobu/tmux in terminal emulators and other cli apps: currently broken, the issue might be a freedesktop runtime regression.
 
 ### How to build
 
