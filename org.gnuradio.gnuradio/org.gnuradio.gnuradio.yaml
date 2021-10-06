@@ -169,3 +169,177 @@ modules:
               project-id: 147733
               stable-only: true
               url-template: https://github.com/gnuradio/volk/releases/download/v$version/volk-$version.tar.xz
+# gnuradio blocks
+# - name: gnuradio-fcdproplus
+#   # https://github.com/dl1ksv/gr-fcdproplus/issues/23
+#   buildsystem: cmake-ninja
+#   config-opts:
+#     - -DENABLE_DOXYGEN=OFF
+#   post-install:
+#     - install -Dm644 88-fcdproplus.rules /app/docs/udev_rules/88-fcdproplus.rules
+#   sources:
+#     - type: git
+#       url: https://github.com/dl1ksv/gr-fcdproplus.git
+#       branch: master
+#       commit: 575fcafbb8f36dc11d95a305f331660612a44596
+#     - type: file
+#       path: 88-fcdproplus.rules
+  - name: gnuradio-iqbal
+    buildsystem: cmake
+    sources:
+      - type: git
+        url: https://github.com/osmocom/gr-iqbal.git
+        #tag: v0.38.2
+        commit: fbee239a6fb36dd2fb564f6e6a0d393c4bc844db
+        x-checker-data:
+          type: anitya
+          project-id: 14456
+          stable-only: true
+          versions:
+            ">": 0.38.2
+          tag-template: v$version
+# - name: gr-funcube
+#   buildsystem: cmake
+#   config-opts:
+#     # TODO: add missing pkgconfig to cmake files
+#     - -DLIBHIDAPI_PKG_INCLUDE_DIRS=/app/include/hidapi
+#     - -DLIBHIDAPI_PKG_LIBRARY_DIRS=/app/lib
+#     - -DLIBUSB_PKG_INCLUDE_DIRS=/app/include/libusb-1.0
+#     - -DLIBUSB_PKG_LIBRARY_DIRS=/app/lib
+#   sources:
+#     - type: archive
+#       url: https://github.com/dl1ksv/gr-funcube/archive/v1.0.0.tar.gz
+#       sha256: 67c804a7ba84bab63efb0e72cb8dd773a859376dd6a89498d86a4d12f3528041
+#       x-checker-data:
+#         type: anitya
+#         project-id: 231404
+#         stable-only: true
+#         url-template: https://github.com/dl1ksv/gr-funcube/archive/v$version.tar.gz
+#   modules:
+#     - name: hidapi
+#       sources:
+#         - type: archive
+#           url: https://github.com/libusb/hidapi/hidapi-$version.tar.gz
+#           sha256: 67c804a7ba84bab63efb0e72cb8dd773a859376dd6a89498d86a4d12f3528041
+#           x-checker-data:
+#             type: anitya
+#             project-id: 231404
+#             stable-only: true
+#             url-template: https://github.com/libusb/hidapi/hidapi-$version.tar.gz
+  - name: gnuradio-osmosdr
+    # depends on gnuradio-iqbal and optionally on gnuradio-fcdproplus
+    buildsystem: cmake
+    sources:
+      - type: git
+        url: https://github.com/dl1ksv/gr-osmosdr
+        branch: with_funcube
+        commit: e118bbdc00df189fab0e8af3fa605d91c7dc3a19
+      # gnuradio is removing swig support
+      - type: shell
+        commands:
+          - sed -i '/add_subdirectory(swig)/d' CMakeLists.txt
+#     - type: archive
+#       url: https://github.com/osmocom/gr-osmosdr/archive/v0.2.3.tar.gz
+#       sha256: 11b1eb13725ced5ded9121a10aaf7bccf2430c5c69d020791408219968665b71
+#       x-checker-data:
+#         type: anitya
+#         project-id: 21447
+#         stable-only: true
+#         url-template: https://github.com/osmocom/gr-osmosdr/archive/v$version.tar.gz
+#   modules:
+#     - name: hackrf
+#       buildsystem: cmake
+#       subdir: host
+#       post-install:
+#         - install -Dm644 hackrf.conf /app/docs/modprobe.d/hackrf.conf
+#         - install -Dm644 host/libhackrf/53-hackrf.rules /app/docs/udev_rules/53-hackrf.rules
+#         - install -Dm644 firmware-bin/*.{bin,dfu,xsvf} -t /app/firmware/
+#       sources:
+#         - type: archive
+#           url: https://github.com/mossmann/hackrf/releases/download/v2021.03.1/hackrf-2021.03.1.tar.xz
+#           sha256: a43e5080c11efdfe69ddebcc35a02b018e30e820de0e0ebdc7948cf7b0cd93a3
+#           x-checker-data:
+#             type: anitya
+#             project-id: 6136
+#             stable-only: true
+#             url-template: https://github.com/mossmann/hackrf/releases/download/v$version/hackrf-$version.tar.xz
+#     - name: airspy
+#       buildsystem: cmake
+#       sources:
+#         - type: archive
+#           url: https://github.com/airspy/airspyone_host/archive/v1.0.10.tar.gz
+#           sha256: fcca23911c9a9da71cebeffeba708c59d1d6401eec6eb2dd73cae35b8ea3c613
+#           x-checker-data:
+#             type: anitya
+#             project-id: 13930
+#             stable-only: true
+#             url-template: https://github.com/airspy/airspyone_host/archive/v$version.tar.gz
+#     - name: bladerf
+#       sources:
+#         - type: archive
+#           url: https://github.com/Nuand/bladeRF/archive/libbladeRF_v2.2.1.tar.gz
+#           sha256: 8910748f521cd6e99a42bafcd4ee5394
+#           dest: lib
+#         - type: archive
+#           url: https://github.com/Nuand/bladeRF/archive/bladeRF-cli_v1.8.0.tar.gz
+#           sha256: dfafds
+#           dest: cli
+#         - type: archive
+#           url: https://github.com/analogdevicesinc/no-OS/archive/0bba46e.tar.gz
+#           sha256: dfafsasss
+#         - type: file
+#           url: https://nuand.com/fpga/v0.11.0/hostedx40.rbf
+#           sha256: dfafdssdfasadwerq
+#           dest: firmware
+#         - type: file
+#           url: https://nuand.com/fpga/v0.11.0/hostedx,A4.rbf
+#           sha256: dfafddfagrtewq
+#           dest: firmware
+#         - type: file
+#           url: https://nuand.com/fpga/v0.11.0/hostedx115.rbf
+#           sha256: dfafdssadfcvrt
+#           dest: firmware
+#         - type: file
+#           url: https://nuand.com/fpga/v0.11.0/hostedxA9.rbf
+#           sha256: fasdzazgf
+#           dest: firmware
+#         - type: file
+#           url: https://www.nuand.com/fx3/bladeRF_fw_v2.3.2.img
+#           sha256: dfafdsffdsareqwefbg
+#           dest: firmware
+#     - name: rtl-sdr
+#       buildsystem: cmake
+#       post-install:
+#         - install -Dm644 rtl-sdr.rules /app/docs/udev_rules/10-rtl-sdr.rules
+#         - install -Dm644 rtlsdr.conf /app/docs//modprobe.d/rtlsdr.conf
+#       sources:
+#         - type: archive
+#           url: https://github.com/steve-m/librtlsdr/archive/0.6.0.tar.gz
+#           sha256: 80a5155f3505bca8f1b808f8414d7dcd7c459b662a1cde84d3a2629a6e72ae55
+#           x-checker-data:
+#             type: anitya
+#             project-id: 4219
+#             stable-only: true
+#             url-template: https://github.com/steve-m/librtlsdr/archive/$version.tar.gz
+#     - name: soapysdr
+#       buildsystem: cmake
+#       sources:
+#         - type: archive
+#           url: https://github.com/pothosware/SoapySDR/archive/soapy-sdr-0.8.1.tar.gz
+#           sha256: a508083875ed75d1090c24f88abef9895ad65f0f1b54e96d74094478f0c400e6
+#           x-checker-data:
+#             type: anitya
+#             project-id: 14536
+#             stable-only: true
+#             url-template: https://github.com/pothosware/SoapySDR/archive/soapy-sdr-$version.tar.gz
+#       modules:
+#         - name: soapyairspy
+#         - name: soapyaudio
+#         - name: soapybladerf
+#         - name: soapyhackrf
+#         - name: soapynetsdr
+#         - name: soapyosmo
+#         - name: soapyremote
+#         - name: soapyrtlsdr
+#         - name: soapyuhd
+#         - name: graphviz
