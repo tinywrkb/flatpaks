@@ -1,0 +1,23 @@
+{
+    "name": "hexyl",
+    "build-options": {
+        "env": [
+            "CARGO_HOME=/run/build/hexyl/cargo"
+        ],
+        "prepend-path": "/usr/lib/sdk/rust-stable/bin"
+    },
+    "buildsystem": "simple",
+    "build-commands": [
+        "cargo --offline fetch --manifest-path Cargo.toml --verbose",
+        "cargo --offline build --release --verbose",
+        "install -Dm755 target/release/hexyl -t /app/bin/"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/sharkdp/hexyl/archive/v0.9.0.tar.gz",
+            "sha256": "73f0dc1be1eaa1a34e3280bc1eeb4f86f34b024205fc7bf3c87d5a0bc4021a6a"
+        },
+        "cargo-sources.json"
+    ]
+}
