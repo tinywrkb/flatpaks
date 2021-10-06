@@ -1,19 +1,19 @@
-# TODO
-#   mimetypes
-#   add icestorm?
+# TODO: add mimetypes?
+# TODO: add icestorm module?
 app-id: io.icestudio.icestudio
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '21.08'
 command: icestudio
-rename-desktop-file: icestudio.desktop
-rename-icon: icestudio
 cleanup:
   - /include
   - /lib/pkgconfig
   - '*.a'
   - '*.la'
 finish-args:
+  - --device=all
   - --device=dri
   - --filesystem=home
   - --persist=.icestudio
@@ -21,32 +21,45 @@ finish-args:
   - --share=network
   - --socket=wayland
   - --socket=x11
+  - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.ScreenSaver
 modules:
   - name: icestudio
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
-      - install -Dm755 icestudio /app/bin/icestudio
-      - install -Dm644 icestudio.desktop /app/share/applications/icestudio.desktop
-      - install -Dm644 icestudio.svg /app/share/icons/hicolor/scalable/apps/icestudio.svg
+      - install -Dm755 -t /app/bin/
+          apply_extra icestudio
+      - |
+        install -Dm755 /dev/stdin /app/etc/ld.so.conf <<EOF
+        /app/extra/lib
+        EOF
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
     sources:
+      - type: extra-data
+        filename: icestudio.zip
+        url: https://github.com/FPGAwars/icestudio/releases/download/v0.7.0/icestudio-0.7.0-linux64.zip
+        sha256: 0cb123d806ad74231759ee5fd88d77846bf286cbc5323e04a409879fd569d23f
+        size: 189440230
+        x-checker-data:
+          type: anitya
+          project-id: 235208
+          stable-only: true
+          url-template: https://github.com/FPGAwars/icestudio/releases/download/v$version/icestudio-$version-linux64.zip
       - type: script
         dest-filename: apply_extra
         commands:
-          - unappimage appimage
-          - rm -f appimage
-          - rm -f squashfs-root/{AppRun,Icestudio.desktop}
-          - mv squashfs-root/usr/bin icestudio
-          - rm -rf squashfs-root
-          #- touch icestudio/chrome-sandbox && chmod +x icestudio/chrome-sandbox
-      - type: extra-data
-        filename: appimage
-        url: https://github.com/FPGAwars/icestudio/releases/download/v0.5.0/icestudio-0.5.0-linux64.AppImage
-        sha256: 89da2050cc89f780abfda3e504aee028dc94c9499412628ad444c969f129a8e3
-        size: 115401648
-      - type: dir
-        path: resources
-  - ../shared-modules/unappimage/unappimage.json
-  - ../shared-modules/gconf/gconf.json
-  - ../shared-modules/libnotify/libnotify.json
-  - ../flathub-shared-modules/gtk2/gtk2.json
+          - bsdtar -xf icestudio.zip
+            --strip-components=1
+            --exclude='icestudio-*-linux*/nacl*'
+          - rm -f icestudio.zip
+      - type: script
+        dest-filename: icestudio
+        commands:
+          - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+          - exec /app/extra/icestudio "$@"
+      - type: file
+        path: io.icestudio.icestudio.desktop
+      - type: file
+        path: io.icestudio.icestudio.svg

@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Icestudio
 Comment=Visual editor for open FPGA boards
+Icon=io.icestudio.icestudio
 Exec=icestudio %U
 Terminal=false
 Type=Application
