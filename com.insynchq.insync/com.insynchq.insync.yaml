@@ -95,10 +95,10 @@ modules:
         path: resources
       - type: extra-data
         filename: insync.deb
-        url: http://apt.insync.io/debian/pool/non-free/i/insync/insync_3.5.3.50123-buster_amd64.deb
+        url: http://apt.insync.io/debian/pool/non-free/i/insync/insync_3.5.4.50130-buster_amd64.deb
         # alturl: http://s.insynchq.com/builds/insync_$version_amd64.deb, e.g. version=3.3.9.40955-buster
-        sha256: 3c00b633a29b24a50e1b5c0065065014f0de4b38d6e50eafb97974939fd6a7c8
-        size: 132791050
+        sha256: f33a419ef69ee88f1da81bcff4707f07b9c6c003153564346b633ffea85e221a
+        size: 132805052
         x-checker-data:
           type: debian-repo
           package-name: insync
