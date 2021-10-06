@@ -4,6 +4,6 @@ Name=Ripcord
 GenericName=Discord Client
 Exec=ripcord
 Terminal=false
-Icon=ripcord
+Icon=fm.cancel.ripcord
 Comment=Chat client for Discord
 Categories=Network;InstantMessaging;

@@ -1,10 +1,8 @@
 app-id: fm.cancel.ripcord
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: ripcord
-rename-desktop-file: ripcord.desktop
-rename-icon: ripcord
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -14,20 +12,32 @@ finish-args:
   - --device=dri
   - --env=QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/plugins
   - --filesystem=home
-  - --share=ipc
   - --share=network
   - --socket=pulseaudio
   - --socket=wayland
-  - --socket=fallback-x11
 modules:
   - name: ripcord
     buildsystem: simple
     build-commands:
-      - install -Dm755 apply_extra /app/bin/apply_extra
-      - install -Dm755 ripcord /app/bin/ripcord
-      - install -Dm644 ripcord.desktop /app/share/applications/ripcord.desktop
-      - install -Dm644 ripcord.png /app/share/icons/hicolor/512x512/apps/ripcord.png
+      - install -Dm755 apply_extra -t /app/bin/
+      - |
+        install -Dm755 /dev/stdin /app/bin/ripcord <<'EOF'
+        export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+        exec /app/extra/Ripcord "$@"
+        EOF
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/512x512/apps/
     sources:
+      - type: extra-data
+        filename: appimage
+        url: https://cancel.fm/dl/Ripcord-0.4.29-x86_64.AppImage
+        sha256: e320cb3c4043b0f296b4bc1da664b29776f95c2c0b02bdbf115b4d46b1669899
+        size: 33701792
+        x-checker-data:
+          type: html
+          url: https://cancel.fm/ripcord
+          version-pattern: Ripcord Linux ([\d\.-]*) \(AppImage\)
+          url-template: https://cancel.fm/dl/Ripcord-$version-x86_64.AppImage
       - type: script
         dest-filename: apply_extra
         commands:
@@ -38,19 +48,11 @@ modules:
           - patchelf --replace-needed libsodium.so.18 libsodium.so squashfs-root/Ripcord
           - mv squashfs-root/* ./
           - rmdir squashfs-root
-      - type: extra-data
-        filename: appimage
-        url: https://cancel.fm/dl/Ripcord-0.4.26-x86_64.AppImage
-        sha256: 784602ca1d8f86f7e8bb01603bc31682ad8d2c8be6e26fa33a423dec5f103445
-        size: 33697696
-      - type: dir
-        path: resources
+      - type: file
+        path: fm.cancel.ripcord.desktop
+      - type: file
+        path: fm.cancel.ripcord.png
     modules:
-      - name: 
-      - ../shared-modules/unappimage/unappimage.json
+      - ../shared-modules/libsodium/libsodium.json
       - ../shared-modules/patchelf/patchelf.json
-      - name: libsodium
-        sources:
-          - type: archive
-            url: https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
-            sha256: 6f504490b342a4f8a4c4a02fc9b866cbef8622d5df4e5452b46be121e46636c1
+      - ../shared-modules/unappimage/unappimage.json
