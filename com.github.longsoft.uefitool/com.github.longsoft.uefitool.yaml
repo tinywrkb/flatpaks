@@ -1,13 +1,11 @@
 app-id: com.github.longsoft.uefitool
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: UEFITool
 finish-args:
   - --device=dri
   - --filesystem=home
-  - --share=ipc
-  - --socket=fallback-x11
   - --socket=wayland
 modules:
   - name: uefitool
@@ -21,7 +19,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/LongSoft/UEFITool.git
-        #branch: master
+        branch: master
         commit: 44cafebbecb6485d183e8ed268d6d309682fe395
       - type: file
         path: com.github.longsoft.uefitool.desktop
@@ -39,7 +37,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/LongSoft/UEFITool.git
-        #branch: master
+        branch: master
         commit: 44cafebbecb6485d183e8ed268d6d309682fe395
   - name: uefireplace
     buildsystem: qmake
@@ -50,5 +48,5 @@ modules:
     sources:
       - type: git
         url: https://github.com/LongSoft/UEFITool.git
-        #branch: master
+        branch: master
         commit: 44cafebbecb6485d183e8ed268d6d309682fe395
