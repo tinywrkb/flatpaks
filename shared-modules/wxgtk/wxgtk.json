@@ -1,27 +1,33 @@
 {
-  "name": "wxgtk",
-  "config-opts": [
-    "--disable-precomp-headers",
-    "--enable-graphics_ctx",
-    "--enable-mediactrl",
-    "--enable-unicode",
-    "--enable-webview",
-    "--with-gtk=3",
-    "--with-libjpeg=sys",
-    "--with-libpng=sys",
-    "--with-libtiff=sys",
-    "--with-libxpm=sys",
-    "--with-opengl",
-    "--with-regex=builtin"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.5.1/wxWidgets-3.0.5.1.tar.bz2",
-      "sha256": "440f6e73cf5afb2cbf9af10cec8da6cdd3d3998d527598a53db87099524ac807"
-    }
-  ],
-  "modules": [
-    "../../flathub-shared-modules/glu/glu-9.json"
-  ]
+    "name": "wxgtk",
+    "config-opts": [
+        "--disable-precomp-headers",
+        "--enable-graphics_ctx",
+        "--enable-mediactrl",
+        "--enable-unicode",
+        "--enable-webview",
+        "--with-gtk=3",
+        "--with-libjpeg=sys",
+        "--with-libpng=sys",
+        "--with-libtiff=sys",
+        "--with-libxpm=sys",
+        "--with-opengl",
+        "--with-regex=builtin"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.5/wxWidgets-3.1.5.tar.bz2",
+            "sha256": "d7b3666de33aa5c10ea41bb9405c40326e1aeb74ee725bb88f90f1d50270a224",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 5150,
+                "stable-only": true,
+                "url-template": "https://github.com/wxWidgets/wxWidgets/releases/download/v$version/wxWidgets-$version.tar.bz2"
+            }
+        }
+    ],
+    "modules": [
+        "../../flathub-shared-modules/glu/glu-9.json"
+    ]
 }
