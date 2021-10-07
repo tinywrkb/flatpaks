@@ -1,0 +1,26 @@
+{
+    "name": "scons",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python scripts/scons.py",
+        "python setup.py build",
+        "cp -v build/doc/man/* .",
+        "python setup.py install --install-data=/app/share/man/man1 --skip-build --prefix=/app --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/SCons/scons/archive/4.2.0.tar.gz",
+            "sha256": "1d8f70fe836015b9906db14e34b45a594846d90fe7d15a80aeb06c07a1947bc0",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 4770,
+                "stable-only": true,
+                "url-template": "https://github.com/SCons/scons/archive/$version.tar.gz"
+            }
+        }
+    ],
+    "cleanup": [
+        "*"
+    ]
+}
