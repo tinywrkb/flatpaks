@@ -9,57 +9,78 @@
 
 app-id: com.hopperapp.hopper
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: hopper
-rename-icon: hopper
-rename-desktop-file: hopper.desktop
-build-options:
-  strip: false
-  no-debuginfo: true
 finish-args:
   - --device=dri
   - --filesystem=home
-  - --share=ipc
   - --socket=wayland
-  - --socket=x11
 cleanup:
+  - /include
   - /lib/pkgconfig
+  - /share/man
   - '*.a'
   - '*.la'
 modules:
-  - name: python2
-    config-opts:
-      - --enable-shared
-    sources:
-      - type: archive
-        url: https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
-        sha256: b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
-    cleanup:
-      - /include
-      - /share/man
   - ../shared-modules/libbsd/libbsd.json
+# might need clang
+# - name: libdispatch
+#   buildsystem: cmake
+#   config-opts:
+#     - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+#     - -DBlocksRuntime_INCLUDE_DIR=/app/include
+#     - -DBlocksRuntime_LIBRARIES=/app/lib/libBlocksRuntime.so
+#   sources:
+#     - type: archive
+#       url: sfda
+#       sha256: fasdfds
+#       x-checker-data:
+#         type: anitya
+#         project-id: 148807
+#         stable-only: true
+#         url-template: https://github.com/apple/swift-corelibs-libdispatch/archive/swift-$version-RELEASE.tar.gz
   - name: hopper
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
-      - install -Dm755 hopper /app/bin/hopper
-      - install -Dm644 hopper.desktop /app/share/applications/hopper.desktop
-      - for s in 16 24 32 48 64 128 256 512; do
-          install -Dm644 ${s}.png /app/share/icons/hicolor/${s}x${s}/apps/hopper.png;
+      - install -Dm755 apply_extra hopper -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - |
+        for s in 48 64 128 256 512; do
+          install -Dm644 ${s}.png /app/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
         done
     sources:
+      - type: extra-data
+        filename: hopper.tar.xz
+        url: https://d2ap6ypl1xbe4k.cloudfront.net/Hopper-v4-4.9.1-Linux.pkg.tar.xz
+        sha256: 37706c9c96f16c0baaa8df6a2ff6b5479fe652c59e4f9de979536b6147fee60e
+        size: 18612684
       - type: script
         dest-filename: apply_extra
         commands:
-          - tar xf hopper.tar.xz --strip=2
+          - bsdtar -xf hopper.tar.xz
+            --strip-components=2
+            opt/hopper-v4
+          - |
+            mkdir doc &&
+              bsdtar -xf hopper.tar.xz \
+              --strip-components=4 \
+              --directory=doc \
+              usr/share/doc/hopperv4
           - rm -f hopper.tar.xz
-          - mv hopper-v4 hopper
-          - rm -rf applications icons
-      - type: dir
-        path: resources
-      - type: extra-data
-        filename: hopper.tar.xz
-        url: https://d2ap6ypl1xbe4k.cloudfront.net/Hopper-v4-4.5.29-Linux.pkg.tar.xz
-        sha256: f01b1439f4561bb18dc49804ebe3df56b6b6859eed529b379c81ece88a7337ec
-        size: 17943744
+      - type: script
+        dest-filename: hopper
+        commands:
+          - exec /app/extra/bin/Hopper "$@"
+      - type: file
+        path: com.hopperapp.hopper.desktop
+      - type: file
+        path: icons/48.png
+      - type: file
+        path: icons/64.png
+      - type: file
+        path: icons/128.png
+      - type: file
+        path: icons/256.png
+      - type: file
+        path: icons/512.png
