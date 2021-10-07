@@ -1,7 +1,7 @@
 # TODO ~/.wxMaxima config workaround
 app-id: com.github.wxmaxima_developers.wxmaxima
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: wxmaxima
 rename-desktop-file: io.github.wxmaxima_developers.wxMaxima.desktop
@@ -12,8 +12,6 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-pictures
   - --persist=.maxima
-  - --share=ipc
-  - --socket=fallback-x11
   - --socket=wayland
 cleanup:
   - /include
@@ -24,26 +22,39 @@ cleanup:
 modules:
   - name: wxmaxima
     buildsystem: cmake
+    builddir: true
     config-opts:
       - -DwxWidgets_CONFIG_EXECUTABLE=/app/bin/wx-config
     post-install:
-      - install -Dm644 /app/share/pixmaps/io.github.wxmaxima_developers.wxMaxima.png -t /app/share/icons/hicolor/128x128/apps/
-      - install -Dm644 /app/share/pixmaps/io.github.wxmaxima_developers.wxMaxima.svg -t /app/share/icons/hicolor/scalable/apps/
+      - install -Dm644 /app/share/pixmaps/io.github.wxmaxima_developers.wxMaxima.png
+        -t /app/share/icons/hicolor/128x128/apps/
+      - install -Dm644 /app/share/pixmaps/io.github.wxmaxima_developers.wxMaxima.svg
+        -t /app/share/icons/hicolor/scalable/apps/
     sources:
       - type: archive
-        url: https://github.com/wxMaxima-developers/wxmaxima/archive/Version-20.07.0.tar.gz
-        sha256: 0ab31006eb00e978ba8ecc840097272b401c294c0dbf69919ec8d6c02558e6f0
+        url: https://github.com/wxMaxima-developers/wxmaxima/archive/Version-21.05.2.tar.gz
+        sha256: 4d2d486a24090ace2f64ceccb026210e2e6299a32cb348d43134ef80440bcf01
+        x-checker-data:
+          type: anitya
+          project-id: 6366
+          stable-only: true
+          url-template: https://github.com/wxMaxima-developers/wxmaxima/archive/Version-$version.tar.gz
     modules:
       - ../shared-modules/wxgtk/wxgtk.json
       - name: maxima
-#       config-opts:
-#         - --libexecdir=/app/lib
-#         - --enable-sbcl
-#         - --with-default-lisp=sbcl
+        config-opts:
+          - --libexecdir=/app/lib
+          - --enable-sbcl
+          - --with-default-lisp=sbcl
         sources:
           - type: archive
-            url: https://downloads.sourceforge.net/sourceforge/maxima/maxima-5.44.0.tar.gz
-            sha256: d93f5e48c4daf8f085d609cb3c7b0bdf342c667fd04cf750c846426874c9d2ec
+            url: https://downloads.sourceforge.net/sourceforge/maxima/maxima-5.45.1.tar.gz
+            sha256: fe9016276970bef214a1a244348558644514d7fdfaa4fc8b9d0e87afcbb4e7dc
+            x-checker-data:
+              type: anitya
+              project-id: 6365
+              stable-only: true
+              url-template: https://downloads.sourceforge.net/sourceforge/maxima/maxima-$version.tar.gz
         modules:
           - name: sbcl-bin
             buildsystem: simple
@@ -51,8 +62,13 @@ modules:
               - INSTALL_ROOT=/app sh install.sh
             sources:
               - type: archive
-                url: http://prdownloads.sourceforge.net/sbcl/sbcl-2.0.6-x86-64-linux-binary.tar.bz2
-                sha256: 0abe511b860ed2a26e61a50c50e0fc50f0060b72a26441cbb344801b8621d34e
+                url: http://prdownloads.sourceforge.net/sbcl/sbcl-2.1.9-x86-64-linux-binary.tar.bz2
+                sha256: 55cf7dbac0653c8058c591e2bcdb6d77e075338bba1b7c83f96b589d8c5ffabf
+                x-checker-data:
+                  type: anitya
+                  project-id: 16339
+                  stable-only: true
+                  url-template: http://prdownloads.sourceforge.net/sbcl/sbcl-$version-x86-64-linux-binary.tar.bz2
             # TODO: build sbcl from source
 #         - name: sbcl
 #           # https://common-lisp.net/project/ecl/posts/ECL-Quarterly-Volume-IV.html#orgheadline31
