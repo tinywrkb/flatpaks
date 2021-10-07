@@ -2,6 +2,7 @@
 Name=Digital
 Comment=Digital logic designer and circuit simulator
 GenericName=Digital
+Icon=com.github.hneemann.digital
 Exec=digital %U
 Type=Application
 StartupNotify=true

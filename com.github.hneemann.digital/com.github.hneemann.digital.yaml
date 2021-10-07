@@ -1,23 +1,15 @@
 app-id: com.github.hneemann.digital
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk
 command: digital
-rename-desktop-file: digital.desktop
-cleanup:
-  - /include
-  - /lib/pkgconfig
-  - '*.a'
-  - '*.la'
 finish-args:
   - --device=dri
   - --env=PATH=/app/bin:/app/jre/bin:/usr/bin
-  - --env=_JAVA_AWT_WM_NONREPARENTING=1
   - --filesystem=home
   - --share=ipc
-  - --socket=wayland
   - --socket=x11
 modules:
   - name: openjdk
@@ -27,21 +19,31 @@ modules:
   - name: digital
     buildsystem: simple
     build-commands:
-      - install -Dm755 digital /app/bin/digital
-      - install -Dm644 digital.desktop /app/share/applications/digital.desktop
-      - install -Dm755 apply_extra /app/bin/apply_extra
+      - install -Dm755 apply_extra digital -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
     sources:
-      - type: dir
-        path: resources
       - type: extra-data
         filename: digital.zip
-        url: https://github.com/hneemann/Digital/releases/download/v0.27/Digital.zip
-        sha256: a93b9dd70ed5b051bf04aacc37f2794c3c3d17f214ab99f0c8f4a36e55bbe835
-        size: 10602519
+        url: https://github.com/hneemann/Digital/releases/download/v0.28/Digital.zip
+        sha256: a96509442cc7b6697e66c1420b9e42f91325e20f9f34cc13cbfd92cb9b90c70d
+        x-checker-data:
+          type: anitya
+          project-id: 235219
+          stable-only: true
+          url-template: https://github.com/hneemann/Digital/releases/download/v$version/Digital.zip
+        size: 12235191
       - type: script
         dest-filename: apply_extra
         commands:
           - bsdtar -xf digital.zip --strip 1
-          - rm -f digital.zip
-          - rm -f *.{exe,txt} Digital.sh Windows_Read.me
+          - rm -f digital.zip *.{exe,txt} {Digital,install}.sh Windows_Read.me
           - rm -rf docu
+      - type: script
+        dest-filename: digital
+        commands:
+          - java -jar /app/extra/Digital.jar
+      - type: file
+        path: com.github.hneemann.digital.desktop
+      - type: file
+        path: com.github.hneemann.digital.svg
