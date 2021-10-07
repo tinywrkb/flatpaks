@@ -5,5 +5,5 @@ Comment=Create high quality panoramas
 Exec=ptgui %U
 Terminal=false
 Type=Application
-Icon=ptgui
+Icon=com.ptgui.ptgui
 Categories=Graphics

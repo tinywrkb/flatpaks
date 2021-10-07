@@ -1,15 +1,14 @@
 # TODO:
-#   * import icons from windows app
+#   * import icons from the windows app
 #   * improve desktop files
 #   * mimetypes for desktop files
 #   * package also or switch to pro version?
 #   * opencl?
 app-id: com.ptgui.ptgui
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: ptgui
-rename-icon: ptgui
 finish-args:
   - --device=dri
   - --filesystem=xdg-pictures
@@ -21,21 +20,32 @@ modules:
   - name: ptgui
     buildsystem: simple
     build-commands:
-      - install -Dm755 apply_extra /app/bin/apply_extra
-      - install -Dm755 ptgui ptguiviewer -t /app/bin/
-      - install -Dm644 ptgui.desktop /app/share/applications/com.ptgui.ptgui.desktop
-      - install -Dm644 ptguiviewer.desktop /app/share/applications/com.ptgui.ptgui.ptguiviewer.desktop
-      - install -Dm644 ptgui.png /app/share/icons/hicolor/128x128/apps/ptgui.png
+      - install -Dm755 apply_extra ptgui ptguiviewer -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}{,.ptguiviewer}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/128x128/apps/
     sources:
-      - type: dir
-        path: resources
       - type: script
         dest-filename: apply_extra
         commands:
           - tar -xf ptgui.tar.gz
           - rm -f ptgui.tar.gz
+# TODO: f-e-d-c
       - type: extra-data
-        url: https://www.ptgui.com/downloads/120000/trial/linux/standard/18698/c16df71ff7e1f7982e82d8c10ae7b13e38004ab369cb206d8f17fb0eee7c1ec4/PTGui_12.0_trial.tar.gz
-        sha256: 9fa3465504450187a40e49e590c9d0ad0797e652307319de1b2a040b5042e840
-        size: 31290532
+        url: https://www.ptgui.com/downloads/120700/trial/linux/standard/18907/483b53b8f227d0901088803aaec88a5954bf7167dd4961a679f2a62e720c6314/PTGui_12.7_trial.tar.gz
+        sha256: 1f3221c36f3064a21b74694adf910673ff8773df94bfe594e6213388b5e3bf5a
+        size: 32390829
         filename: ptgui.tar.gz
+      - type: script
+        dest-filename: ptgui
+        commands:
+          - exec /app/extra/PTGui "$@"
+      - type: script
+        dest-filename: ptguiviewer
+        commands:
+          - exec /app/extra/PTGuiViewer "$@"
+      - type: file
+        path: com.ptgui.ptgui.desktop
+      - type: file
+        path: com.ptgui.ptgui.ptguiviewer.desktop
+      - type: file
+        path: com.ptgui.ptgui.png
