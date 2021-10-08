@@ -1,17 +1,18 @@
 {
-  "name": "gtkwave-gtk3",
-  "subdir": "gtkwave3-gtk3",
-  "config-opts": [
-    "--disable-mime-update",
-    "--disable-tcl",
-    "--enable-gtk3",
-    "--with-gsettings"
-  ],
-  "sources": [
-    {
-      "type": "git",
-      "url": "https://github.com/gtkwave/gtkwave.git",
-      "commit": "74e2f151c2572d0a1707bc6cd83cc3c3aa4acbb1"
-    }
-  ]
+    "name": "gtkwave-gtk3",
+    "subdir": "gtkwave3-gtk3",
+    "config-opts": [
+        "--disable-mime-update",
+        "--disable-tcl",
+        "--enable-gtk3",
+        "--with-gsettings"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/gtkwave/gtkwave.git",
+            "branch": "master",
+            "commit": "69d4cf682e5e091f2687521b9bafe574823d8d54"
+        }
+    ]
 }
