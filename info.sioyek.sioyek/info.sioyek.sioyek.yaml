@@ -1,15 +1,13 @@
 app-id: info.sioyek.sioyek
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: sioyek
 rename-desktop-file: sioyek.desktop
+rename-icon: sioyek-icon-linux
 finish-args:
   - --device=dri
-  - --env=MESA_GL_VERSION_OVERRIDE=3.0
   - --filesystem=xdg-documents
-  - --share=ipc
-  - --socket=fallback-x11
   - --socket=wayland
 cleanup:
   - /include
@@ -25,23 +23,23 @@ modules:
       - QMAKE_CC=gcc
       - QMAKE_CXX=g++
       - CONFIG+=link_pkgconfig
-      - PKGCONFIG+="harfbuzz mupdf"
+      - PKGCONFIG+="harfbuzz mupdf zlib"
       - LIBS="-ldl"
       - pdf_viewer_build_config.pro
     post-install:
-      - desktop-file-edit --remove-key Icon ${FLATPAK_DEST}/share/applications/sioyek.desktop
-      - install -Dm644 -t ${FLATPAK_DEST}/bin/
-          tutorial.pdf
-          pdf_viewer/prefs.config
-          pdf_viewer/prefs_user.config
-          pdf_viewer/keys.config
-          pdf_viewer/keys_user.config
+      - install -Dm644 -t ${FLATPAK_DEST}/bin/ tutorial.pdf pdf_viewer/{keys,prefs}{,_user}.config
       - install -dm755 ${FLATPAK_DEST}/bin/shaders
-      - install -Dm644 -t ${FLATPAK_DEST}/bin/shaders/
-          pdf_viewer/shaders/*
+      - install -Dm644 -t ${FLATPAK_DEST}/bin/shaders/ pdf_viewer/shaders/*
+      - install -Dm644 ${FLATPAK_DEST}/share/{pixmaps,icons/hicolor/256x256/apps}/sioyek-icon-linux.png
+      - rm -rf ${FLATPAK_DEST}/share/pixmaps
     sources:
       - type: archive
-        url: https://github.com/ahrm/sioyek/archive/v0.31.5.tar.gz
-        sha256: ff7e63244e95106b8c84dc24b779bb874d86646d970476a81b3a5d91514bcdd8
+        url: https://github.com/ahrm/sioyek/archive/v0.31.6.tar.gz
+        sha256: 3708f77a904a5eb0a2b1819a7e1cdfbc3eddb01ff79d8fe0f38e466079be8d85
+        x-checker-data:
+          type: anitya
+          project-id: 225470
+          stable-only: true
+          url-template: https://github.com/ahrm/sioyek/archive/v$version.tar.gz
     modules:
       - ../shared-modules/mupdf/libmupdf.json
