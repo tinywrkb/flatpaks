@@ -1,18 +1,24 @@
 {
-  "name": "gtkwave-gtk2",
-  "config-opts": [
-    "--disable-tcl",
-    "--with-gsettings",
-    "--disable-mime-update"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "http://gtkwave.sourceforge.net/gtkwave-3.3.104.tar.gz",
-      "sha256": "d20dd1a9307b908439c68122a9f81d3ff434a6bfa5439f0cb01398fec650894f"
-    }
-  ],
-  "modules": [
-    "../flathub-shared-modules/gtk2/gtk2.json"
-  ]
+    "name": "gtkwave-gtk2",
+    "config-opts": [
+        "--disable-tcl",
+        "--with-gsettings",
+        "--disable-mime-update"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "http://gtkwave.sourceforge.net/gtkwave-3.3.111.tar.gz",
+            "sha256": "f6e6046674033e5bab6e4e2720d6bd7dba70b23f329614191b029e06c57ec296",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 8813,
+                "stable-only": true,
+                "url-template": "http://gtkwave.sourceforge.net/gtkwave-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../../flathub-shared-modules/gtk2/gtk2.json"
+    ]
 }
