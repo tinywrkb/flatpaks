@@ -1,0 +1,58 @@
+#!/bin/bash
+
+set -e
+
+# extract archive
+bsdtar -xf eagle.tar.gz --strip-components=1 --no-same-owner
+rm -f eagle.tar.gz
+
+
+# remove bundled libs
+{
+  cd lib
+  
+  # libs with stable abi that are available in the runtime
+  _libs=(
+    # dbus
+    libdbus-1.so.3
+    # glib2
+    lib{gmodule,gthread}-2.0.so.0
+    # mesa
+    lib{EGL,gbm,glapi}.so*
+    # nspr
+    libpl{c,ds}4.so* 
+    # pcre
+    libpcre.so* 
+    # xorg
+    lib{X,xcb,xshmfence}*.so*
+  )
+
+#  # TODO: packaged libs
+#  _libs+=(
+#  # avahi
+#  libavahi*.so*
+#  # icu 56
+#  libicu{data,i18n,uc}.so*
+#  # krb5
+#  libkrb5{,support}.so*
+#  # libffi
+#  libffi.so*
+#  # libselinux
+#  libselinux.so*
+#  # libsuit
+#  libsuit.so*
+#  # nss
+#  lib{freebl3,smime3}.so* 
+#  # openssl 1.0.x
+#  lib{crypto,ssl}.so*
+#  )
+
+  rm -f "${_libs[@]}"
+}
+
+
+# fix permissions
+find ./ -perm 750 -exec chmod 755 {} \;
+find ./ -perm 700 -exec chmod 755 {} \;
+find ./ -perm 640 -exec chmod 644 {} \;
+find ./ -perm 600 -exec chmod 644 {} \;
