@@ -44,6 +44,7 @@ modules:
       - type: shell
         commands:
           - sed -i 's#WXCFG  = /usr/bin/wx-config#WXCFG  = /app/bin/wx-config#' src/Makefile
+          - sed -i '\#^WXCFG.*version=# s#$(GSPICEUI_WXLIB)#3.1#' src/Makefile
     modules:
       - ../shared-modules/wxgtk/wxgtk.json
   - ../shared-modules/gaw3/gaw3.json
