@@ -1,15 +1,9 @@
 [
    {
       "dest": "perl-libs/File-Which",
-      "sha256": "7c5414dd6d5c61cb992fdd257aefe52f9a80bf55158cd5ec17469199d0b12eef",
+      "sha256": "3201f1a60e3f16484082e6045c896842261fc345de9fb2e620fd2a2c7af3a93a",
       "type": "archive",
-      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/File-Which-1.24.tar.gz"
-   },
-   {
-      "dest": "perl-libs/FFI-CheckLib",
-      "sha256": "8d442747c24fcd8560107ed9deb98265838f17bc850cb7237f8b6d4821992d74",
-      "type": "archive",
-      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/FFI-CheckLib-0.27.tar.gz"
+      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/File-Which-1.27.tar.gz"
    },
    {
       "dest": "perl-libs/File-chdir",
@@ -24,6 +18,12 @@
       "url": "https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/Capture-Tiny-0.48.tar.gz"
    },
    {
+      "dest": "perl-libs/FFI-CheckLib",
+      "sha256": "cf377ce735b332c41f600ca6c5e87af30db6c3787f9b67d50a245d1ebe6fc350",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/FFI-CheckLib-0.28.tar.gz"
+   },
+   {
       "dest": "perl-libs/Path-Tiny",
       "sha256": "32138d8d0f4c9c1a84d2a8f91bc5e913d37d8a7edefbb15a10961bfed560b0fd",
       "type": "archive",
@@ -31,9 +31,9 @@
    },
    {
       "dest": "perl-libs/Alien-Build",
-      "sha256": "6bbd4116d1a08f95df669fcba16acd6a7e94329843abc8cb7c4b038d1778bded",
+      "sha256": "517c99c69fd236e106c1827896bd8562d7768043cc11bfbc399d55e95a63b791",
       "type": "archive",
-      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Build-2.38.tar.gz"
+      "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Build-2.42.tar.gz"
    },
    {
       "dest": "perl-libs/Alien-Libxml2",
@@ -42,16 +42,16 @@
       "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Libxml2-0.17.tar.gz"
    },
    {
-      "dest": "perl-libs/XML-SAX-Base",
-      "sha256": "66cb355ba4ef47c10ca738bd35999723644386ac853abbeb5132841f5e8a2ad0",
-      "type": "archive",
-      "url": "https://cpan.metacpan.org/authors/id/G/GR/GRANTM/XML-SAX-Base-1.09.tar.gz"
-   },
-   {
       "dest": "perl-libs/XML-NamespaceSupport",
       "sha256": "47e995859f8dd0413aa3f22d350c4a62da652e854267aa0586ae544ae2bae5ef",
       "type": "archive",
       "url": "https://cpan.metacpan.org/authors/id/P/PE/PERIGRIN/XML-NamespaceSupport-1.12.tar.gz"
+   },
+   {
+      "dest": "perl-libs/XML-SAX-Base",
+      "sha256": "66cb355ba4ef47c10ca738bd35999723644386ac853abbeb5132841f5e8a2ad0",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/G/GR/GRANTM/XML-SAX-Base-1.09.tar.gz"
    },
    {
       "dest": "perl-libs/XML-SAX",
@@ -61,9 +61,9 @@
    },
    {
       "dest": "perl-libs/XML-LibXML",
-      "sha256": "010ba395c38711f9c233ee23d0b0b18b761e6d99a762125f7e6180d068851619",
+      "sha256": "903436c9859875bef5593243aae85ced329ad0fb4b57bbf45975e32547c50c15",
       "type": "archive",
-      "url": "https://cpan.metacpan.org/authors/id/S/SH/SHLOMIF/XML-LibXML-2.0206.tar.gz"
+      "url": "https://cpan.metacpan.org/authors/id/S/SH/SHLOMIF/XML-LibXML-2.0207.tar.gz"
    },
    {
       "commands": [
@@ -81,18 +81,19 @@
          "    fi",
          "}",
          "(make_install perl-libs/File-Which)",
-         "(make_install perl-libs/FFI-CheckLib)",
          "(make_install perl-libs/File-chdir)",
          "(make_install perl-libs/Capture-Tiny)",
+         "(make_install perl-libs/FFI-CheckLib)",
          "(make_install perl-libs/Path-Tiny)",
          "(make_install perl-libs/Alien-Build)",
          "(make_install perl-libs/Alien-Libxml2)",
-         "(make_install perl-libs/XML-SAX-Base)",
          "(make_install perl-libs/XML-NamespaceSupport)",
+         "(make_install perl-libs/XML-SAX-Base)",
          "(make_install perl-libs/XML-SAX)",
          "(make_install perl-libs/XML-LibXML)"
       ],
-      "dest-filename": "perl-libs/install.sh",
+      "dest": "perl-libs",
+      "dest-filename": "install.sh",
       "type": "script"
    }
 ]

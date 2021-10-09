@@ -1,6 +1,7 @@
+# TODO: patch wrapper scripts to support ghdl? qucs/qucs/{qucsdigilib,qucsdigi}
 app-id: com.github.qucs.qucs.BaseApp
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 separate-locales: false
 command: qucs
@@ -10,7 +11,7 @@ cleanup:
   - '*.a'
   - '*.la'
 modules:
-  - name: qucs.BaseApp
+  - name: qucs
     config-opts:
       - --disable-doc
     sources:
@@ -18,7 +19,7 @@ modules:
         url: http://downloads.sourceforge.net/project/qucs/qucs/0.0.20/qucs-0.0.20-rc2.tar.gz
         sha256: 66cfa0b9f8baa8468feb81b3a15f165e1946511893fa9cfee7009167daa04d19
     modules:
-      - qt4/qt4-4.8.7.json
+      - ../shared-modules/qt4/qt4-4.8.7.json
       - name: adms
         config-opts:
          - --enable-maintainer-mode
@@ -49,20 +50,8 @@ modules:
                   - sed -e 's|\(perl Makefile.PL\) \&\&|\1 INSTALL_BASE=/app \&\&|'
                       -e 's|\(perl Build.PL\) \&\&|\1 --install_base=/app \&\&|'
                       -i perl-libs/install.sh
-  - name: freehdl
-    sources:
-      - type: archive
-        url: https://downloads.sourceforge.net/qucs/freehdl-0.0.8.tar.gz
-        sha256: 7f0978f8252329450de43e98c04c15fdd8a3f2bdc5ca91f75f8f5dd280c6ed84
-      - type: file
-        url: https://git.archlinux.org/svntogit/community.git/plain/trunk/build-fix.patch?h=packages/freehdl&id=3bb90d64dfe6883e26083cd1fa96226d0d59175a
-        sha256: 08d49fc621d48099afcbe42c99ba25474409dbe5c16748a1cd01f50c0e1bae25
-        dest-filename: build-fix.patch
-      - type: shell
-        commands:
-          - patch -p1 -i build-fix.patch
-    modules:
-      - ../shared-modules/gtkwave/gtkwave-gtk3.json
+  - ../shared-modules/ghdl/ghdl-gcc.json
+  - ../shared-modules/gtkwave/gtkwave-gtk3.json
   - name: package
     buildsystem: simple
     build-commands:
