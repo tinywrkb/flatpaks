@@ -1,5 +1,8 @@
 {
     "name": "ghdl-gcc",
+    "build-options": {
+        "append-path": "/app/lib/gnat/bin"
+    },
     "config-opts": [
         "--disable-werror"
     ],
@@ -26,7 +29,9 @@
             "buildsystem": "simple",
             "build-commands": [
                 "chmod +x gnat-x86_64-linux-bin",
-                "./gnat-x86_64-linux-bin --script install_script/install_script.qs --platform minimal InstallPrefix=/app Components=com.adacore.gnat"
+                "mkdir gnat",
+                "./gnat-x86_64-linux-bin --script install_script/install_script.qs --platform minimal InstallPrefix=$PWD/gnat Components=com.adacore.gnat",
+                "mv gnat /app/lib/gnat"
             ],
             "sources": [
                 {
