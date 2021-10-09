@@ -1,6 +1,6 @@
 app-id: org.freedesktop.xorg.xprop
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: xprop
 finish-args:
