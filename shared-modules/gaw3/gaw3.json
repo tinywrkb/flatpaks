@@ -1,10 +1,16 @@
 {
-  "name": "gaw3",
-  "sources": [
-    {
-      "type": "archive",
-      "url": "http://download.tuxfamily.org/gaw/download/gaw3-20190716.tar.gz",
-      "sha256": "890a4c01d7987c504f653cfc87cfaee655fa72e7e801fb7d83e6f2ee35f10568"
-    }
-  ]
+    "name": "gaw3",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "http://download.tuxfamily.org/gaw/download/gaw3-20200922.tar.gz",
+            "sha256": "8a13aa8589cd3ab2909a765e2ce339d1bac90d6edb5d4fa40f0a1cb243b8aa62",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 235245,
+                "stable-only": true,
+                "url-template": "http://download.tuxfamily.org/gaw/download/gaw3-$version.tar.gz"
+            }
+        }
+    ]
 }
