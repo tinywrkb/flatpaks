@@ -1,0 +1,22 @@
+From 8356ea3bb4e8d0e5ad8638c3d50914b64fc360ec Mon Sep 17 00:00:00 2001
+From: Tristan Gingold <tgingold@free.fr>
+Date: Thu, 18 Feb 2021 07:57:51 +0100
+Subject: [PATCH] grt-signals.adb: fix access.  Fix #1652
+
+---
+ src/grt/grt-signals.adb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/grt/grt-signals.adb b/src/grt/grt-signals.adb
+index 11efa1527b..ea714ae20c 100644
+--- a/src/grt/grt-signals.adb
++++ b/src/grt/grt-signals.adb
+@@ -553,7 +553,7 @@ package body Grt.Signals is
+       Proc := Get_Current_Process;
+       for I in 0 .. Sig.S.Nbr_Drivers - 1 loop
+          if Sig.S.Drivers (I).Proc = Proc then
+-            return Sig.S.Drivers (I)'Access;
++            return Sig.S.Drivers (I)'Unrestricted_Access;
+          end if;
+       end loop;
+       return null;
