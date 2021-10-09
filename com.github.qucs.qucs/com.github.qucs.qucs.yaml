@@ -1,7 +1,7 @@
 app-id: com.github.qucs.qucs
-base: com.github.qucs.qucs.BaseApp
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
+base: com.github.qucs.qucs.BaseApp
 sdk: org.freedesktop.Sdk
 command: qucs
 rename-desktop-file: qucs.desktop
