@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -S "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" ]; then
+  exec wlfreerdp "$@"
+elif [ -S /tmp/.X11-unix/X99 ]; then
+  exec xfreerdp "$@"
+else
+  >&2 echo "No display server available"
+  return 1
+fi

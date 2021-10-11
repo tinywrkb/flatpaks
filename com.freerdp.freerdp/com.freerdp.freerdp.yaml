@@ -2,12 +2,15 @@ app-id: com.freerdp.freerdp
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
-command: wlfreerdp
+command: freerdp
 finish-args:
   - --device=dri
+  - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -37,8 +40,11 @@ modules:
       - -DWITH_SERVER_CHANNELS=OFF
       - -DWITH_SWSCALE=ON
       - -DWITH_VAAPI=OFF
-      - -DWITH_X11=OFF
+      - -DWITH_WAYLAND=ON
+      - -DWITH_X11=ON
       - -Wno-dev
+    post-install:
+      - install -Dm755 freerdp -t /app/bin/
     sources:
       - type: archive
         url: https://github.com/FreeRDP/FreeRDP/archive/2.4.0.tar.gz
@@ -48,6 +54,8 @@ modules:
           project-id: 10442
           stable-only: true
           url-template: https://github.com/FreeRDP/FreeRDP/archive/$version.tar.gz
+      - type: file
+        path: freerdp
     cleanup:
       - /lib/cmake
     modules:
