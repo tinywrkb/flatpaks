@@ -1,0 +1,26 @@
+{
+    "name": "guile2.2",
+    "config-opts": [
+        "--disable-static",
+        "--disable-error-on-warning"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://ftp.gnu.org/pub/gnu/guile/guile-2.2.7.tar.gz",
+            "sha256": "44b4c5fbbe257ccdebea18420212c9b3e90c3c86a54920d8554039fc6769a007",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 1277,
+                "stable-only": true,
+                "versions": {
+                    "<": "3.0.0"
+                },
+                "url-template": "https://ftp.gnu.org/pub/gnu/guile/guile-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../gc/gc.json"
+    ]
+}
