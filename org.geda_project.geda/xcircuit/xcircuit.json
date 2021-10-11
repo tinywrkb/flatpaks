@@ -1,0 +1,37 @@
+{
+    "name": "xcircuit",
+    "make-args": [
+        "ACLOCAL=aclocal",
+        "AUTOMAKE=automake"
+    ],
+    "config-opts": [
+        "--with-cairo",
+        "--with-tcl=/app/lib",
+        "--with-tk=/app/lib"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "http://opencircuitdesign.com/xcircuit/archive/xcircuit-3.10.30.tgz",
+            "sha256": "b2f63cba605e79cc2a08714bf3888f7be7174384ed724db3c70f8bf25c36f554",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 5173,
+                "stable-only": true,
+                "url-template": "http://opencircuitdesign.com/xcircuit/archive/xcircuit-$version.tgz"
+            }
+        }
+    ],
+    "modules": [
+        {
+            "name": "chrpath",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "http://ftp.debian.org/debian/pool/main/c/chrpath/chrpath_0.16.orig.tar.gz",
+                    "sha256": "bb0d4c54bac2990e1bdf8132f2c9477ae752859d523e141e72b3b11a12c26e7b"
+                }
+            ]
+        }
+    ]
+}

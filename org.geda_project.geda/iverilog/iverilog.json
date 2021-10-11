@@ -1,0 +1,26 @@
+{
+    "name": "iverilog",
+    "build-options": {
+        "cflags": "-fcommon"
+    },
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/steveicarus/iverilog/archive/v10_3.tar.gz",
+            "sha256": "4b884261645a73b37467242d6ae69264fdde2e7c4c15b245d902531efaaeb234",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 1409,
+                "stable-only": true,
+                "url-template": "https://github.com/steveicarus/iverilog/archive/v$version.tar.gz"
+            }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "aclocal",
+                "autoconf"
+            ]
+        }
+    ]
+}

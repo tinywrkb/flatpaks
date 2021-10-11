@@ -1,7 +1,10 @@
-# TODO: go through dependency tree
 # TODO: cleaning
+# TODO: maybe add gnuplot, optional for gwave
+# TODO: consider splitting into separate apps
+# TODO: maybe drop this, replace with lepton-eda
 app-id: org.geda_project.geda
 runtime: org.freedesktop.Platform
+# TODO: bump runtime, blocked on iverilog, 10.3 doesn't build with 21.08, and 11.0 is an autotools mess
 runtime-version: '20.08'
 sdk: org.freedesktop.Sdk
 command: /bin/sh
@@ -9,6 +12,7 @@ finish-args:
   - --device=dri
   - --filesystem=home
   - --share=ipc
+# a mix of GTK3, GTK2, and Tk, so must have also x11 available
   - --socket=wayland
   - --socket=x11
 cleanup:
@@ -20,156 +24,7 @@ cleanup:
   # TODO: find the culprit
   - /share/icons/hicolor/icon-theme.cache
 modules:
-  - name: geda-gaf
-    build-options:
-      cflags: -fcommon
-    config-opts:
-      - --disable-update-xdg-database
-      - --without-libfam
-    sources:
-      - type: archive
-        url: http://ftp.geda-project.org/geda-gaf/stable/v1.10/1.10.0/geda-gaf-1.10.0.tar.gz
-        sha256: 5eb7a619f9d9cbcfa895468d6eae888d7e1d519dfff717b9f8f22fbeb37a3b1a
-      - type: shell
-        commands:
-          - sed -i 's|^.*<fam.h>|//&|' gschem/src/gschem_change_notification.c
-          - sed -i 's| enum FAMCodes | int |' gschem/src/gschem_change_notification.c
-      - type: patch
-        path: geda-gaf-remove-gccflags.patch
-    modules:
-    - ../flathub-shared-modules/gtk2/gtk2.json
-    - ../flathub-shared-modules/python2.7/python-2.7.json
-    - name: guile
-      config-opts:
-        - --disable-static
-        - --disable-error-on-warning
-      sources:
-        - type: archive
-          url: https://ftp.gnu.org/pub/gnu/guile/guile-2.2.6.tar.gz
-          sha256: 08c0e7487777740b61cdd97949b69e8a5e2997d8c2fe6c7e175819eb18444506
-      modules:
-        - name: gc
-          config-opts:
-            - --enable-cplusplus
-            - --disable-static
-          sources:
-            - type: archive
-              url: https://github.com/ivmai/bdwgc/releases/download/v8.0.4/gc-8.0.4.tar.gz
-              sha256: 436a0ddc67b1ac0b0405b61a9675bca9e075c8156f4debd1d06f3a56c7cd289d
-    - name: guile2.0
-      config-opts:
-        - --disable-static
-        - --disable-error-on-warning
-        - --program-suffix=2.0
-      sources:
-        - type: archive
-          url: https://ftp.gnu.org/pub/gnu/guile/guile-2.0.14.tar.gz
-          sha256: 8aeb2f353881282fe01694cce76bb72f7ffdd296a12c7a1a39255c27b0dfe5f1
-    - name: libstroke
-      sources:
-        - type: archive
-          url: https://sources.archlinux.org/other/packages/libstroke/libstroke-0.5.1.tar.gz
-          sha256: 0da9f5fde66feaf6697ba069baced8fb3772c3ddc609f39861f92788f5c7772d
-        - type: patch
-          path: libgstroke-Makefile.am.patch
-        - type: patch
-          path: libstroke-Makefile.am.patch
-        - type: patch
-          path: libstroke-0.5.1-m4_syntax.patch
-        - type: patch
-          path: libstroke-0.5.1-no_gtk1.patch
-        - type: shell
-          commands:
-            - autoreconf --force --install
-#   - perl-xml-parser
-  - ../shared-modules/graphviz/graphviz.json
-  - name: imagemagick
-    sources:
-      - type: archive
-        url: https://download.imagemagick.org/ImageMagick/download/releases/ImageMagick-7.0.10-23.tar.xz
-        sha256: 882cecda27265526eb4e7ce7e2cf6f74c018bcbbd34bc9ddd3c67fb3e9184103
-  - name: pcb
-    config-opts:
-      - --enable-dbus
-      - --disable-update-mime-database
-      - --disable-update-desktop-database
-    sources:
-      - type: archive
-        url: https://downloads.sourceforge.net/pcb/pcb-4.2.2.tar.gz
-        sha256: 1ceeaf1bdbe0508b9b140ca421eb600836579114c04dee939341c5d594f36e5d
-    modules:
-      - ../flathub-shared-modules/intltool/intltool-0.51.json
-      - ../flathub-shared-modules/glu/glu-9.json
-      - name: gd
-        sources:
-          - type: archive
-            url: https://github.com/libgd/libgd/releases/download/gd-2.3.0/libgd-2.3.0.tar.xz
-            sha256: ecd9155b9a417fb3f837f29e5966323796de247789163761dd72dbf83bfcac58
-      - ../shared-modules/tk/tk.json
-      - name: gtkglext
-        config-opts:
-          - --disable-static
-        sources:
-          - type: archive
-            url: https://downloads.sourceforge.net/sourceforge/gtkglext/gtkglext-1.2.0.tar.bz2
-            sha256: 16bd736074f6b14180f206b7e91263fc721b49912ea3258ab5f094cfa5497f51
-          - type: patch
-            path: gtkglext-kill-pangox.patch
-          - type: patch
-            path: gtkglext-gtk2.20.patch
-          - type: patch
-            path: gtkglext-gcc8.patch
-          - type: shell
-            commands:
-              - sed '/AC_PATH_XTRA/d' -i configure.in
-              - autoreconf -vi
-  - name: gerbv
-    build-options:
-      cflags: -fcommon
-    config-opts:
-      - --disable-update-desktop-database
-    sources:
-      - type: archive
-        url: https://downloads.sourceforge.net/gerbv/gerbv-2.7.0.tar.gz
-        sha256: c5ee808c4230ce6be3ad10ab63c547098386d43022704de25ddb9378e62053b4
-#   modules:
-#     - name: dconf
-  - ../shared-modules/gtkwave/gtkwave-gtk3.json
-  - name: iverilog
-    build-options:
-      cflags: -fcommon
-    sources:
-      - type: archive
-        url: https://github.com/steveicarus/iverilog/archive/v10_3.tar.gz
-        sha256: 4b884261645a73b37467242d6ae69264fdde2e7c4c15b245d902531efaaeb234
-      - type: shell
-        commands:
-          - aclocal
-          - autoconf
-  - name: gwave
-    sources:
-      - type: archive
-        url: https://sourceforge.net/projects/gwave/files/gwave3/gwave-20190116.tar.gz
-        sha256: e7c96e4620960ace8f55de8fabffd2fe929c9560014448299cf18c8a88ebae7c
-  - name: xcircuit
-    make-args:
-      - ACLOCAL=aclocal
-      - AUTOMAKE=automake
-    config-opts:
-      - --with-cairo
-      - --with-tcl=/app/lib
-      - --with-tk=/app/lib
-    sources:
-      - type: archive
-        url: http://opencircuitdesign.com/xcircuit/archive/xcircuit-3.10.28.tgz
-        sha256: 402fc70b4b22bb4204313356886d193ead672123fe30c17c128c86ba18dfd157
-    modules:
-      - name: chrpath
-        sources:
-          - type: archive
-            url: http://ftp.debian.org/debian/pool/main/c/chrpath/chrpath_0.16.orig.tar.gz
-            sha256: bb0d4c54bac2990e1bdf8132f2c9477ae752859d523e141e72b3b11a12c26e7b
-  - name: package
+  - name: geda
     buildsystem: simple
     build-commands:
       - |
@@ -186,3 +41,24 @@ modules:
             done
             popd
           done
+    modules:
+      # required by: geda-gaf, gerbv, gwave, pcb (gtkglext)
+      - ../flathub-shared-modules/gtk2/gtk2.json
+      # required by: geda-gaf, gerbv, gwave, pcb (gtkglext)
+      # both guile modules are building gd
+      # TODO: might need to add guile2.2 module for gwave, and then it would be possible to drop guile2.0
+      - ../shared-modules/guile/guile2.0.json
+      - ../shared-modules/guile/guile.json
+      # required by: xcircuit (wrapper.tcl uses convert)
+      - ../shared-modules/imagemagick/imagemagick.json
+      # required by: pcb, xcircuit
+      - ../shared-modules/tk/tk.json
+
+      # geda apps
+      - ../shared-modules/gtkwave/gtkwave-gtk3.json
+      - geda-gaf/geda-gaf.json
+      - gerbv/gerbv.json
+      - gwave/gwave.json
+      - iverilog/iverilog.json
+      - pcb/pcb.json
+      - xcircuit/xcircuit.json

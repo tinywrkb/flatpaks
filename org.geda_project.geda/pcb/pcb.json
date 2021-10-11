@@ -1,0 +1,59 @@
+{
+    "name": "pcb",
+    "config-opts": [
+        "--enable-dbus",
+        "--disable-update-mime-database",
+        "--disable-update-desktop-database"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://downloads.sourceforge.net/pcb/pcb-4.3.0.tar.gz",
+            "sha256": "ae852f46af84aba7f51d813fb916fc7fcdbeea43f7134f150507024e1743fb5e",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 2603,
+                "stable-only": true,
+                "url-template": "https://downloads.sourceforge.net/pcb/pcb-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../../shared-modules/gd/gd.json",
+        {
+            "name": "gtkglext",
+            "config-opts": [
+                "--disable-static"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://downloads.sourceforge.net/sourceforge/gtkglext/gtkglext-1.2.0.tar.bz2",
+                    "sha256": "16bd736074f6b14180f206b7e91263fc721b49912ea3258ab5f094cfa5497f51"
+                },
+                {
+                    "type": "patch",
+                    "path": "gtkglext-kill-pangox.patch"
+                },
+                {
+                    "type": "patch",
+                    "path": "gtkglext-gtk2.20.patch"
+                },
+                {
+                    "type": "patch",
+                    "path": "gtkglext-gcc8.patch"
+                },
+                {
+                    "type": "shell",
+                    "commands": [
+                        "sed '/AC_PATH_XTRA/d' -i configure.in",
+                        "autoreconf -vi"
+                    ]
+                }
+            ],
+            "modules": [
+                "../../flathub-shared-modules/glu/glu-9.json"
+            ]
+        }
+    ]
+}

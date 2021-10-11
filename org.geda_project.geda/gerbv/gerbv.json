@@ -1,0 +1,22 @@
+{
+    "name": "gerbv",
+    "build-options": {
+        "cflags": "-fcommon"
+    },
+    "config-opts": [
+        "--disable-update-desktop-database"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://downloads.sourceforge.net/gerbv/gerbv-2.7.0.tar.gz",
+            "sha256": "c5ee808c4230ce6be3ad10ab63c547098386d43022704de25ddb9378e62053b4",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 895,
+                "stable-only": true,
+                "url-template": "https://downloads.sourceforge.net/gerbv/gerbv-$version.tar.gz"
+            }
+        }
+    ]
+}

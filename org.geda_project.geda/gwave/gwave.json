@@ -1,0 +1,19 @@
+{
+    "name": "gwave",
+    "config-opts": [
+        "GUILE=/app/bin/guile2.0"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://sourceforge.net/projects/gwave/files/gwave3/gwave-20190116.tar.gz",
+            "sha256": "e7c96e4620960ace8f55de8fabffd2fe929c9560014448299cf18c8a88ebae7c",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 235257,
+                "stable-only": true,
+                "url-template": "https://sourceforge.net/projects/gwave/files/gwave3/gwave-$version.tar.gz"
+            }
+        }
+    ]
+}
