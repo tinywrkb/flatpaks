@@ -8,12 +8,11 @@ rename-desktop-file: qcad.desktop
 rename-icon: qcad
 finish-args:
   - --device=dri
+  - --env=QT_QPA_PLATFORM=xcb
   - --filesystem=home
   - --share=ipc
   - --share=network
-# - --socket=wayland
   - --socket=x11
-  - --unset-env=QT_QPA_PLATFORM
 cleanup:
   - /include
   - /lib/pkgconfig

@@ -9,7 +9,6 @@ finish-args:
   - --device=dri
     # workaround for /dev/rfkill access
   - --device=all
-  - --share=ipc
   - --share=network
   - --socket=pulseaudio
   - --socket=session-bus

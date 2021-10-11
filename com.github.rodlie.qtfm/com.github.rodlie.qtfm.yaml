@@ -8,12 +8,13 @@ rename-appdata-file: qtfm.appdata.xml
 rename-desktop-file: qtfm.desktop
 copy-icon: true
 finish-args:
-  - --socket=wayland
-  - --socket=fallback-x11
-  - --share=ipc
   - --device=dri
   - --filesystem=home
+  - --share=ipc
   - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig

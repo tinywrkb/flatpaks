@@ -12,7 +12,10 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-pictures
   - --persist=.maxima
+  - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig

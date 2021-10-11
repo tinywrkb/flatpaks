@@ -15,8 +15,11 @@ cleanup:
 finish-args:
   - --device=dri
   - --persist=.config/sqlitestudio
+  - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 modules:
   - name: sqlitestudio
     config-opts:

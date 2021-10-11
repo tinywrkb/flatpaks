@@ -29,6 +29,7 @@ finish-args:
   - --filesystem=home
   - --own-name=org.kde.*
   - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
   - --socket=x11
   - --talk-name=org.freedesktop.Notifications

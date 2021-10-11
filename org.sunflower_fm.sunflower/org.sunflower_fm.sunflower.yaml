@@ -13,8 +13,11 @@ finish-args:
   - --filesystem=xdg-pictures
   - --filesystem=xdg-videos
   - --own-name=org.sunflower
+  - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
 modules:

@@ -7,9 +7,12 @@ rename-desktop-file: iwgtk.desktop
 rename-icon: iwgtk
 finish-args:
   - --device=dri
-  - --own-name=org.twosheds.iwgtk
   - --own-name=org.kde.*
+  - --own-name=org.twosheds.iwgtk
+  - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
   - --system-talk-name=net.connman.iwd
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher

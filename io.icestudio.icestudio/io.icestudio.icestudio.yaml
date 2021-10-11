@@ -19,7 +19,6 @@ finish-args:
   - --persist=.icestudio
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=x11
   - --system-talk-name=org.freedesktop.UPower
   - --talk-name=org.freedesktop.Notifications

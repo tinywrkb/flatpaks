@@ -6,7 +6,10 @@ command: UEFITool
 finish-args:
   - --device=dri
   - --filesystem=home
+  - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 modules:
   - name: uefitool
     buildsystem: qmake

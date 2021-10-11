@@ -10,7 +10,10 @@ finish-args:
   # TODO: fix the lib issue correctly without ld.so hacks
   - --env=LD_LIBRARY_PATH=/app/lib
   - --filesystem=home
+  - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 modules:
   - name: redasm
     buildsystem: cmake

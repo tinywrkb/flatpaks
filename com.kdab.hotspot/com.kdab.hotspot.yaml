@@ -7,7 +7,10 @@ rename-desktop-file: hotspot.desktop
 rename-icon: hotspot
 finish-args:
   - --device=dri
+  - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 modules:
   - name: hotspot
     buildsystem: cmake

@@ -28,6 +28,7 @@ finish-args:
   - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig

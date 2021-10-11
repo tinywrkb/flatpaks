@@ -13,7 +13,10 @@ finish-args:
   - --filesystem=xdg-pictures
   - --filesystem=xdg-public-share
   - --filesystem=xdg-videos
+  - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig

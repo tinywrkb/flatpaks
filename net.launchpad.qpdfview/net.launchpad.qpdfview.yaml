@@ -15,7 +15,10 @@ copy-icon: true
 finish-args:
   - --device=dri
   - --filesystem=home
+  - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/debug

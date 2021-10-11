@@ -11,12 +11,15 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
-  - --filesystem=xdg-videos
   - --filesystem=xdg-run/pipewire-0:ro
+  - --filesystem=xdg-videos
   - --own-name=org.mpris.MediaPlayer2.mpv
+  - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
+  - --socket=x11
   - --system-talk-name=org.freedesktop.RealtimeKit1
   - --talk-name=org.freedesktop.Flatpak
   - --talk-name=org.freedesktop.Flatpak.*

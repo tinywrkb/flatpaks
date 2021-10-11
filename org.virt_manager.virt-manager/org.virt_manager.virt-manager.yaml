@@ -64,6 +64,7 @@ finish-args:
   - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
+  - --socket=x11
   # virt-manager implements fetching secrets over dbus without importing libsecret, so no added dependency
   - --talk-name=org.freedesktop.secrets
   - --talk-name=org.kde.StatusNotifierWatcher

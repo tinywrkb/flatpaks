@@ -13,8 +13,9 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
   # try to make mtp work
   - --filesystem=xdg-run/gvfs
   - --talk-name=org.gtk.vfs

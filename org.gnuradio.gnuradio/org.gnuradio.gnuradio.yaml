@@ -14,8 +14,11 @@ finish-args:
   - --filesystem=home
   - --persist=.cache/grc_gnuradio
   - --persist=.gnuradio
+  - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 cleanup:
 #  - /include
 #  - /lib/pkgconfig
