@@ -19,6 +19,13 @@
                 },
                 "url-template": "https://ftp.gnu.org/pub/gnu/guile/guile-$version.tar.gz"
             }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "mv meta/guile{,20}.m4",
+                "sed -i 's/guile.m4/guile20.m4/' {meta,doc/ref}/Makefile.{am,in}"
+            ]
         }
     ],
     "cleanup": [
