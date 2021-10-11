@@ -44,7 +44,7 @@ modules:
       - -DWITH_X11=ON
       - -Wno-dev
     post-install:
-      - install -Dm755 freerdp -t /app/bin/
+      - install -Dm755 ../freerdp -t /app/bin/
     sources:
       - type: archive
         url: https://github.com/FreeRDP/FreeRDP/archive/2.4.0.tar.gz
