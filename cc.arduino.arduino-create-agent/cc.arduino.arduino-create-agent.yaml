@@ -1,5 +1,5 @@
 #
-# WARNING: this manifest will only with a flatpak user installation, see bug report for more details
+# WARNING: this manifest will only work with a flatpak user installation, see bug report for more details
 #
 # Related issues
 #   * https://github.com/arduino/arduino-create-agent/issues/554
@@ -17,6 +17,7 @@ finish-args:
   - --persist=ArduinoCreateAgent
   - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=wayland
   - --socket=x11
   - --talk-name=org.kde.StatusNotifierWatcher
@@ -32,7 +33,7 @@ modules:
         url: https://github.com/arduino/arduino-create-agent/releases/download/1.2.4/ArduinoCreateAgent-1.2.4-linux-amd64-installer-chrome.run
         size: 28712480
         sha256: 49e8779a74685dfcfeb0d930f0c6570b7505e9c38c0e67723d9836db53e1827a
-        filename: installer.tar.gz
+        filename: installer.run
         x-checker-data:
           type: json
           url: https://api.github.com/repos/arduino/arduino-create-agent/releases
@@ -41,7 +42,7 @@ modules:
       - type: script
         dest-filename: apply_extra
         commands:
-          - bsdtar -xf installer.tar.gz -O > installer.run && chmod +x installer.run
+          - chmod +x installer.run
           - ln -s /app/extra ~/ArduinoCreateAgent
           - ./installer.run --mode unattended 2>/dev/null
           - ./installer.run --version|awk '{print $2}' > .release
