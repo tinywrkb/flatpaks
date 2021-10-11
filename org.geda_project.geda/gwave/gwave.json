@@ -1,8 +1,5 @@
 {
     "name": "gwave",
-    "config-opts": [
-        "GUILE=/app/bin/guile2.0"
-    ],
     "sources": [
         {
             "type": "archive",
