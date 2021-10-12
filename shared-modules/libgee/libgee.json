@@ -12,8 +12,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://gitlab.gnome.org/GNOME/libgee/-/archive/0.20.4/libgee-0.20.4.tar.gz",
-            "sha256": "e67c66f4b96db7d09ce29502ddb4ac0ba45be4a631810e1b5c5d6eb9d6bbefb4",
+            "url": "https://download.gnome.org/sources/libgee/0.20/libgee-0.20.4.tar.xz",
+            "sha256": "524c1bf390f9cdda4fbd9a47b269980dc64ab5280f0801b53bc69d782c72de0e",
             "x-checker-data": {
                 "type": "gnome",
                 "name": "libgee",
