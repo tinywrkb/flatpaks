@@ -7,7 +7,8 @@
     },
     "config-opts": [
         "NOCONFIGURE=1",
-        "PACKAGE_VERSION=0.52.0"
+        "PACKAGE_VERSION=0.52.0",
+        "--enable-valadoc=no"
     ],
     "sources": [
         {
@@ -41,7 +42,8 @@
                 ]
             },
             "config-opts": [
-                "--prefix=/app/vala-bootstrap"
+                "--prefix=/app/vala-bootstrap",
+                "--enable-valadoc=no"
             ],
             "sources": [
                 {
@@ -59,7 +61,6 @@
             "cleanup": [
                 "*"
             ]
-        },
-        "../graphviz/graphviz.json"
+        }
     ]
 }
