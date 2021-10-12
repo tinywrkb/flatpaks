@@ -12,8 +12,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://gitlab.gnome.org/GNOME/vala/-/archive/0.52.0/vala-0.52.0.tar.gz",
-            "sha256": "b29ede997865f7fc9f27de4c125ba6f1665ef6dbfa3981023e7e110667c88f47",
+            "url": "https://download.gnome.org/sources/vala/0.54/vala-0.54.2.tar.xz",
+            "sha256": "884de745317d4d56e4e8cede993dc8f04d50cfca36cf60d2f2f278c30c2b1311",
             "x-checker-data": {
                 "type": "gnome",
                 "name": "vala",
