@@ -1,6 +1,8 @@
+# TODO: cleanup
+# TODO: enable more indicators
 app-id: com.github.hcsubser.hybridbar
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: hybridbar
 finish-args:
@@ -19,9 +21,14 @@ modules:
   - name: hybridbar
     buildsystem: meson
     sources:
-      - type: git
-        url: https://github.com/hcsubser/hybridbar.git
-        branch: main
+      - type: archive
+        url: https://github.com/hcsubser/hybridbar/archive/1.0.0/hybridbar-1.0.0.tar.gz
+        sha256: 36ebefd8751defa89b68073961c048bf22628aa713e1680cc01abb9d7b6c1b19
+        x-checker-data:
+          type: anitya
+          project-id: 235293
+          stable-only: true
+          url-template: https://github.com/hcsubser/hybridbar/archive/$version/hybridbar-$version.tar.gz
     cleanup:
       - /share/vala
     modules:
@@ -32,10 +39,111 @@ modules:
       - ../shared-modules/gtk-layer-shell/gtk-layer-shell.json
       # required by the menu indicator
       - ../shared-modules/gnome-menus/gnome-menus.json
+  - name: hybridbar-calendar
+    subdir: indicators/calendar
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/hcsubser/hybridbar/archive/1.0.0/hybridbar-1.0.0.tar.gz
+        sha256: 36ebefd8751defa89b68073961c048bf22628aa713e1680cc01abb9d7b6c1b19
+        x-checker-data:
+          type: anitya
+          project-id: 235293
+          stable-only: true
+          url-template: https://github.com/hcsubser/hybridbar/archive/$version/hybridbar-$version.tar.gz
+    modules:
+      - name: evolution-data-server
+        buildsystem: cmake
+        config-opts:
+          - -DENABLE_CANBERRA=OFF
+          - -DENABLE_EXAMPLES=OFF
+          - -DENABLE_GOA=OFF
+          - -DENABLE_GOOGLE=OFF
+          - -DENABLE_GTK=OFF
+          - -DENABLE_GTK_DOC=OFF
+          - -DENABLE_INTROSPECTION=ON
+          - -DENABLE_MAINTAINER_MODE=ON
+          - -DENABLE_OAUTH2=OFF
+          - -DENABLE_VALA_BINDINGS=ON
+          - -DENABLE_WEATHER=OFF
+          - -DLIBEXEC_INSTALL_DIR=/app/lib
+          - -DNABLE_INSTALLED_TESTS=OFF
+          - -DWITH_LIBDB=OFF
+          - -DWITH_PRIVATE_DOCS=OFF
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/evolution-data-server/3.42/evolution-data-server-3.42.0.tar.xz
+            sha256: e8fdd3bc47a07d6f8a3052bbcae880f20f6dbc4f6973a8e90d00169bb99b1635
+            x-checker-data:
+              type: gnome
+              name: evolution-data-server
+              stable-only: true
+        modules:
+          - ../shared-modules/gcr/gcr.json
+          - ../shared-modules/krb5/krb5.json
+          - ../shared-modules/libsecret/libsecret.json
+          - ../shared-modules/libical/libical.json
   - name: hybridbar-menu
     subdir: indicators/menu
     buildsystem: meson
     sources:
-      - type: git
-        url: https://github.com/hcsubser/hybridbar.git
-        branch: main
+      - type: archive
+        url: https://github.com/hcsubser/hybridbar/archive/1.0.0/hybridbar-1.0.0.tar.gz
+        sha256: 36ebefd8751defa89b68073961c048bf22628aa713e1680cc01abb9d7b6c1b19
+        x-checker-data:
+          type: anitya
+          project-id: 235293
+          stable-only: true
+          url-template: https://github.com/hcsubser/hybridbar/archive/$version/hybridbar-$version.tar.gz
+# - name: hybridbar-network
+#   subdir: indicators/network
+#   buildsystem: meson
+#   sources:
+#     - type: archive
+#       url: https://github.com/hcsubser/hybridbar/archive/1.0.0/hybridbar-1.0.0.tar.gz
+#       sha256: 36ebefd8751defa89b68073961c048bf22628aa713e1680cc01abb9d7b6c1b19
+#       x-checker-data:
+#         type: anitya
+#         project-id: 235293
+#         stable-only: true
+#         url-template: https://github.com/hcsubser/hybridbar/archive/$version/hybridbar-$version.tar.gz
+  - name: hybridbar-session
+    subdir: indicators/session
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/hcsubser/hybridbar/archive/1.0.0/hybridbar-1.0.0.tar.gz
+        sha256: 36ebefd8751defa89b68073961c048bf22628aa713e1680cc01abb9d7b6c1b19
+        x-checker-data:
+          type: anitya
+          project-id: 235293
+          stable-only: true
+          url-template: https://github.com/hcsubser/hybridbar/archive/$version/hybridbar-$version.tar.gz
+    modules:
+      - ../shared-modules/accountsservice/accountsservice.json
+# - name: hybridbar-sound
+#   subdir: indicators/sound
+#   buildsystem: meson
+#   sources:
+#     - type: archive
+#       url: https://github.com/hcsubser/hybridbar/archive/1.0.0/hybridbar-1.0.0.tar.gz
+#       sha256: 36ebefd8751defa89b68073961c048bf22628aa713e1680cc01abb9d7b6c1b19
+#       x-checker-data:
+#         type: anitya
+#         project-id: 235293
+#         stable-only: true
+#         url-template: https://github.com/hcsubser/hybridbar/archive/$version/hybridbar-$version.tar.gz
+#   modules:
+#     - ../shared-modules/libnotify/libnotify.json
+# - name: hybridbar-tray
+#   subdir: indicators/tray
+#   buildsystem: meson
+#   sources:
+#     - type: archive
+#       url: https://github.com/hcsubser/hybridbar/archive/1.0.0/hybridbar-1.0.0.tar.gz
+#       sha256: 36ebefd8751defa89b68073961c048bf22628aa713e1680cc01abb9d7b6c1b19
+#       x-checker-data:
+#         type: anitya
+#         project-id: 235293
+#         stable-only: true
+#         url-template: https://github.com/hcsubser/hybridbar/archive/$version/hybridbar-$version.tar.gz
