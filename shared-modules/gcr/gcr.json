@@ -1,0 +1,23 @@
+{
+    "name": "gcr",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dintrospection=true",
+        "-Dgtk=false",
+        "-Dgtk_doc=false",
+        "-Dssh_agent=false",
+        "-Dsystemd=disable"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://download.gnome.org/sources/gcr/3.40/gcr-3.40.0.tar.xz",
+            "sha256": "b9d3645a5fd953a54285cc64d4fc046736463dbd4dcc25caf5c7b59bed3027f5",
+            "x-checker-data": {
+                "type": "gnome",
+                "name": "gcr",
+                "stable-only": true
+            }
+        }
+    ]
+}

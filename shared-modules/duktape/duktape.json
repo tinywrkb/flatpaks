@@ -1,0 +1,37 @@
+{
+    "name": "duktape",
+    "build-options": {
+        "cflags": "-D DUK_USE_FASTINT"
+    },
+    "no-autogen": true,
+    "make-install-args": [
+        "INSTALL_PREFIX=/app"
+    ],
+    "post-install": [
+        "install -Dm644 duktape.pc -t ${FLATPAK_DEST}/lib/pkgconfig/"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/svaarala/duktape/releases/download/v2.6.0/duktape-2.6.0.tar.xz",
+            "sha256": "96f4a05a6c84590e53b18c59bb776aaba80a205afbbd92b82be609ba7fe75fa7",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 21345,
+                "stable-only": true,
+                "url-template": "https://github.com/svaarala/duktape/releases/download/v$version/duktape-$version.tar.xz"
+            }
+        },
+        {
+            "type": "file",
+            "path": "duktape.pc"
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "mv Makefile{.sharedlibrary,}",
+                "_ver=$(grep DUK_GIT_DESCRIBE src/duktape.h | cut -d\\\" -f2 | tr -d v); sed -i 's/@VERSION@/'$_ver'/' duktape.pc"
+            ]
+        }
+    ]
+}

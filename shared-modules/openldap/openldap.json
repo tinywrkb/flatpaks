@@ -1,0 +1,20 @@
+{
+    "name": "openldap",
+    "config-opts": [
+        "--enable-dynamic",
+        "--without-systemd"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.5.8.tgz",
+            "sha256": "366ea1c3b24202de4481978b632128c0cfe4148d4ae13cabf93a1f38c56472dc",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 2551,
+                "stable-only": true,
+                "url-template": "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-$version.tgz"
+            }
+        }
+    ]
+}
