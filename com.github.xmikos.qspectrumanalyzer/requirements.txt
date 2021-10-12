@@ -1,7 +1,0 @@
-Qt.py
-pyqtgraph
-PyOpenGL
-numpy
-soapy_power
-SimpleSoapy
-SimpleSpectral

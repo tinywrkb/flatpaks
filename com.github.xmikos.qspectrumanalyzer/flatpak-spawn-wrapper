@@ -1,0 +1,13 @@
+#!/bin/bash
+
+command=$(basename $0)
+
+case "$command" in
+  hackrf_sweep|rtl_power|rtl_power_fftw|rx_power|soapy_power)
+    exec flatpak-spawn --host $command "$@"
+    ;;
+  *)
+    echo "Not supported command: $command"
+    return 1
+    ;;
+esac

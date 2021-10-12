@@ -1,33 +1,7 @@
-#
-# TODO:
-#   more dependencies for python-numpy:
-#     * python-nose
-#     * openblas
-#     * lapack
-#     * blas, need gcc-fortran
-#
-#   more dependencies for python-simplespectral:
-#     * python-scipy, need gcc-fortran
-#
-#   more dependencies for soapysdr:
-#     * soapyrtlsdr
-#     * soapyairspy
-#     * soapyhackrf
-#     * soapybladerf
-#     * soapyuhd
-#     * soapylms7
-#     * soapyosmo
-#     * soapyremote
-#     * python-scipy
-#
-#   more top-level modules
-#     * hackrf
-#     * rtl-sdr
-#     * rx_tools
-#
+# TODO: support backneds from flatpak apps?
 app-id: com.github.xmikos.qspectrumanalyzer
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: qspectrumanalyzer
 rename-desktop-file: qspectrumanalyzer.desktop
@@ -38,37 +12,74 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
 cleanup:
   - /include
   - /lib/pkgconfig
-  - /share/man
   - '*.a'
   - '*.la'
 modules:
   - name: qspectrumanalyzer
     buildsystem: simple
-    ensure-writable:
-      - /lib/python3.8/site-packages/easy-install.pth
     build-commands:
       - python3 setup.py build
       - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
     post-install:
-      - install -Dm644 /app/share/pixmaps/qspectrumanalyzer.png /app/share/icons/hicolor/48x48/apps/qspectrumanalyzer.png
+      - install -Dm644 /app/share/{pixmaps,icons/hicolor/48x48/apps}/qspectrumanalyzer.png
+      # flatpak-spawn wrappers for exec/non-lib backends: https://github.com/xmikos/qspectrumanalyzer/tree/master/qspectrumanalyzer/backends
+      - install -Dm755 flatpak-spawn-wrapper -t /app/bin/
+      - |
+        for c in hackrf_sweep rtl_power rtl_power_fftw rx_power soapy_power; do
+          ln -s flatpak-spawn-wrapper /app/bin/$c
+        done
     sources:
       - type: archive
-        url: https://github.com/xmikos/qspectrumanalyzer/archive/v2.2.0.tar.gz
+        url: https://github.com/xmikos/qspectrumanalyzer/archive/v2.2.0/qspectrumanalyzer-2.2.0.tar.gz
         sha256: d50e13fa4951a67ed4f56362fb74daff9faeda88d7fc3f9d98cffb8d63c6311d
+        x-checker-data:
+          type: anitya
+          project-id: 14567
+          stable-only: true
+          url-template: https://github.com/xmikos/qspectrumanalyzer/archive/v$version/qspectrumanalyzer-$version.tar.gz
+      - type: file
+        path: flatpak-spawn-wrapper
     modules:
       - ../shared-modules/pyqt5/pyqt5.json
-      # required by python-opengl
-      - ../shared-modules/freeglut/freeglut.json
-      - name: soapysdr
-        # required by python-simplesoapy
-        buildsystem: cmake
+      - ../shared-modules/python-qt.py/python-qt.py.json
+      - name: python-pyqtgraph
+        buildsystem: simple
+        build-commands:
+          - python3 setup.py build
+          - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
         sources:
           - type: archive
-            url: https://github.com/pothosware/SoapySDR/archive/soapy-sdr-0.7.2.tar.gz
-            sha256: 6eb4143fed115911884bdbbe6fe32dbd99b4ada210c9e126ac3c49c24414347a
-      - python-dependencies.json
+            url: https://github.com/pyqtgraph/pyqtgraph/archive/pyqtgraph-0.12.3/pyqtgraph-pyqtgraph-0.12.3.tar.gz
+            sha256: 243df67ce5461e7f44afa19e351dc4f1bf08a231925b7cb4a2f232c6d71e8957
+            x-checker-data:
+              type: anitya
+              project-id: 5795
+              stable-only: true
+              url-template: https://github.com/pyqtgraph/pyqtgraph/archive/pyqtgraph-$version/pyqtgraph-pyqtgraph-$version.tar.gz
+        modules:
+          - ../shared-modules/python-numpy/python-numpy.json
+      - name: soapy_power
+        buildsystem: simple
+        build-commands:
+          - python3 setup.py build
+          - python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+        post-install:
+          # keep only the lib, needed for data structures
+          - rm -f /app/bin/soapy_power
+        sources:
+          - type: archive
+            url: https://github.com/xmikos/soapy_power/archive/v1.6.1/soapy_power-1.6.1.tar.gz
+            sha256: fcf80fb3eca178ff8ea2ce87bc5cc390fa2b17f8dc72fa9e1213ca4022f469e4
+            x-checker-data:
+              type: anitya
+              project-id: 235277
+              stable-only: true
+              url-template: https://github.com/xmikos/soapy_power/archive/v$version/soapy_power-$version.tar.gz
