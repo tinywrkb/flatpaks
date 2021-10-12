@@ -1,6 +1,9 @@
+# TODO: might need to set lua on 51
+# TODO: add support for host nvim
+# TODO: evaluate integration with containers
 app-id: com.github.equalsraf.neovim-qt
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: nvim-qt
 rename-icon: nvim-qt
@@ -12,8 +15,9 @@ finish-args:
   - --filesystem=home
   - --persist=.config/nvim
   - --share=ipc
-  - --socket=wayland
   - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/debug
@@ -30,24 +34,34 @@ modules:
       - -DUSE_SYSTEM_MSGPACK=on
       - -GNinja
     sources:
-      - type: git
-        url: https://github.com/equalsraf/neovim-qt
-        tag: v0.2.16.1
+      - type: archive
+        url: https://github.com/equalsraf/neovim-qt/archive/v0.2.16.1/neovim-qt-0.2.16.1.tar.gz
+        sha256: 971d4597b40df2756b313afe1996f07915643e8bf10efe416b64cc337e4faf2a
+        x-checker-data:
+          type: anitya
+          project-id: 235280
+          stable-only: true
+          url-template: https://github.com/equalsraf/neovim-qt/archive/v$version/neovim-qt-$version.tar.gz
     modules:
       - name: neovim
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          - -DUSE_BUNDLED=OFF
         buildsystem: cmake-ninja
         builddir: true
         cleanup:
           - /share/applications
           - /share/icons
           - /share/pixmaps
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=RelWithDebInfo
-          - -DUSE_BUNDLED=OFF
         sources:
           - type: archive
-            url: https://github.com/neovim/neovim/archive/v0.4.4.tar.gz
-            sha256: 2f76aac59363677f37592e853ab2c06151cca8830d4b3fe4675b4a52d41fc42c
+            url: https://github.com/neovim/neovim/archive/v0.5.1/neovim-0.5.1.tar.gz
+            sha256: aa449795e5cc69bdd2eeed7095f20b9c086c6ecfcde0ab62ab97a9d04243ec84
+            x-checker-data:
+              type: anitya
+              project-id: 9037
+              stable-only: true
+              url-template: https://github.com/neovim/neovim/archive/v$version/neovim-$version.tar.gz
         modules:
           - name: libluv
             buildsystem: cmake-ninja
@@ -58,17 +72,28 @@ modules:
               - -DLUA_BUILD_TYPE=System
             sources:
               - type: archive
-                url: https://github.com/luvit/luv/releases/download/1.34.2-2/luv-1.34.2-2.tar.gz
-                sha256: 7aff212985527248522411c3830234fe7b5e98593a4cc439b962c17da46681d5
+                url: https://github.com/luvit/luv/releases/download/1.42.0-0/luv-1.42.0-0.tar.gz
+                sha256: b5228a9d0eaacd9f862b6270c732d5c90773a28ce53b6d9e32a14050e7947f36
+                x-checker-data:
+                  type: anitya
+                  project-id: 21510
+                  stable-only: true
+                  url-template: https://github.com/luvit/luv/releases/download/$version/luv-$version.tar.gz
             modules:
               - name: libuv
                 config-opts:
                   - --disable-static
                 sources:
                   - type: archive
-                    url: https://github.com/libuv/libuv/archive/v1.35.0.tar.gz
-                    sha256: ff84a26c79559e511f087aa67925c3b4e0f0aac60cd8039d4d38b292f208ff58
+                    url: https://github.com/libuv/libuv/archive/v1.42.0/libuv-1.42.0.tar.gz
+                    sha256: 371e5419708f6aaeb8656671f89400b92a9bba6443369af1bb70bcd6e4b3c764
+                    x-checker-data:
+                      type: anitya
+                      project-id: 10784
+                      stable-only: true
+                      url-template: https://github.com/libuv/libuv/archive/v$version/libuv-$version.tar.gz
               - name: luajit
+                # TODO: move out to a shared-module post 2.1.0 stable
                 no-autogen: true
                 make-args:
                   - PREFIX=/app
@@ -81,17 +106,28 @@ modules:
                   - type: archive
                     url: https://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz
                     sha256: 1ad2e34b111c802f9d0cdf019e986909123237a28c746b21295b63c9e785d9c3
+                    x-checker-data:
+                      type: anitya
+                      project-id: 6444
+                      # TODO: flip this post 2.1.0 stable
+                      stable-only: false
+                      url-template: https://luajit.org/download/LuaJIT-$version.tar.gz
                 cleanup:
                   - /bin
-          - name: msgpack-c
-            buildsystem: cmake-ninja
+          - name: libtermkey
+            no-autogen: true
+            make-install-args:
+              - PREFIX=/app
             sources:
               - type: archive
-                url: https://github.com/msgpack/msgpack-c/releases/download/cpp-3.2.1/msgpack-3.2.1.tar.gz
-                sha256: 433cbcd741e1813db9ae4b2e192b83ac7b1d2dd7968a3e11470eacc6f4ab58d2
-            cleanup:
-              - /lib/cmake
-          - name: lpeg
+                url: http://www.leonerd.org.uk/code/libtermkey/libtermkey-0.22.tar.gz
+                sha256: 6945bd3c4aaa83da83d80a045c5563da4edd7d0374c62c0d35aec09eb3014600
+                x-checker-data:
+                  type: anitya
+                  project-id: 230179
+                  stable-only: true
+                  url-template: http://www.leonerd.org.uk/code/libtermkey/libtermkey-$version.tar.gz
+          - name: lua-lpeg
             no-autogen: true
             no-make-install: true
             make-args:
@@ -103,9 +139,14 @@ modules:
               - type: archive
                 url: http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.0.2.tar.gz
                 sha256: 48d66576051b6c78388faad09b70493093264588fcd0f258ddaab1cdd4a15ffe
+                x-checker-data:
+                  type: anitya
+                  project-id: 1852
+                  stable-only: true
+                  url-template: http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-$version.tar.gz
             cleanup:
               - '*'
-          - name: mpack-lua
+          - name: lua-mpack
             no-autogen: true
             make-args:
               - USE_SYSTEM_MPACK=yes
@@ -114,8 +155,13 @@ modules:
               - USE_SYSTEM_MPACK=yes
             sources:
               - type: archive
-                url: https://github.com/libmpack/libmpack-lua/archive/1.0.8.tar.gz
-                sha256: 6d84d272bff27800ba1d7b718d1005ac6bfe35c5f3a5bf5d07e6ffd7e341d560
+                url: https://github.com/libmpack/libmpack-lua/archive/1.0.9/libmpack-lua-1.0.9.tar.gz
+                sha256: e94d5cf95d7479dca00ff23755fe05a440f11f9d203635e862ad8842de95f40a
+                x-checker-data:
+                  type: anitya
+                  project-id: 12613
+                  stable-only: true
+                  url-template: https://github.com/libmpack/libmpack-lua/archive/$version/libmpack-lua-$version.tar.gz
               - type: shell
                 commands:
                   - sed -i 's|/usr/lib|/app/lib|' ./Makefile
@@ -128,8 +174,13 @@ modules:
                   - PREFIX=/app
                 sources:
                   - type: archive
-                    url: https://github.com/libmpack/libmpack/archive/1.0.5.tar.gz
+                    url: https://github.com/libmpack/libmpack/archive/1.0.5/libmpack-1.0.5.tar.gz
                     sha256: 4ce91395d81ccea97d3ad4cb962f8540d166e59d3e2ddce8a22979b49f108956
+                    x-checker-data:
+                      type: anitya
+                      project-id: 12423
+                      stable-only: true
+                      url-template: https://github.com/libmpack/libmpack/archive/$version/libmpack-$version.tar.gz
                 cleanup:
                   - '*'
           - name: libvterm
@@ -137,49 +188,50 @@ modules:
             make-install-args:
               - PREFIX=/app
             sources:
-              - type: archive
-                url: https://github.com/neovim/libvterm/archive/65dbda3ed214f036ee799d18b2e693a833a0e591.tar.gz
-                sha256: 95d3c7e86336fbd40dfd7a0aa0a795320bb71bc957ea995ea0e549c96d20db3a
+              - type: git
+                url: https://github.com/neovim/libvterm.git
+                branch: nvim
+                commit: 65dbda3ed214f036ee799d18b2e693a833a0e591
             cleanup:
               - /bin
+          - name: msgpack-c
+            buildsystem: cmake-ninja
+            sources:
+              - type: archive
+                url: https://github.com/msgpack/msgpack-c/releases/download/c-4.0.0/msgpack-c-4.0.0.tar.gz
+                sha256: 420fe35e7572f2a168d17e660ef981a589c9cbe77faa25eb34a520e1fcc032c8
+                x-checker-data:
+                  type: anitya
+                  project-id: 235285
+                  stable-only: true
+                  url-template: https://github.com/msgpack/msgpack-c/releases/download/c-$version/msgpack-c-$version.tar.gz
+            cleanup:
+              - /lib/cmake
+          - name: tree-sitter
+            no-autogen: true
+            make-install-args:
+              - PREFIX=/app
+            sources:
+              - type: archive
+                url: https://github.com/tree-sitter/tree-sitter/archive/v0.20.0/tree-sitter-0.20.0.tar.gz
+                sha256: 4a8070b9de17c3b8096181fe8530320ab3e8cca685d8bee6a3e8d164b5fb47da
+                x-checker-data:
+                  type: anitya
+                  project-id: 142464
+                  stable-only: true
+                  url-template: https://github.com/tree-sitter/tree-sitter/archive/v$version/tree-sitter-$version.tar.gz
           - name: unibilium
             no-autogen: true
             make-install-args:
               - PREFIX=/app
             sources:
               - type: archive
-                url: https://github.com/neovim/unibilium/archive/v2.1.0.tar.gz
-                sha256: 05bf97e357615e218126f7ac086e7056a23dc013cfac71643b50a18ad390c7d4
-          - name: libtermkey
-            no-autogen: true
-            make-install-args:
-              - PREFIX=/app
-            sources:
-              - type: archive
-                url: http://www.leonerd.org.uk/code/libtermkey/libtermkey-0.22.tar.gz
-                sha256: 6945bd3c4aaa83da83d80a045c5563da4edd7d0374c62c0d35aec09eb3014600
-          - name: wl-clipboard
-            buildsystem: meson
-            cleanup:
-              - /share/bash-completion
-              - /share/zsh
-            sources:
-              - type: archive
-                url: https://github.com/bugaevc/wl-clipboard/archive/v2.0.0.tar.gz
-                sha256: 2c42f182432adabe56da0f1144d5fcc40b7aae3d8e14d2bc4dc4c3f91b51808d
-          - name: xclip
-            sources:
-              - type: archive
-                url: https://github.com/astrand/xclip/archive/0.13.tar.gz
-                sha256: ca5b8804e3c910a66423a882d79bf3c9450b875ac8528791fb60ec9de667f758
-            cleanup:
-              - /bin/xclip-*file
-            modules:
-              - name: libxmu
-                config-opts:
-                  - --disable-static
-                  - --disable-docs
-                sources:
-                  - type: archive
-                    url: https://www.x.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
-                    sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+                url: https://github.com/neovim/unibilium/archive/v2.1.1/unibilium-2.1.1.tar.gz
+                sha256: 6f0ee21c8605340cfbb458cbd195b4d074e6d16dd0c0e12f2627ca773f3cabf1
+                x-checker-data:
+                  type: anitya
+                  project-id: 11136
+                  stable-only: true
+                  url-template: https://github.com/neovim/unibilium/archive/v$version/unibilium-$version.tar.gz
+          - ../shared-modules/wl-clipboard/wl-clipboard.json
+          - ../shared-modules/xclip/xclip.json
