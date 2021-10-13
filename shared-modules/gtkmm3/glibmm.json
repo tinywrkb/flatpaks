@@ -8,8 +8,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://gitlab.gnome.org/GNOME/glibmm/-/archive/2.66.1/glibmm-2.66.1.tar.gz",
-            "sha256": "3516555b315217b258b36707e7c60ccd09b5a0dccfc479b091c52c94d6c3bd73",
+            "url": "https://gitlab.gnome.org/GNOME/glibmm/-/archive/2.66.2/glibmm-2.66.2.tar.gz",
+            "sha256": "a640d113ec772852f530a646df29bcdabc602e5875c21c041da511bc830e74cf",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 7960,
