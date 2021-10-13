@@ -5,5 +5,5 @@ Comment=Lattice Diamond Design Software
 Exec=diamond %U
 Terminal=false
 Type=Application
-Icon=diamond
+Icon=com.latticesemi.diamond
 Categories=Development

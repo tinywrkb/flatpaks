@@ -4,4 +4,4 @@
 #   /app/extra/diamond/bin/lin64/diamond_env
 export LM_LICENSE_FILE="$XDG_CONFIG_HOME"/license.dat
 
-exec /app/extra/diamond/bin/lin64/diamond "$@"
+exec /app/extra/bin/lin64/diamond "$@"
