@@ -4,5 +4,5 @@ Comment=Code Composer Studio
 Exec=ccstudio %U
 Terminal=false
 Type=Application
-Icon=ccstudio
+Icon=com.ti.ccstudio
 Categories=Development;
