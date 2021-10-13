@@ -9,7 +9,7 @@
 
 app-id: com.microchip.mplabx
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
@@ -44,7 +44,6 @@ finish-args:
   - --persist=.mplab_ide
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=x11
 modules:
   - name: openjdk
@@ -54,203 +53,65 @@ modules:
   - name: mplabx
     buildsystem: simple
     build-commands:
-      - mkdir -p /app/lib
-#     - mkdir -p /app/lib/debug/lib/i386-linux-gnu
-      - mkdir -p /app/lib/i386-linux-gnu
-      - mkdir -p /app/lib32
+      - install -dm755 /app/lib{,32,/i386-linux-gnu}
+      #- install -dm755 /app/lib/debug/lib/i386-linux-gnu
       - install -Dm644 ld.so.conf -t /app/etc/
-      - install -Dm644 mplabx-install.sh /app/bin/mplabx-install.sh
-      - install -Dm755 apply_extra /app/bin/apply_extra
-      - install -Dm644 mplab.desktop /app/share/applications/com.microchip.mplabx.desktop
-      - install -Dm644 mplab_ipe.desktop /app/share/applications/com.microchip.mplabx.mplab_ipe.desktop
-      - install -Dm644 mplab_ide_256.png /app/share/icons/hicolor/256x256/apps/com.microchip.mplabx.png
-      - install -Dm644 mplab_ide_48.png /app/share/icons/hicolor/48x48/apps/com.microchip.mplabx.png
-      - install -Dm644 mplab_ipe_48.png /app/share/icons/hicolor/48x48/apps/com.microchip.mplabx.mplab_ipe.png
+      - install -Dm644 mplabx-install.sh -t /app/bin/
+      - install -Dm755 apply_extra -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}{,.mplab_ipe}.desktop -t /app/share/applications/
+      - install -Dm644 ide_48.png /app/share/icons/hicolor/48x48/apps/${FLATPAK_ID}.png
+      - install -Dm644 ide_256.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
+      - install -Dm644 ipe_48.png /app/share/icons/hicolor/48x48/apps/${FLATPAK_ID}.mplab_ipe.png
         # symlink executables
       - |
           for app in mbd.sh mplab_ide mplab_ipe prjMakefilesGenerator.sh; do
             ln -s /app/extra/mplabx/mplab_platform/bin/${app} /app/bin/${app}
           done
-      - mkdir -p /app/docs
+      - install -dm755 /app/docs
       - install -Dm644 mplabx-override.conf /app/docs/systemd_overrides/mplabx-override.conf
       - ln -s ../extra/docs/udev_rules /app/docs/udev_rules
         # workaround for flatpak not being able to mount extensions during apply_extra
       - cp -r /usr/lib/i386-linux-gnu/* /app/lib/i386-linux-gnu/
     sources:
-      - type: dir
-        path: resources
-      - type: script
-        dest-filename: apply_extra
-        commands:
-          # extract installer
-          - export LD_LIBRARY_PATH=/app/lib/libfakeroot:/app/lib/libfakeroot/fakechroot:/app/lib32/libfakeroot:/app/lib32/libfakeroot/fakechroot
-          # - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/lib/i386-linux-gnu:/usr/lib:/app/lib
-          - tar -xf installer.tar
-          - rm -f installer.tar
-          - ./MPLABX-*-linux-installer.sh --tar -xf
-            # can also extract only the mplabx installer with ./MPLABX-*-linux-installer.sh --tar -xf ./MPLABX-v5.35-linux-installer.run
-          - rm -f MPLABX-*-linux-installer.sh
-          - rm -f MPLABCOMM-*-linux-installer.run
-          - mv MPLABX-*-linux-installer.run installer.run
-            # create chroot
-          - mkdir -p tmproot/{etc,usr/{bin,lib,local/lib},tmp}
-          - ln -s /usr/bin tmproot/bin
-          - ln -s /app tmproot/app
-          - echo "root:x:0:0:root:/root:/bin/bash" > tmproot/etc/passwd
-          - echo "root:x:0:root" > tmproot/etc/group
-            # symlink installer and script to tmproot/tmp/
-          - ln -s /app/bin/mplabx-install.sh tmproot/tmp/mplabx-install.sh
-            # symlink don't work
-            #- ln -s /app/extra/installer.run tmproot/tmp/installer.run
-          - mv installer.run tmproot/tmp/
-            # run installer in fakechroot
-          - fakechroot chroot tmproot/ tmp/mplabx-install.sh
-            # run mplabcomm installer again with the app jre? might need to be run in fakechroot
-            # tmproot/opt/microchip/mplabx/MPLABCOMM-3.35.24-linux-installer.run --jrebinary /app/jre/jre/bin/java
-            # move app: etc/
-          - mkdir -p etc/mplab_ide
-          - rm -f tmproot/etc/.mplab_ide/mchplinusbmonitor
-          - mv tmproot/etc/.mplab_ide/* etc/mplab_ide/
-          - ln -s ../../mplabcomm/lib/mchplinusbmonitor etc/mplab_ide/mchplinusbmonitor
-            # why? why missing?
-          - ln -s ../../mplabcomm/lib/mchplinusbdevice etc/mplab_ide/mchplinusbdevice
-            # udev rules
-          - mkdir -p docs/udev_rules
-          - mv tmproot/etc/udev/rules.d/* docs/udev_rules/
-            # more docs
-          - ln -s ../../docs/systemd_overrides docs/systemd_overrides
-            # move app: lib/ prepare
-          - mkdir -p lib
-            # move app: usr/local/lib
-          - mv tmproot/usr/local/lib/libLlvmDisassembler.so lib/
-          - ln -s ../mplabcomm/lib/libmchpusb-1.0.so.0.0.0 lib/libmchpusb-1.0.so
-            # move app: usr/lib
-          # - mkdir -p lib/sdk
-          # - ln -s /usr/lib/sdk/openjdk8 lib/sdk/openjdk8
-          - ln -s ../mplabcomm/lib/libSerialAccessLink_3_17.so lib/libSerialAccessLink_3_17.so
-          - ln -s ../mplabcomm/lib/libUSBAccessLink_3_33.so lib/libUSBAccessLink_3_33.so
-            # move app: opt/ mplabx
-          - mkdir -p mplabx
-          - mv tmproot/opt/microchip/mplabx/*/* mplabx/
-          - rm -f mplabx/{Uninstall_*,MPLABCOMM-*.run}
-          - rm -rf mplabx/sys/java
-          - rmdir mplabx/sys
-            # move app: opt/ mplabcomm
-          - mkdir -p mplabcomm
-          - mv tmproot/opt/microchip/mplabcomm/*/* mplabcomm/
-            # patch startup scripts
-          - |
-              for app in mplab_ide mplab_ipe; do
-                sed -i 's#/etc/.mplab_ide#/app/extra/etc/'${app}'#g' mplabx/mplab_platform/bin/${app}
-                # mchpsegusbmonitor does not exist, comment it out
-                sed -i 's;^\(.*mchpsegusbmonitor.*\);#\1;g' mplabx/mplab_platform/bin/${app}
-                #sed -i 's#^progdir=.*#progdir=/app/extra/mplabx/mplab_platform/bin#g' mplabx/mplab_platform/bin/${app}
-                #sed -i 's#^APPNAME=.*#APPNAME='${app}'#g' mplabx/mplab_platform/bin/${app}
-              done
-            # set jdkhome
-          - |
-              for f in etc/mplab_ide.conf etc/mplab_ipe.conf harness/etc/app.conf mplab_ipe/ipecmd.sh; do
-                sed -i 's;^#jdkhome=.*;jdkhome=/app/jre;' mplabx/mplab_platform/${f}
-              done
-            # fonts fix
-          - sed -i 's/^default_options="/default_options="-J-Dawt.useSystemAAFontSettings=on /' mplabx/mplab_platform/etc/mplab_ide.conf
-            # remove chroot
-          - rm -rf tmproot
       - type: extra-data
         filename: installer.tar
-        url: http://ww1.microchip.com/downloads/en/DeviceDoc/MPLABX-v5.40-linux-installer.tar
-        sha256: 17f04a312a3720782c8130296eb3d3fd705ba76cf4cb6e2471c5af05ee466d79
-        size: 931123200
+        url: https://ww1.microchip.com/downloads/en/DeviceDoc/MPLABX-v5.50(1)-linux-installer.tar
+        sha256: 85be41d8da0c388c1889520b8641abf816e23ac946003b0460aaa4efaa5ad1d9
+        size: 592752640
+      - type: file
+        path: apply_extra
+      - type: file
+        path: com.microchip.mplabx.desktop
+      - type: file
+        path: com.microchip.mplabx.mplab_ipe.desktop
+      - type: file
+        path: ld.so.conf
+      - type: file
+        path: mplabx-install.sh
+      - type: file
+        path: mplabx-override.conf
+      - type: file
+        path: icons/ide_256.png
+      - type: file
+        path: icons/ide_48.png
+      - type: file
+        path: icons/ipe_48.png
     modules:
-      - name: fakeroot
-        config-opts:
-          - --libdir=/app/lib/libfakeroot
-          - --disable-static
-          - --with-ipc=sysv
-        sources:
-          - type: archive
-            url: https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.25.3.orig.tar.gz
-            sha256: 8e903683357f7f5bcc31b879fd743391ad47691d4be33d24a76be3b6c21e956c
-          - type: shell
-            commands:
-              - sed -i 's|SUBDIRS=doc|SUBDIRS=|' Makefile.am
-              - ./bootstrap
-      - name: fakechroot
-        config-opts:
-          - --libdir=/app/lib/libfakeroot
-        sources:
-          - type: archive
-            url: https://github.com/dex4er/fakechroot/releases/download/2.20.1/fakechroot-2.20.1.tar.gz
-            sha256: 5abd04323c9ddae06b5dcaa56b2da07728de3fe21007b08bd88a17b2409b32aa
-      - name: lib32-fakeroot
-        build-options:
-          arch:
-            x86_64: *compat_i386_opts
-        config-opts:
-          - --libdir=/app/lib32/libfakeroot
-          - --disable-static
-          - --with-ipc=sysv
-        sources:
-          - type: archive
-            url: https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.25.3.orig.tar.gz
-            sha256: 8e903683357f7f5bcc31b879fd743391ad47691d4be33d24a76be3b6c21e956c
-          - type: shell
-            commands:
-              - sed -i 's|SUBDIRS=doc|SUBDIRS=|' Makefile.am
-              - ./bootstrap
-      - name: lib32-fakechroot
-        build-options:
-          arch:
-            x86_64: *compat_i386_opts
-        config-opts:
-          - --libdir=/app/lib32/libfakeroot
-        sources:
-          - type: archive
-            url: https://github.com/dex4er/fakechroot/releases/download/2.20.1/fakechroot-2.20.1.tar.gz
-            sha256: 5abd04323c9ddae06b5dcaa56b2da07728de3fe21007b08bd88a17b2409b32aa
-
+      - ../shared-modules/fakeroot/fakeroot.json
+      - ../shared-modules/fakechroot/fakechroot.json
+      - ../shared-modules/fakeroot/lib32-fakeroot.json
+      - ../shared-modules/fakechroot/lib32-fakechroot.json
       - name: openjfx8-bin
         buildsystem: simple
         build-commands:
-                - install -Dm755 jre/lib/amd64/* -t /app/jre/jre/lib/amd64/
-                - install -Dm644 jre/lib/ext/jfxrt.jar -t /app/jre/jre/lib/ext/
-                - install -Dm644 jre/lib/{javafx.properties,jfxswt.jar} -t /app/jre/jre/lib/
-                - install -Dm644 lib/* -t /app/jre/lib/
+          - install -Dm755 jre/lib/amd64/* -t /app/jre/jre/lib/amd64/
+          - install -Dm644 jre/lib/ext/jfxrt.jar -t /app/jre/jre/lib/ext/
+          - install -Dm644 jre/lib/{javafx.properties,jfxswt.jar} -t /app/jre/jre/lib/
+          - install -Dm644 lib/* -t /app/jre/lib/
         sources:
           - type: archive
             url: https://archive.archlinux.org/packages/j/java8-openjfx/java8-openjfx-8.u202-3-x86_64.pkg.tar.xz
             sha256: 197de9331b65824ff8303e910446c20f307a0c705f762c2a2f30f943b46f4a18
             strip-components: 4
 # TODO: get gradle to work with openjdk-1.8.0_252-adoptopenjdk
-#     - name: openjfx8
-#       buildsystem: simple
-#       build-options:
-#         env:
-#           - JAVA_HOME=/usr/lib/sdk/openjdk8/jvm/java-8-openjdk
-#           - PATH=/usr/bin:/usr/lib/sdk/openjdk8/bin
-#         build-args:
-#           - --share=network
-#       subdir: openjfx
-#       build-commands:
-#         - ../gradle/bin/gradle
-#       sources:
-#         - type: archive
-#           url: https://hg.openjdk.java.net/openjfx/8u/rt/archive/8u202-ga.tar.bz2
-#           sha256: 12b0538d04c4bd451e4692ee06357ac36233ff4ec2af9fa3b9bbdbab48c3f2fc
-#           dest: openjfx
-#         - type: patch
-#           path: openjfx8-flags.patch
-#           dest: openjfx
-#         - type: patch
-#           path: openjfx8-no-xlocale.patch
-#           dest: openjfx
-#         - type: file
-#           path: openjfx8-gradle.properties
-#           dest-filename: gradle.properties
-#           dest: openjfx
-#         - type: archive
-#           url: https://services.gradle.org/distributions/gradle-5.3.1-bin.zip
-#           sha256: 1c59a17a054e9c82f0dd881871c9646e943ec4c71dd52ebc6137d17f82337436
-#           dest: gradle
-#       modules:
-#         - ../flathub-shared-modules/gtk2/gtk2.json
+#     - openjfx8/openjfx8.json

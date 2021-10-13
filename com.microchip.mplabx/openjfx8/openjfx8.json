@@ -1,0 +1,50 @@
+{
+    "name": "openjfx8",
+    "buildsystem": "simple",
+    "build-options": {
+        "env": [
+            "JAVA_HOME=/usr/lib/sdk/openjdk8/jvm/java-8-openjdk",
+            "PATH=/usr/bin:/usr/lib/sdk/openjdk8/bin"
+        ],
+        "build-args": [
+            "--share=network"
+        ]
+    },
+    "subdir": "openjfx",
+    "build-commands": [
+        "../gradle/bin/gradle"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://hg.openjdk.java.net/openjfx/8u/rt/archive/8u202-ga.tar.bz2",
+            "sha256": "12b0538d04c4bd451e4692ee06357ac36233ff4ec2af9fa3b9bbdbab48c3f2fc",
+            "dest": "openjfx"
+        },
+        {
+            "type": "patch",
+            "path": "openjfx8-flags.patch",
+            "dest": "openjfx"
+        },
+        {
+            "type": "patch",
+            "path": "openjfx8-no-xlocale.patch",
+            "dest": "openjfx"
+        },
+        {
+            "type": "file",
+            "path": "openjfx8-gradle.properties",
+            "dest-filename": "gradle.properties",
+            "dest": "openjfx"
+        },
+        {
+            "type": "archive",
+            "url": "https://services.gradle.org/distributions/gradle-5.3.1-bin.zip",
+            "sha256": "1c59a17a054e9c82f0dd881871c9646e943ec4c71dd52ebc6137d17f82337436",
+            "dest": "gradle"
+        }
+    ],
+    "modules": [
+        "../../flathub-shared-modules/gtk2/gtk2.json"
+    ]
+}

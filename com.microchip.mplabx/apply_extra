@@ -1,0 +1,96 @@
+#!/bin/bash
+
+set -e
+
+# extract installer
+export LD_LIBRARY_PATH=/app/lib/libfakeroot:/app/lib/libfakeroot/fakechroot:/app/lib32/libfakeroot:/app/lib32/libfakeroot/fakechroot
+
+# - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/lib/i386-linux-gnu:/usr/lib:/app/lib
+tar -xf installer.tar
+rm -f installer.tar
+./MPLABX-*-linux-installer.sh --tar -xf
+
+# can also extract only the mplabx installer with ./MPLABX-*-linux-installer.sh --tar -xf ./MPLABX-v5.35-linux-installer.run
+rm -f MPLABX-*-linux-installer.sh
+rm -f MPLABCOMM-*-linux-installer.run
+mv MPLABX-*-linux-installer.run installer.run
+
+# create chroot
+mkdir -p tmproot/{etc,usr/{bin,lib,local/lib},tmp}
+ln -s /usr/bin tmproot/bin
+ln -s /app tmproot/app
+echo "root:x:0:0:root:/root:/bin/bash" > tmproot/etc/passwd
+echo "root:x:0:root" > tmproot/etc/group
+
+# symlink installer and script to tmproot/tmp/
+ln -s /app/bin/mplabx-install.sh tmproot/tmp/mplabx-install.sh
+# symlink doesn't work
+#- ln -s /app/extra/installer.run tmproot/tmp/installer.run
+mv installer.run tmproot/tmp/
+
+# run installer in fakechroot
+fakechroot chroot tmproot/ tmp/mplabx-install.sh
+
+# run mplabcomm installer again with the app jre? might need to be run in fakechroot
+# tmproot/opt/microchip/mplabx/MPLABCOMM-3.35.24-linux-installer.run --jrebinary /app/jre/jre/bin/java
+
+# move app: etc/
+mkdir -p etc/mplab_ide
+rm -f tmproot/etc/.mplab_ide/mchplinusbmonitor
+mv tmproot/etc/.mplab_ide/* etc/mplab_ide/
+ln -s ../../mplabcomm/lib/mchplinusbmonitor etc/mplab_ide/mchplinusbmonitor
+# why? why missing?
+ln -s ../../mplabcomm/lib/mchplinusbdevice etc/mplab_ide/mchplinusbdevice
+
+# udev rules
+mkdir -p docs/udev_rules
+mv tmproot/etc/udev/rules.d/* docs/udev_rules/
+
+# more docs
+ln -s ../../docs/systemd_overrides docs/systemd_overrides
+
+# move app: lib/ prepare
+mkdir -p lib
+
+# move app: usr/local/lib
+mv tmproot/usr/local/lib/libLlvmDisassembler.so lib/
+ln -s ../mplabcomm/lib/libmchpusb-1.0.so.0.0.0 lib/libmchpusb-1.0.so
+
+# move app: usr/lib
+# - mkdir -p lib/sdk
+# - ln -s /usr/lib/sdk/openjdk8 lib/sdk/openjdk8
+ln -s ../mplabcomm/lib/libSerialAccessLink_3_17.so lib/libSerialAccessLink_3_17.so
+ln -s ../mplabcomm/lib/libUSBAccessLink_3_33.so lib/libUSBAccessLink_3_33.so
+
+# move app: opt/ mplabx
+mkdir -p mplabx
+mv tmproot/opt/microchip/mplabx/*/* mplabx/
+rm -f mplabx/{Uninstall_*,MPLABCOMM-*.run}
+rm -rf mplabx/sys/java
+rmdir mplabx/sys
+
+# move app: opt/ mplabcomm
+mkdir -p mplabcomm
+mv tmproot/opt/microchip/mplabcomm/*/* mplabcomm/
+
+# patch startup scripts
+for app in mplab_ide mplab_ipe; do
+  sed -i 's#/etc/.mplab_ide#/app/extra/etc/'${app}'#g' mplabx/mplab_platform/bin/${app}
+  # mchpsegusbmonitor does not exist, comment it out
+  sed -i 's;^\(.*mchpsegusbmonitor.*\);#\1;g' mplabx/mplab_platform/bin/${app}
+  #sed -i 's#^progdir=.*#progdir=/app/extra/mplabx/mplab_platform/bin#g' mplabx/mplab_platform/bin/${app}
+  #sed -i 's#^APPNAME=.*#APPNAME='${app}'#g' mplabx/mplab_platform/bin/${app}
+done
+
+# set jdkhome
+for f in etc/mplab_{ide,ipe}.conf harness/etc/app.conf mplab_ipe/ipecmd.sh; do
+  sed -i 's;^#jdkhome=.*;jdkhome=/app/jre;' \
+    mplabx/mplab_platform/${f}
+done
+
+# fonts fix
+sed -i 's/^default_options="/default_options="-J-Dawt.useSystemAAFontSettings=on /' \
+  mplabx/mplab_platform/etc/mplab_ide.conf
+
+# remove chroot
+rm -rf tmproot
