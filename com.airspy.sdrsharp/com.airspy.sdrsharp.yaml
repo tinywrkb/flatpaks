@@ -1,8 +1,7 @@
-# TODO: desktop files and icons
 # TODO: switch to extra-data
 app-id: com.airspy.sdrsharp
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.mono6
@@ -12,12 +11,9 @@ finish-args:
   - --device=dri
   - --filesystem=home
   - --persist=.mono
-  - --share=ipc
-  - --share=ipc
   - --share=network
   - --socket=pulseaudio
-  - --socket=wayland
-  - --socket=fallback-x11
+  - --socket=x11
 modules:
   - name: sdrsharp
     buildsystem: simple
@@ -43,24 +39,65 @@ modules:
           done
       - install -Dm644 * -t /app/sdrsharp/
       - rm -f /app/sdrsharp/*.config
-      - install -Dm644 *.config -t /app/share/sdrsharp/
+      # install configs
+      - |
+        install -Dm644 *.config -t /app/share/sdrsharp/
+        install -Dm644 /dev/stdin /app/share/sdrsharp/ADSBSpy.exe.config <<EOF
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+        </configuration>
+        EOF
       - |
           for prog in SDRSharp ADSBSpy AirspyCalibrate AstroSpy SpectrumSpy; do
             ln -s /tmp/${prog}.exe.config /app/sdrsharp/${prog}.exe.config
           done
-    post-install:
+      # startup wrapper
+      - install -Dm755 sdrsharp_wrapper -t /app/bin/
       - |
           for prog in SDRSharp ADSBSpy AirspyCalibrate AstroSpy SpectrumSpy; do
-            install -Dm755 program_init /app/bin/${prog}
-            sed -i "s/_program_/${prog}/" /app/bin/${prog}
+            ln -s sdrsharp_wrapper /app/bin/${prog}
           done
+      # desktop files and icons
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 -t /app/share/applications/
+        ${FLATPAK_ID}.{adsbspy,airspycalibrate,astrospy,spectrumspy}.desktop
+      - install -Dm644 -t /app/share/icons/hicolor/48x48/apps/ ${FLATPAK_ID}.adsbspy.png
+      - install -Dm644 -t /app/share/icons/hicolor/64x64/apps/
+        ${FLATPAK_ID}{,.astrospy,.spectrumspy}.png
+      - install -Dm644 -t /app/share/icons/hicolor/128x128/apps/ ${FLATPAK_ID}.airspycalibrate.png
     sources:
       - type: archive
         url: https://www.iz3mez.it/software/SDRSharp/SDRSharp_v1457.zip
         sha256: bdf853040110dbd72720cb63b7696d574e3b00d739b17839e8d93cab3e1df400
         strip-components: 0
+# newer releases are broken due to shark.dll
+#       x-checker-data:
+#         type: anitya
+#         project-id: 235213
+#         stable-only: true
+#         url-template: https://www.iz3mez.it/software/SDRSharp/SDRSharp_v$version.zip
       - type: file
-        path: program_init
+        path: sdrsharp_wrapper
+      - type: file
+        path: com.airspy.sdrsharp.adsbspy.desktop
+      - type: file
+        path: com.airspy.sdrsharp.adsbspy.png
+      - type: file
+        path: com.airspy.sdrsharp.airspycalibrate.desktop
+      - type: file
+        path: com.airspy.sdrsharp.airspycalibrate.png
+      - type: file
+        path: com.airspy.sdrsharp.astrospy.desktop
+      - type: file
+        path: com.airspy.sdrsharp.astrospy.png
+      - type: file
+        path: com.airspy.sdrsharp.desktop
+      - type: file
+        path: com.airspy.sdrsharp.png
+      - type: file
+        path: com.airspy.sdrsharp.spectrumspy.desktop
+      - type: file
+        path: com.airspy.sdrsharp.spectrumspy.png
     modules:
       - name: mono
         buildsystem: simple
@@ -70,31 +107,8 @@ modules:
             # TODO: a more correct mono installation
           - cp -ar /usr/lib/sdk/mono6/lib/mono/gac/System* /app/lib/mono/gac/
           - rm -f /app/lib/mono/gac/System*/*/*.pdb
-      - name: portaudio
-        config-opts:
-          - --enable-cxx
-        make-args:
-          - -j1
-        sources:
-          - type: archive
-            url: http://www.portaudio.com/archives/pa_stable_v190600_20161030.tgz
-            sha256: f5a21d7dcd6ee84397446fa1fa1a0675bb2e8a4a6dceb4305a8404698d8d1513
-#       modules:
-#         - name: jack
-      - name: rtl-sdr
-        buildsystem: cmake
-#       post-install:
-#         - install -Dm644 rtl-sdr.rules /app/docs/udev_rules/10-rtl-sdr.rules
-#         - install -Dm644 rtlsdr.conf /app/docs//modprobe.d/rtlsdr.conf
-        sources:
-          - type: git
-            url: git://git.osmocom.org/rtl-sdr.git
-            tag: 0.6.0
-        modules:
-          - ../flathub-shared-modules/libusb/libusb.json
-      - name: libgdiplus
-        sources:
-          - type: archive
-            url: https://github.com/mono/libgdiplus/archive/6.0.5.tar.gz
-            sha256: 1fd034f4b636214cc24e94c563cd10b3f3444d9f0660927b60e63fd4131d97fa
-#     - name: gtk2 ???
+      - ../flathub-shared-modules/gtk2/gtk2.json
+      - ../shared-modules/libgdiplus/libgdiplus.json
+      - ../shared-modules/portaudio/portaudio.json
+      # TODO: use instead a flatpak-spawn wrapper
+      - ../shared-modules/rtl-sdr/rtl-sdr.json

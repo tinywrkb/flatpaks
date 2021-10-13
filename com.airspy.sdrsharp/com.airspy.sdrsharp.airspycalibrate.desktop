@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=AirspyCalibrate
+Type=Application
+Comment=AirspyCalibrate application
+Exec=AirspyCalibrate
+Icon=com.airspy.sdrsharp.airspycalibrate
+GenericName=AirspyCalibrate
+Categories=AudioVideo;Network;

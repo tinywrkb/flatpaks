@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export MONO_GAC_PREFIX=/app
-_PROGRAM=_program_
+_PROGRAM=$(basename $0)
 
 ln -s $XDG_CONFIG_HOME/${_PROGRAM}.exe.config /tmp/${_PROGRAM}.exe.config
 [ -f "$XDG_CONFIG_HOME"/${_PROGRAM}.exe.config ] || cp /app/share/sdrsharp/${_PROGRAM}.exe.config "$XDG_CONFIG_HOME"/${_PROGRAM}.exe.config
