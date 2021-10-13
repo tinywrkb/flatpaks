@@ -1,0 +1,28 @@
+{
+    "name": "fakeroot",
+    "config-opts": [
+        "--libdir=/app/lib/libfakeroot",
+        "--disable-static",
+        "--with-ipc=sysv"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.26.orig.tar.gz",
+            "sha256": "480a578ffdc5592e73df4c086950d321b4adc78dbdaec56c82e4fe1fb68de8e9",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 12048,
+                "stable-only": true,
+                "url-template": "https://deb.debian.org/debian/pool/main/f/fakeroot/fakeroot_$version.orig.tar.gz"
+            }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "sed -i 's|SUBDIRS=doc|SUBDIRS=|' Makefile.am",
+                "./bootstrap"
+            ]
+        }
+    ]
+}
