@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# run the installer
+chmod +x ModelSimSetup-linux.run
+./ModelSimSetup-linux.run \
+  --modelsim_edition modelsim_ase \
+  --mode unattended \
+  --unattendedmodeui none \
+  --accept_eula 1 \
+  --installdir ./
+
+# cleanup
+rm -rf ModelSimSetup-linux.run logs uninstall
+
+# rename folder so the packaging would be compatible with other modelsim editions
+mv modelsim_* modelsim
+
+# patchelf workaround
+patchelf --set-interpreter /app/lib/i386-linux-gnu/ld-linux.so.2 modelsim/linuxaloem/mgls/bin/lmutil
+patchelf --set-interpreter /app/lib/i386-linux-gnu/ld-linux.so.2 modelsim/linuxaloem/mgls/bin/lmgrd
+
+# correct permissions
+find modelsim \! -perm /o+rwx -exec chmod o=g {} \;
+
+sed -i "s,linux_rh60,linux,g" modelsim/vco
+

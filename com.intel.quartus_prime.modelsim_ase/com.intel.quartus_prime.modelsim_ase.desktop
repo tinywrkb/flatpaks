@@ -4,5 +4,5 @@ Comment=ModelSim simulation software for Intel FPGAs
 Exec=modelsim %U
 Terminal=false
 Type=Application
-Icon=modelsim
+Icon=com.intel.quartus_prime.modelsim_ase
 Categories=Development;

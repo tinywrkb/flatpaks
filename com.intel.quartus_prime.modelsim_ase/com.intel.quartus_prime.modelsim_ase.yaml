@@ -1,6 +1,6 @@
 app-id: com.intel.quartus_prime.modelsim_ase
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
@@ -8,10 +8,10 @@ sdk-extensions:
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
-    version: '20.08'
+    version: '21.08'
   org.freedesktop.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
-    version: '20.08'
+    version: '21.08'
     no-autodownload: true
 x-compat-i386-opts: &compat_i386_opts
   prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
@@ -22,10 +22,10 @@ x-compat-i386-opts: &compat_i386_opts
     CXX: i686-unknown-linux-gnu-g++
   libdir: /app/lib32
 command: modelsim
-rename-desktop-file: modelsim.desktop
-rename-icon: modelsim
 cleanup:
+  - /include
   - /lib*/pkgconfig
+  - '*.a'
   - '*.la'
 finish-args:
   - --allow=multiarch
@@ -35,45 +35,32 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=x11
 modules:
   - name: modelsim
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
-      - install -Dm755 modelsim /app/bin/modelsim
-      - install -Dm644 modelsim.png /app/share/icons/hicolor/512x512/apps/modelsim.png
-      - install -Dm644 modelsim.desktop /app/share/applications/modelsim.desktop
-      - mkdir -p /app/lib/i386-linux-gnu
-      - mkdir -p /app/lib/debug/lib/i386-linux-gnu
+      - install -Dm755 apply_extra modelsim -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/512x512/apps/
       - install -Dm644 ld.so.conf -t /app/etc/
+      - install -dm755 /app/lib{,/debug/lib}/i386-linux-gnu
     sources:
-      - type: script
-        dest-filename: apply_extra
-        commands:
-          - chmod +x ModelSimSetup-linux.run
-          - ./ModelSimSetup-linux.run
-              --modelsim_edition modelsim_ase
-              --mode unattended
-              --unattendedmodeui none
-              --accept_eula 1
-              --installdir ./
-          - rm -rf ModelSimSetup-linux.run logs uninstall
-            # rename folder so the packaging would be compatible with other modelsim editions
-          - mv modelsim_* modelsim
-            # patchelf workaround
-          - patchelf --set-interpreter /app/lib/i386-linux-gnu/ld-linux.so.2 modelsim/linuxaloem/mgls/bin/lmutil
-          - patchelf --set-interpreter /app/lib/i386-linux-gnu/ld-linux.so.2 modelsim/linuxaloem/mgls/bin/lmgrd
-          - find modelsim \! -perm /o+rwx -exec chmod o=g {} \;
-          - sed -i "s,linux_rh60,linux,g" modelsim/vco
-      - type: dir
-        path: resources
       - type: extra-data
         filename: ModelSimSetup-linux.run
         url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/ModelSimSetup-20.1.0.711-linux.run
         sha256: 82b0e191e913684b992cbb8cf5ee63e45779a7b6139de1a19988855cb356bd6a
         size: 1370004012
+      - type: file
+        path: apply_extra
+      - type: file
+        path: modelsim
+      - type: file
+        path: ld.so.conf
+      - type: file
+        path: com.intel.quartus_prime.modelsim_ase.desktop
+      - type: file
+        path: com.intel.quartus_prime.modelsim_ase.png
     modules:
       - name: lib32-libcanberra
         build-options:
@@ -99,7 +86,6 @@ modules:
             disable-shallow-clone: true
         cleanup:
           - /bin
-          - /include
           - /lib32/gnome-settings-daemon-3.0
           - /share/gdm
           - /share/gnome
@@ -129,7 +115,6 @@ modules:
             sha256: 30306e0c76e0f9f1f0de987cf1c82a5c21e1ce6568b9227f7da5b71cbea86c9d
         cleanup:
           - /bin
-          - /include
           - /lib32/*.a
           - /share/man
       - name: lib32-gtk2
@@ -148,19 +133,10 @@ modules:
         cleanup:
           - /bin
           - /etc
-          - /include
           - /lib32/gtk-2.0/include
           - /share/aclocal
           - /share/gtk-2.0
           - /share/gtk-doc
         modules:
           - ../flathub-shared-modules/intltool/intltool-0.51.json
-      - name: patchelf
-        sources:
-          - type: archive
-            url: https://github.com/NixOS/patchelf/archive/0.9.tar.gz
-            sha256: cf0693e794229e19edcf2299427b5a352e0f4d4f06f9d3856e30ddb0344d5ce8
-        cleanup:
-          - /share/doc
-          - /share/man
-          - /share/aclocal
+      - ../shared-modules/patchelf/patchelf.json
