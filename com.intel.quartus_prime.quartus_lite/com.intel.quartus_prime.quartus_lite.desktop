@@ -4,5 +4,5 @@ Comment=Quartus Prime Lite Edition Design Software for Intel FPGAs
 Exec=quartus %U
 Terminal=false
 Type=Application
-Icon=quartus
+Icon=com.intel.quartus_prime.quartus_lite
 Categories=Development;

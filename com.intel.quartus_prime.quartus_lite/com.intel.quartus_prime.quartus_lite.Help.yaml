@@ -1,6 +1,6 @@
 app-id: com.intel.quartus_prime.quartus_lite.Help
 runtime: com.intel.quartus_prime.quartus_lite
-sdk: org.freedesktop.Sdk//20.08
+sdk: org.freedesktop.Sdk//21.08
 build-extension: true
 separate-locales: false
 #appstream-compose: false
@@ -8,7 +8,7 @@ modules:
   - name: help
     buildsystem: simple
     build-commands:
-      - install -D apply_extra $FLATPAK_DEST/bin/apply_extra
+      - install -Dm755 apply_extra -t $FLATPAK_DEST/bin/
     sources:
       - type: script
         dest-filename: apply_extra

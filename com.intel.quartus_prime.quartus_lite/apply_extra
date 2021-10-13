@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# create installation dir
+mkdir -p quartus
+
+# run installer
+chmod +x installer.run
+./installer.run \
+  --disable-components quartus_help,devinfo,modelsim_ase,modelsim_ae \
+  --mode unattended \
+  --unattendedmodeui none \
+  --accept_eula 1 \
+  --installdir /app/extra/quartus
+
+# cleanup
+rm -rf installer.run quartus/{logs,uninstall}
+find quartus/ \( -name "unzip" -or -name "unzip32" \) -delete
+rm -rf quartus/quartus/common/help/webhelp
+
+# patchelf workaround
+patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 quartus/quartus/linux64/lmutil
+patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 quartus/quartus/linux64/lmgrd
+
+# set correct permissions
+find quartus \! -perm /o+rwx -exec chmod o=g {} \;
+
+# maybe not needed as the installer target was not moved
+#sed -i "s#/app/extra/quartus/##g" quartus/quartus/sopc_builder/.sopc_builder
+
+# add devinfo extensions symlinks
+devices=(arriaii cycloneive cycloneivgx cyclone10lp cyclonev maxii maxv 55nm)
+for dev in ${devices[@]}; do
+  ln -s /app/devinfo/extra/${dev} \
+    /app/extra/quartus/quartus/common/devinfo/${dev}
+done
+
+# add help extension symlinks
+help_items=(tutorial webhelp mega_help_links.lst)
+for item in ${help_items[@]}; do
+  ln -s /app/docs/help/extra/${item} \
+    /app/extra/quartus/quartus/common/help/${item}
+done

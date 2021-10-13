@@ -1,6 +1,6 @@
 app-id: com.intel.quartus_prime.quartus_lite
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
@@ -8,10 +8,10 @@ sdk-extensions:
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
-    version: '20.08'
+    version: '21.08'
   org.freedesktop.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
-    version: '20.08'
+    version: '21.08'
     no-autodownload: true
   com.intel.quartus_prime.quartus_lite.devinfo:
     directory: devinfo
@@ -32,10 +32,10 @@ x-compat-i386-opts: &compat_i386_opts
     CXX: i686-unknown-linux-gnu-g++
   libdir: /app/lib32
 command: quartus
-rename-desktop-file: quartus.desktop
-rename-icon: quartus
 cleanup:
+  - /include
   - /lib*/pkgconfig
+  - '*.a'
   - '*.la'
 finish-args:
   - --allow=multiarch
@@ -47,52 +47,20 @@ finish-args:
   - --persist=.altera.quartus
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=x11
 modules:
   - name: quartus
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
-      - install -Dm755 quartus /app/bin/quartus
-      - install -Dm644 quartus.png /app/share/icons/hicolor/256x256/apps/quartus.png
-      - install -Dm644 quartus.desktop /app/share/applications/quartus.desktop
-      - mkdir -p /app/lib/i386-linux-gnu
-      - mkdir -p /app/lib/debug/lib/i386-linux-gnu
+      - install -Dm755 apply_extra quartus -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/256x256/apps/
       - install -Dm644 ld.so.conf -t /app/etc/
+      - install -dm755 /app/lib{,/debug/lib}/i386-linux-gnu
       - install -Dm644 51-usbblaster.rules -t /app/docs/udev_rules/
         # extensions mount points
-      - mkdir -p /app/devinfo
-      - mkdir -p /app/docs/help
+      - install -dm755 /app/{devinfo,docs/help}
     sources:
-      - type: script
-        dest-filename: apply_extra
-        commands:
-          - mkdir -p quartus
-          - chmod +x installer.run
-          - ./installer.run
-              --disable-components quartus_help,devinfo,modelsim_ase,modelsim_ae
-              --mode unattended
-              --unattendedmodeui none
-              --accept_eula 1
-              --installdir /app/extra/quartus
-          - rm -rf installer.run quartus/{logs,uninstall}
-          - find quartus/ \( -name "unzip" -or -name "unzip32" \) -delete
-          - rm -rf quartus/quartus/common/help/webhelp
-            # patchelf workaround
-          - patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 quartus/quartus/linux64/lmutil
-          - patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 quartus/quartus/linux64/lmgrd
-          - find quartus \! -perm /o+rwx -exec chmod o=g {} \;
-            # maybe not needed as the installer target was not moved
-#         - sed -i "s#/app/extra/quartus/##g" quartus/quartus/sopc_builder/.sopc_builder
-            # add devinfo extensions symlinks
-          - devices=(arriaii cycloneive cycloneivgx cyclone10lp cyclonev maxii maxv 55nm)
-          - for dev in ${devices[@]}; do ln -s /app/devinfo/extra/${dev} /app/extra/quartus/quartus/common/devinfo/${dev}; done
-            # add help extension symlinks
-          - help_items=(tutorial webhelp mega_help_links.lst)
-          - for item in ${help_items[@]}; do ln -s /app/docs/help/extra/${item} /app/extra/quartus/quartus/common/help/${item}; done
-      - type: dir
-        path: resources
       - type: extra-data
         filename: installer.run
         url: http://download.altera.com/akdlm/software/acdsinst/20.1std/711/ib_installers/QuartusLiteSetup-20.1.0.711-linux.run
@@ -102,6 +70,18 @@ modules:
         url: https://aur.archlinux.org/cgit/aur.git/plain/51-usbblaster.rules?h=quartus-free&id=a9d0da90286dd239403158fa9e2757a9951f4a13
         sha256: dd9d33fa2698a0ec11ae86f4508f77e2e12bf4a21224f5b16640bc41d6c0999b
         dest-filename: 51-usbblaster.rules
+      - type: script
+        dest-filename: quartus
+        commands:
+          - exec /app/extra/quartus/quartus/bin/quartus --64bit "$@"
+      - type: file
+        path: apply_extra
+      - type: file
+        path: ld.so.conf
+      - type: file
+        path: com.intel.quartus_prime.quartus_lite.desktop
+      - type: file
+        path: com.intel.quartus_prime.quartus_lite.png
     modules:
       - name: lib32-libcanberra
         build-options:
@@ -127,7 +107,6 @@ modules:
             disable-shallow-clone: true
         cleanup:
           - /bin
-          - /include
           - /lib32/gnome-settings-daemon-3.0
           - /share/gdm
           - /share/gnome
@@ -157,7 +136,6 @@ modules:
             sha256: 30306e0c76e0f9f1f0de987cf1c82a5c21e1ce6568b9227f7da5b71cbea86c9d
         cleanup:
           - /bin
-          - /include
           - /lib32/*.a
           - /share/man
       - name: lib32-gtk2
@@ -176,19 +154,10 @@ modules:
         cleanup:
           - /bin
           - /etc
-          - /include
           - /lib32/gtk-2.0/include
           - /share/aclocal
           - /share/gtk-2.0
           - /share/gtk-doc
         modules:
           - ../flathub-shared-modules/intltool/intltool-0.51.json
-      - name: patchelf
-        sources:
-          - type: archive
-            url: https://github.com/NixOS/patchelf/archive/0.9.tar.gz
-            sha256: cf0693e794229e19edcf2299427b5a352e0f4d4f06f9d3856e30ddb0344d5ce8
-        cleanup:
-          - /share/doc
-          - /share/man
-          - /share/aclocal
+      - ../shared-modules/patchelf/patchelf.json
