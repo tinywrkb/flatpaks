@@ -134,7 +134,19 @@ modules:
 #         stable-only: true
 #         url-template: https://github.com/hcsubser/hybridbar/archive/$version/hybridbar-$version.tar.gz
 #   modules:
+#     - ../shared-modules/libcanberra/libcanberra.json
 #     - ../shared-modules/libnotify/libnotify.json
+#     - name: granite
+#       buildsystem: meson
+#       sources:
+#         - type: archive
+#           url: https://github.com/elementary/granite/archive/6.1.1/granite-6.1.1.tar.gz
+#           sha256: ba9f9c4b6eff8f7b2239c8f56b0bba0d4e6945ad0c0415e2788f6462b5a7f9f8
+#           x-checker-data:
+#             type: anitya
+#             project-id: 5410
+#             stable-only: true
+#             url-template: https://github.com/elementary/granite/archive/$version/granite-$version.tar.gz
 # - name: hybridbar-tray
 #   subdir: indicators/tray
 #   buildsystem: meson
