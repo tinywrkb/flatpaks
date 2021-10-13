@@ -1,6 +1,8 @@
+# TODO: use flatpak-spawn wrappers? light, pamixer, playerctl, wlr-randr
+# TODO: add modules bluez(enable pybluez), pamixer
 app-id: com.github.nwg_piotr.nwg-panel
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: nwg-panel
 finish-args:
@@ -55,20 +57,53 @@ modules:
       - desktop-file-edit --set-icon=$FLATPAK_ID /app/share/applications/${FLATPAK_ID}.desktop
     sources:
       - type: archive
-        url: https://github.com/nwg-piotr/nwg-panel/archive/refs/tags/v0.2.3.tar.gz
-        sha256: 483cbb667baf1120e1d57cd95e3ffc1374c04a4356843729362253994e48ebc6
+        url: https://github.com/nwg-piotr/nwg-panel/archive/v0.4.3/nwg-panel-0.4.3.tar.gz
+        sha256: 656a2df9d3b39a183bde3d1ed5b136630bb27519126fa16491c041a86cc393b7
+        x-checker-data:
+          type: anitya
+          project-id: 190839
+          stable-only: true
+          url-template: https://github.com/nwg-piotr/nwg-panel/archive/v$version/nwg-panel-$version.tar.gz
   - ../shared-modules/gtk-layer-shell/gtk-layer-shell.json
   - ../shared-modules/python-gobject/python-gobject.json
+  # cycle dependncy of flit-core and tomli, so use this workaround module
+  - ../shared-modules/python-setuptools-scm/python-setuptools-scm.json
   - python-dependencies.json
   - name: light
     config-opts:
       - --without-udev
     sources:
       - type: archive
-        url: https://github.com/haikarainen/light/archive/refs/tags/v1.2.2.tar.gz
+        url: https://github.com/haikarainen/light/archive/v1.2.2/light-1.2.2.tar.gz
         sha256: 62e889ee9be80fe808a972ef4981acc39e83a20f9a84a66a82cd1f623c868d9c
+        x-checker-data:
+          type: anitya
+          project-id: 16142
+          stable-only: true
+          url-template: https://github.com/haikarainen/light/archive/v$version/light-$version.tar.gz
       - type: shell
         commands:
           - sed -i 's/\(light_CFLAGS.*=.*\)/\1 -fcommon/' src/Makefile.am
     cleanup:
       - /share
+  - name: playerctl
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/altdesktop/playerctl/archive/v2.4.1.tar.gz
+        sha256: 75957ad5071956f563542c7557af16a57e40b4a7f66bc9b6373d022ec5eef548
+        x-checker-data:
+          type: anitya
+          project-id: 18550
+          stable-only: true
+          url-template: https://github.com/altdesktop/playerctl/archive/v$version.tar.gz
+  - name: wlr-randr
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://git.sr.ht/~emersion/wlr-randr
+        tag: v0.2.0
+        commit: ced1daa89e59ce5a0e42fd77148a8f614bcbc3f7
+        x-checker-data:
+          type: git
+          tag-pattern: ^v([\d.]+)$

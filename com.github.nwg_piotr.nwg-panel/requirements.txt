@@ -1,3 +1,4 @@
-psutil
-setuptools-scm
 i3ipc
+netifaces
+#pybluez
+psutil
