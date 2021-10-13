@@ -1,0 +1,21 @@
+{
+    "name": "libqrencode",
+    "buildsystem": "cmake",
+    "config-opts": [
+        "-DWITH_TOOLS=NO",
+        "-DBUILD_SHARED_LIBS=YES"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/fukuchi/libqrencode/archive/v4.1.1/libqrencode-4.1.1.tar.gz",
+            "sha256": "5385bc1b8c2f20f3b91d258bf8ccc8cf62023935df2d2676b5b67049f31a049c",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 12834,
+                "stable-only": true,
+                "url-template": "https://github.com/fukuchi/libqrencode/archive/v$version/libqrencode-$version.tar.gz"
+            }
+        }
+    ]
+}
