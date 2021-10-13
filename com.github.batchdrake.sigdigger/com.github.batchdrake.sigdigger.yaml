@@ -1,6 +1,9 @@
+# TODO: revisit depends
+# TODO: f-e-d-c
+# TODO: handle soapy differently, linuxsdr baseapp or extension
 app-id: com.github.batchdrake.sigdigger
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: SigDigger
 #rename-desktop-file: sigdigger.desktop
@@ -12,8 +15,9 @@ finish-args:
   - --persist=.suscan
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -46,48 +50,19 @@ modules:
                 url: https://github.com/BatchDrake/sigutils/archive/v0.1.0.tar.gz
                 sha256: 63d88b2386fdc6953f806eda9d35807dee21e17146c9097851da5ffbc3265fad
             modules:
-              - name: fftw-single_precision
-                config-opts:
-                  - --enable-avx
-#                 - --enable-mpi
-                  - --enable-openmp
-                  - --enable-shared
-                  - --enable-single
-                  - --enable-sse
-                  - --enable-threads
-                sources:
-                  - type: archive
-                    url: http://www.fftw.org/fftw-3.3.8.tar.gz
-                    sha256: 6113262f6e92c5bd474f2875fa1b01054c4ad5040f6b0da7c03c98821d9ae303
-#               modules:
-#                 - name: openmpi
+              - ../shared-modules/fftw/fftw-single_precision.json
               - name: libvolk
                 buildsystem: cmake
                 sources:
                   - type: archive
                     url: https://github.com/gnuradio/volk/archive/v2.3.0.tar.gz
                     sha256: f42c928f561b128acfe4adb21227e4a62a3f6ab8103592fc3233765ff326d5fc
-#               modules:
-#                 - name: python-six
-#                 - name: python-mako
-#                 - name: orc
           - name: soapysdr
             buildsystem: cmake
             sources:
               - type: archive
                 url: https://github.com/pothosware/SoapySDR/archive/soapy-sdr-0.7.2.tar.gz
                 sha256: 6eb4143fed115911884bdbbe6fe32dbd99b4ada210c9e126ac3c49c24414347a
-#           modules:
-#             - name: soapyairspy
-#             - name: soapyaudio
-#             - name: soapybladerf
-#             - name: soapyhackrf
-#             - name: soapynetsdr
-#             - name: soapyosmo
-#             - name: soapyremote
-#             - name: soapyrtlsdr
-#             - name: soapyuhd
-#             - name: graphviz
       - name: suwidgets
         buildsystem: qmake
         build-commands:
