@@ -2,7 +2,7 @@
 # TODO: add desktop file with mimetypes? or maybe avoid the desktop file and just add mimetypes?
 app-id: com.github.pdfpc.pdfpc
 runtime: org.gnome.Platform
-runtime-version: '3.38'
+runtime-version: '41'
 sdk: org.gnome.Sdk
 command: pdfpc
 finish-args:
@@ -13,6 +13,7 @@ finish-args:
   - --share=ipc
   - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -24,8 +25,13 @@ modules:
     buildsystem: cmake
     sources:
       - type: archive
-        url: https://github.com/pdfpc/pdfpc/archive/v4.5.0.tar.gz
+        url: https://github.com/pdfpc/pdfpc/archive/v4.5.0/pdfpc-4.5.0.tar.gz
         sha256: e53ede1576da55403bba23671df5b946c756ec83ba30fbeb0cb7302f28b54a64
+        x-checker-data:
+          type: anitya
+          project-id: 13340
+          stable-only: true
+          url-template: https://github.com/pdfpc/pdfpc/archive/v$version/pdfpc-$version.tar.gz
     modules:
       - ../shared-modules/poppler/poppler.json
       - name: discount
@@ -33,16 +39,17 @@ modules:
           - -j1
         sources:
           - type: archive
-            url: https://github.com/Orc/discount/archive/v2.2.7.tar.gz
+            url: https://github.com/Orc/discount/archive/v2.2.7/discount-2.2.7.tar.gz
             sha256: 72c1325ddfc40871d6810f1e272cf2d45b361f26357eb38f170fd04d737bb9f2
+            x-checker-data:
+              type: anitya
+              project-id: 12139
+              stable-only: true
+              url-template: https://github.com/Orc/discount/archive/v$version/discount-$version.tar.gz
           - type: patch
             path: discount-host-cppflags.patch
           - type: patch
             path: discount-host-ldflags.patch
-#         - type: git
-#           url: https://github.com/Orc/discount.git
-#           branch: main
-#           commit: 3520113e1fbf2e012ba24ceb1343c37acda4edf0
           - type: shell
             commands:
               - ln -s configure{.sh,}
