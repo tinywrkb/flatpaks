@@ -1,0 +1,19 @@
+app-id: com.github.kohler.lcdf-typetools
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.texlive
+modules:
+  - name: lcdf-typetools
+    config-opts:
+      - --with-kpathsea=/usr/lib/sdk/texlive
+    sources:
+      - type: archive
+        url: https://github.com/kohler/lcdf-typetools/archive/v2.108.tar.gz
+        sha256: b4ae17c8a29e4d078c1d4e8237d1908b0795e8e9b02ccae6a83863577aaaaf16
+        x-checker-data:
+          type: anitya
+          project-id: 00000
+          stable-only: true
+          url-template: https://github.com/kohler/lcdf-typetools/archive/v$version/lcdf-typetools-$version.tar.gz
