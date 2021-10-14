@@ -1,5 +1,6 @@
 # TODO: add module sigrok-firmware-fx2lafw? https://www.kernel.org/doc/html/latest/driver-api/firmware/fw_search_path.html
 # TODO: enable java bindings?
+# TODO: more communication transports: hidapi, bluetooth, bluez
 app-id: org.sigrok.libsigrok.BaseApp
 runtime: org.kde.Platform
 runtime-version: 5.15-21.08
@@ -17,22 +18,24 @@ modules:
     post-install:
       - install -Dm644 contrib/6*-libsigrok*.rules -t /app/docs/udev_rules/
     sources:
-      - type: git
-        url: https://github.com/sigrokproject/libsigrok.git
-        branch: master
-        commit: e847645b7be832c1d62d1ad2312e3a3d4de467ce
-# TODO: enable back after a new major release
-#     - type: archive
-#       url: https://sigrok.org/download/source/libsigrok/libsigrok-0.5.2.tar.gz
-#       sha256: 4d341f90b6220d3e8cb251dacf726c41165285612248f2c52d15df4590a1ce3c
-#       commit: 2111d1574b7bc715bc60ca5626f126369553f3f8
-#       x-checker-data:
-#         type: anitya
-#         project-id: 21369
-#         stable-only: true
-#         url-template: https://sigrok.org/download/source/libsigrok/libsigrok-$version.tar.gz
-#     - type: patch
-#       path: libsigrok-swig4_java_bindings.patch
+      - type: archive
+# apps crashes with the latest commit, so must use stable 0.5.2
+#       url: https://github.com/sigrokproject/libsigrok/archive/e847645b7be832c1d62d1ad2312e3a3d4de467ce.tar.gz
+#       sha256: 967de1d1808b70ed67fb1911b3647c604249509c5d938b1e8e146464e4a5633d
+        url: https://github.com/sigrokproject/libsigrok/archive/libsigrok-0.5.2.tar.gz
+        sha256: b04ff013c524570ee80f3e9e09105e255573d38c9c7a0ac253b25b2824ab7573
+        x-checker-data:
+          type: anitya
+          project-id: 21369
+          stable-only: true
+          versions:
+            '>': 0.5.2
+          url-template: https://github.com/sigrokproject/libsigrok/archive/libsigrok-$version.tar.gz
+# patches for stable 0.5.2
+      - type: patch
+        path: fix-java-bindings.patch
+      - type: patch
+        path: fix-ruby-bindings.patch
     modules:
       - ../shared-modules/gtkmm3/glibmm.json
       - ../shared-modules/libftdi/libftdi.json
@@ -44,19 +47,17 @@ modules:
       - ../shared-modules/ruby/ruby.json
   - name: libsigrokdecode
     sources:
-# TODO: enable back after a new major release
-#     - type: archive
-#       url: https://sigrok.org/download/source/libsigrokdecode/libsigrokdecode-0.5.3.tar.gz
-#       sha256: c50814aa6743cd8c4e88c84a0cdd8889d883c3be122289be90c63d7d67883fc0
-#       x-checker-data:
-#         type: anitya
-#         project-id: 9552
-#         stable-only: true
-#         url-template: https://sigrok.org/download/source/libsigrokdecode/libsigrokdecode-$verion.tar.gz
-      - type: git
-        url: https://github.com/sigrokproject/libsigrokdecode.git
-        branch: master
-        commit: 02aa01ad5f05f2730309200abda0ac75d3721e1d
+      - type: archive
+        # stable 0.5.3 does not support python 3.9
+        url: https://github.com/sigrokproject/libsigrokdecode/archive/02aa01ad5f05f2730309200abda0ac75d3721e1d.tar.gz
+        sha256: 4ff62d7cbbc222efe58155bf3a0737f1b623133c86a2c474c6bb27963c1f946f
+        x-checker-data:
+          type: anitya
+          project-id: 9552
+          stable-only: true
+          versions:
+            '>': 0.5.3
+          url-template: https://github.com/sigrokproject/libsigrokdecode/archive/libsigrokdecode-$version.tar.gz
       - type: shell
         commands:
           - autoreconf --force --install
