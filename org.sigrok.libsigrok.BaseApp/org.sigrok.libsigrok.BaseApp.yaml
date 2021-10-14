@@ -19,11 +19,8 @@ modules:
       - install -Dm644 contrib/6*-libsigrok*.rules -t /app/docs/udev_rules/
     sources:
       - type: archive
-# apps crashes with the latest commit, so must use stable 0.5.2
-#       url: https://github.com/sigrokproject/libsigrok/archive/e847645b7be832c1d62d1ad2312e3a3d4de467ce.tar.gz
-#       sha256: 967de1d1808b70ed67fb1911b3647c604249509c5d938b1e8e146464e4a5633d
-        url: https://github.com/sigrokproject/libsigrok/archive/libsigrok-0.5.2.tar.gz
-        sha256: b04ff013c524570ee80f3e9e09105e255573d38c9c7a0ac253b25b2824ab7573
+        url: https://github.com/sigrokproject/libsigrok/archive/b54d9b4974709202fa6d0b3c046d889e50fb9307.tar.gz
+        sha256: c2bc63f615f7e83ce1a352136ec75751233f99c3b62020681eb6d80ff32f349f
         x-checker-data:
           type: anitya
           project-id: 21369
@@ -32,10 +29,10 @@ modules:
             '>': 0.5.2
           url-template: https://github.com/sigrokproject/libsigrok/archive/libsigrok-$version.tar.gz
 # patches for stable 0.5.2
-      - type: patch
-        path: fix-java-bindings.patch
-      - type: patch
-        path: fix-ruby-bindings.patch
+#     - type: patch
+#       path: fix-java-bindings.patch
+#     - type: patch
+#       path: fix-ruby-bindings.patch
     modules:
       - ../shared-modules/gtkmm3/glibmm.json
       - ../shared-modules/libftdi/libftdi.json
