@@ -13,6 +13,12 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --socket=x11
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: pulseview
     buildsystem: cmake
