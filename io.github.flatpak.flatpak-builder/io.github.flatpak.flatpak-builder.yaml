@@ -22,8 +22,8 @@ modules:
   - name: flatpak-builder
     sources:
       - type: archive
-        url: https://github.com/flatpak/flatpak-builder/releases/download/1.1.2/flatpak-builder-1.1.2.tar.xz
-        sha256: f5d8e954daba2a406341cfcfb32a28ddaa503b2cd936dc7b1871187221f7510d
+        url: https://github.com/flatpak/flatpak-builder/releases/download/1.2.0/flatpak-builder-1.2.0.tar.xz
+        sha256: dfcb6a3ca38d61e0775b70a469ab505285e129361462df09004e6d4251c246a8
         x-checker-data:
           type: anitya
           project-id: 16046
@@ -39,8 +39,8 @@ modules:
           - --libexec=/app/lib
         sources:
           - type: archive
-            url: https://github.com/ostreedev/ostree/releases/download/v2021.4/libostree-2021.4.tar.xz
-            sha256: db5ce01a1606af3466ec77236700f53a63ce20e4984a549d0eaba3f66a3d9361
+            url: https://github.com/ostreedev/ostree/releases/download/v2021.5/libostree-2021.5.tar.xz
+            sha256: b45a32ded72c9fb6d2ab508adeae0306e4e2bb348db152f3d1b3708375829e1f
             x-checker-data:
               type: anitya
               project-id: 10899
