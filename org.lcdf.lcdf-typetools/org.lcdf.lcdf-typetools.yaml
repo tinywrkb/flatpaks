@@ -4,7 +4,7 @@ runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.texlive
-command: sh
+command: /bin/sh
 modules:
   - name: lcdf-typetools
     config-opts:
