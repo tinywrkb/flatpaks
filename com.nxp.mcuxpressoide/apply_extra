@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -e
+
+# extract using the installer
+#chmod +x mcuxpressoide.x86_64.deb.bin
+#./mcuxpressoide.x86_64.deb.bin --noexec --keep --target ./
+#rm -f mcuxpressoide.x86_64.deb.bin install.sh ProductLicense.txt
+
+# extract deb package
+_shell_installer_len=521
+
+# extract ide
+dd \
+  iflag=skip_bytes \
+  skip=$(head -n $_shell_installer_len mcuxpressoide.x86_64.deb.bin | wc -c ) \
+  if=mcuxpressoide.x86_64.deb.bin | \
+    bsdtar -Oxf - \
+      './mcuxpressoide-*.x86_64.deb' | \
+        bsdtar -Oxf - 'data.tar*' | \
+          bsdtar -xf - \
+            --strip-components=2 \
+            --exclude=usr/share \
+            --exclude=lib/udev
+
+rm -f mcuxpressoide.x86_64.deb.bin
+
+install -dm755 docs lib
+mv mcuxpressoide-*/* ./
+rmdir mcuxpressoide-*
+mv UdevRules docs/udev_rules
+mv lib*.so* lib/
+
+# extract jlink
+bsdtar -Oxf JLink_Linux_x86_64.deb 'data.tar*' | \
+  bsdtar -xf - \
+    --strip-components=3 \
+    --exclude=./usr/bin
+
+mv rules.d/* docs/udev_rules/
+rmdir rules.d
+rm -f JLink JLink_Linux_x86_64.deb
+mv JLink* jlink

@@ -1,89 +1,80 @@
 app-id: com.nxp.mcuxpressoide
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
-    version: '20.08'
+    version: '21.08'
   org.freedesktop.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
-    version: '20.08'
+    version: '21.08'
     no-autodownload: true
 command: mcuxpressoide
-rename-desktop-file: mcuxpressoide.desktop
-rename-icon: mcuxpressoide
 cleanup:
   - /lib/pkgconfig
 finish-args:
   - --allow=multiarch
   - --device=all
   - --device=dri
+  - --env=PATH=/app/bin:/usr/bin:/app/extra/jlink
   - --filesystem=home
   - --persist=.eclipse
   - --persist=.nxp
   - --persist=mcuxpresso
   - --share=ipc
   - --share=network
+# TODO: internal browser seems to be broken, the usual outdated eclipse nonsense
   - --socket=wayland
+# TODO: ide crashes with x11, need to debug this
   - --socket=x11
+# seem to be already the default
 # - --env=SWT_GTK3=0
 modules:
   - name: mcuxpressoide
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
-      - install -Dm755 mcuxpressoide /app/bin/mcuxpressoide
-      - install -Dm644 mcuxpressoide.png /app/share/icons/hicolor/256x256/apps/mcuxpressoide.png
-      - install -Dm644 mcuxpressoide.desktop /app/share/applications/mcuxpressoide.desktop
-      - install -Dm755 /usr/bin/ar /app/bin
-      - mkdir -p /app/lib/i386-linux-gnu
-      - mkdir -p /app/lib/debug/lib/i386-linux-gnu
-      - install -Dm644 ld.so.conf -t /app/etc/
-      - ARCH_TRIPLE=$(gcc --print-multiarch) && cp /usr/lib/${ARCH_TRIPLE}/libbfd-*.so /app/lib
-      - ARCH_TRIPLE=$(gcc --print-multiarch) && ln -s /usr/lib/${ARCH_TRIPLE}/libcurl.so.4.5.0 /app/lib/libcurl-gnutls.so.4
+      - install -Dm755 apply_extra mcuxpressoide -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.png -t /app/share/icons/hicolor/256x256/apps/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -dm755 /app/lib{,/debug/lib}/i386-linux-gnu
+      - |
+        install -Dm644 /dev/stdin /app/etc/ld.so.conf <<EOF
+        /app/extra/lib
+        /app/lib
+        /app/lib/i386-linux-gnu
+        EOF
     sources:
-      - type: script
-        dest-filename: apply_extra
-        commands:
-          - chmod +x mcuxpressoide.x86_64.deb.bin
-          - ./mcuxpressoide.x86_64.deb.bin --noexec --keep --target ./
-          - rm -f mcuxpressoide.x86_64.deb.bin install.sh ProductLicense.txt
-          - mkdir -p deb-deflated
-          - mkdir -p docs/udev_rules
-            # mcuxpressoide deb
-          - pushd deb-deflated && ar x ../mcuxpressoide-*.x86_64.deb && popd
-          - rm -f mcuxpressoide-*.x86_64.deb
-          - tar -xf deb-deflated/data.tar.gz -C deb-deflated
-          - mv deb-deflated/usr/local/mcuxpressoide* mcuxpressoide
-          - mv deb-deflated/usr/lib lib
-          - mv deb-deflated/lib/udev/rules.d/* docs/udev_rules/
-          - rm -rf deb-deflated/*
-          - rm -f mcuxpressoide/JLink_Linux_x86_64.deb
-            # jlink deb
-          - pushd deb-deflated && ar x ../JLink_Linux_x86_64.deb && popd
-          - rm -f JLink_Linux_x86_64.deb
-          - tar -xf deb-deflated/data.tar.gz -C deb-deflated
-          - rm -f deb-deflated/opt/SEGGER/JLink
-          - mv deb-deflated/opt/SEGGER/JLink* jlink
-          - mv deb-deflated/etc/udev/rules.d/* docs/udev_rules/
-            # cleanup
-          - rm -rf deb-deflated
-      - type: dir
-        path: resources
       - type: extra-data
+        # needed to be hosted privately as nxp requires now authenticated download
+        url: http://files.net.private/mcuxpressoide-11.4.1_6260.x86_64.deb.bin
+        sha256: c0da741b9241dace7dc7778052e43c020a819c0d763b6cea4feead0fc744725d
+        size: 973727062
         filename: mcuxpressoide.x86_64.deb.bin
-        url: https://freescaleesd.flexnetoperations.com/337170/17/15604017/mcuxpressoide-11.1.1_3241.x86_64.deb.bin
-        sha256: e062d31a45cb5ebf1e12cb560bb151d8227ffdf435b0c338e712c361e322aba7
-        size: 890990749
+      - type: file
+        path: apply_extra
+      - type: script
+        dest-filename: mcuxpressoide
+        commands:
+          - exec /app/extra/ide/mcuxpressoide "$@"
+      - type: file
+        path: com.nxp.mcuxpressoide.desktop
+      - type: file
+        path: com.nxp.mcuxpressoide.png
     modules:
+      - ../shared-modules/ncurses5-compat/libncurses5-compat.json
       - name: dfu-util
         sources:
           - type: archive
-            url: http://dfu-util.sourceforge.net/releases/dfu-util-0.9.tar.gz
-            sha256: 36428c6a6cb3088cad5a3592933385253da5f29f2effa61518ee5991ea38f833
+            url: http://dfu-util.sourceforge.net/releases/dfu-util-0.11.tar.gz
+            sha256: b4b53ba21a82ef7e3d4c47df2952adf5fa494f499b6b0b57c58c5d04ae8ff19e
+            x-checker-data:
+              type: anitya
+              project-id: 10195
+              stable-only: true
+              url-template: http://dfu-util.sourceforge.net/releases/dfu-util-$version.tar.gz
         modules:
           - ../flathub-shared-modules/libusb/libusb.json
 #     - name: jlink-software-and-documentation  // instead of the version distributed with the ide

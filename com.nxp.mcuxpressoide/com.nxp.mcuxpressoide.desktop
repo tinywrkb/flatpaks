@@ -5,5 +5,5 @@ Exec=mcuxpressoide %U
 Path=/app/extra/mcuxpressoide/ide
 Terminal=false
 Type=Application
-Icon=mcuxpressoide
+Icon=com.nxp.mcuxpressoide
 Categories=Development;
