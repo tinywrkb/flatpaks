@@ -1,0 +1,89 @@
+From e7e7cdcfb24802344bdecde379673a45fb5bada2 Mon Sep 17 00:00:00 2001
+From: Frank Stettner <frank-stettner@gmx.net>
+Date: Tue, 17 Aug 2021 07:45:09 +0200
+Subject: [PATCH] Fix build for Qwt 6.2
+
+---
+ src/ui/widgets/plot/curve.cpp | 1 +
+ src/ui/widgets/plot/plot.cpp  | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/src/ui/widgets/plot/curve.cpp b/src/ui/widgets/plot/curve.cpp
+index 4e35f31c..68df1062 100644
+--- a/src/ui/widgets/plot/curve.cpp
++++ b/src/ui/widgets/plot/curve.cpp
+@@ -33,6 +33,7 @@
+ #include <qwt_plot_directpainter.h>
+ #include <qwt_plot_marker.h>
+ #include <qwt_symbol.h>
++#include <qwt_text.h>
+ 
+ #include "curve.hpp"
+ #include "src/session.hpp"
+diff --git a/src/ui/widgets/plot/plot.cpp b/src/ui/widgets/plot/plot.cpp
+index b2380442..98c58de9 100644
+--- a/src/ui/widgets/plot/plot.cpp
++++ b/src/ui/widgets/plot/plot.cpp
+@@ -42,6 +42,7 @@
+ #include <qwt_curve_fitter.h>
+ #include <qwt_date_scale_engine.h>
+ #include <qwt_legend.h>
++#include <qwt_math.h>
+ #include <qwt_painter.h>
+ #include <qwt_picker_machine.h>
+ #include <qwt_plot_canvas.h>
+@@ -57,6 +58,7 @@
+ #include <qwt_plot_panner.h>
+ #include <qwt_plot_picker.h>
+ #include <qwt_scale_draw.h>
++#include <qwt_scale_map.h>
+ #include <qwt_scale_widget.h>
+ #include <qwt_symbol.h>
+ 
+From 6cf4718086f6a28704ed1f8848bf25e06ff9d374 Mon Sep 17 00:00:00 2001
+From: Frank Stettner <frank-stettner@gmx.net>
+Date: Tue, 17 Aug 2021 08:02:41 +0200
+Subject: [PATCH] Fix missing include for MacOS build.
+
+---
+ src/ui/widgets/plot/plot.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/ui/widgets/plot/plot.cpp b/src/ui/widgets/plot/plot.cpp
+index 98c58de9..1a1d9dd9 100644
+--- a/src/ui/widgets/plot/plot.cpp
++++ b/src/ui/widgets/plot/plot.cpp
+@@ -24,6 +24,7 @@
+ #include <string>
+ #include <utility>
+ 
++#include <QtMath>
+ #include <QBoxLayout>
+ #include <QDateTime>
+ #include <QDebug>
+From 98855800837b5eeb7476c1efda6bd2b153864089 Mon Sep 17 00:00:00 2001
+From: Frank Stettner <frank-stettner@gmx.net>
+Date: Tue, 17 Aug 2021 08:34:21 +0200
+Subject: [PATCH] Fix missing includes for Qwt 6.2 and MacOS build.
+
+---
+ src/ui/widgets/plot/xycurvedata.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/ui/widgets/plot/xycurvedata.cpp b/src/ui/widgets/plot/xycurvedata.cpp
+index b565a4b9..611d4bb1 100644
+--- a/src/ui/widgets/plot/xycurvedata.cpp
++++ b/src/ui/widgets/plot/xycurvedata.cpp
+@@ -22,10 +22,12 @@
+ #include <set>
+ #include <vector>
+ 
++#include <QtMath>
+ #include <QPointF>
+ #include <QRectF>
+ #include <QSettings>
+ #include <QString>
++#include <qwt_math.h>
+ 
+ #include "xycurvedata.hpp"
+ #include "src/session.hpp"

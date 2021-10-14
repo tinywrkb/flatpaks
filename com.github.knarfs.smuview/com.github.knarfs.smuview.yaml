@@ -1,8 +1,8 @@
 app-id: com.github.knarfs.smuview
-base: org.sigrok.libsigrok.BaseApp
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
+base: org.sigrok.libsigrok.BaseApp
 command: smuview
 rename-desktop-file: org.sigrok.SmuView.desktop
 rename-icon: smuview
@@ -12,22 +12,35 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=fallback-x11
-cleanup-commands:
-  - /app/cleanup-BaseApp.sh
-  - rm -f /app/cleanup-BaseApp.sh
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: smuview
     build-options:
-      cxxflags: -I/usr/include/python3.8
+      cxxflags: -I/usr/include/python3.9
     buildsystem: cmake
     config-opts:
       - -DDISABLE_WERROR=true
       - -DENABLE_TESTS=false
     sources:
       - type: archive
-        url: https://github.com/knarfS/smuview/archive/v0.0.5.tar.gz
+        url: https://github.com/knarfS/smuview/archive/v0.0.5/smuview-0.0.5.tar.gz
         sha256: 7da618dbad9500d426bd31a4ab4753c371a0d03f05863def2bbe1444a5de42f1
+        x-checker-data:
+          type: anitya
+          project-id: 235203
+          stable-only: true
+          versions:
+            '>': 0.0.5
+          url-template: https://github.com/knarfS/smuview/archive/v$version/smuview-$version.tar.gz
+      - type: patch
+        path: qwt-6.2.patch
     modules:
       - ../shared-modules/qwt/qwt.json
