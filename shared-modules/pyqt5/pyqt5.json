@@ -21,7 +21,6 @@
         "--no-docstrings",
         "--no-make",
         "--no-qml-plugin",
-        "--no-tools",
         "--verbose",
         "--api-dir=/app/share/qt/qsci/api/python",
         "--qmake-setting=QMAKE_CFLAGS_RELEASE='-I/usr/include/python_pyver/'",
@@ -64,9 +63,17 @@
             "only-arches": [
                 "aarch64"
             ]
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "echo '[tool.sip.project]' >> pyproject.toml",
+                "echo 'scripts-dir = \"/app/bin\"' >> pyproject.toml"
+            ]
         }
     ],
     "cleanup": [
+        "/bin",
         "/share/qt"
     ],
     "modules": [
