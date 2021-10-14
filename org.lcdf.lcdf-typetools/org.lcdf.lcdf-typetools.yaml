@@ -1,9 +1,10 @@
-app-id: com.github.kohler.lcdf-typetools
+app-id: org.lcdf.lcdf-typetools
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.texlive
+command: sh
 modules:
   - name: lcdf-typetools
     config-opts:
