@@ -1,6 +1,6 @@
 app-id: org.freedesktop.Platform.Fonts.NotoEmoji
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 modules:
   - name: noto-emoji
@@ -10,7 +10,8 @@ modules:
       - install -Dm644 -t /app/share/fonts/conf.d/ conf.d/*.conf
     sources:
       - type: archive
-        url: https://github.com/googlefonts/noto-emoji/archive/v2020-09-16-unicode13_1.tar.gz
-        sha256: 13ad521b42e395751c72c0bf5585bd354d2383c65abe1a6227743fa8661e0feb
-      - type: dir
-        path: resources
+        url: https://github.com/googlefonts/noto-emoji/archive/e022fd6573782431ac9a65b520376b57511c31cd.tar.gz
+        sha256: f0fc55b87e4e723c1a5a5f68e69389d25a9f6004948ea04fa84246903cfad315
+      - type: file
+        path: 66-noto-color-emoji.conf
+        dest: conf.d
