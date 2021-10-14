@@ -1,0 +1,23 @@
+# TODO: convert to an offline build
+app-id: com.google.fonts.gftools
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: /bin/sh
+modules:
+  - name: gftools
+    build-options:
+      build-args:
+        - --share=network
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=${FLATPAK_DEST} gftools
+    sources:
+      - type: archive
+        url: https://github.com/kohler/lcdf-typetools/archive/v2.108.tar.gz
+        sha256: b4ae17c8a29e4d078c1d4e8237d1908b0795e8e9b02ccae6a83863577aaaaf16
+        x-checker-data:
+          type: anitya
+          project-id: 235318
+          stable-only: true
+          url-template: https://github.com/kohler/lcdf-typetools/archive/v$version/lcdf-typetools-$version.tar.gz
