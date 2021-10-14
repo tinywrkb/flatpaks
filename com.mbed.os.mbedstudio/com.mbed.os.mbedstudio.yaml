@@ -1,10 +1,10 @@
 app-id: com.mbed.os.mbedstudio
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '21.08'
 command: MbedStudio
-rename-desktop-file: MbedStudio.desktop
-rename-icon: MbedStudio
 cleanup:
   - /lib/pkgconfig
 finish-args:
@@ -14,7 +14,6 @@ finish-args:
   - --persist=.config/Mbed Studio
   - --share=ipc
   - --share=network
-  - --socket=wayland
   - --socket=x11
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
@@ -22,45 +21,47 @@ modules:
   - name: mbedstudio
     buildsystem: simple
     build-commands:
-      - install -D apply_extra /app/bin/apply_extra
-      - install -D MbedStudio /app/bin/MbedStudio
+      - install -Dm755 apply_extra MbedStudio stub_sandbox -t /app/bin/
       # TODO: more icons or replace with scalable
-      - install -D MbedStudio.png /app/share/icons/hicolor/512x512/apps/MbedStudio.png
-      - install -D MbedStudio.desktop /app/share/applications/MbedStudio.desktop
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - |
+        for s in 16 32 48 64 128 256 512; do
+          install -Dm644 ${s}.png /app/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+        done
     sources:
-      - type: script
-        dest-filename: apply_extra
-        commands:
-          - tar -xf MbedStudio.tar.gz
-          - rm -f MbedStudio.tar.gz
-          - mkdir -p MbedStudio/mbed-studio-tools/clangd
-          - unzip clangd.zip -d MbedStudio/mbed-studio-tools/clangd/
-          - rm -f clangd.zip
-          - rm -f MbedStudio/{install.sh,mbed-studio-uninstall.sh,mbed-studio.desktop.template,README.md}
-          - mv MbedStudio/tools.json MbedStudio/mbed-studio-tools/
-          - echo 1.2.1.42d8a0c0 > MbedStudio/release_version
-          - cp MbedStudio/release_version MbedStudio/mbed-studio-tools/release_version
-          - unappimage MbedStudio/mbed-studio
-          - rm -f MbedStudio/mbed-studio
-          - rm -f squashfs-root/{AppRun,MbedStudio.desktop,MbedStudio.png}
-          - mv squashfs-root/* MbedStudio/
-          - rmdir squashfs-root
-      - type: dir
-        path: resources
         # curl -s https://studio.mbed.com/installers/latest/linux/MbedStudio.sh|egrep 'DOMAIN=|ARCHIVE_PATH=|CLANGD_FILENAME='
       - type: extra-data
         filename: MbedStudio.tar.gz
-        url: https://studio.mbed.com/installers/release-1.2.1/1.2.1.42d8a0c0/linux/MbedStudio.tar.gz
-        sha256: d5653f70135654e6566e88fc73eb0e5dc1112747da0ed5909793977a54517d4b
-        size: 1284604766
-      - type: extra-data
-        filename: clangd.zip
-        url: https://studio.mbed.com/tools/linux/clangd-ubuntu-18/clangd-8.0.2.zip
-        sha256: 99ecf7e3d3e3873fe2cf6b8a4f5f4dd2d060e00e7b8dde18def65aa2138ab6c5
-        size: 43134135
+        url: https://studio.mbed.com/installers/latest/linux/MbedStudio.tar.gz
+        sha256: da3fbf05d91d2c0d41b9b7227a180c0ed15aabe42ec17c4118554d4bbfed95b3
+        size: 1633684572
+      - type: file
+        path: apply_extra
+      - type: script
+        dest-filename: stub_sandbox
+        commands:
+          - |
+            echo Stub sandbox ignoring command: $@
+            exit 1
+      - type: file
+        path: MbedStudio
+      - type: file
+        path: com.mbed.os.mbedstudio.desktop
+      - type: file
+        path: icons/16.png
+      - type: file
+        path: icons/32.png
+      - type: file
+        path: icons/48.png
+      - type: file
+        path: icons/64.png
+      - type: file
+        path: icons/128.png
+      - type: file
+        path: icons/256.png
+      - type: file
+        path: icons/512.png
     modules:
-      - ../shared-modules/unappimage/unappimage.json
       - ../flathub-shared-modules/libsecret/libsecret.json
-      - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-12.10.json
-      - ../shared-modules/libnotify/libnotify.json
-      - ../shared-modules/gconf/gconf.json
+      - ../shared-modules/jq/jq.json
+      - ../shared-modules/unappimage/unappimage.json

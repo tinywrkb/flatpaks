@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+
+# extract archive
+bsdtar -xf MbedStudio.tar.gz --strip-components=1 \
+  --exclude=MbedStudio/icons \
+  --exclude=MbedStudio/README.md \
+  --exclude=MbedStudio/mbed-studio.desktop.template \
+  --exclude='MbedStudio/*.sh'
+rm -f MbedStudio.tar.gz
+
+mv tools.json mbed-studio-tools/
+
+# extract appimage
+unappimage mbed-studio
+rm -f mbed-studio
+mv squashfs-root/* ./
+rm -rf squashfs-root
+
+rm -f AppRun MbedStudio.{desktop,png}
+
+jq -r '.version' resources/app/package.json > mbed-studio-tools/.version
+
+install -Dm755 /app/bin/stub_sandbox chrome-sandbox

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Mbed Studio
+Comment=Mbed IDE
+GenericName=Text Editor
+Exec=MbedStudio %U
+Terminal=false
+Type=Application
+Icon=com.mbed.os.mbedstudio
+StartupNotify=false
+StartupWMClass=mbed-studio
+Categories=Utility;TextEditor;Development;IDE;
+Keywords=mbed-studio;
+MimeType=x-scheme-handler/arm-ide;

@@ -4,7 +4,7 @@ set -o errexit
 
 CONFIG_PATH="$HOME"/.config
 TOOLS_PATH="$HOME"/.config/"Mbed Studio"/mbed-studio-tools
-TOOLS_SRC=/app/extra/MbedStudio/mbed-studio-tools
+TOOLS_SRC=/app/extra/mbed-studio-tools
 
 update_tools() {
   rm -rf "$TOOLS_PATH" "$TOOLS_PATH".tmp
@@ -12,8 +12,8 @@ update_tools() {
   mv "$TOOLS_PATH".tmp "$TOOLS_PATH"
 }
 
-if [ -f "$TOOLS_PATH"/release_version ]; then
-  if diff "$TOOLS_PATH"/release_version $TOOLS_SRC/release_version; then
+if [ -f "$TOOLS_PATH"/.version ]; then
+  if diff "$TOOLS_PATH"/.version $TOOLS_SRC/.version; then
     :
   else
     update_tools
@@ -24,4 +24,6 @@ fi
 
 export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
 
-exec /app/extra/MbedStudio/MbedStudio "$@"
+# TODO: enable the sandbox
+#exec zypak-wrapper /app/extra/MbedStudio "$@"
+exec /app/extra/MbedStudio --no-sandbox "$@"
