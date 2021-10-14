@@ -1,12 +1,12 @@
 app-id: studio.kx.carla
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 add-extensions:
   # details in org.freedesktop.LinuxAudio.BaseExtension
   org.freedesktop.LinuxAudio.Plugins:
     directory: extensions/Plugins
-    version: '20.08'
+    version: '21.08'
     add-ld-path: lib
     merge-dirs: ladspa;dssi;lv2;lxvst;vst3
     subdirectories: true
@@ -25,6 +25,7 @@ finish-args:
   - --socket=fallback-x11
   - --socket=pulseaudio
   - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -45,8 +46,13 @@ modules:
       - install -dm755 /app/extensions/Plugins
     sources:
       - type: archive
-        url: https://github.com/falkTX/Carla/archive/v2.2.0.tar.gz
-        sha256: 4bf08511257db88979eccc002f10c153ff2a14f5143291c2be39cadd69ce10e1
+        url: https://github.com/falkTX/Carla/archive/v2.4.0.tar.gz
+        sha256: 960a1288ef82543df27e0896a174dae8ff68d24594b6efe0b952105797162c0e
+        x-checker-data:
+          type: anitya
+          project-id: 17670
+          stable-only: true
+          url-template: https://github.com/falkTX/Carla/archive/v$version.tar.gz
       - type: shell
         commands:
           - |
@@ -54,6 +60,7 @@ modules:
               HAVE_PYQT=true \
               USING_JUCE=false
               #HAVE_FFMPEG=true \
+          - sed -i '/.*from PyQt5.Qt import PYQT_VERSION.*/ s/PyQt5.Qt/PyQt5.QtCore/' source/frontend/carla_{host,shared}.py
     modules:
       - ../shared-modules/pyqt5/pyqt5.json
       - ../shared-modules/fluidsynth/fluidsynth.json
