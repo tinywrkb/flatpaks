@@ -1,21 +1,21 @@
 app-id: org.freedesktop.Platform.Fonts.NotoCJK
 runtime: org.freedesktop.Platform
-runtime-version: '20.08'
+runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 modules:
   - name: noto-cjk
     buildsystem: simple
     build-commands:
-      - install -Dm644 -t /app/share/fonts/ noto-cjk-*/*.ttc
-      - install -Dm644 -t /app/share/fonts/conf.d/ conf.d/*.conf
+      # Sans: Static Super OTC
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fonts/ Sans/OTC/NotoSansCJK-*.ttc
+      # Serif: Static Super OTC
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fonts/ Serif/NotoSerifCJK-*.ttc
+      # fontconfig configuration
+      - install -Dm644 -t ${FLATPAK_DEST}/share/fonts/conf.d/ conf.d/*.conf
     sources:
-        # download does not complete so use git instead
-     #- type: archive
-     #  url: https://github.com/googlefonts/noto-cjk/archive/NotoSansV2.001.tar.gz
-     #  sha256: 0f811a6a5eacd2d4b249acf5e2d083378bbd70e8046389c9c30cc993dd278ce8
-      - type: git
-        url: https://github.com/googlefonts/noto-cjk.git
-        commit: be6c059ac1587e556e2412b27f5155c8eb3ddbe6
-        dest:  noto-cjk-latest
-      - type: dir
-        path: resources
+      - type: archive
+        url: https://github.com/googlefonts/noto-cjk/archive/cee7438f5f8e66397090d483c15275d1af3d87c7.tar.gz
+        sha256: e0b2b7d6eca2a336cd66d2a63e7145a961fd442601341075115dbe299fa3ddb5
+      - type: file
+        path: 70-noto-cjk.conf
+        dest: conf.d
