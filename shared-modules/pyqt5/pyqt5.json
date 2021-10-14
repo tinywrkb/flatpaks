@@ -17,6 +17,8 @@
         "--enable=QtTest",
         "--enable=QtWebChannel",
         "--enable=QtWidgets",
+        "--enable=pylupdate",
+        "--enable=pyrcc",
         "--no-designer-plugin",
         "--no-docstrings",
         "--no-make",
