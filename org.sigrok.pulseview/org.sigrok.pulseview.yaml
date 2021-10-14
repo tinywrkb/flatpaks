@@ -1,7 +1,7 @@
 app-id: org.sigrok.pulseview
 base: org.sigrok.libsigrok.BaseApp
 runtime: org.kde.Platform
-runtime-version: '5.15-21.08'
+runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 rename-desktop-file: org.sigrok.PulseView.desktop
 rename-icon: pulseview
@@ -9,7 +9,10 @@ finish-args:
   - --device=all
   - --device=dri
   - --filesystem=home
+  - --share=ipc
+  - --socket=fallback-x11
   - --socket=wayland
+  - --socket=x11
 modules:
   - name: pulseview
     buildsystem: cmake
@@ -18,15 +21,18 @@ modules:
       - -DDISABLE_WERROR=ON
       - -DENABLE_TESTS=OFF
     sources:
-#     - type: archive
-#       url: https://sigrok.org/download/source/pulseview/pulseview-0.4.2.tar.gz
-#       sha256: f042f77a3e1b35bf30666330e36ec38fab8d248c3693c37b7e35d401c3bfabcb
-#       x-checker-data:
-#         type: anitya
-#         project-id: 9549
-#         stable-only: true
-#         url-template: https://sigrok.org/download/source/pulseview/pulseview-$version.tar.gz
-      - type: git
-        url: https://github.com/sigrokproject/pulseview.git
-        branch: master
-        commit: a6fa4d477d783478935a78c1b70596e38ae8ca64
+      - type: archive
+        url: https://github.com/sigrokproject/pulseview/archive/a6fa4d477d783478935a78c1b70596e38ae8ca64.tar.gz
+        sha256: c5793f3e0181ef9884d062053b5718aef47a63ece94f53661f15cd794b08b880
+        x-checker-data:
+          type: anitya
+          project-id: 9549
+          stable-only: true
+          versions:
+            '>': 0.4.2
+          url-template: https://github.com/sigrokproject/pulseview/archive/pulseview-$version.tar.gz
+# patches to build stable 0.4.2
+#     - type: patch
+#       path: glib-2.68.patch
+#     - type: patch
+#       path: qt-5.15.patch
