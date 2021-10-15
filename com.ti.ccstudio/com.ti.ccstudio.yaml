@@ -49,21 +49,22 @@ modules:
     sources:
       - type: extra-data
         filename: ccstudio.tar.gz
-        url: https://software-dl.ti.com/ccs/esd/CCSv10/CCS_10_4_0/exports/CCS10.4.0.00006_linux-x64.tar.gz
-        sha256: e3aa2d92c35b7beb0eab4d4f425d655b264b5fa527a50ecf94255173f17fca9a
-        size: 1171514380
+        url: https://software-dl.ti.com/ccs/esd/CCSv11/CCS_11_0_0/exports/CCS11.0.0.00012_linux-x64.tar.gz
+        sha256: 3acbbb3e432f34fbae8eed0874f25d3d086c5be07403a037b9c18f9cf956e9bc
+        size: 1097778339
         x-checker-data:
           type: html
           url: https://www.ti.com/tool/download/CCSTUDIO
           version-pattern: New/Notable In This Release \(([\d\.-]+)\)
-          url-template: https://software-dl.ti.com/ccs/esd/CCSv10/CCS_10_4_0/exports/CCS${version}_linux-x64.tar.gz
+          url-template: https://software-dl.ti.com/ccs/esd/CCSv${version0}/CCS_${version0}_${version1}_${version2}/exports/CCS${version}_linux-x64.tar.gz
       - type: script
         dest-filename: apply_extra
         commands:
           - mkdir ccs_installer
           - tar -xf ccstudio.tar.gz --strip=1 -C ccs_installer
           - rm -f ccstudio.tar.gz
-          - echo ccs_installer/ccs_setup_*.run | sed 's/.*ccs_setup_\(.*\).run/\1/' > ccs_installer/release_version
+          - echo ccs_installer/ccs_setup_*.run | sed 's/.*ccs_setup_\(.*\).run/\1/'
+            > ccs_installer/release_version
       - type: file
         path: ccstudio
       - type: file
