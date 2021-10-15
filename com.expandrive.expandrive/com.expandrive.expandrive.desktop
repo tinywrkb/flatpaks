@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=ExpanDrive
+Comment=ExpanDrive
+Icon=com.expandrive.expandrive
+Exec=expandrive
+Terminal=false
+Categories=Utility;
+StartupWMClass=ExpanDrive
