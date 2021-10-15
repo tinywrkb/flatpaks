@@ -66,9 +66,9 @@ modules:
     sources:
       - type: extra-data
         filename: google-chrome.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_94.0.4606.61-1_amd64.deb
-        sha256: 5f2bdd7cbfc65322f40a76e88d10df1e5ec194f69d28d3db6d2b5f0691cbdd84
-        size: 90287596
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_94.0.4606.81-1_amd64.deb
+        sha256: bfe97cd8d9f941e4a1e73f53d9de6bb54e73a007ee4ce5d4e94a9a65ae2d7fb4
+        size: 90229076
         x-checker-data:
           type: debian-repo
           package-name: google-chrome-stable
