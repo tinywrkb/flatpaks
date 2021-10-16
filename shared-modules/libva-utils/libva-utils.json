@@ -1,14 +1,20 @@
 {
-  "name": "libva-utils",
-  "buildsystem": "meson",
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://github.com/intel/libva-utils/archive/2.11.1.tar.gz",
-      "sha256": "0c1eb7f717e391d00da74c53a9fe5caf3d6c510dcd35bac7f71a0e59ad1b8d26"
-    }
-  ],
-  "modules": [
-    "../libva/libva.json"
-  ]
+    "name": "libva-utils",
+    "buildsystem": "meson",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/intel/libva-utils/archive/2.13.0/libva-utils-2.13.0.tar.gz",
+            "sha256": "128333faa9792a3b87586a80bfb70859dcdd81847ec9a722f785a601a48e1731",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 16334,
+                "stable-only": true,
+                "url-template": "https://github.com/intel/libva-utils/archive/$version/libva-utils-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../libva/libva.json"
+    ]
 }
