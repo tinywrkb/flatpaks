@@ -1,0 +1,27 @@
+{
+  "name": "goocanvas2",
+  "make-install-args": [
+    "pyoverridesdir=/app/lib/python3.9/site-packages/gi/overrides"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://download.gnome.org/sources/goocanvas/2.0/goocanvas-2.0.4.tar.xz",
+      "sha256": "c728e2b7d4425ae81b54e1e07a3d3c8a4bd6377a63cffa43006045bceaa92e90",
+            "x-checker-data": {
+                "type": "gnome",
+                "name": "goocanvas",
+                "versions": {
+                    "<": "3.0.0"
+                },
+                "stable-only": true
+            }
+    }
+  ],
+  "cleanup": [
+    "/share/gtk-doc"
+  ],
+  "modules": [
+    "../python-gobject/python-gobject.json"
+  ]
+}
