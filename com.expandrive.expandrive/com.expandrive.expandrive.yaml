@@ -1,4 +1,6 @@
-# TODO: fix traybar icon
+# TODO: bug report about exfs
+# TODO: bug report about system status bar icon
+# TODO: bug report about mount location of service
 app-id: com.expandrive.expandrive
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
@@ -7,17 +9,26 @@ base: org.electronjs.Electron2.BaseApp
 base-version: '21.08'
 command: expandrive
 finish-args:
+  # exfs seems to test existence of fuse device before running fusermount
+  - --device=all
   - --device=dri
   - --filesystem=xdg-documents
   - --filesystem=xdg-download
   - --filesystem=xdg-pictures
+  - --filesystem=xdg-public-share
   - --filesystem=xdg-videos
+  # Can be changed via `Settings->Mount Location`
+  - --filesystem=~/ExpanDrive:create
   - --own-name=org.kde.*
   - --share=ipc
   - --share=network
-  - --socket=wayland
+  # the app crashes when x11 is not available, and there's no ui when wayland ozone is enabled, too old Electron release?
+  #- --socket=fallback-x11
+  #- --socket=wayland
   - --socket=x11
   - --talk-name=com.canonical.dbusmenu
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
 cleanup:
@@ -50,6 +61,7 @@ modules:
           - rm -f appimage
           - rm -f squashfs-root/{.DirIcon,AppRun,expandrive.desktop,expandrive.png}
           - rm -f squashfs-root/{libEGL.so,libGLESv2.so,libvulkan.so.1}
+          - rm -f squashfs-root/SharedSupport/*.dll
           - rm -rf squashfs-root/{branding,usr}
           - mv squashfs-root/* ./
           - rmdir squashfs-root
@@ -83,4 +95,5 @@ modules:
         path: icons/512.png
     modules:
       - ../flathub-shared-modules/libsecret/libsecret.json
+      - ../shared-modules/fuse/fuse2.json
       - ../shared-modules/unappimage/unappimage.json
