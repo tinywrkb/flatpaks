@@ -11,6 +11,7 @@ read-only distributed OS files, and the stateful data and configs.
 ### Not usable or too buggy
 
 * byobu/tmux in terminal emulators and other cli apps: currently broken, the issue might be a freedesktop runtime regression.
+* brlcad
 
 ### How to build
 
