@@ -1,27 +1,33 @@
 {
-  "name": "zypak",
-  "post-install": [
-    "install -Dm755 stub_sandbox -t /app/bin/"
-  ],
-  "sources": [
-    {
-      "type": "archive",
-      "url": "https://github.com/refi64/zypak/archive/v2021.09.1.tar.gz",
-      "sha256": "0b7b24ffed5b64f5a6e1ffa8c6e5864b22ced7dac323c4373ff227abb14a6a41"
-    },
-    {
-      "type": "archive",
-      "url": "https://github.com/refi64/nickle/archive/0ac7f5dbf659caa8d1d45cb57e942f2bc565da1e.tar.gz",
-      "sha256": "edd5a4e49e3b703c99732cd1c821c0cf4de79391db6eac59c24103e3bb2627cf",
-      "dest": "nickle"
-    },
-    {
-      "type": "script",
-      "dest-filename": "stub_sandbox",
-      "commands": [
-        "echo \"Stub sandbox ignoring command: $@\"",
-        "exit 1"
-      ]
-    }
-  ]
+    "name": "zypak",
+    "post-install": [
+        "install -Dm755 stub_sandbox -t /app/bin/"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/refi64/zypak/archive/v2021.09.1/zypak-2021.09.1.tar.gz",
+            "sha256": "0b7b24ffed5b64f5a6e1ffa8c6e5864b22ced7dac323c4373ff227abb14a6a41",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 235350,
+                "stable-only": true,
+                "url-template": "https://github.com/refi64/zypak/archive/v$version/zypak-$version.tar.gz"
+            }
+        },
+        {
+            "type": "archive",
+            "url": "https://github.com/refi64/nickle/archive/0ac7f5dbf659caa8d1d45cb57e942f2bc565da1e.tar.gz",
+            "sha256": "edd5a4e49e3b703c99732cd1c821c0cf4de79391db6eac59c24103e3bb2627cf",
+            "dest": "nickle"
+        },
+        {
+            "type": "script",
+            "dest-filename": "stub_sandbox",
+            "commands": [
+                "echo \"Stub sandbox ignoring command: $@\"",
+                "exit 1"
+            ]
+        }
+    ]
 }
