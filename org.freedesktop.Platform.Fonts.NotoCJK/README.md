@@ -18,13 +18,13 @@ See full configuration details at the top level [README.md](../README.md).
 
 ├──  Sans
 │  ├──  Mono
-│  │  └──  NotoSansMonoCJK<LOC>-<WEIGHT>.otf --> Static Multilingual OTF: Multilingual, single-weight, locl, Monospace
+│  │  └──  NotoSansMonoCJK<LOC>-<WEIGHT>.otf --> Static Multilingual OTF: Multilingual (locl), single-weight
 │  ├──  NotoSansCJK.ttc -----------------------> Static Super OTC: Multilingual, all weights, Monospace in Bold and Regular weights
 │  ├──  OTC
 │  │  └──  NotoSansCJK-<WEIGHT>.ttc -----------> Static OTC: Multilingual, single-weight, Regular and Bold also contains Monospace
 │  ├──  OTF
 │  │  ├──  <LOC>
-│  │  │  └──  NotoSansCJK<LOC>-<WEIGHT>.otf ---> Static Multilingual OTF: Multilingual, single-weight, locl, no Monospace
+│  │  │  └──  NotoSansCJK<LOC>-<WEIGHT>.otf ---> Static Multilingual OTF: Multilingual (locl), single-weight, no Monospace
 │  ├──  SubsetOTF
 │  │  ├──  <LOC>
 │  │  │  └──  NotoSans<LOC>-<WEIGHT>.otf ------> Static Region-specific OTF: Monolingual, single-weight, no Monospace
@@ -36,18 +36,18 @@ See full configuration details at the top level [README.md](../README.md).
 │     │  └──  NotoSansMonoCJK-VF.ttf.ttc
 │     ├──  OTF
 │     │  ├──  Mono
-│     │  │  └──  NotoSansMonoCJK<LOC>-VF.otf ----> Variable Multilingual OTF: Multilingual, multi-weight (variable), locl, Monospace
-│     │  ├──  NotoSansCJK<LOC>-VF.otf -----------> Variable Multilingual OTF: Multilingual, multi-weight (variable), locl, no Monospace
+│     │  │  └──  NotoSansMonoCJK<LOC>-VF.otf ----> Variable Multilingual OTF: Multilingual (locl), multi-weight (variable)
+│     │  ├──  NotoSansCJK<LOC>-VF.otf -----------> Variable Multilingual OTF: Multilingual (locl), multi-weight (variable), no Monospace
 │     │  └──  Subset
-│     │     └──  NotoSans<LOC>-VF.otf -----------> Variable Region-specific OTF: Monolingual, multi-weight (variable), single-weight, no Monospace
+│     │     └──  NotoSans<LOC>-VF.otf -----------> Variable Region-specific OTF: Monolingual, multi-weight (variable), no Monospace
 │     └──  TTF
 │        ├──  Mono
-│        │  └──  NotoSansMonoCJK<LOC>-VF.ttf ----> Variable Multilingual OTF: Multilingual, multi-weight (variable), locl, Monospace
-│        ├──  NotoSansCJK<LOC>-VF.ttf -----------> Variable Multilingual TTF: Multilingual, multi-weight (variable), locl, no Monospace
+│        │  └──  NotoSansMonoCJK<LOC>-VF.ttf ----> Variable Multilingual OTF: Multilingual (locl), multi-weight (variable)
+│        ├──  NotoSansCJK<LOC>-VF.ttf -----------> Variable Multilingual TTF: Multilingual (locl), multi-weight (variable), no Monospace
 │        └──  Subset
-│           └──  NotoSans<LOC>-VF.ttf -----------> Variable Region-specific TTF: Monolingual, multi-weight (variable), single-weight, no Monospace
+│           └──  NotoSans<LOC>-VF.ttf -----------> Variable Region-specific TTF: Monolingual, multi-weight (variable), no Monospace
 └──  Serif
    ├──  NotoSerifCJK-<WEIGHT>.ttc ---------------> Static OTC: Multilingual, single-weight, no Monospace
-   ├──  NotoSerifCJK<LOC>-<WEIGHT>.otf ----------> Static Multilingual OTF: Multilingual, single-weight, locl, no Monospace
+   ├──  NotoSerifCJK<LOC>-<WEIGHT>.otf ----------> Static Multilingual OTF: Multilingual (locl), single-weight, no Monospace
    └──  NotoSerif<LOC>-<WEIGHT>.otf -------------> Static Region-specific OTF: Monolingual, single-weight, no Monospace
 ```
