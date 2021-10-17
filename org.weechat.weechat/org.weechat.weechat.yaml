@@ -31,6 +31,6 @@ modules:
           stable-only: true
           url-template: https://github.com/weechat/weechat/archive/v$version.tar.gz
     modules:
-      - ../flathub-shared-modules/lua5.3/lua-5.3.5.json
+      - ../flathub-shared-modules/lua53/lua53.json
       - ../shared-modules/tcl/tcl.json
       - ../shared-modules/guile/guile.json
