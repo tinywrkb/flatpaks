@@ -17,7 +17,7 @@
                 "stable-only": true,
                 "versions": {
                     "<": "3.0.0"
-                }
+                },
                 "url-template": "https://github.com/libfuse/libfuse/releases/download/fuse-$version/fuse-$version.tar.gz"
             }
         }
