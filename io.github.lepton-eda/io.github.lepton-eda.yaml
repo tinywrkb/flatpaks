@@ -1,0 +1,50 @@
+# TODO: evaluate interaction with other apps, and consider adding wrappers. e.g. gtkwave
+app-id: io.github.lepton-eda
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: lepton-schematic
+rename-desktop-file: lepton-schematic.desktop
+rename-icon: lepton-schematic
+finish-args:
+  - --device=dri
+# - --env=GUILE_AUTO_COMPILE=0
+  - --filesystem=home
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/guile
+  - /lib/pkgconfig
+  - /share/aclocal
+  - '*.a'
+  - '*.la'
+modules:
+  - name: lepton-eda
+    build-options:
+      cflags: -fcommon
+    config-opts:
+      - --disable-rpath
+      - --disable-static
+      - --disable-update-xdg-database
+      - --enable-gio
+      - --enable-shared
+      - --with-gnu-ld
+      - --with-gtk3
+      - --with-libstroke
+    post-install:
+      # TODO: rename mimetypes and icons
+      - mv ${FLATPAK_DEST}/share/applications/{,${FLATPAK_ID}.}lepton-attrib.desktop
+      - mv ${FLATPAK_DEST}/share/icons/hicolor/48x48/apps/{,${FLATPAK_ID}.}lepton-attrib.png
+      - mv ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/{,${FLATPAK_ID}.}lepton-attrib.svg
+      - desktop-file-edit --set-key=Icon --set-value=${FLATPAK_ID}.lepton-attrib ${FLATPAK_DEST}/share/applications/${FLATPAK_ID}.lepton-attrib.desktop
+    sources:
+      - type: archive
+        url: https://github.com/lepton-eda/lepton-eda/releases/download/1.9.16-20210731/lepton-eda-1.9.16.tar.gz
+        sha256: c5d275d4ce115cd17a78f643e98fbf0d474edb50052dbc9d65cabd9d6834f989
+    modules:
+      - ../shared-modules/guile/guile.json
+      - ../shared-modules/gtksheet/gtksheet.json
+      - ../shared-modules/libstroke/libstroke.json
