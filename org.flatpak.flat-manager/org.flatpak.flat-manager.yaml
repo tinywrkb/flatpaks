@@ -1,0 +1,30 @@
+app-id: org.flatpak.flat-manager
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: flat-manager
+modules:
+  - name: flat-manager
+    build-options:
+      env:
+        - CARGO_HOME=/run/build/flat-manager/cargo
+      prepend-path: /usr/lib/sdk/rust-stable/bin
+    buildsystem: simple
+    build-commands:
+      - cargo --offline fetch --manifest-path Cargo.toml --verbose
+      - cargo --offline build --release --verbose
+      - install -Dm755 target/release/flat-manager -t /app/bin/
+    sources:
+      - type: git
+        url: https://github.com/flatpak/flat-manager
+        branch: master
+        commit: f2c1f719b35cb48b5d2b7282b66c8a7e166147b7
+      - cargo-sources.json
+    modules:
+      - name: postgresql
+        sources:
+          - type: archive
+            url: https://ftp.postgresql.org/pub/source/v13.4/postgresql-13.4.tar.bz2
+            sha256: ea93e10390245f1ce461a54eb5f99a48d8cabd3a08ce4d652ec2169a357bc0cd
