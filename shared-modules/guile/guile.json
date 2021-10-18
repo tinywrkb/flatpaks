@@ -18,7 +18,7 @@
         }
     ],
     "cleanup": [
-        "lib/libguile-*.so.*-gdb.scm"
+        "/lib/libguile-*.so.*-gdb.scm"
     ],
     "modules": [
         "../gc/gc.json"
