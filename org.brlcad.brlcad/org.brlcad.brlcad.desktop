@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=BRL-CAD
 Exec=mged
-Icon=brlcad
+Icon=org.brlcad.brlcad
 Terminal=true
 Type=Application
 Categories=Graphics;VectorGraphics;Engineering;2DGraphics

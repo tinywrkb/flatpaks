@@ -1,19 +1,13 @@
-# Known issues
-#   * org.brlcad.brlcad/mged does not start correctly when launched from rofi.
-#     it work  perfectly fine when launched from a terminal window
-#   * to start mged correctly from a desktop file, the Terminal option was defined as true.
 app-id: org.brlcad.brlcad
 runtime: org.kde.Platform
 runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: mged
-rename-desktop-file: brlcad.desktop
-rename-icon: brlcad
 finish-args:
   - --device=dri
   - --filesystem=home
   - --share=ipc
-  - --socket=wayland
+  - --socket=x11
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -22,32 +16,54 @@ cleanup:
   - '*.la'
 modules:
   - name: brlcad
+    build-options:
+      env:
+        LD_LIBRARY_PATH: /run/build/brlcad/_flatpak_build/lib
+      prepend-path: /run/build/brlcad/_flatpak_build/bin
+    builddir: true
     buildsystem: cmake-ninja
     config-opts:
+      # build configs
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_STATIC_LIBS=OFF
       - -DBRLCAD_BUILD_STATIC_LIBS=OFF
-      - -DBRLCAD_BUNDLED_LIBS=BUNDLED
       - -DBRLCAD_ENABLE_COMPILER_WARNINGS=OFF
       - -DBRLCAD_ENABLE_STRICT=OFF
-      - -DBRLCAD_EXTRADOCS=OFF
       - -DBRLCAD_FLAGS_DEBUG=OFF
-      - -DBRLCAD_FREETYPE=OFF
-      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+      # libs (ON/OFF BUNDLED/SYSTEM)
+      - -DBRLCAD_BUNDLED_LIBS=AUTO
+      # ui
+      - -DBRLCAD_ENABLE_OPENGL=ON
+        # Qt is not ready
+        # TODO: try using system tcl when Qt is ready
+      - -DBRLCAD_ENABLE_QT=OFF
+      - -DBRLCAD_ENABLE_X11=ON
+      # features
+      - -DBRLCAD_EXTRADOCS=OFF
+      - -DBRLCAD_INSTALL_EXAMPLE_GEOMETRY=OFF
+      #- -DBRLCAD_DOCBOOK_BUILD
     post-install:
-      - install -Dm644 brlcad.desktop /app/share/applications/brlcad.desktop
-      - install -Dm644 brlcad.svg /app/share/icons/hicolor/scalable/apps/brlcad.svg
-      - install -Dm644 brlcad.png /app/share/icons/hicolor/512x512/apps/brlcad.png
+      - install -Dm644 ../${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ../${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
+      - install -Dm644 ../${FLATPAK_ID}.png -t /app/share/icons/hicolor/512x512/apps/
     sources:
       - type: archive
-        url: https://github.com/BRL-CAD/brlcad/archive/rel-7-32-4.tar.gz
-        sha256: 0f402e9b506942540c33cc655b2712e53eca39bd4fd6789b5ee33eb0072fbbea
+        # wait for > 7.32.4 release, as opengl detection is broken in stable
+        url: https://github.com/BRL-CAD/brlcad/archive/ad8292a87498159ee7394eac6de04dd5d5a04a34.tar.gz
+        sha256: c57c019666fed89b32e58fce3ab586c2e168997c2f9283b7fdb40434abefe158
         x-checker-data:
           type: anitya
           project-id: 235081
           stable-only: true
           url-template: https://github.com/BRL-CAD/brlcad/archive/rel-$version.tar.gz
+      - type: shell
+        commands:
+          # TODO: debug step-g segfault
+          - sed -i '/^add_subdirectory(nist)/d' db/CMakeLists.txt
       - type: file
-        path: brlcad.desktop
+        path: org.brlcad.brlcad.desktop
       - type: file
-        path: brlcad.png
+        path: org.brlcad.brlcad.png
       - type: file
-        path: brlcad.svg
+        path: org.brlcad.brlcad.svg
