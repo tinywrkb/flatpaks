@@ -3,8 +3,8 @@
 [ $# -eq 1 ] || { echo missing module name; exit 1; }
 
 _mod=$1
-# TODO: handle custom Cargo.lock path
-_lockdir=$2
+_lockpath=${2:-Cargo.lock}
+
 
 # add fedc
 #jq '.sources[0] += { "x-checker-data": { "type": "json", "url": "https://api.github.com/repos/user/repo/releases/latest", "tag-query": ".tag_name", "version-query": "$tag", "timestamp-query": ".published_at" } }' ${_mod}.json
@@ -43,7 +43,7 @@ if [ $retval -eq 1 ] ; then
   esac
 
   echo "$_ver" > version
-  curl -L ${_url}/raw/${_ver}/Cargo.lock --output Cargo.lock || exit 1
+  curl -L ${_url}/raw/${_ver}/${_lockpath} --output Cargo.lock || exit 1
 
   flatpak run \
     --filesystem=$PWD \
