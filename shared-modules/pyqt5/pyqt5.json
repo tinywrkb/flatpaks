@@ -12,6 +12,7 @@
         "--enable=QtPrintSupport",
         "--enable=QtQml",
         "--enable=QtQuick",
+        "--enable=QtSerialPort",
         "--enable=QtSql",
         "--enable=QtSvg",
         "--enable=QtTest",
