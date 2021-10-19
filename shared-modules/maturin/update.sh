@@ -4,4 +4,4 @@ _FPID=maturin
 
 [ -f ${_FPID}.json ] || { echo "Can't find ${_FPID}.json"; exit 1; }
 
-./pip-cargo-updater $_FPID
+../../tools/cargo-updater $_FPID
