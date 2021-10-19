@@ -47,13 +47,8 @@
             }
         },
         {
-            "type": "script",
-            "commands": [
-                "export _pyver=$(python -c 'import sys; print(\"%s.%s\" %sys.version_info[0:2])')",
-                "processed=$(sed 's|--prefix=/app||;s|_pyver|'${_pyver}'|g' <<< $@)",
-                "sip-build $processed",
-                "echo 'trick flatpak-builder into running make' > Makefile"
-            ],
+            "type": "file",
+            "path": "sip-build-configure.in",
             "dest-filename": "configure"
         },
         {
