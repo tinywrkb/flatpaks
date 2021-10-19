@@ -1,0 +1,18 @@
+{
+    "name": "python-pygments",
+    "buildsystem": "simple",
+    "build-commands": [
+        "pip3 install --ignore-installed --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST Pygments --no-build-isolation"
+    ],
+    "sources": [
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/b7/b3/5cba26637fe43500d4568d0ee7b7362de1fb29c0e158d50b4b69e9a40422/Pygments-2.10.0.tar.gz",
+            "sha256": "f398865f7eb6874156579fdf36bc840a03cab64d1cde9e93d68f46a425ec52c6",
+            "x-checker-data": {
+                "type": "pypi",
+                "name": "Pygments"
+            }
+        }
+    ]
+}
