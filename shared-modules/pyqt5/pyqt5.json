@@ -39,8 +39,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://files.pythonhosted.org/packages/8e/a4/d5e4bf99dd50134c88b95e926d7b81aad2473b47fde5e3e4eac2c69a8942/PyQt5-5.15.4.tar.gz",
-            "sha256": "2a69597e0dd11caabe75fae133feca66387819fc9bc050f547e5551bce97e5be",
+            "url": "https://files.pythonhosted.org/packages/72/bf/4e7c66eefa9ede1ec01d065d220373667f4ca3285a83a6430eefc254904c/PyQt5-5.15.5.tar.gz",
+            "sha256": "b411b7a8fa03901c9feb1dcbac7ea1fc3ce20b9ae682762b777cd5398749ca2b",
             "x-checker-data": {
                 "type": "pypi",
                 "name": "PyQt5"
@@ -91,8 +91,8 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://files.pythonhosted.org/packages/5e/21/ef20d55c3804a896530099097cadc304e204cf26ead16f04c9e6a07f0fa9/PyQt-builder-1.12.0.tar.gz",
-                    "sha256": "454b4d49a69683d61df855ca0dc4278e2c2d663ca2fad0a0a250497030da9186",
+                    "url": "https://files.pythonhosted.org/packages/63/9b/e7cd8c57cd38df3bf8e95750257f10703dcab15ef9050c0dc03259746e87/PyQt-builder-1.12.1.tar.gz",
+                    "sha256": "9a71e9cac134702467bd93ed9c7a5a47dc4386d93501bdcafb14cd08b3041d40",
                     "x-checker-data": {
                         "type": "pypi",
                         "name": "PyQt-builder"
