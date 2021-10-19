@@ -2,6 +2,8 @@ id: com.github.tinywrkb.test-shared-module
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+#sdk-extensions:
+#  - org.freedesktop.Sdk.Extension.rust-stable
 # standard app cleanup array
 cleanup:
   - /include
