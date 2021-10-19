@@ -134,6 +134,6 @@ modules:
           project-id: 5216
           stable-only: true
           url-template: https://xorg.freedesktop.org/archive/individual/driver/xf86-video-dummy-$version.tar.bz2
-  - python-cryptography/python-cryptography.json
+  - ../shared-modules/python-cryptography/python-cryptography.json
   - python-dependencies.json
   - ../shared-modules/unappimage/unappimage.json
