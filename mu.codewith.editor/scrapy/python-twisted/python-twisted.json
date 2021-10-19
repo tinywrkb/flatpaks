@@ -1,0 +1,18 @@
+{
+    "name": "python-twisted",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python setup.py build",
+        "python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/twisted/twisted/archive/twisted-21.7.0.tar.gz",
+            "sha256": "47cbfcfb823abca36672ae52ca8f52d845a1d056be0622dc4f49e3c91ef4aec7"
+        }
+    ],
+    "modules": [
+        "python-dependencies.json"
+    ]
+}

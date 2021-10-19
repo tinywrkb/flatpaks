@@ -1,0 +1,25 @@
+{
+    "name": "scrapy",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python setup.py build",
+        "python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/scrapy/scrapy/archive/2.5.1/scrapy-2.5.1.tar.gz",
+            "sha256": "e7fdb1dd87d3842446975c86e8fc9ecd2d5e042e41a248ac8f3a4e2510615adf",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 4019,
+                "stable-only": true,
+                "url-template": "https://github.com/scrapy/scrapy/archive/$version/scrapy-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../../shared-modules/python-cryptography/python-cryptography.json",
+        "python-twisted/python-twisted.json"
+    ]
+}

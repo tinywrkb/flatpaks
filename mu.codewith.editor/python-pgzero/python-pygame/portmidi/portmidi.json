@@ -1,0 +1,17 @@
+{
+    "name": "portmidi",
+    "buildsystem": "cmake",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/mixxxdj/portmidi/archive/236.tar.gz",
+            "sha256": "5db9bcb78c728eb81218e905faa5f02eab1f851b3ae5e5b13312755b9b0db943",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 10595,
+                "stable-only": true,
+                "url-template": "https://github.com/mixxxdj/portmidi/archive/$version/portmidi-$version.tar.gz"
+            }
+        }
+    ]
+}

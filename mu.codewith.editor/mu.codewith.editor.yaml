@@ -1,0 +1,110 @@
+app-id: mu.codewith.editor
+runtime: org.kde.Sdk
+runtime-version: 5.15-21.08
+sdk: org.kde.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: mu-editor
+finish-args:
+  - --device=all
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: mu
+    build-options:
+      env:
+        - PYTHONPATH=/app/lib/python3.9/site-packages
+    buildsystem: simple
+    build-commands:
+      - sed -i "/python_requires=/d;/install_requires=/d;/extras_require=/d" setup.py
+      - python setup.py build
+      - python setup.py install --prefix=/app
+      - |
+        _pyver=$(python -c 'import sys; print("%s.%s" %sys.version_info[0:2])')
+        _eggver=$(grep '^Version:' mu_editor.egg-info/PKG-INFO | cut -d\  -f2)
+        _muver=$(grep __version__ mu/__init__.py | cut -d'"' -f2)
+        install -Dm644 dist/mu_editor-*.egg /app/lib/python${_pyver}/site-packages/mu_editor-${_eggver}-py${_pyver}.egg/mu/wheels/${_muver}.zip
+      - install -Dm644 conf/mu.codewith.editor.desktop /app/share/applications/mu.codewith.editor.desktop
+      - install -Dm644 conf/mu.codewith.editor.png /app/share/icons/hicolor/256x256/apps/mu.codewith.editor.png
+      - install -Dm644 conf/mu.appdata.xml /app/share/appdata/mu.codewith.editor.appdata.xml
+      - install -Dm644 conf/90-usb-microbit.rules /app/docs/udev_rules/90-usb-microbit.rules
+    sources:
+      - type: git
+        url: https://github.com/mu-editor/mu.git
+        branch: master
+        commit: 952ab173d7fff0929b583ed339ab1eeef569a7bc
+    modules:
+      - ../shared-modules/pyqt5/pyqt5.json
+      - name: pyqt5-chart
+        config-opts:
+          - --api-dir=/app/share/qt/qsci/api/python
+          - --qmake-setting=QMAKE_CFLAGS_RELEASE='-I/usr/include/python_pyver/'
+          - --qmake-setting=QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python_pyver/'
+          - --target-dir=/app/lib/python_pyver/site-packages
+        make-args:
+          - --directory=build
+        make-install-args:
+          - --directory=build
+        sources:
+          - type: archive
+            url: https://files.pythonhosted.org/packages/e6/af/dd493297922be2935ae2de34daea818940c4f747a98d09acaaa5e84cd1dd/PyQtChart-5.15.4.tar.gz
+            sha256: e47750632851e105eabc27fdfa8180989d120b822181e512f6643b3c5c4d8074
+            x-checker-data:
+              type: pypi
+              name: PyQtChart
+          - type: file
+            path: ../shared-modules/pyqt5/sip-build-configure.in
+            dest-filename: configure
+      - name: qscintilla-qt5
+#       build-options:
+#         env:
+#           - QMAKEFEATURES: /run/build/qscintilla-qt5/src/features
+        config-opts:
+          - --api-dir=/app/share/qt/qsci/api/python
+          - --qmake-setting=QMAKE_CFLAGS_RELEASE='-I/usr/include/python_pyver/'
+          - --qmake-setting=QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python_pyver/'
+          - --target-dir=/app/lib/python_pyver/site-packages
+        make-args:
+          - --directory=build
+        make-install-args:
+          - --directory=build
+        post-install:
+          - install -Dm755 build/Qsci/libQsci.so -t ${FLATPAK_DEST}/lib/
+        sources:
+          - type: archive
+            url: https://files.pythonhosted.org/packages/1c/ec/4b35affda2cca0dd335f5d9861b81066d01d2b0fbccbc1311a3846183029/QScintilla-2.13.1.tar.gz
+            sha256: a0e13196dc624d2ad5e89551e35e1d350245e65b5de572a575ae1b4f364f9095
+            x-checker-data:
+              type: pypi
+              name: QScintilla
+          - type: file
+            path: ../shared-modules/pyqt5/sip-build-configure.in
+            dest-filename: configure
+      - ../shared-modules/python-setuptools-scm/python-setuptools-scm.json
+      - name: python-qtconsole
+        buildsystem: simple
+        build-commands:
+          - python setup.py build
+          - python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
+        sources:
+          - type: archive
+            url: https://github.com/jupyter/qtconsole/archive/5.1.1.tar.gz
+            sha256: 15e2350acb3183130fa7e74badeac2fe149147aff94c72198b60fc10e734d4a4
+            x-checker-data:
+              type: anitya
+              project-id: 10530
+              stable-only: true
+              url-template: https://github.com/jupyter/qtconsole/archive/$version/qtconsole-$version.tar.gz
+        modules:
+          - ../shared-modules/python-pygments/python-pygments.json
+          - ../shared-modules/python-qtpy/python-qtpy.json
+          - python-ipykernel/python-ipykernel.json
+          - ../shared-modules/python-sphinx/python-sphinx.json
+      - python-dependencies.json
+      - scrapy/scrapy.json
+      - python-pgzero/python-pgzero.json

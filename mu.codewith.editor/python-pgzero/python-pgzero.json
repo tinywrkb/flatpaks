@@ -1,0 +1,23 @@
+{
+    "name": "python-pgzero",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python setup.py build",
+        "python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/lordmauve/pgzero/archive/1.2.1.tar.gz",
+            "sha256": "17e04df72c5a5e4c7019870aaf6703fb8c4ae258b97ed4570473f6807430d08c",
+            "x-checker-data": {
+                "type": "pypi",
+                "name": "pgzero"
+            }
+        }
+    ],
+    "modules": [
+        "../../shared-modules/python-numpy/python-numpy.json",
+        "python-pygame/python-pygame.json"
+    ]
+}

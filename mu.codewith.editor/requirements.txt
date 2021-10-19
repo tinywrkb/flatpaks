@@ -1,0 +1,12 @@
+adafruit-board-toolkit
+nudatus
+pytest-runner
+flake8
+black
+appdirs
+semver
+virtualenv
+beautifulsoup4
+ipython_genutils
+flask
+esptool

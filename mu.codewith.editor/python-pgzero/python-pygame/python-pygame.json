@@ -1,0 +1,29 @@
+{
+    "name": "python-pygame",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python setup.py build",
+        "python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://pypi.io/packages/source/p/pygame/pygame-2.0.1.tar.gz",
+            "sha256": "8b1e7b63f47aafcdd8849933b206778747ef1802bd3d526aca45ed77141e4001",
+            "x-checker-data": {
+                "type": "pypi",
+                "name": "pygame"
+            }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "sed -i '\\#incdirs += \\[\"/usr\".*#a \\    incdirs += [\"/app\"+d for d in origincdirs]#' buildconfig/config_unix.py",
+                "sed -i '\\#libdirs += \\[\"/usr\".*#a \\    libdirs += [\"/app\"+d for d in origlibdirs]#' buildconfig/config_unix.py"
+            ]
+        }
+    ],
+    "modules": [
+        "portmidi/portmidi.json"
+    ]
+}

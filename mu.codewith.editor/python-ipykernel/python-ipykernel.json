@@ -1,0 +1,27 @@
+{
+    "name": "python-ipykernel",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python setup.py build",
+        "python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/ipython/ipykernel/archive/v6.4.1.tar.gz",
+            "sha256": "a5a38234f86292c378e4980333c656958e32b1a1c79e08a9952341092967f008",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 10514,
+                "stable-only": true,
+                "url-template": "https://github.com/ipython/ipykernel/archive/v$version/ipykernel-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "python-debugpy/python-debugpy.json",
+        "python-flit/python-flit.json",
+        "python-ipython/python-ipython.json",
+        "python-jupyter_client/python-jupyter_client.json"
+    ]
+}

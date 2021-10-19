@@ -1,0 +1,21 @@
+{
+    "name": "python-debugpy",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python setup.py build",
+        "python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/microsoft/debugpy/archive/v1.5.1/debugpy-1.5.1.tar.gz",
+            "sha256": "86c8a957269a49fe5955f47233609b896ac48033e4f5e94c5b5a908f7230cf19",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 84334,
+                "stable-only": true,
+                "url-template": "https://github.com/microsoft/debugpy/archive/v$version/debugpy-$version.tar.gz"
+            }
+        }
+    ]
+}
