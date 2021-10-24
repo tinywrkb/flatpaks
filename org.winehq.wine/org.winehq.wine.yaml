@@ -94,16 +94,17 @@ modules:
         /app/lib32
         /app/lib/i386-linux-gnu
         EOF
-      - make -C /app/src/wine64 install
+      - cp -R --preserve=timestamps /app/src/wine64 .
+      - make -C wine64 install
   - name: dxvk-bin
     build-options:
       strip: false
     buildsystem: simple
     build-commands:
-      - install -Dm755 setup_dxvk.sh -t ${FLATPAK_ID}/share/dxvk/
-      - ln -s ../share/dxvk/setup_dxvk.sh ${FLATPAK_ID}/bin/setup_dxvk.sh
-      - install -Dm755 x32/* -t ${FLATPAK_ID}/share/dxvk/x32/
-      - install -Dm755 x64/* -t ${FLATPAK_ID}/share/dxvk/x64/
+      - install -Dm755 setup_dxvk.sh -t ${FLATPAK_DEST}/share/dxvk/
+      - ln -s ../share/dxvk/setup_dxvk.sh ${FLATPAK_DEST}/bin/setup_dxvk.sh
+      - install -Dm755 x32/* -t ${FLATPAK_DEST}/share/dxvk/x32/
+      - install -Dm755 x64/* -t ${FLATPAK_DEST}/share/dxvk/x64/
     sources:
       - type: archive
         url: https://github.com/doitsujin/dxvk/releases/download/v1.9.2/dxvk-1.9.2.tar.gz
