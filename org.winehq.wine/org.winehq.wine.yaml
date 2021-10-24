@@ -56,7 +56,7 @@ modules:
       - type: git
         url: https://gitlab.collabora.com/alf/wine.git
         branch: wayland
-        commit: 175a4fa250ad0804826348ec091d26b5a8ea882c
+        commit: 5affac5c26f8a138063a186ddfe070cf6641c68a
     cleanup:
       - /share/applications
       - /share/man/*.UTF-8
@@ -81,7 +81,7 @@ modules:
       - type: git
         url: https://gitlab.collabora.com/alf/wine.git
         branch: wayland
-        commit: 175a4fa250ad0804826348ec091d26b5a8ea882c
+        commit: 5affac5c26f8a138063a186ddfe070cf6641c68a
     cleanup:
       - /share/applications
       - /share/man/*.UTF-8
@@ -95,6 +95,24 @@ modules:
         /app/lib/i386-linux-gnu
         EOF
       - make -C /app/src/wine64 install
+  - name: dxvk-bin
+    build-options:
+      strip: false
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 setup_dxvk.sh -t ${FLATPAK_ID}/share/dxvk/
+      - ln -s ../share/dxvk/setup_dxvk.sh ${FLATPAK_ID}/bin/setup_dxvk.sh
+      - install -Dm755 x32/* -t ${FLATPAK_ID}/share/dxvk/x32/
+      - install -Dm755 x64/* -t ${FLATPAK_ID}/share/dxvk/x64/
+    sources:
+      - type: archive
+        url: https://github.com/doitsujin/dxvk/releases/download/v1.9.2/dxvk-1.9.2.tar.gz
+        sha256: 24bcee655767f4731b8d3883dd93ba4edc7f1e87421e15fab19499d57236b8e9
+        x-checker-data:
+          type: anitya
+          project-id: 141363
+          stable-only: true
+          url-template: https://github.com/doitsujin/dxvk/releases/download/v$version/dxvk-$version.tar.gz
   - name: wine-gecko
     buildsystem: simple
     build-commands:
