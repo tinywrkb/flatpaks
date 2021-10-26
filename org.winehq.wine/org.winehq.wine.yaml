@@ -117,11 +117,10 @@ modules:
   - name: wine-gecko
     buildsystem: simple
     build-commands:
-      - install -Dm644 wine-gecko-x86*.msi -t /app/share/wine/gecko/
+      - install -Dm644 wine-gecko-*x86*.msi -t /app/share/wine/gecko/
     sources:
       # TODO: fix anitya checker at release-monitoring.org
       - type: file
-        dest-filename: wine-gecko-x86.msi
         url: https://dl.winehq.org/wine/wine-gecko/2.47.2/wine-gecko-2.47.2-x86.msi
         sha256: e520ce7336cd420cd09c91337d87e74bb420300fd5cbc6f724c1802766b6a61d
         x-checker-data:
@@ -130,7 +129,6 @@ modules:
           stable-only: true
           url-template: https://dl.winehq.org/wine/wine-gecko/$version/wine-gecko-$version-x86.msi
       - type: file
-        dest-filename: wine-gecko-x86_64.msi
         url: https://dl.winehq.org/wine/wine-gecko/2.47.2/wine-gecko-2.47.2-x86_64.msi
         sha256: 0596761024823ff3c21f13e1cd5cd3e89dccc698294d62974d8930aeda86ce45
         x-checker-data:
