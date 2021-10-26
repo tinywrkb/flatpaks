@@ -9,6 +9,7 @@ for switching to an immutable system, an OS that has a clear seperation between 
 read-only distributed OS files, and the stateful data and configs.
 
 ### Not usable or too buggy
+* Fusion 360
 
 
 ### How to build
