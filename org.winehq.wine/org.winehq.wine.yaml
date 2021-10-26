@@ -143,6 +143,8 @@ modules:
     build-commands:
       - install -dm755 /app/share/wine/mono
       - tar -xf wine-mono-x86.tar.xz -C /app/share/wine/mono/
+        # workaround for wine searching for outdated wine-mono version
+      - ln -s wine-mono-6.4.1 /app/share/wine/mono/wine-mono-6.4.0
     sources:
       - type: file
         dest-filename: wine-mono-x86.tar.xz
