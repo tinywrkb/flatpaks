@@ -1,0 +1,34 @@
+{
+    "name": "p7zip",
+    "no-autogen": true,
+    "make-args": [
+        "7z",
+        "7zr",
+        "7za"
+    ],
+    "make-install-args": [
+        "DEST_DIR=/",
+        "DEST_HOME=${FLATPAK_DEST}",
+        "DEST_MAN=${FLATPAK_DEST}/share/man"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/jinfeihan57/p7zip/archive/eb1bbb0d0327a103850fec519015986e72a1ebf0.tar.gz",
+            "sha256": "cecdaa7e2738ad4594ddddb0c568db1750b7a7ff8433961be8595033d444e3a7",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 2583,
+                "stable-only": true,
+                "versions": {
+                    ">": "17.04"
+                },
+                "url-template": "https://github.com/jinfeihan57/p7zip/archive/v$version/p7zip-$version.tar.gz"
+            }
+        }
+    ],
+    "cleanup": [
+        "/share/doc",
+        "/share/man"
+    ]
+}
