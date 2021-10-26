@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export WINEPREFIX=${XDG_DATA_HOME}/wine
+
+bash
