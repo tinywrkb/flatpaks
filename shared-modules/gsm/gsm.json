@@ -3,8 +3,8 @@
     "no-autogen": true,
     "make-install-args": [
         "-j1",
-        "INSTALL_ROOT=/app",
-        "GSM_INSTALL_INC=/app/include"
+        "INSTALL_ROOT=${FLATPAK_DEST}",
+        "GSM_INSTALL_INC=${FLATPAK_DEST}/include"
     ],
     "sources": [
         {
@@ -25,8 +25,12 @@
         {
             "type": "shell",
             "commands": [
-                "sed -i 's/^\\(CCFLAGS .*\\)/\\1 -fPIC/' Makefile"
+                "sed -i 's/^\\(CCFLAGS .*\\)/\\1 -fPIC/' Makefile",
+                "install -dm755 ${FLATPAK_DEST}/{bin,include,lib}"
             ]
         }
+    ],
+    "cleanup": [
+        "/bin"
     ]
 }
