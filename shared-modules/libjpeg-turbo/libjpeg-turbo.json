@@ -4,6 +4,7 @@
     "buildsystem": "cmake",
     "config-opts": [
         "-DCMAKE_BUILD_TYPE=None",
+        "-DCMAKE_INSTALL_LIBDIR=/app/lib",
         "-DWITH_JPEG8=ON",
         "-Wno-dev"
     ],

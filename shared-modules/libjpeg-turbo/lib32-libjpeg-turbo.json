@@ -18,6 +18,7 @@
     "buildsystem": "cmake",
     "config-opts": [
         "-DCMAKE_BUILD_TYPE=None",
+        "-DCMAKE_INSTALL_LIBDIR=/app/lib32",
         "-DWITH_JPEG8=ON",
         "-Wno-dev"
     ],
