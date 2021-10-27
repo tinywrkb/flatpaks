@@ -4,6 +4,7 @@
         "--disable-bdb",
         "--disable-hdb",
         "--disable-mdb",
+        "--disable-slapd",
         "--enable-dynamic",
         "--without-systemd"
     ],
