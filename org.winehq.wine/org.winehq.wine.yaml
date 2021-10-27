@@ -25,7 +25,7 @@ command: /bin/sh
 finish-args:
   - --allow=multiarch
   - --device=dri
-  - --filesystem=~/.local/wine
+  - --filesystem=home
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
