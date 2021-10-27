@@ -5,7 +5,6 @@ runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
-  - org.freedesktop.Sdk.Extension.mingw-w64
   - org.freedesktop.Sdk.Extension.toolchain-i386
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
@@ -89,8 +88,6 @@ modules:
         EOF
       - cp -R --preserve=timestamps /app/src/wine64 .
       - make -C wine64 install
-    post-install:
-      - /usr/lib/sdk/mingw-w64/bin/x86_64-w64-mingw32-strip --strip-unneeded ${FLATPAK_DEST}/lib/wine/x86_64-windows/*.dll
     modules:
       # TODO: add missing modules
       # - name: libgphoto2
@@ -248,8 +245,6 @@ modules:
           #- --with-cms
           #- --with-osmesa
           #- --with-quicktime
-        post-install:
-          - /usr/lib/sdk/mingw-w64/bin/i686-w64-mingw32-strip --strip-unneeded ${FLATPAK_DEST}/lib32/wine/i386-windows/*.dll
         sources:
 #         - type: archive
 #           url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
