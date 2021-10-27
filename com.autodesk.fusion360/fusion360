@@ -1,5 +1,6 @@
 #!/bin/bash
 
-export WINEPREFIX=${XDG_DATA_HOME}/wine
+# TODO: handle initial install and upgrades
 
-bash
+# TODO: maybe %CSIDL_APPDATA% can be used
+exec wine "C:\\users\\${USER}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Autodesk\\Autodesk Fusion 360.lnk" "$@"

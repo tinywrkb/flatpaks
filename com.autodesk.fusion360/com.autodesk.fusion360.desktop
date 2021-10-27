@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Fusion 360
+GenericName=3D Design
+Comment=3D modeling, CAD, CAM, and PCB software platform for product design and manufacturing
+Icon=com.autodesk.fusion360
+Exec=fusion360 %f
+Terminal=false
+#MimeType=
+Categories=Science;Engineering;Electronics
+Keywords=Autodesk;CAD/CAM;3D Design;Engineering

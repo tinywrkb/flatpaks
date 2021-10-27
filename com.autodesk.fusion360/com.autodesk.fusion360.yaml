@@ -1,4 +1,5 @@
 # WARNING: this is WIP, doesn't work correctly yet, and missing launchers
+# TODO: add mimetypes: *. f3d and other from https://knowledge.autodesk.com/support/fusion-360/troubleshooting/caas/sfdcarticles/sfdcarticles/File-formats-supported-by-Fusion-360.html
 app-id: com.autodesk.fusion360
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
@@ -15,21 +16,30 @@ add-extensions:
 command: fusion360
 finish-args:
   - --allow=multiarch
-  - --env=WINEARCH=win64
   - --device=dri
+  - --env=WINEARCH=win64
+  - --filesystem=home
+  - --persist=.wine
   - --share=ipc
   - --share=network
+# - --socket=fallback-x11
   - --socket=pulseaudio
-  - --socket=fallback-x11
-  - --socket=wayland
+  # TODO: evalute dbus access
+  - --socket=session-bus
+  - --socket=system-bus
+# broken in wayland
+# - --socket=wayland
   - --socket=x11
 modules:
   - name: fusion360
     buildsystem: simple
     build-commands:
       - install -Dm755 apply_extra fusion360 install_fusion360 -t ${FLATPAK_DEST}/bin/
-     #- install -Dm644 ${FLATPAK_DEST}.desktop -t ${FLATPAK_DEST}/share/applications/
-     #- install -Dm644 ${FLATPAK_DEST}.png -t ${FLATPAK_DEST}/share/icons/hicolor/SIZExSIZE/apps/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      - |
+        for s in 32 64 48 128 256; do
+          install -Dm644 fusion360_${s}.png ${FLATPAK_DEST}/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+        done
     sources:
       - type: extra-data
         filename: fusion360-installer.exe
@@ -53,7 +63,15 @@ modules:
           - wine /app/extra/streamer.exe
       - type: file
         path: fusion360
-#     - type: file
-#       path: com.autodesk.fusion360.desktop
-#     - type: file
-#       path: com.autodesk.fusion360.png
+      - type: file
+        path: com.autodesk.fusion360.desktop
+      - type: file
+        path: icons/fusion360_32.png
+      - type: file
+        path: icons/fusion360_48.png
+      - type: file
+        path: icons/fusion360_64.png
+      - type: file
+        path: icons/fusion360_128.png
+      - type: file
+        path: icons/fusion360_256.png
