@@ -34,34 +34,33 @@ finish-args:
 cleanup:
   - /include
 modules:
-# - name: faudio
-  - ../shared-modules/glu/glu.json
-  - ../shared-modules/gsm/gsm.json
-# - name: lib32-faudio
-  - ../shared-modules/glu/lib32-glu.json
-  - ../shared-modules/openldap/lib32-openldap.json
-# - name: lib32-libpcap
-  - ../shared-modules/libxmu/lib32-libxmu.json
-# - name: lib32-vkd3d
+# TODO: add missing modules
+# - name: dosbox
 # - name: libgphoto2
-  - ../shared-modules/openldap/openldap.json
-# - name: libpcap
-  - ../shared-modules/libxmu/libxmu.json
 # - name: samba
 # - name: sane
-# - name: vkd3d
-# might not be needed, icd already installed, so where are the headers?
-# - name: opencl-headers
-# optional: another jpeg lib is already available
-# - name:libjpeg-turbo
-# - name:lib32-libjpeg-turbo
-# optional
-# - name:dosbox
+  - ../shared-modules/glu/glu.json
+  - ../shared-modules/glu/lib32-glu.json
+  - ../shared-modules/gsm/gsm.json
+  - ../shared-modules/libjpeg-turbo/lib32-libjpeg-turbo.json
+  - ../shared-modules/libjpeg-turbo/libjpeg-turbo.json
+  - ../shared-modules/libpcap/lib32-libpcap.json
+  - ../shared-modules/libpcap/libpcap.json
+  - ../shared-modules/libxmu/lib32-libxmu.json
+  - ../shared-modules/libxmu/libxmu.json
+  - ../shared-modules/opencl-headers/opencl-headers.json
+  - ../shared-modules/openldap/lib32-openldap.json
+  - ../shared-modules/openldap/openldap.json
+  - faudio/faudio.json
+  - faudio/lib32-faudio.json
+  - vkd3d/lib32-vkd3d.json
+  - vkd3d/vkd3d.json
   - name: wine64
     no-make-install: true
     config-opts:
       - --enable-win64
       - --libdir=/app/lib
+      - --with-ldap
       - --with-x
       - --with-wayland
     build-commands:
