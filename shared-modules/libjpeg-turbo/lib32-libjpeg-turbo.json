@@ -34,5 +34,10 @@
                 "url-template": "https://sourceforge.net/projects/libjpeg-turbo/files/$version/libjpeg-turbo-$version.tar.gz"
             }
         }
+    ],
+    "cleanup": [
+        "/bin",
+        "/share/doc",
+        "/share/man"
     ]
 }
