@@ -34,79 +34,6 @@ finish-args:
 cleanup:
   - /include
 modules:
-# TODO: add missing modules
-# - name: dosbox
-# - name: libgphoto2
-# - name: samba
-# - name: sane
-  - ../shared-modules/glu/glu.json
-  - ../shared-modules/glu/lib32-glu.json
-  - ../shared-modules/gsm/gsm.json
-  - ../shared-modules/libjpeg-turbo/lib32-libjpeg-turbo.json
-  - ../shared-modules/libjpeg-turbo/libjpeg-turbo.json
-  - ../shared-modules/libpcap/lib32-libpcap.json
-  - ../shared-modules/libpcap/libpcap.json
-  - ../shared-modules/libxmu/lib32-libxmu.json
-  - ../shared-modules/libxmu/libxmu.json
-  - ../shared-modules/opencl-headers/opencl-headers.json
-  - ../shared-modules/openldap/lib32-openldap.json
-  - ../shared-modules/openldap/openldap.json
-  - faudio/faudio.json
-  - faudio/lib32-faudio.json
-  - vkd3d/lib32-vkd3d.json
-  - vkd3d/vkd3d.json
-  - name: wine64
-    no-make-install: true
-    config-opts:
-      - --enable-win64
-      - --libdir=/app/lib
-      - --with-ldap
-      - --with-x
-      - --with-wayland
-    build-commands:
-      - mkdir -p /app/src
-      - cp -r $FLATPAK_BUILDER_BUILDDIR /app/src/wine64
-    sources:
-#     - type: archive
-#       url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
-#       sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
-#       x-checker-data:
-#         type: anitya
-#         project-id: 5134
-#         stable-only: true
-#         url-template: https://dl.winehq.org/wine/source/$version0.x/wine-$version.tar.xz
-      - type: git
-        url: https://gitlab.collabora.com/alf/wine.git
-        branch: wayland
-        commit: 5affac5c26f8a138063a186ddfe070cf6641c68a
-    cleanup:
-      - /share/applications
-      - /share/man/*.UTF-8
-      - /src
-  - name: wine32
-    config-opts:
-      - --with-win64=/app/src/wine64
-      - --with-x
-      - --with-wayland
-    build-options:
-      arch:
-        x86_64: *compat_i386_opts
-    sources:
-#     - type: archive
-#       url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
-#       sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
-#       x-checker-data:
-#         type: anitya
-#         project-id: 5134
-#         stable-only: true
-#         url-template: https://dl.winehq.org/wine/source/$version0.x/wine-$version.tar.xz
-      - type: git
-        url: https://gitlab.collabora.com/alf/wine.git
-        branch: wayland
-        commit: 5affac5c26f8a138063a186ddfe070cf6641c68a
-    cleanup:
-      - /share/applications
-      - /share/man/*.UTF-8
   - name: wine
     buildsystem: simple
     build-commands:
@@ -118,75 +45,84 @@ modules:
         EOF
       - cp -R --preserve=timestamps /app/src/wine64 .
       - make -C wine64 install
-  - name: dxvk-bin
-    build-options:
-      strip: false
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 setup_dxvk.sh -t ${FLATPAK_DEST}/share/dxvk/
-      - ln -s ../share/dxvk/setup_dxvk.sh ${FLATPAK_DEST}/bin/setup_dxvk.sh
-      - install -Dm755 x32/* -t ${FLATPAK_DEST}/share/dxvk/x32/
-      - install -Dm755 x64/* -t ${FLATPAK_DEST}/share/dxvk/x64/
-    sources:
-      - type: archive
-        url: https://github.com/doitsujin/dxvk/releases/download/v1.9.2/dxvk-1.9.2.tar.gz
-        sha256: 24bcee655767f4731b8d3883dd93ba4edc7f1e87421e15fab19499d57236b8e9
-        x-checker-data:
-          type: anitya
-          project-id: 141363
-          stable-only: true
-          url-template: https://github.com/doitsujin/dxvk/releases/download/v$version/dxvk-$version.tar.gz
-  - name: wine-gecko
-    buildsystem: simple
-    build-commands:
-      - install -Dm644 wine-gecko-*x86*.msi -t /app/share/wine/gecko/
-    sources:
-      # TODO: fix anitya checker at release-monitoring.org
-      - type: file
-        url: https://dl.winehq.org/wine/wine-gecko/2.47.2/wine-gecko-2.47.2-x86.msi
-        sha256: e520ce7336cd420cd09c91337d87e74bb420300fd5cbc6f724c1802766b6a61d
-        x-checker-data:
-          type: anitya
-          project-id: 7640
-          stable-only: true
-          url-template: https://dl.winehq.org/wine/wine-gecko/$version/wine-gecko-$version-x86.msi
-      - type: file
-        url: https://dl.winehq.org/wine/wine-gecko/2.47.2/wine-gecko-2.47.2-x86_64.msi
-        sha256: 0596761024823ff3c21f13e1cd5cd3e89dccc698294d62974d8930aeda86ce45
-        x-checker-data:
-          type: anitya
-          project-id: 7640
-          stable-only: true
-          url-template: https://dl.winehq.org/wine/wine-gecko/$version/wine-gecko-$version-x86_64.msi
-  - name: wine-mone
-    buildsystem: simple
-    build-commands:
-      - install -dm755 /app/share/wine/mono
-      - tar -xf wine-mono-x86.tar.xz -C /app/share/wine/mono/
-        # workaround for wine searching for outdated wine-mono version
-      - ln -s wine-mono-6.4.1 /app/share/wine/mono/wine-mono-6.4.0
-    sources:
-      - type: file
-        dest-filename: wine-mono-x86.tar.xz
-        url: https://github.com/madewokherd/wine-mono/releases/download/wine-mono-6.4.1/wine-mono-6.4.1-x86.tar.xz
-        sha256: a70c865e590058fa6fc3aa47425646405bdda27f78b9aa6d2030d2d2a8efadbb
-        x-checker-data:
-          type: anitya
-          project-id: 7641
-          stable-only: true
-          url-template: https://github.com/madewokherd/wine-mono/releases/download/wine-mono-$version/wine-mono-$version-x86.tar.xz
-  - name: winetricks
-    no-autogen: true
-    make-install-args:
-      - PREFIX=/app
-    sources:
-      - type: archive
-        url: https://github.com/Winetricks/winetricks/archive/20210825.tar.gz
-        sha256: bac77918ef4d58c6465a1043fd996d09c3ee2c5a07f56ed089c4c65a71881277
-        x-checker-data:
-          type: anitya
-          project-id: 7258
-          stable-only: true
-          url-template: https://github.com/Winetricks/winetricks/archive/$version.tar.gz
     modules:
-      - ../shared-modules/cabextract/cabextract.json
+      # TODO: add missing modules
+      # - name: libgphoto2
+      # - name: samba
+      # - name: sane
+      - ../shared-modules/glu/glu.json
+      - ../shared-modules/glu/lib32-glu.json
+      - ../shared-modules/gsm/gsm.json
+      - ../shared-modules/libjpeg-turbo/lib32-libjpeg-turbo.json
+      - ../shared-modules/libjpeg-turbo/libjpeg-turbo.json
+      - ../shared-modules/libpcap/lib32-libpcap.json
+      - ../shared-modules/libpcap/libpcap.json
+      - ../shared-modules/libxmu/lib32-libxmu.json
+      - ../shared-modules/libxmu/libxmu.json
+      - ../shared-modules/opencl-headers/opencl-headers.json
+      - ../shared-modules/openldap/lib32-openldap.json
+      - ../shared-modules/openldap/openldap.json
+      - faudio/faudio.json
+      - faudio/lib32-faudio.json
+      - vkd3d/lib32-vkd3d.json
+      - vkd3d/vkd3d.json
+      - name: wine64
+        no-make-install: true
+        config-opts:
+          - --enable-win64
+          - --libdir=/app/lib
+          - --with-ldap
+          - --with-x
+          - --with-wayland
+        build-commands:
+          - mkdir -p /app/src
+          - cp -r $FLATPAK_BUILDER_BUILDDIR /app/src/wine64
+        sources:
+#         - type: archive
+#           url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
+#           sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+#           x-checker-data:
+#             type: anitya
+#             project-id: 5134
+#             stable-only: true
+#             url-template: https://dl.winehq.org/wine/source/$version0.x/wine-$version.tar.xz
+          - type: git
+            url: https://gitlab.collabora.com/alf/wine.git
+            branch: wayland
+            commit: 5affac5c26f8a138063a186ddfe070cf6641c68a
+        cleanup:
+          - /share/applications
+          - /share/man/*.UTF-8
+          - /src
+      - name: wine32
+        config-opts:
+          - --with-win64=/app/src/wine64
+          - --with-x
+          - --with-wayland
+        build-options:
+          arch:
+            x86_64: *compat_i386_opts
+        sources:
+#         - type: archive
+#           url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
+#           sha256: 682a77c1fd12f56347ca2080d85fe17def1b655d3241d94582f87591d9d0cc3b
+#           x-checker-data:
+#             type: anitya
+#             project-id: 5134
+#             stable-only: true
+#             url-template: https://dl.winehq.org/wine/source/$version0.x/wine-$version.tar.xz
+          - type: git
+            url: https://gitlab.collabora.com/alf/wine.git
+            branch: wayland
+            commit: 5affac5c26f8a138063a186ddfe070cf6641c68a
+        cleanup:
+          - /share/applications
+          - /share/man/*.UTF-8
+  # TODO: add dosbox
+  # - dosbox/dosbox.json
+  # 7z can extract some self-extract *.exe installers
+  - ../shared-modules/p7zip/p7zip.json
+  - dxvk/dxvk-bin.json
+  - wine-gecko/wine-gecko.json
+  - wine-mono/wine-mono.json
+  - winetricks/winetricks.json
