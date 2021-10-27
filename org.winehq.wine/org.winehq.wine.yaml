@@ -33,6 +33,9 @@ finish-args:
   - --socket=x11
 cleanup:
   - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
 modules:
   - name: wine
     buildsystem: simple
@@ -53,6 +56,8 @@ modules:
       - ../shared-modules/glu/glu.json
       - ../shared-modules/glu/lib32-glu.json
       - ../shared-modules/gsm/gsm.json
+      - ../shared-modules/krb5/krb5.json
+      - ../shared-modules/krb5/lib32-krb5.json
       - ../shared-modules/libjpeg-turbo/lib32-libjpeg-turbo.json
       - ../shared-modules/libjpeg-turbo/libjpeg-turbo.json
       - ../shared-modules/libpcap/lib32-libpcap.json
@@ -60,8 +65,6 @@ modules:
       - ../shared-modules/libxmu/lib32-libxmu.json
       - ../shared-modules/libxmu/libxmu.json
       - ../shared-modules/opencl-headers/opencl-headers.json
-      - ../shared-modules/openldap/lib32-openldap.json
-      - ../shared-modules/openldap/openldap.json
       - faudio/faudio.json
       - faudio/lib32-faudio.json
       - vkd3d/lib32-vkd3d.json
@@ -71,9 +74,61 @@ modules:
         config-opts:
           - --enable-win64
           - --libdir=/app/lib
-          - --with-ldap
           - --with-x
           - --with-wayland
+
+          # the following should be automatically detected, explicitly with for the testing
+          #
+          # features that depend on packaged libs
+          #- --with-cups
+          - --with-faudio
+          #- --with-gphoto
+          - --with-gsm
+          #- --with-gssapi
+          #- --with-inotify
+          - --with-jpeg
+          - --with-krb5
+          - --with-ldap
+          # samba
+          #- --with-netapi
+          - --with-pcap
+          #- --with-sane
+          #- --with-usb
+          - --with-vkd3d
+
+          # features that depend on runtime libs
+          - --with-alsa
+          # dbus might be needed to be packaged, wine complain about it when apps crash
+          - --with-dbus
+          - --with-fontconfig
+          - --with-freetype
+          - --with-gettext
+          - --with-gettextpo
+          - --with-gnutls
+          - --with-gstreamer
+          - --with-mpg123
+          - --with-openal
+          - --with-opencl
+          - --with-opengl
+          - --with-png
+          - --with-pthread
+          - --with-pulse
+          - --with-sdl
+          - --with-tiff
+          - --with-udev
+          - --with-unwind
+          - --with-v4l2
+          - --with-vulkan
+          - --with-xml
+          - --with-xslt
+
+          # other features, don't care
+          # isdn support
+          #- --with-capi
+          # color management
+          #- --with-cms
+          #- --with-osmesa
+          #- --with-quicktime
         build-commands:
           - mkdir -p /app/src
           - cp -r $FLATPAK_BUILDER_BUILDDIR /app/src/wine64
@@ -99,6 +154,59 @@ modules:
           - --with-win64=/app/src/wine64
           - --with-x
           - --with-wayland
+
+          # the following should be automatically detected, explicitly with for the testing
+          #
+          # features that depend on packaged libs
+          #- --with-cups
+          - --with-faudio
+          #- --with-gphoto
+          - --with-gsm
+          #- --with-gssapi
+          #- --with-inotify
+          - --with-jpeg
+          - --with-krb5
+          - --with-ldap
+          # samba
+          #- --with-netapi
+          - --with-pcap
+          #- --with-sane
+          #- --with-usb
+          - --with-vkd3d
+
+          # features that depend on runtime libs
+          - --with-alsa
+          # dbus might be needed to be packaged, wine complain about it when apps crash
+          - --with-dbus
+          - --with-fontconfig
+          - --with-freetype
+          - --with-gettext
+          - --with-gettextpo
+          - --with-gnutls
+          - --with-gstreamer
+          - --with-mpg123
+          - --with-openal
+          - --with-opencl
+          - --with-opengl
+          - --with-png
+          - --with-pthread
+          - --with-pulse
+          - --with-sdl
+          - --with-tiff
+          - --with-udev
+          - --with-unwind
+          - --with-v4l2
+          - --with-vulkan
+          - --with-xml
+          - --with-xslt
+
+          # other features, don't care
+          # isdn support
+          #- --with-capi
+          # color management
+          #- --with-cms
+          #- --with-osmesa
+          #- --with-quicktime
         build-options:
           arch:
             x86_64: *compat_i386_opts
