@@ -1,5 +1,5 @@
 {
-    "name": "glu",
+    "name": "lib32-glu",
     "build-options": {
         "arch": {
             "x86_64": {
