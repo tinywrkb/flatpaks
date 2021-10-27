@@ -34,6 +34,29 @@ finish-args:
 cleanup:
   - /include
 modules:
+# - name: faudio
+  - ../shared-modules/glu/glu.json
+  - ../shared-modules/gsm/gsm.json
+# - name: lib32-faudio
+  - ../shared-modules/glu/lib32-glu.json
+  - ../shared-modules/openldap/lib32-openldap.json
+# - name: lib32-libpcap
+  - ../shared-modules/libxmu/lib32-libxmu.json
+# - name: lib32-vkd3d
+# - name: libgphoto2
+  - ../shared-modules/openldap/openldap.json
+# - name: libpcap
+  - ../shared-modules/libxmu/libxmu.json
+# - name: samba
+# - name: sane
+# - name: vkd3d
+# might not be needed, icd already installed, so where are the headers?
+# - name: opencl-headers
+# optional: another jpeg lib is already available
+# - name:libjpeg-turbo
+# - name:lib32-libjpeg-turbo
+# optional
+# - name:dosbox
   - name: wine64
     no-make-install: true
     config-opts:
