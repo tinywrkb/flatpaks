@@ -57,5 +57,3 @@ modules:
 #       path: com.autodesk.fusion360.desktop
 #     - type: file
 #       path: com.autodesk.fusion360.png
-    modules:
-      - ../shared-modules/p7zip/p7zip.json
