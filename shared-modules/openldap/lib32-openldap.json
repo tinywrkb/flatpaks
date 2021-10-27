@@ -1,0 +1,34 @@
+{
+    "name": "openldap",
+    "build-options": {
+        "arch": {
+            "x86_64": {
+                "prepend-pkg-config-path": "/app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig",
+                "ldflags": "-L/app/lib32",
+                "prepend-path": "/usr/lib/sdk/toolchain-i386/bin",
+                "env": {
+                    "CC": "i686-unknown-linux-gnu-gcc",
+                    "CXX": "i686-unknown-linux-gnu-g++"
+                },
+                "libdir": "/app/lib32"
+            }
+        }
+    },
+    "config-opts": [
+        "--enable-dynamic",
+        "--without-systemd"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.5.8.tgz",
+            "sha256": "366ea1c3b24202de4481978b632128c0cfe4148d4ae13cabf93a1f38c56472dc",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 2551,
+                "stable-only": true,
+                "url-template": "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-$version.tgz"
+            }
+        }
+    ]
+}
