@@ -53,22 +53,8 @@ modules:
       # - name: libgphoto2
       # - name: samba
       # - name: sane
-      - ../shared-modules/glu/glu.json
-      - ../shared-modules/glu/lib32-glu.json
       - ../shared-modules/gsm/gsm.json
-      - ../shared-modules/krb5/krb5.json
-      - ../shared-modules/krb5/lib32-krb5.json
-      - ../shared-modules/libjpeg-turbo/lib32-libjpeg-turbo.json
-      - ../shared-modules/libjpeg-turbo/libjpeg-turbo.json
-      - ../shared-modules/libpcap/lib32-libpcap.json
-      - ../shared-modules/libpcap/libpcap.json
-      - ../shared-modules/libxmu/lib32-libxmu.json
-      - ../shared-modules/libxmu/libxmu.json
       - ../shared-modules/opencl-headers/opencl-headers.json
-      - faudio/faudio.json
-      - faudio/lib32-faudio.json
-      - vkd3d/lib32-vkd3d.json
-      - vkd3d/vkd3d.json
       - name: wine64
         no-make-install: true
         config-opts:
@@ -149,6 +135,14 @@ modules:
           - /share/applications
           - /share/man/*.UTF-8
           - /src
+        modules:
+          - ../shared-modules/glu/glu.json
+          - ../shared-modules/krb5/krb5.json
+          - ../shared-modules/libjpeg-turbo/libjpeg-turbo.json
+          - ../shared-modules/libpcap/libpcap.json
+          - ../shared-modules/libxmu/libxmu.json
+          - faudio/faudio.json
+          - vkd3d/vkd3d.json
       - name: wine32
         config-opts:
           - --with-win64=/app/src/wine64
@@ -226,6 +220,14 @@ modules:
         cleanup:
           - /share/applications
           - /share/man/*.UTF-8
+        modules:
+          - ../shared-modules/glu/lib32-glu.json
+          - ../shared-modules/krb5/lib32-krb5.json
+          - ../shared-modules/libjpeg-turbo/lib32-libjpeg-turbo.json
+          - ../shared-modules/libpcap/lib32-libpcap.json
+          - ../shared-modules/libxmu/lib32-libxmu.json
+          - faudio/lib32-faudio.json
+          - vkd3d/lib32-vkd3d.json
   # TODO: add dosbox
   # - dosbox/dosbox.json
   # 7z can extract some self-extract *.exe installers
