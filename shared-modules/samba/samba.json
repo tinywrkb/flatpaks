@@ -23,6 +23,7 @@
         "--with-ads",
         "--with-ldap",
         "--with-winbind",
+        "--without-ad-dc",
         "--without-pam",
         "--without-systemd"
     ],
