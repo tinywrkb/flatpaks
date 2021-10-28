@@ -1,0 +1,32 @@
+{
+    "name": "ldb",
+    "config-opts": [
+        "--disable-python",
+        "--disable-rpath",
+        "--disable-rpath-install",
+        "--builtin-libraries=replace",
+        "--with-modulesdir=/app/lib/ldb/modules",
+        "--with-privatelibdir=/app/lib/ldb"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://samba.org/ftp/ldb/ldb-2.4.1.tar.gz",
+            "sha256": "69c1032ab46bafe3873d2f61606de5843e416d3f12d05f2def0bf5b5153dcd8f",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 1652,
+                "stable-only": true,
+                "url-template": "https://samba.org/ftp/ldb/ldb-$version.tar.gz"
+            }
+        }
+    ],
+    "cleanup": [
+        "/bin",
+        "/share/man"
+    ],
+    "modules": [
+        "../../popt/popt.json",
+        "../lmdb/lmdb.json"
+    ]
+}
