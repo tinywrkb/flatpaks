@@ -1,0 +1,25 @@
+{
+    "name": "rpcsvc-proto",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/thkukuk/rpcsvc-proto/archive/v1.4.2/rpcsvc-proto-1.4.2.tar.gz",
+            "sha256": "9f309fa25507836b0c5de8a9d755c1428bde5554610bf92eb21e32078134aef5",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 155452,
+                "stable-only": true,
+                "url-template": "https://github.com/thkukuk/rpcsvc-proto/archive/v$version/rpcsvc-proto-$version.tar.gz"
+            }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "autoreconf -ifv"
+            ]
+        }
+    ],
+    "cleanup": [
+        "*"
+    ]
+}
