@@ -1,4 +1,5 @@
 # TODO: fontconfig/conf.d
+# TODO: mt32emu f-e-d-c
 app-id: org.winehq.wine
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
@@ -90,8 +91,6 @@ modules:
       - cp -R --preserve=timestamps /app/src/wine64 .
       - make -C wine64 install
     modules:
-      # TODO: add missing modules
-      # - name: samba
       - ../shared-modules/opencl-headers/opencl-headers.json
       - name: wine64
         no-make-install: true
@@ -271,10 +270,9 @@ modules:
           - ../shared-modules/sane/lib32-libsane.json
           - faudio/lib32-faudio.json
           - vkd3d/lib32-vkd3d.json
-  # TODO: add dosbox
-  # - dosbox/dosbox.json
   # 7z can extract some self-extract *.exe installers
   - ../shared-modules/p7zip/p7zip.json
+  - dosbox-staging/dosbox-staging.json
   - dxvk/dxvk-bin.json
   - wine-gecko/wine-gecko.json
   - wine-mono/wine-mono.json
