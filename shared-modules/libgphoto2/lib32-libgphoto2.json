@@ -47,6 +47,9 @@
     "cleanup": [
         "/bin",
         "/doc",
+        "/lib*/udev",
+        "/share/libgphoto2",
+        "/share/libgphoto2_port",
         "/share/man"
     ]
 }
