@@ -1,0 +1,24 @@
+app-id: net.sourceforge.libhdate
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: hdate
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: libhdate
+    sources:
+      - type: archive
+        url: https://sourceforge.net/projects/libhdate/files/libhdate/libhdate-1.6.02/libhdate-1.6.02.tar.bz2
+        sha256: 3c930a8deb57c01896dc37f0d7804e5a330ee8e88c4ff610b71f9d2b02c17762
+        x-checker-data:
+          type: anitya
+          project-id: 236266
+          stable-only: true
+          url-template: https://sourceforge.net/projects/libhdate/files/libhdate/libhdate-$version/libhdate-$version.tar.bz2
+    cleanup:
+      - /share/doc
+      - /share/man/man3
