@@ -14,6 +14,12 @@
             }
         }
     },
+    "config-opts": [
+        "LIBGD_CFLAGS=-I/app/include",
+        "LIBGD_LIBS=/app/lib32/libgd.so",
+        "LIBUSB1_CFLAGS=-I/app/include/libusb-1.0",
+        "LIBUSB1_LIBS=/app/lib32/libusb-1.0.so"
+    ],
     "sources": [
         {
             "type": "archive",
@@ -25,6 +31,12 @@
                 "stable-only": true,
                 "url-template": "https://github.com/gphoto/libgphoto2/releases/download/v$version/libgphoto2-$version.tar.gz"
             }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "sed -i 's/-lgd//' configure.ac"
+            ]
         }
     ],
     "modules": [
