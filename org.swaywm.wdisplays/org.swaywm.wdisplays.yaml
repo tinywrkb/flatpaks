@@ -1,0 +1,43 @@
+app-id: org.swaywm.wdisplays
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: wdisplays
+rename-desktop-file: wdisplays.desktop
+rename-icon: wdisplays
+finish-args:
+  - --device=dri
+  - --socket=wayland
+    # sway ipc socket workaround
+    #   by default sway socket is ${XDG_RUNTIME_DIR}/sway-ipc.<uid>.<pid>.sock
+    #   so we need to change this to a flatpak mount-able folder
+    #   1. export SWAYSOCK=$XDG_RUNTIME_DIR/sway/sway-ipc.sock
+    #   2. mkdir $XDG_RUNTIME_DIR/sway/sway-ipc.sock
+    #      or use tmpfiles.d by creating ~/.config/user-tmpfiles.d/sway.conf
+    #      with
+    #        d %t/sway 0700 - - - -
+    #      and enable systemd-tmpfiles-{clean.timer,setup.service}
+    #   related bug reports:
+    #     https://github.com/swaywm/sway/issues/5624
+  - --filesystem=xdg-run/sway
+  - --own-name=network.cycles.wdisplays
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: wdisplays
+    buildsystem: meson
+    post-install:
+      - mv ${FLATPAK_DEST}/share/applications/{network.cycles.,}wdisplays.desktop
+      - desktop-file-edit --set-key=Icon --set-value=wdisplays ${FLATPAK_DEST}/share/applications/wdisplays.desktop
+    sources:
+      - type: archive
+        url: https://github.com/artizirk/wdisplays/archive/1.1/wdisplays-1.1.tar.gz
+        sha256: 5aa739dece0d928fe7ca2f28d7f6b4b6750559ec6a0cd0a7520a4b47cebb6f80
+        x-checker-data:
+          type: anitya
+          project-id: 137708
+          stable-only: true
+          url: https://github.com/artizirk/wdisplays/archive/$version/wdisplays-$version.tar.gz
