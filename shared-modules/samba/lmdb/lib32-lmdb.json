@@ -18,6 +18,7 @@
     "no-autogen": true,
     "make-install-args": [
         "prefix=/app",
+        "bindir=/app/bin32",
         "libdir=/app/lib32"
     ],
     "sources": [
@@ -40,7 +41,7 @@
         }
     ],
     "cleanup": [
-        "/bin",
+        "/bin32",
         "/share/man"
     ]
 }
