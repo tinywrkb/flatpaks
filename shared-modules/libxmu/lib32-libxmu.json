@@ -29,5 +29,8 @@
                 "url-template": "https://xorg.freedesktop.org/releases/individual/lib/libXmu-$version.tar.bz2"
             }
         }
+    ],
+    "cleanup": [
+        "/share/doc"
     ]
 }
