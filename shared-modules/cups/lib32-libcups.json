@@ -15,7 +15,9 @@
         }
     },
     "config-opts": [
-        "--libdir=/app/lib32"
+        "--libdir=/app/lib32",
+        "--disable-gssapi",
+        "--disable-libusb"
     ],
     "make-args": [
         "libs"
