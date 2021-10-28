@@ -36,6 +36,8 @@
                 }
             ],
             "modules": [
+                "../popt/popt.json",
+                "../libxcrypt/libxcrypt.json",
                 {
                     "name": "gpm",
                     "config-opts": [
@@ -48,44 +50,6 @@
                             "url": "https://github.com/telmich/gpm.git",
                             "branch": "master",
                             "commit": "e82d1a653ca94aa4ed12441424da6ce780b1e530"
-                        }
-                    ]
-                },
-                {
-                    "name": "libxcrypt",
-                    "config-opts": [
-                        "--disable-static",
-                        "--disable-failure-tokens",
-                        "--enable-hashes=strong,glibc",
-                        "--enable-obsolete-api=no"
-                    ],
-                    "sources": [
-                        {
-                            "type": "archive",
-                            "url": "https://github.com/besser82/libxcrypt/archive/v4.4.26.tar.gz",
-                            "sha256": "e8a544dd19171c1e6191a6044c96cc31496d781ba08b5a00f53310d001d58114",
-                            "x-checker-data": {
-                                "type": "anitya",
-                                "project-id": 16436,
-                                "stable-only": true,
-                                "url-template": "https://github.com/besser82/libxcrypt/archive/v$version.tar.gz"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "popt",
-                    "sources": [
-                        {
-                            "type": "archive",
-                            "url": "http://ftp.rpm.org/popt/releases/popt-1.x/popt-1.18.tar.gz",
-                            "sha256": "5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1",
-                            "x-checker-data": {
-                                "type": "anitya",
-                                "project-id": 3689,
-                                "stable-only": true,
-                                "url-template": "http://ftp.rpm.org/popt/releases/popt-1.x/popt-$version.tar.gz"
-                            }
                         }
                     ]
                 },
