@@ -104,7 +104,7 @@ modules:
           # the following should be automatically detected, explicitly with for the testing
           #
           # features that depend on packaged libs
-          #- --with-cups
+          - --with-cups
           - --with-faudio
           - --with-gphoto
           - --with-gsm
@@ -113,7 +113,7 @@ modules:
           - --with-krb5
           - --with-ldap
           # samba
-          #- --with-netapi
+          - --with-netapi
           - --with-pcap
           - --with-sane
           - --with-usb
@@ -176,9 +176,9 @@ modules:
         modules:
           - ../shared-modules/glu/glu.json
           - ../shared-modules/gsm/gsm.json
-          - ../shared-modules/krb5/krb5.json
           - ../shared-modules/libpcap/libpcap.json
           - ../shared-modules/libxmu/libxmu.json
+          - ../shared-modules/samba/samba.json
           - ../shared-modules/sane/libsane.json
           - faudio/faudio.json
           - vkd3d/vkd3d.json
@@ -194,7 +194,7 @@ modules:
           # the following should be automatically detected, explicitly with for the testing
           #
           # features that depend on packaged libs
-          #- --with-cups
+          - --with-cups
           - --with-faudio
           - --with-gphoto
           - --with-gsm
@@ -203,7 +203,7 @@ modules:
           - --with-krb5
           - --with-ldap
           # samba
-          #- --with-netapi
+          - --with-netapi
           # TODO: fix lib32-libpcap detection
           #- --with-pcap
           - --with-sane
@@ -263,9 +263,9 @@ modules:
         modules:
           - ../shared-modules/glu/lib32-glu.json
           - ../shared-modules/gsm/lib32-gsm.json
-          - ../shared-modules/krb5/lib32-krb5.json
           - ../shared-modules/libpcap/lib32-libpcap.json
           - ../shared-modules/libxmu/lib32-libxmu.json
+          - ../shared-modules/samba/lib32-samba.json
           # TODO: enable usb, libgphoto support in lib32-libsane module
           # TODO: try avoiding the lib32 workarounds in the lib32-libgphoto2 module
           - ../shared-modules/sane/lib32-libsane.json
