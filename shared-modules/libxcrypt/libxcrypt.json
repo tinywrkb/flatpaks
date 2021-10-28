@@ -1,0 +1,22 @@
+{
+    "name": "libxcrypt",
+    "config-opts": [
+        "--disable-static",
+        "--disable-failure-tokens",
+        "--enable-hashes=strong,glibc",
+        "--enable-obsolete-api=no"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/besser82/libxcrypt/archive/v4.4.26.tar.gz",
+            "sha256": "e8a544dd19171c1e6191a6044c96cc31496d781ba08b5a00f53310d001d58114",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 16436,
+                "stable-only": true,
+                "url-template": "https://github.com/besser82/libxcrypt/archive/v$version.tar.gz"
+            }
+        }
+    ]
+}
