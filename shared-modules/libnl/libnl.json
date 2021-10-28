@@ -16,5 +16,9 @@
                 "url-query": ".assets[] | select(.name==\"libnl-\" + $version + \".tar.gz\") | .browser_download_url"
             }
         }
+    ],
+    "cleanup": [
+        "/etc",
+        "/share/man"
     ]
 }
