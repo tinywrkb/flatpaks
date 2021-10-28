@@ -13,6 +13,7 @@ jq --indent 4 --join-output --argjson fedc "$(<fedc.json)" '.sources[0] += $fedc
 # look for an update
 flatpak run \
   --filesystem=$PWD \
+  --runtime=org.freedesktop.Sdk//21.08 \
   org.flathub.flatpak-external-data-checker \
   --edit-only ${_mod}-fedc.json
 
@@ -29,7 +30,7 @@ if [ $retval -eq 1 ] ; then
 
   case $_type in
     archive)
-      _ver=$(jq --raw-output '.sources[0].url' ${_mod}.json | sed 's#.*/##;s#\.tar\..*##')
+      _ver=$(jq --raw-output '.sources[0].url' ${_mod}.json | sed 's#.*archive/##;s#\.tar\..*##;s#/.*##')
       _url=$(jq --raw-output '.sources[0].url' ${_mod}.json | sed 's#/archive/.*$##')
       ;;
     git)
