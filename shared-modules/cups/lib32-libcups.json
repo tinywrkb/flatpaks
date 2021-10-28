@@ -1,0 +1,40 @@
+{
+    "name": "lib32-libcups",
+    "build-options": {
+        "arch": {
+            "x86_64": {
+                "prepend-pkg-config-path": "/app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig",
+                "ldflags": "-L/app/lib32",
+                "prepend-path": "/usr/lib/sdk/toolchain-i386/bin",
+                "env": {
+                    "CC": "i686-unknown-linux-gnu-gcc",
+                    "CXX": "i686-unknown-linux-gnu-g++"
+                },
+                "libdir": "/app/lib32"
+            }
+        }
+    },
+    "config-opts": [
+        "--libdir=/app/lib32"
+    ],
+    "make-args": [
+        "libs"
+    ],
+    "no-make-install": true,
+    "post-install": [
+        "make SERVERBIN=/app/lib32/cups install-{headers,libs}"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/OpenPrinting/cups/releases/download/v2.3.3op2/cups-2.3.3op2-source.tar.gz",
+            "sha256": "deb3575bbe79c0ae963402787f265bfcf8d804a71fc2c94318a74efec86f96df",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 380,
+                "stable-only": true,
+                "url-template": "https://github.com/OpenPrinting/cups/releases/download/v$version/cups-$version-source.tar.gz"
+            }
+        }
+    ]
+}
