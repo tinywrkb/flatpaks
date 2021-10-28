@@ -18,6 +18,10 @@
             }
         }
     ],
+    "cleanup": [
+        "/bin",
+        "/share/man"
+    ],
     "modules": [
         "../libnl/libnl.json"
     ]

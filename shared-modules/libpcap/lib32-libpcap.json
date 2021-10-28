@@ -32,6 +32,9 @@
             }
         }
     ],
+    "cleanup": [
+        "/share/man"
+    ],
     "modules": [
         "../libnl/lib32-libnl.json"
     ]
