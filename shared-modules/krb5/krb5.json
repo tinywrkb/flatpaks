@@ -2,6 +2,8 @@
     "name": "krb5",
     "subdir": "src",
     "config-opts": [
+        "--localstatedir=/var/lib",
+        "--sbindir=/app/bin",
         "--enable-shared",
         "--with-ldap",
         "--without-tcl"
@@ -18,6 +20,12 @@
               "url-template": "https://web.mit.edu/kerberos/dist/krb5/$major.$minor/krb5-$version.tar.gz"
             }
         }
+    ],
+    "cleanup": [
+        "/bin",
+        "/share/et",
+        "/share/examples",
+        "/share/man"
     ],
     "modules": [
         "../openldap/openldap.json"
