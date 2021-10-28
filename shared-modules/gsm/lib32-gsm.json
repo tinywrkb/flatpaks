@@ -47,6 +47,7 @@
         }
     ],
     "cleanup": [
-        "/bin"
+        "/bin",
+        "/man"
     ]
 }
