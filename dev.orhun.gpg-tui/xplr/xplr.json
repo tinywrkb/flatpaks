@@ -1,0 +1,23 @@
+{
+    "name": "xplr",
+    "build-options": {
+        "env": [
+            "CARGO_HOME=/run/build/xplr/cargo"
+        ],
+        "prepend-path": "/usr/lib/sdk/rust-stable/bin"
+    },
+    "buildsystem": "simple",
+    "build-commands": [
+        "cargo --offline fetch --manifest-path Cargo.toml --verbose",
+        "cargo --offline build --release --verbose",
+        "install -Dm755 target/release/xplr -t /app/bin/"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/sayanarijit/xplr/archive/v0.15.2/xplr-0.15.2.tar.gz",
+            "sha256": "f40fc7c7bdea44c919137d195f5c422285a65ecd46394c16eb68d293927b6c6b"
+        },
+        "cargo-sources.json"
+    ]
+}

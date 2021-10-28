@@ -1,0 +1,8 @@
+{
+    "x-checker-data": {
+        "type": "anitya",
+        "project-id": 236270,
+        "stable-only": true,
+        "url-template": "https://github.com/orhun/gpg-tui/archive/v$version/gpg-tui-$version.tar.gz"
+    }
+}

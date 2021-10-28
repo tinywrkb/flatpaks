@@ -1,0 +1,33 @@
+{
+    "name": "gpg-tui",
+    "build-options": {
+        "env": [
+            "CARGO_HOME=/run/build/gpg-tui/cargo"
+        ],
+        "prepend-path": "/usr/lib/sdk/rust-stable/bin"
+    },
+    "buildsystem": "simple",
+    "build-commands": [
+        "cargo --offline fetch --manifest-path Cargo.toml --verbose",
+        "cargo --offline build --release --verbose",
+        "install -Dm755 target/release/gpg-tui -t /app/bin/"
+    ],
+    "post-install": [
+        "install -dm755 completions/",
+        "OUT_DIR=completions/ cargo run --release --bin gpg-tui-completions",
+        "install -Dm644 -t ${FLATPAK_DEST}/share/doc/ README.md config/gpg-tui.toml",
+        "install -Dm644 man/*.1 -t ${FLATPAK_DEST}/share/man/man1/",
+        "install -Dm644 man/*.5 -t ${FLATPAK_DEST}/share/man/man5/",
+        "cd completions; for f in *.bash; do install -Dm644 $f ${FLATPAK_DEST}/share/bash-completion/completions/${f%.bash}; done",
+        "install -Dm644 completions/*.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/",
+        "install -Dm644 completions/_gpg-tui -t ${FLATPAK_DEST}/share/zsh/site-functions/"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/orhun/gpg-tui/archive/v0.8.1/gpg-tui-0.8.1.tar.gz",
+            "sha256": "167e4c48a9769a6b2ca4cb32374e203fb1c52d27a6da52518eaccf17a6e0e038"
+        },
+        "cargo-sources.json"
+    ]
+}

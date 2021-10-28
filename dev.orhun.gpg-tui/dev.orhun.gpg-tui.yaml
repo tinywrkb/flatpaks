@@ -1,0 +1,24 @@
+app-id: dev.orhun.gpg-tui
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: gpg-tui
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+finish-args:
+  - --filesystem=xdg-config/gnupg
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - gpg-tui.json
+  - ../shared-modules/wl-clipboard/wl-clipboard.json
+  - ../shared-modules/xclip/xclip.json
+  - xplr/xplr.json

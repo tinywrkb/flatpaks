@@ -1,0 +1,8 @@
+{
+    "x-checker-data": {
+        "type": "anitya",
+        "project-id": 236276,
+        "stable-only": true,
+        "url-template": "https://github.com/sayanarijit/xplr/archive/v$version/xplr-$version.tar.gz"
+    }
+}
