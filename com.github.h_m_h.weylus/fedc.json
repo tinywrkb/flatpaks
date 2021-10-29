@@ -1,0 +1,8 @@
+{
+    "x-checker-data": {
+        "type": "anitya",
+        "project-id": 236272,
+        "stable-only": true,
+        "url-template": "https://github.com/H-M-H/Weylus/archive/v$version/Weylus-$version.tar.gz"
+    }
+}

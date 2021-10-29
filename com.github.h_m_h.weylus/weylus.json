@@ -1,0 +1,31 @@
+{
+    "name": "weylus",
+    "build-options": {
+        "env": [
+            "CARGO_HOME=/run/build/weylus/cargo",
+            "npm_config_nodedir=/usr/lib/sdk/node16",
+            "RUSTFLAGS=-L /app/lib"
+        ],
+        "prepend-path": "/usr/lib/sdk/node16/bin:/usr/lib/sdk/rust-stable/bin"
+    },
+    "buildsystem": "simple",
+    "build-commands": [
+        "cargo --offline fetch --manifest-path Cargo.toml --verbose",
+        "cargo --offline build --release --verbose --features=ffmpeg-system",
+        "install -Dm755 target/release/weylus -t /app/bin/"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/H-M-H/Weylus/archive/v0.11.2/Weylus-0.11.2.tar.gz",
+            "sha256": "4ad78c67e2db6085114344b5cacfdb2101396ea945db26a72af452a7c802885d"
+        },
+        "cargo-sources.json",
+        {
+            "type": "shell",
+            "commands": [
+                "sed -i '/cargo:rustc-link-lib.*va-glx/d' build.rs"
+            ]
+        }
+    ]
+}
