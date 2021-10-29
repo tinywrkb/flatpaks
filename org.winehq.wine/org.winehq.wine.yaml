@@ -266,8 +266,6 @@ modules:
           - ../shared-modules/libpcap/lib32-libpcap.json
           - ../shared-modules/libxmu/lib32-libxmu.json
           - ../shared-modules/samba/lib32-samba.json
-          # TODO: enable usb, libgphoto support in lib32-libsane module
-          # TODO: try avoiding the lib32 workarounds in the lib32-libgphoto2 module
           - ../shared-modules/sane/lib32-libsane.json
           - faudio/lib32-faudio.json
           - vkd3d/lib32-vkd3d.json
