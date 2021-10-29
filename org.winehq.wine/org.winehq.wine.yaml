@@ -1,5 +1,6 @@
 # TODO: fontconfig/conf.d
 # TODO: mt32emu f-e-d-c
+# TODO: consider setting no-debuginfo and strip to avoid flatpak-builder constantly attempting to compress wine libs
 app-id: org.winehq.wine
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
