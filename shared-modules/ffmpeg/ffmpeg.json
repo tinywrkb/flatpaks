@@ -7,9 +7,12 @@
         "--enable-shared",
         "--disable-static",
         "--enable-gnutls",
+        "--enable-gpl",
         "--disable-doc",
         "--enable-libv4l2",
-        "--enable-libdav1d"
+        "--enable-libdav1d",
+        "--enable-postproc",
+        "--enable-libx264"
     ],
     "sources": [
         {
@@ -72,6 +75,27 @@
                         "stable-only": true,
                         "tag-template": "n$version"
                     }
+                }
+            ]
+        },
+        {
+            "name": "x264",
+            "config-opts": [
+                "--enable-shared",
+                "--enable-pic",
+                "--enable-lto",
+                "--disable-avs"
+            ],
+            "make-install-args": [
+                "install-cli",
+                "install-lib-shared"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://code.videolan.org/videolan/x264.git",
+                    "branch": "master",
+                    "commit": "66a5bc1bd1563d8227d5d18440b525a09bcf17ca"
                 }
             ]
         }
