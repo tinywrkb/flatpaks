@@ -204,8 +204,7 @@ modules:
           - --with-ldap
           # samba
           - --with-netapi
-          # TODO: fix lib32-libpcap detection
-          #- --with-pcap
+          - --with-pcap
           - --with-sane
           - --with-usb
           - --with-vkd3d
@@ -257,6 +256,9 @@ modules:
             url: https://gitlab.collabora.com/alf/wine.git
             branch: wayland
             commit: 5affac5c26f8a138063a186ddfe070cf6641c68a
+          - type: shell
+            commands:
+              - sed -i '/^if test .*ac_cv_lib_pcap_pcap_create.*!= xyes/, /^fi$/d' configure
         cleanup:
           - /share/applications
           - /share/man/*.UTF-8
