@@ -1,6 +1,7 @@
 # TODO: fontconfig/conf.d
 # TODO: mt32emu f-e-d-c
 # TODO: consider setting no-debuginfo and strip to avoid flatpak-builder constantly attempting to compress wine libs
+# TODO: add a generic dxvk/wined3d toggle helper
 app-id: org.winehq.wine
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
@@ -65,6 +66,8 @@ finish-args:
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
+  - --socket=session-bus
+  - --socket=system-bus
   - --socket=wayland
   - --socket=x11
 cleanup:
@@ -101,9 +104,8 @@ modules:
           - --with-x
           - --with-wayland
 
-          # the following should be automatically detected, explicitly with for the testing
-          #
-          # features that depend on packaged libs
+          # auto-config features, explicitly enabled to fail configure on dependency miss
+          # packaged libs dependent features
           - --with-cups
           - --with-faudio
           - --with-gphoto
@@ -119,9 +121,9 @@ modules:
           - --with-usb
           - --with-vkd3d
 
-          # features that depend on runtime libs
+          # runtime libs dependent features
           - --with-alsa
-          # dbus might be needed to be packaged, wine complain about it when apps crash
+          # TODO: dbus might be needed to be packaged, wine complains when trying to create debug log
           - --with-dbus
           - --with-fontconfig
           - --with-freetype
@@ -145,7 +147,7 @@ modules:
           - --with-xml
           - --with-xslt
 
-          # other features, don't care
+          # TODO: evaluate these features
           # isdn support
           #- --with-capi
           # color management
@@ -191,9 +193,8 @@ modules:
           - --with-x
           - --with-wayland
 
-          # the following should be automatically detected, explicitly with for the testing
-          #
-          # features that depend on packaged libs
+          # auto-config features, explicitly enabled to fail configure on dependency miss
+          # packaged libs dependent features
           - --with-cups
           - --with-faudio
           - --with-gphoto
@@ -209,9 +210,9 @@ modules:
           - --with-usb
           - --with-vkd3d
 
-          # features that depend on runtime libs
+          # runtime libs dependent features
           - --with-alsa
-          # dbus might be needed to be packaged, wine complain about it when apps crash
+          # TODO: dbus might be needed to be packaged, wine complains when trying to create debug log
           - --with-dbus
           - --with-fontconfig
           - --with-freetype
@@ -234,7 +235,8 @@ modules:
           - --with-vulkan
           - --with-xml
           - --with-xslt
-          # other features, don't care
+
+          # TODO: evaluate these features
           # isdn support
           #- --with-capi
           # color management
@@ -274,7 +276,7 @@ modules:
           - ../shared-modules/sane/lib32-libsane.json
           - faudio/lib32-faudio.json
           - vkd3d/lib32-vkd3d.json
-  # 7z can extract some self-extract *.exe installers
+  # 7z can extract some self-extracted *.exe installers
   - ../shared-modules/p7zip/p7zip.json
   - dosbox-staging/dosbox-staging.json
   - dxvk/dxvk-bin.json
