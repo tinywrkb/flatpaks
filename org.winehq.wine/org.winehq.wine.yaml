@@ -204,8 +204,7 @@ modules:
           - --with-ldap
           # samba
           - --with-netapi
-          # TODO: fix lib32-libpcap detection
-          #- --with-pcap
+          - --with-pcap
           - --with-sane
           - --with-usb
           - --with-vkd3d
@@ -235,7 +234,6 @@ modules:
           - --with-vulkan
           - --with-xml
           - --with-xslt
-
           # other features, don't care
           # isdn support
           #- --with-capi
@@ -244,6 +242,9 @@ modules:
           #- --with-inotify
           #- --with-osmesa
           #- --with-quicktime
+
+          # workaround for failure of configure script to detect libpcap
+          - PCAP_LIBS=/app/lib32/libpcap.so
         sources:
 #         - type: archive
 #           url: https://dl.winehq.org/wine/source/6.x/wine-6.3.tar.xz
@@ -257,6 +258,10 @@ modules:
             url: https://gitlab.collabora.com/alf/wine.git
             branch: wayland
             commit: 5affac5c26f8a138063a186ddfe070cf6641c68a
+          # workaround for failure of configure script to detect libpcap
+          - type: shell
+            commands:
+              - sed -i '/^if test .*ac_cv_lib_pcap_pcap_create.*!= xyes/, /^fi$/d' configure
         cleanup:
           - /share/applications
           - /share/man/*.UTF-8
