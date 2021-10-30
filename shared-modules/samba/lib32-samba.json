@@ -18,10 +18,11 @@
         ]
     },
     "config-opts": [
+        "--bindir=/app/bin32",
         "--libdir=/app/lib32",
         "--libexecdir=/app/lib32/samba",
         "--localstatedir=/var",
-        "--sbindir=/app/bin",
+        "--sbindir=/app/bin32",
         "--sysconfdir=/app/etc",
         "--with-configdir=/app/etc/samba",
         "--with-lockdir=/var/cache/samba",
@@ -53,7 +54,6 @@
         }
     ],
     "cleanup": [
-        "/bin",
         "/etc",
         "/share/man",
         "/share/samba"

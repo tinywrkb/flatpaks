@@ -41,7 +41,6 @@
         }
     ],
     "cleanup": [
-        "/bin",
         "/etc",
         "/share/man",
         "/share/samba"
