@@ -12,8 +12,5 @@
                 "url-template": "https://github.com/akheron/jansson/releases/download/v$version/jansson-$version.tar.gz"
             }
         }
-    ],
-    "cleanup": [
-        "*"
     ]
 }
