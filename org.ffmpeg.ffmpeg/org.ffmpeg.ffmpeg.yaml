@@ -9,5 +9,14 @@ finish-args:
   - --filesystem=xdg-pictures
   - --filesystem=xdg-videos
   - --share=network
+cleanup:
+  - /etc
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /lib/udev
+  - /share/doc
+  - '*.a'
+  - '*.la'
 modules:
   - ../shared-modules/ffmpeg/ffmpeg.json
