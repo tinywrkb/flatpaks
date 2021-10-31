@@ -17,8 +17,8 @@ modules:
       - -Dman=true
     sources:
       - type: archive
-        url: https://megatools.megous.com/builds/experimental/megatools-1.11.0-git-20210505.tar.gz
-        sha256: d06f3c1ff5800e762f2055d06fba8440d9323640154a04b0d80c95f96625ba8f
+        url: https://megatools.megous.com/builds/experimental/megatools-1.11.0-git-20211030.tar.gz
+        sha256: 35dd8b3c349ad1c8652b5df8bc69bb44f7455f329bfffc8a51a24db4cd5f99a4
         x-checker-data:
           type: html
           url: https://megatools.megous.com/builds/experimental/
