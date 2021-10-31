@@ -17,8 +17,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://github.com/H-M-H/Weylus/archive/v0.11.2/Weylus-0.11.2.tar.gz",
-            "sha256": "4ad78c67e2db6085114344b5cacfdb2101396ea945db26a72af452a7c802885d"
+            "url": "https://github.com/H-M-H/Weylus/archive/v0.11.3/Weylus-0.11.3.tar.gz",
+            "sha256": "ae80cedefe285061cc2c83f2c8e050c6fa50a96b291ed672104226b301345886"
         },
         "cargo-sources.json",
         {
