@@ -19,6 +19,11 @@ modules:
       - type: archive
         url: https://megatools.megous.com/builds/experimental/megatools-1.11.0-git-20210505.tar.gz
         sha256: d06f3c1ff5800e762f2055d06fba8440d9323640154a04b0d80c95f96625ba8f
+        x-checker-data:
+          type: html
+          url: https://megatools.megous.com/builds/experimental/
+          version-pattern: megatools-([\d\.]+-git-[\d]+).tar.gz
+          url-template: https://megatools.megous.com/builds/experimental/megatools-$version.tar.gz
 # TODO: enable man pages and support exports in wrapper
 #   modules:
 #     - name: asciidoc
