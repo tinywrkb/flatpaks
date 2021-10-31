@@ -1,0 +1,25 @@
+{
+    "name": "avisynthplus",
+    "builddir": true,
+    "buildsystem": "cmake",
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE:STRING='None'",
+        "-Wno-dev"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/AviSynth/AviSynthPlus/archive/babdbc0d7b39d775e5a847c74c345dfae9844338.tar.gz",
+            "sha256": "fb0b457c7385094b52ea216491b3705b1545e1b81b5c777f3a27e3fb672abb33",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 236294,
+                "stable-only": true,
+                "versions": {
+                    ">": "3.7.0"
+                },
+                "url-template": "https://github.com/AviSynth/AviSynthPlus/archive/v$version/avisynthplus-$version.tar.gz"
+            }
+        }
+    ]
+}

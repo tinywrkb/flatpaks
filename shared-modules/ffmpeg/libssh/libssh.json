@@ -1,0 +1,25 @@
+{
+    "name": "libssh",
+    "builddir": true,
+    "buildsystem": "cmake",
+    "config-opts": [
+        "-DWITH_GSSAPI=OFF",
+        "-DUNIT_TESTING=OFF"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://www.libssh.org/files/0.9/libssh-0.9.6.tar.xz",
+            "sha256": "86bcf885bd9b80466fe0e05453c58b877df61afa8ba947a58c356d7f0fab829b",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 1729,
+                "stable-only": true,
+                "url-template": "https://www.libssh.org/files/$version0.$version1/libssh-$version.tar.xz"
+            }
+        }
+    ],
+    "modules": [
+        "cmocka/cmocka.json"
+    ]
+}

@@ -4,15 +4,60 @@
         "/share/ffmpeg/examples"
     ],
     "config-opts": [
-        "--enable-shared",
-        "--disable-static",
-        "--enable-gnutls",
         "--enable-gpl",
+        "--enable-version3",
+        "--disable-static",
+        "--enable-shared",
         "--disable-doc",
-        "--enable-libv4l2",
-        "--enable-libdav1d",
         "--enable-postproc",
-        "--enable-libx264"
+        "--enable-pthreads",
+        "--enable-avisynth",
+        "--enable-gmp",
+        "--enable-gnutls",
+        "--enable-ladspa",
+        "--enable-libaom",
+        "--enable-libass",
+        "--disable-libbluray",
+        "--enable-libdav1d",
+        "--enable-libfontconfig",
+        "--enable-libfreetype",
+        "--enable-libfribidi",
+        "--enable-libgsm",
+        "--disable-libiec61883",
+        "--enable-libjack",
+        "--enable-libmodplug",
+        "--enable-libmp3lame",
+        "--enable-libopencore-amrnb",
+        "--enable-libopencore-amrwb",
+        "--enable-libopenjpeg",
+        "--enable-libopus",
+        "--enable-libpulse",
+        "--disable-librav1e",
+        "--enable-librsvg",
+        "--enable-libsoxr",
+        "--enable-libspeex",
+        "--enable-libsrt",
+        "--enable-libssh",
+        "--enable-libsvtav1",
+        "--enable-libtheora",
+        "--enable-libv4l2",
+        "--enable-libvidstab",
+        "--enable-libvmaf",
+        "--enable-libvorbis",
+        "--enable-libvpx",
+        "--enable-libwebp",
+        "--enable-libx264",
+        "--enable-libx265",
+        "--enable-libxvid",
+        "--enable-libxml2",
+        "--enable-libzimg",
+        "--enable-amf",
+        "--disable-cuda-llvm",
+        "--enable-libdrm",
+        "--disable-libmfx",
+        "--enable-lto",
+        "--disable-debug",
+        "--disable-stripping"
     ],
     "sources": [
         {
@@ -28,76 +73,25 @@
         }
     ],
     "modules": [
-        {
-            "name": "libv4l2",
-            "cleanup": [
-                "/sbin",
-                "/bin",
-                "/lib/*.la",
-                "/lib/*/*.la",
-                "/lib*/*/*/*.la",
-                "/share/man"
-            ],
-            "config-opts": [
-                "--disable-static",
-                "--disable-bpf",
-                "--with-udevdir=/app/lib/udev"
-            ],
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.20.0.tar.bz2",
-                    "sha256": "956118713f7ccb405c55c7088a6a2490c32d54300dd9a30d8d5008c28d3726f7",
-                    "x-checker-data": {
-                        "type": "anitya",
-                        "project-id": 9998,
-                        "stable-only": true,
-                        "url-template": "https://linuxtv.org/downloads/v4l-utils/v4l-utils-$version.tar.bz2"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "nv-codec-headers",
-            "no-autogen": true,
-            "make-install-args": [
-                "PREFIX=/app"
-            ],
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://git.videolan.org/git/ffmpeg/nv-codec-headers.git",
-                    "tag": "n11.1.5.0",
-                    "commit": "b641a195edbe3ac9788e681e22c2e2fad8aacddb",
-                    "x-checker-data": {
-                        "type": "anitya",
-                        "project-id": 223796,
-                        "stable-only": true,
-                        "tag-template": "n$version"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "x264",
-            "config-opts": [
-                "--enable-shared",
-                "--enable-pic",
-                "--enable-lto",
-                "--disable-avs"
-            ],
-            "make-install-args": [
-                "install-cli",
-                "install-lib-shared"
-            ],
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://code.videolan.org/videolan/x264.git",
-                    "branch": "master",
-                    "commit": "66a5bc1bd1563d8227d5d18440b525a09bcf17ca"
-                }
-            ]
-        }
+        "ffnvcodec-headers/ffnvcodec-headers.json",
+        "v4l-utils/v4l-utils.json",
+        "x264/x264.json",
+        "x265/x265.json",
+        "avisynthplus/avisynthplus.json",
+        "libiec61883/libiec61883.json",
+        "libass/libass.json",
+        "../gsm/gsm.json",
+        "libmodplug/libmodplug.json",
+        "opencore-amr/opencore-amr.json",
+        "libsoxr/libsoxr.json",
+        "libssh/libssh.json",
+        "srt/srt.json",
+        "svt-av1/svt-av1.json",
+        "vid.stab/vid.stab.json",
+        "vmaf/vmaf.json",
+        "xvidcore/xvidcore.json",
+        "zimg/zimg.json",
+        "../pipewire/pipewire-jack-runtime.json",
+        "amf-headers/amf-headers.json"
     ]
 }

@@ -1,0 +1,21 @@
+{
+    "name": "ffnvcodec-headers",
+    "no-autogen": true,
+    "make-install-args": [
+        "PREFIX=${FLATPAK_DEST}"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://git.videolan.org/git/ffmpeg/nv-codec-headers.git",
+            "tag": "n11.1.5.0",
+            "commit": "b641a195edbe3ac9788e681e22c2e2fad8aacddb",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 223796,
+                "stable-only": true,
+                "tag-template": "n$version"
+            }
+        }
+    ]
+}
