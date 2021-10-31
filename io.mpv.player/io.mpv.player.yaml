@@ -79,22 +79,6 @@ modules:
             commands:
               - sed -i 's|/usr/local|/app|' ./Makefile
       - ../shared-modules/ffmpeg/ffmpeg.json
-      - name: libass
-        cleanup:
-          - /include
-          - /lib/*.la
-          - /lib/pkgconfig
-        config-opts:
-          - --disable-static
-        sources:
-          - type: archive
-            url: https://github.com/libass/libass/releases/download/0.15.2/libass-0.15.2.tar.xz
-            sha256: 1be2df9c4485a57d78bb18c0a8ed157bc87a5a8dd48c661961c625cb112832fd
-            x-checker-data:
-              type: anitya
-              project-id: 1560
-              stable-only: true
-              url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.xz
       - name: uchardet
         buildsystem: cmake-ninja
         config-opts:
