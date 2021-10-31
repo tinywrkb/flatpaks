@@ -73,25 +73,25 @@
         }
     ],
     "modules": [
-        "ffnvcodec-headers/ffnvcodec-headers.json",
-        "v4l-utils/v4l-utils.json",
-        "x264/x264.json",
-        "x265/x265.json",
-        "avisynthplus/avisynthplus.json",
-        "libiec61883/libiec61883.json",
-        "libass/libass.json",
         "../gsm/gsm.json",
+        "../pipewire/pipewire-jack-runtime.json",
+        "amf-headers/amf-headers.json",
+        "avisynthplus/avisynthplus.json",
+        "ffnvcodec-headers/ffnvcodec-headers.json",
+        "libass/libass.json",
+        "libiec61883/libiec61883.json",
         "libmodplug/libmodplug.json",
-        "opencore-amr/opencore-amr.json",
         "libsoxr/libsoxr.json",
         "libssh/libssh.json",
+        "opencore-amr/opencore-amr.json",
         "srt/srt.json",
         "svt-av1/svt-av1.json",
+        "v4l-utils/v4l-utils.json",
         "vid.stab/vid.stab.json",
         "vmaf/vmaf.json",
+        "x264/x264.json",
+        "x265/x265.json",
         "xvidcore/xvidcore.json",
-        "zimg/zimg.json",
-        "../pipewire/pipewire-jack-runtime.json",
-        "amf-headers/amf-headers.json"
+        "zimg/zimg.json"
     ]
 }
