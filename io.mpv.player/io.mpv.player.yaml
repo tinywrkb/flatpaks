@@ -23,12 +23,15 @@ finish-args:
   - --system-talk-name=org.freedesktop.RealtimeKit1
   - --talk-name=org.freedesktop.Flatpak
   - --talk-name=org.freedesktop.Flatpak.*
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /lib/udev
+  - '*.a'
+  - '*.la'
 modules:
   - name: mpv
-    cleanup:
-      - /include
-      - /lib/pkgconfig
-      - /share/man
     buildsystem: simple
     build-commands:
       - python3 waf configure --prefix=/app --enable-libmpv-shared --disable-build-date
