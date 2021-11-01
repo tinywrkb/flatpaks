@@ -1,8 +1,5 @@
 {
     "name": "ffmpeg",
-    "cleanup": [
-        "/share/ffmpeg/examples"
-    ],
     "config-opts": [
         "--enable-gpl",
         "--enable-version3",
@@ -71,6 +68,9 @@
                 "url-template": "https://ffmpeg.org/releases/ffmpeg-$version.tar.xz"
             }
         }
+    ],
+    "cleanup": [
+        "/share/ffmpeg/examples"
     ],
     "modules": [
         "../gsm/gsm.json",
