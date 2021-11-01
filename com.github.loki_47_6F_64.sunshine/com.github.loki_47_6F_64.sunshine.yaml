@@ -6,13 +6,15 @@ command: sunshine
 finish-args:
   - --device=all
   - --device=dri
+  - --persist=.config/sunshine
   - --share=ipc
 # - --socket=fallback-x11
-  - --socket=x11
   - --share=network
+  - --socket=pulseaudio
   - --socket=session-bus
   - --socket=system-bus
   - --socket=wayland
+  - --socket=x11
 cleanup:
   - /etc
   - /include
