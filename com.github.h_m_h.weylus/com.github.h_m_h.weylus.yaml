@@ -17,7 +17,7 @@ finish-args:
   - --socket=system-bus
   - --socket=wayland
 modules:
-  - ../shared-modules/ffmpeg/ffmpeg.json
+  - ../shared-modules/ffmpeg/ffmpeg-minimal.json
   - name: typescript
     build-options:
       env:
