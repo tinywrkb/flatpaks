@@ -32,8 +32,15 @@ modules:
       cxxflags: -I/app/include/libevdev-1.0
     buildsystem: cmake
     config-opts:
-      - -DSUNSHINE_EXECUTABLE_PATH=/app/bin/sunshine
+      - -DSUNSHINE_ENABLE_DRM=OFF
+      - -DSUNSHINE_ENABLE_X11=ON
+      - -DSUNSHINE_ENABLE_WAYLAND=ON
+      - -DSUNSHINE_ENABLE_CUDA=ON
       - -DSUNSHINE_ASSETS_DIR=/app/share/sunshine
+      # /var/config -> ${XDG_CONFIG_HOME}
+      # not under a dedicated sunshine folder, as the app doesn't create automatically and fails to start
+      - -DSUNSHINE_CONFIG_DIR=/var/config
+      - -DSUNSHINE_EXECUTABLE_PATH=/app/bin/sunshine
       - -Wno-dev
     no-make-install: true
     build-commands:
@@ -56,6 +63,7 @@ modules:
         commands:
           - sed -i 's/stdc++fs/stdc++/' CMakeLists.txt
     modules:
+      - ../shared-modules/avahi/libavahi.json
       - ../shared-modules/boost/boost.json
-      - ../shared-modules/ffmpeg/ffmpeg.json
+      - ../shared-modules/ffmpeg/ffmpeg-minimal.json
       - ../shared-modules/libevdev/libevdev.json
