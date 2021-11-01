@@ -1,0 +1,38 @@
+{
+    "name": "libavahi",
+    "config-opts": [
+        "--disable-glib",
+        "--disable-gobject",
+        "--disable-libevent",
+        "--disable-qt5",
+        "--disable-gtk3",
+        "--enable-dbus",
+        "--disable-gdbm",
+        "--disable-libdaemon",
+        "--disable-python",
+        "--disable-mono",
+        "--disable-autoipd",
+        "--disable-manpages",
+        "--with-distro=none"
+    ],
+    "cleanup": [
+        "/bin",
+        "share/man"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/lathiat/avahi/archive/fd482a74625b8db8547b8cfca3ee3d3c6c721423.tar.gz",
+            "sha256": "beb9bba4b3a1b80cc2e60aff3589a2fd36e35832b34d5e1168a464c890ca429a",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 147,
+                "stable-only": true,
+                "versions": {
+                    ">": "0.8"
+                },
+                "url-template": "https://github.com/lathiat/avahi/archive/v$version/avahi-$version.tar.gz"
+            }
+        }
+    ]
+}
