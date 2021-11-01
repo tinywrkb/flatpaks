@@ -1,0 +1,59 @@
+app-id: com.github.loki_47_6F_64.sunshine
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: sunshine
+finish-args:
+  - --device=all
+  - --device=dri
+  - --share=ipc
+# - --socket=fallback-x11
+  - --socket=x11
+  - --share=network
+  - --socket=session-bus
+  - --socket=system-bus
+  - --socket=wayland
+cleanup:
+  - /etc
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /lib/udev
+  - /share/doc
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: sunshine
+    builddir: true
+    build-options:
+      cxxflags: -I/app/include/libevdev-1.0
+    buildsystem: cmake
+    config-opts:
+      - -DSUNSHINE_EXECUTABLE_PATH=/app/bin/sunshine
+      - -DSUNSHINE_ASSETS_DIR=/app/share/sunshine
+      - -Wno-dev
+    no-make-install: true
+    build-commands:
+      - install -Dm755 sunshine -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ../assets/{apps_linux.json,sunshine.conf} -t ${FLATPAK_DEST}/share/sunshine/
+      - install -Dm644 ../assets/shaders/opengl/* -t ${FLATPAK_DEST}/share/sunshine/shaders/opengl/
+      - install -Dm644 ../assets/web/*.html -t ${FLATPAK_DEST}/share/sunshine/web/
+      - install -Dm644 ../assets/web/third_party/* -t ${FLATPAK_DEST}/share/sunshine/web/third_party/
+    sources:
+      - type: git
+        url: https://github.com/loki-47-6F-64/sunshine.git
+        tag: v0.11.1
+        commit: e4c9c292e57d39136df2d46d1e9b66eba53f3bd3
+        x-checker-data:
+          type: anitya
+          project-id: 236300
+          stable-only: true
+          tag-template: v$version
+      - type: shell
+        commands:
+          - sed -i 's/stdc++fs/stdc++/' CMakeLists.txt
+    modules:
+      - ../shared-modules/boost/boost.json
+      - ../shared-modules/ffmpeg/ffmpeg.json
+      - ../shared-modules/libevdev/libevdev.json
