@@ -4,8 +4,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://github.com/refi64/cobalt/archive/v2021.09.1.tar.gz",
-            "sha256": "d0f48cc767a1437c9188d1cd5f9768603d6fd1f08e73726e42f0355d6a0d42cc",
+            "url": "https://github.com/refi64/cobalt/archive/v2021.10.1.tar.gz",
+            "sha256": "2e8ff40b910cf44fe14fa51e3dca70df566e8cbd3433ee4856838b2ad7a0788a",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 233431,
