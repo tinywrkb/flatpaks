@@ -49,9 +49,9 @@ modules:
     sources:
       - type: extra-data
         filename: google-chrome.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_97.0.4682.3-1_amd64.deb
-        sha256: 4a74b53add1f2b69fd34ea42524eff60d7aa5c25e92fe5e23e922f29c9db2a77
-        size: 89227068
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_97.0.4688.2-1_amd64.deb
+        sha256: ab11462ac2bc0ede12f3c0a22848abd49687a8ef623fc768ce0574a42cc5e050
+        size: 89788716
         x-checker-data:
           type: debian-repo
           package-name: google-chrome-unstable
