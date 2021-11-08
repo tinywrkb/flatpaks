@@ -5,17 +5,7 @@
         "--disable-static"
     ],
     "sources": [
-        {
-            "type": "archive",
-            "url": "https://github.com/thom311/libnl/releases/download/libnl3_5_0/libnl-3.5.0.tar.gz",
-            "sha256": "352133ec9545da76f77e70ccb48c9d7e5324d67f6474744647a7ed382b5e05fa",
-            "x-checker-data": {
-                "type": "json",
-                "url": "https://api.github.com/repos/thom311/libnl/releases/latest",
-                "version-query": ".tag_name | ( sub(\"^libnl\"; \"\") | gsub(\"_\"; \".\") )",
-                "url-query": ".assets[] | select(.name==\"libnl-\" + $version + \".tar.gz\") | .browser_download_url"
-            }
-        }
+        "sources.json"
     ],
     "cleanup": [
         "/etc",

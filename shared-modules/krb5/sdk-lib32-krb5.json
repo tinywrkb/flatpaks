@@ -1,0 +1,38 @@
+{
+    "name": "sdk-lib32-krb5",
+    "build-options": {
+        "arch": {
+            "x86_64": {
+                "prepend-pkg-config-path": "/usr/lib/i386-linux-gnu/pkgconfig",
+                "ldflags": "-L/usr/lib/i386-linux-gnu",
+                "prepend-path": "/usr/lib/sdk/toolchain-i386/bin",
+                "env": {
+                    "CC": "i686-unknown-linux-gnu-gcc",
+                    "CXX": "i686-unknown-linux-gnu-g++"
+                },
+                "libdir": "/usr/lib/i386-linux-gnu"
+            }
+        }
+    },
+    "subdir": "src",
+    "config-opts": [
+        "--bindir=/usr/bin32",
+        "--localstatedir=/var/lib",
+        "--sbindir=/usr/bin32",
+        "--enable-shared",
+        "--with-ldap",
+        "--without-tcl"
+    ],
+    "sources": [
+        "sources.json"
+    ],
+    "cleanup": [
+        "/bin32",
+        "/share/et",
+        "/share/examples",
+        "/share/man"
+    ],
+    "modules": [
+        "../openldap/sdk-lib32-openldap.json"
+    ]
+}

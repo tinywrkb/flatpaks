@@ -1,0 +1,23 @@
+{
+    "name": "sdk-krb5",
+    "subdir": "src",
+    "config-opts": [
+        "--localstatedir=/var/lib",
+        "--sbindir=/usr/bin",
+        "--enable-shared",
+        "--with-ldap",
+        "--without-tcl"
+    ],
+    "sources": [
+        "sources.json"
+    ],
+    "cleanup": [
+        "/bin",
+        "/share/et",
+        "/share/examples",
+        "/share/man"
+    ],
+    "modules": [
+        "../openldap/openldap.json"
+    ]
+}

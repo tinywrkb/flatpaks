@@ -1,0 +1,57 @@
+{
+    "name": "sdk-lib32-samba",
+    "build-options": {
+        "arch": {
+            "x86_64": {
+                "prepend-pkg-config-path": "/usr/lib/i386-linux-gnu/pkgconfig",
+                "ldflags": "-L/usr/lib/i386-linux-gnu",
+                "prepend-path": "/usr/lib/sdk/toolchain-i386/bin",
+                "env": {
+                    "CC": "i686-unknown-linux-gnu-gcc",
+                    "CXX": "i686-unknown-linux-gnu-g++"
+                },
+                "libdir": "/usr/lib/i386-linux-gnu"
+            }
+        }
+    },
+    "config-opts": [
+        "--bindir=/usr/bin32",
+        "--libdir=/usr/lib/i386-linux-gnu",
+        "--libexecdir=/usr/lib/i386-linux-gnu/samba",
+        "--localstatedir=/var",
+        "--sbindir=/usr/bin32",
+        "--sysconfdir=/usr/etc",
+        "--with-configdir=/usr/etc/samba",
+        "--with-lockdir=/var/cache/samba",
+        "--with-piddir=/run",
+        "--with-sockets-dir=/run/samba",
+        "--disable-rpath-install",
+        "--disable-python",
+        "--enable-cups",
+        "--enable-fhs",
+        "--with-acl-support",
+        "--with-ads",
+        "--with-ldap",
+        "--with-winbind",
+        "--without-ad-dc",
+        "--without-pam",
+        "--without-systemd"
+    ],
+    "sources": [
+        "sources.json"
+    ],
+    "cleanup": [
+        "/bin32",
+        "/etc",
+        "/share/man",
+        "/share/samba"
+    ],
+    "modules": [
+        "../cups/sdk-lib32-libcups.json",
+        "../krb5/sdk-lib32-krb5.json",
+        "../rpcsvc-proto/rpcsvc-proto.json",
+        "jansson/sdk-lib32-jansson.json",
+        "ldb/sdk-lib32-ldb.json",
+        "perl-dependencies.json"
+    ]
+}

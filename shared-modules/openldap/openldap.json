@@ -9,24 +9,7 @@
         "--without-systemd"
     ],
     "sources": [
-        {
-            "type": "archive",
-            "url": "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.59.tgz",
-            "sha256": "99f37d6747d88206c470067eda624d5e48c1011e943ec0ab217bae8712e22f34",
-            "x-checker-data": {
-                "type": "anitya",
-                "project-id": 2551,
-                "stable-only": true,
-                "url-template": "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-$version.tgz"
-            }
-        },
-        {
-            "type": "shell",
-            "commands": [
-                "sed -i 's|-m 644 $(LIBRARY)|-m 755 $(LIBRARY)|' libraries/{liblber,libldap,libldap_r}/Makefile.in",
-                "sed -i 's|#define LDAPI_SOCK LDAP_RUNDIR LDAP_DIRSEP \"run\" LDAP_DIRSEP \"ldapi\"|#define LDAPI_SOCK LDAP_DIRSEP \"run\" LDAP_DIRSEP \"openldap\" LDAP_DIRSEP \"ldapi\"|' include/ldap_defaults.h"
-            ]
-        }
+        "sources.json"
     ],
     "cleanup": [
         "/bin",

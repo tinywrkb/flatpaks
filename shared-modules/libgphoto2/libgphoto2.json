@@ -1,17 +1,7 @@
 {
     "name": "libgphoto2",
     "sources": [
-        {
-            "type": "archive",
-            "url": "https://github.com/gphoto/libgphoto2/releases/download/v2.5.27/libgphoto2-2.5.27.tar.gz",
-            "sha256": "fd48f6f58259ba199e834010aca0af3672ca0223ed0a98ba89ec693a415f242a",
-            "x-checker-data": {
-                "type": "anitya",
-                "project-id": 12558,
-                "stable-only": true,
-                "url-template": "https://github.com/gphoto/libgphoto2/releases/download/v$version/libgphoto2-$version.tar.gz"
-            }
-        }
+        "sources.json"
     ],
     "modules": [
         "../gd/gd.json",

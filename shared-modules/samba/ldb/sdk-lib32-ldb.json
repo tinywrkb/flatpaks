@@ -1,0 +1,36 @@
+{
+    "name": "sdk-lib32-ldb",
+    "build-options": {
+        "arch": {
+            "x86_64": {
+                "prepend-pkg-config-path": "/usr/lib/i386-linux-gnu/pkgconfig",
+                "ldflags": "-L/usr/lib/i386-linux-gnu",
+                "prepend-path": "/usr/lib/sdk/toolchain-i386/bin",
+                "env": {
+                    "CC": "i686-unknown-linux-gnu-gcc",
+                    "CXX": "i686-unknown-linux-gnu-g++"
+                },
+                "libdir": "/usr/lib/i386-linux-gnu"
+            }
+        }
+    },
+    "config-opts": [
+        "--disable-python",
+        "--disable-rpath",
+        "--disable-rpath-install",
+        "--builtin-libraries=replace",
+        "--with-modulesdir=/usr/lib/i386-linux-gnu/ldb/modules",
+        "--with-privatelibdir=/usr/lib/i386-linux-gnu/ldb"
+    ],
+    "sources": [
+        "sources.json"
+    ],
+    "cleanup": [
+        "/bin",
+        "/share/man"
+    ],
+    "modules": [
+        "../../popt/sdk-lib32-popt.json",
+        "../lmdb/sdk-lib32-lmdb.json"
+    ]
+}

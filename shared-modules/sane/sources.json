@@ -1,0 +1,13 @@
+[
+    {
+        "type": "archive",
+        "url": "https://gitlab.com/sane-project/backends/uploads/104f09c07d35519cc8e72e604f11643f/sane-backends-1.0.32.tar.gz",
+        "sha256": "3a28c237c0a72767086202379f6dc92dbb63ec08dfbab22312cba80e238bb114",
+        "x-checker-data": {
+            "type": "json",
+            "url": "https://gitlab.com/api/v4/projects/sane-project%2Fbackends/releases",
+            "version-query": "first(.[].tag_name | match(\"^[\\\\d\\\\.]+$\").string)",
+            "url-query": ".[] | select(.tag_name==$version).assets.links[] | select(.name==\"sane-backends-\" + $version + \".tar.gz\").url"
+        }
+    }
+]

@@ -9,17 +9,7 @@
         "--without-tcl"
     ],
     "sources": [
-        {
-            "type": "archive",
-            "url": "https://web.mit.edu/kerberos/dist/krb5/1.19/krb5-1.19.2.tar.gz",
-            "sha256": "10453fee4e3a8f8ce6129059e5c050b8a65dab1c257df68b99b3112eaa0cdf6a",
-            "x-checker-data": {
-              "type": "html",
-              "url": "https://web.mit.edu/kerberos/",
-              "version-pattern": "krb5-([\\d\\.-]+) is released",
-              "url-template": "https://web.mit.edu/kerberos/dist/krb5/$major.$minor/krb5-$version.tar.gz"
-            }
-        }
+        "sources.json"
     ],
     "cleanup": [
         "/bin",

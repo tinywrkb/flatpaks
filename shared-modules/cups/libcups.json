@@ -13,16 +13,6 @@
         "make install-{headers,libs}"
     ],
     "sources": [
-        {
-            "type": "archive",
-            "url": "https://github.com/OpenPrinting/cups/releases/download/v2.3.3op2/cups-2.3.3op2-source.tar.gz",
-            "sha256": "deb3575bbe79c0ae963402787f265bfcf8d804a71fc2c94318a74efec86f96df",
-            "x-checker-data": {
-                "type": "anitya",
-                "project-id": 380,
-                "stable-only": true,
-                "url-template": "https://github.com/OpenPrinting/cups/releases/download/v$version/cups-$version-source.tar.gz"
-            }
-        }
+        "sources.json"
     ]
 }

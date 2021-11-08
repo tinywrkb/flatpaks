@@ -28,17 +28,7 @@
         "--without-systemd"
     ],
     "sources": [
-        {
-            "type": "archive",
-            "url": "https://samba.org/ftp/samba/stable/samba-4.15.1.tar.gz",
-            "sha256": "a1811fbb4110d64969f6c108f8d161e2c3e20ddf475529a3d32bd94bb7459f00",
-            "x-checker-data": {
-                "type": "anitya",
-                "project-id": 4758,
-                "stable-only": true,
-                "url-template": "https://samba.org/ftp/samba/stable/samba-$version.tar.gz"
-            }
-        }
+        "sources.json"
     ],
     "cleanup": [
         "/etc",
@@ -51,32 +41,6 @@
         "../rpcsvc-proto/rpcsvc-proto.json",
         "jansson/jansson.json",
         "ldb/ldb.json",
-        {
-            "name": "perl-dependencies",
-            "buildsystem": "simple",
-            "build-options": {
-                "env": [
-                    "PERL5LIB=/app/lib/perl5"
-                ]
-            },
-            "build-commands": [
-                "perl-libs/install.sh"
-            ],
-            "post-install": [
-                "find /app -type f ! -perm -0200 -exec chmod u+w '{}' \\;"
-            ],
-            "sources": [
-                "perl-dependencies-sources.json",
-                {
-                    "type": "shell",
-                    "commands": [
-                        "sed -e 's|\\(perl Makefile.PL\\) \\&\\&|\\1 INSTALL_BASE=/app \\&\\&|' -e 's|\\(perl Build.PL\\) \\&\\&|\\1 --install_base=/app \\&\\&|' -i perl-libs/install.sh"
-                    ]
-                }
-            ],
-            "cleanup": [
-                "*"
-            ]
-        }
+        "perl-dependencies.json"
     ]
 }

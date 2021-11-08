@@ -4,22 +4,11 @@
     "buildsystem": "cmake",
     "config-opts": [
         "-DCMAKE_BUILD_TYPE=None",
-        "-DCMAKE_INSTALL_LIBDIR=/app/lib",
         "-DWITH_JPEG8=ON",
         "-Wno-dev"
     ],
     "sources": [
-        {
-            "type": "archive",
-            "url": "https://sourceforge.net/projects/libjpeg-turbo/files/2.1.1/libjpeg-turbo-2.1.1.tar.gz",
-            "sha256": "b76aaedefb71ba882cbad4e9275b30c2ae493e3195be0a099425b5c6b99bd510",
-            "x-checker-data": {
-                "type": "anitya",
-                "project-id": 1648,
-                "stable-only": true,
-                "url-template": "https://sourceforge.net/projects/libjpeg-turbo/files/$version/libjpeg-turbo-$version.tar.gz"
-            }
-        }
+        "sources.json"
     ],
     "cleanup": [
         "/bin",
