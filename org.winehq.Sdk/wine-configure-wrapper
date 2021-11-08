@@ -1,6 +1,6 @@
 #!/bin/bash
 
-local config_options=(
+config_options=(
   # display server
   --with-x
   --with-wayland
@@ -23,7 +23,7 @@ local config_options=(
   --with-vkd3d
 
 # runtime libs dependent features
-  - --with-alsa
+  --with-alsa
   # TODO: dbus might be needed to be packaged, wine complains when trying to create debug log
   --with-dbus
   --with-fontconfig
@@ -58,5 +58,5 @@ local config_options=(
   #--with-quicktime
 )
 
-config_opts+=("$@")
+config_options+=("$@")
 ./configure.wine "${config_options[@]}"
