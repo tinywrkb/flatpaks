@@ -25,5 +25,5 @@ else
 fi
 
 sed -i "s#^prefix.*=.*#prefix = "${FLATPAK_DEST}"#" Makefile
-sed -i "\#^libdir.*=# s#/bin#/"${_LIBDIR}"#" Makefile
+sed -i "\#^libdir.*=# s#/lib#/"${_LIBDIR}"#" Makefile
 sed -i "\#^bindir.*=# s#/bin#/"${_BINDIR}"#" Makefile
