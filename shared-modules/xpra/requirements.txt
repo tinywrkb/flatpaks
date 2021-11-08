@@ -1,0 +1,4 @@
+pillow
+python-uinput
+paramiko
+dbus-python
