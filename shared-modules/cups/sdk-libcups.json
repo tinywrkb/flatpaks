@@ -10,7 +10,7 @@
     ],
     "no-make-install": true,
     "post-install": [
-        "make install-{headers,libs}"
+        "make SERVERBIN=/usr/lib/x86_64-linux-gnu/cups install-{headers,libs}"
     ],
     "sources": [
         "sources.json"
