@@ -11,7 +11,7 @@ build-commands:
   - |
     install -Dm644 /dev/stdin ${FLATPAK_DEST}/etc/ld.so.conf <<EOF
     /app/lib32
-    /usr/lib/i386-linux-gnu
+    ${FLATPAK_DEST}/lib/i386-linux-gnu
     EOF
   - cp -R --preserve=timestamps ${FLATPAK_DEST}/src/wine64 .
   - make -C wine64 install
