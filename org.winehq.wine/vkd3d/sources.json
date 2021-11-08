@@ -1,0 +1,13 @@
+[
+    {
+        "type": "archive",
+        "url": "https://dl.winehq.org/vkd3d/source/vkd3d-1.2.tar.xz",
+        "sha256": "b04b030fcbf0f2dacc933c76c74b449bffef1fc1a18d50254ef1ad3e380df96b",
+        "x-checker-data": {
+            "type": "anitya",
+            "project-id": 230555,
+            "stable-only": true,
+            "url-template": "https://dl.winehq.org/vkd3d/source/vkd3d-$version.tar.xz"
+        }
+    }
+]

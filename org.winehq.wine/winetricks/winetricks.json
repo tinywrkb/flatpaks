@@ -2,7 +2,7 @@
     "name": "winetricks",
     "no-autogen": true,
     "make-install-args": [
-        "PREFIX=/app"
+        "PREFIX=${FLATPAK_DEST}"
     ],
     "sources": [
         {

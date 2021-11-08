@@ -2,7 +2,7 @@
     "name": "wine-gecko",
     "buildsystem": "simple",
     "build-commands": [
-        "install -Dm644 wine-gecko-*x86*.msi -t /app/share/wine/gecko/"
+        "install -Dm644 wine-gecko-*x86*.msi -t ${FLATPAK_DEST}/share/wine/gecko/"
     ],
     "sources": [
         {

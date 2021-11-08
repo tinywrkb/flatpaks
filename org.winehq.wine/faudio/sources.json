@@ -1,0 +1,13 @@
+[
+    {
+        "type": "archive",
+        "url": "https://github.com/FNA-XNA/FAudio/archive/21.10/FAudio-21.10.tar.gz",
+        "sha256": "eca3e2cc148f9b25e8ce61153f3f552a385cdaa903f691af0a53932cc10cfb39",
+        "x-checker-data": {
+            "type": "anitya",
+            "project-id": 20663,
+            "stable-only": true,
+            "url-template": "https://github.com/FNA-XNA/FAudio/archive/$version/FAudio-$version.tar.gz"
+        }
+    }
+]

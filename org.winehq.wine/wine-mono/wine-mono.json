@@ -2,10 +2,10 @@
     "name": "wine-mone",
     "buildsystem": "simple",
     "build-commands": [
-        "install -dm755 /app/share/wine/mono",
-        "tar -xf wine-mono-x86.tar.xz -C /app/share/wine/mono/",
+        "install -dm755 ${FLATPAK_DEST}/share/wine/mono",
+        "tar -xf wine-mono-x86.tar.xz -C ${FLATPAK_DEST}/share/wine/mono/",
         "# workaround for wine searching for outdated wine-mono version",
-        "ln -s wine-mono-6.4.1 /app/share/wine/mono/wine-mono-6.4.0"
+        "ln -s wine-mono-6.4.1 ${FLATPAK_DEST}/share/wine/mono/wine-mono-6.4.0"
     ],
     "sources": [
         {
