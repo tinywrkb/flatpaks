@@ -2,8 +2,9 @@
     "name": "pipewire-jack-runtime",
     "buildsystem": "simple",
     "build-commands": [
-        "install -Dm644 *.h -t /app/include/jack/",
-        "install -Dm644 pipewire-jack-runtime.pc /app/lib/pkgconfig/jack.pc"
+        "install -Dm644 *.h -t ${FLATPAK_DEST}/include/jack/",
+        "sed -i \"s|@@PREFIX@@|\"${FLATPAK_DEST}\"|;s|@@ARCH@@|\"${FLATPAK_ARCH}\"|\" pipewire-jack-runtime.pc",
+        "_LIBDIR=${FLATPAK_DEST}; [ ${FLATPAK_DEST} == '/usr' ] && _LIBDIR+=/${FLATPAK_ARCH}-linux-gnu; install -Dm644 pipewire-jack-runtime.pc ${_LIBDIR}/pkgconfig/jack.pc"
     ],
     "sources": [
         {
@@ -14,19 +15,7 @@
         },
         {
             "type": "file",
-            "only-arches": [
-                "x86_64"
-            ],
-            "dest-filename": "pipewire-jack-runtime.pc",
-            "path": "pipewire-jack-runtime-x86_64.pc"
-        },
-        {
-            "type": "file",
-            "only-arches": [
-                "aarch64"
-            ],
-            "dest-filename": "pipewire-jack-runtime.pc",
-            "path": "pipewire-jack-runtime-aarch64.pc"
+            "path": "pipewire-jack-runtime.pc"
         }
     ]
 }
