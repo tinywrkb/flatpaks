@@ -2,6 +2,8 @@
 
 sed -i '/^CC.*= gcc/d' Makefile
 
+sed -i '/for f in .* do cp/ s/cp/cp -n/' Makefile
+
 if [ "$CC" == "i686-unknown-linux-gnu-gcc" ]; then
   # i386
   _BINDIR=bin32
