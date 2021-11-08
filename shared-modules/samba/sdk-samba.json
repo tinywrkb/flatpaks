@@ -1,5 +1,10 @@
 {
-    "name": "samba",
+    "name": "sdk-samba",
+    "build-options": {
+        "env": [
+            "PERL5LIB=/usr/lib/perl5"
+        ]
+    },
     "config-opts": [
         "--libdir=/usr/lib/x86_64-linux-gnu",
         "--libexecdir=/usr/lib/x86_64-linux-gnu/samba",

@@ -1,6 +1,11 @@
 {
     "name": "sdk-lib32-samba",
     "build-options": {
+        "env": [
+            "PERL5LIB=/usr/lib/perl5"
+        ]
+    },
+    "build-options": {
         "arch": {
             "x86_64": {
                 "prepend-pkg-config-path": "/usr/lib/i386-linux-gnu/pkgconfig",
