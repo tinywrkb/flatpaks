@@ -1,18 +1,17 @@
-# WARNING: this is WIP, doesn't work correctly yet, and missing launchers
+# WARNING: WIP, it doesn't work yet
 # TODO: add mimetypes: *. f3d and other from https://knowledge.autodesk.com/support/fusion-360/troubleshooting/caas/sfdcarticles/sfdcarticles/File-formats-supported-by-Fusion-360.html
 app-id: com.autodesk.fusion360
-runtime: org.freedesktop.Platform
-runtime-version: '21.08'
-sdk: org.freedesktop.Sdk
-base: org.winehq.wine
+runtime: org.winehq.Platform
+runtime-version: master
+sdk: org.winehq.Sdk
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: '21.08'
-  org.freedesktop.Platform.Compat.i386.Debug:
-    directory: lib/debug/lib/i386-linux-gnu
-    version: '21.08'
-    no-autodownload: true
+# org.freedesktop.Platform.Compat.i386.Debug:
+#   directory: lib/debug/lib/i386-linux-gnu
+#   version: '21.08'
+#   no-autodownload: true
   org.freedesktop.Platform.GL32:
     directory: lib/i386-linux-gnu/GL
     version: '1.4'
@@ -36,21 +35,14 @@ add-extensions:
     enable-if: active-gl-driver
 command: fusion360
 finish-args:
-  - --allow=multiarch
-  - --device=dri
-  - --env=WINEARCH=win64
   - --filesystem=home
-  - --persist=.wine
-  - --share=ipc
   - --share=network
-# - --socket=fallback-x11
-  - --socket=pulseaudio
   # TODO: evalute dbus access
   - --socket=session-bus
   - --socket=system-bus
 # broken in wayland
-# - --socket=wayland
-  - --socket=x11
+# - --socket=fallback-x11
+  - --nosocket=wayland
 modules:
   - name: fusion360
     buildsystem: simple
