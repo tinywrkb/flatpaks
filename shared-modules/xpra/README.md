@@ -1,26 +1,31 @@
 # xpra
 
-## usage
+This Xpra shared module was mainly added as a way to run an X11 app in a sandboxed Xorg session
+while displaying it on the host using a native Wayland client.
+
+
+## example usage
 
 ```
-app-id: org.xpra.xpra
+app-id: FLATPAK_ID
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+# needed for building python-cryptography
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
-command: /bin/sh
 finish-args:
-  - --device=all
   - --device=dri
-  - --filesystem=host-os
   - --socket=pulseaudio
+  # TODO: evalute less permissive session bus access
   - --socket=session-bus
   - --socket=wayland
   - --unset-env=XAUTHORITY
+modules:
+  - ../shared-modules/xpra/xpra.json
 ```
 
-## how to test?
+## how to test and run apps?
 * start and enter the sandbox
   $ flatpak run org.xpra.xpra
 * start xpra x session
