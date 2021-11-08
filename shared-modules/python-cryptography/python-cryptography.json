@@ -9,7 +9,7 @@
     "buildsystem": "simple",
     "build-commands": [
         "python setup.py build",
-        "python setup.py install --skip-build --prefix=/app --root=/ --optimize=1"
+        "python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1"
     ],
     "sources": [
         {
