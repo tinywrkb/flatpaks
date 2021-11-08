@@ -1,0 +1,13 @@
+{
+    "name": "faudio",
+    "builddir": true,
+    "buildsystem": "cmake-ninja",
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_INSTALL_LIBDIR=lib/x86_64-linux-gnu",
+        "-DGSTREAMER=ON"
+    ],
+    "sources": [
+        "sources.json"
+    ]
+}

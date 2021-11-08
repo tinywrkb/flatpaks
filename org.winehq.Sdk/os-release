@@ -1,0 +1,6 @@
+NAME=Wine
+VERSION="master (Flatpak runtime)"
+VERSION_ID=master
+ID=org.winehq.Platform
+PRETTY_NAME="Wine master (Flatpak runtime)"
+BUG_REPORT_URL=https://bugs.winehq.org/

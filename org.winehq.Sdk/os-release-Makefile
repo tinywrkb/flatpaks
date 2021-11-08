@@ -1,0 +1,13 @@
+all:
+
+install:
+	mkdir -p ${DESTDIR}/usr/lib
+	install os-release ${DESTDIR}/usr/lib
+	mkdir -p ${DESTDIR}/usr/share/appdata
+	mkdir -p ${DESTDIR}/etc
+	install issue ${DESTDIR}/etc
+	install issue.net ${DESTDIR}/etc
+	install org.winehq.Platform.appdata.xml ${DESTDIR}/usr/share/appdata
+	install org.winehq.Sdk.appdata.xml ${DESTDIR}/usr/share/appdata
+	appstream-compose --basename=org.winehq.Platform --prefix=/usr --origin=flatpak org.winehq.Platform
+	appstream-compose --basename=org.winehq.Sdk --prefix=/usr --origin=flatpak org.winehq.Sdk

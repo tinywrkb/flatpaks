@@ -1,0 +1,136 @@
+build-runtime: true
+id: org.winehq.Sdk
+id-platform: org.winehq.Platform
+branch: master
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+# - org.freedesktop.Sdk.Debug
+  - org.freedesktop.Sdk.Locale
+  - org.freedesktop.Sdk.Docs
+  - org.freedesktop.Sdk.Compat.i386
+  - org.freedesktop.Sdk.Extension.toolchain-i386
+platform-extensions:
+  - org.freedesktop.Platform.Locale
+inherit-extensions:
+  - org.freedesktop.Platform.GL
+  - org.freedesktop.Platform.Timezones
+  - org.freedesktop.Platform.GStreamer
+  - org.freedesktop.Platform.Icontheme
+  - org.freedesktop.Platform.VAAPI.Intel
+  - org.freedesktop.Platform.openh264
+  - org.freedesktop.Platform.VulkanLayer
+  - org.gtk.Gtk3theme
+inherit-sdk-extensions:
+  - org.freedesktop.Sdk.Extension
+add-extensions:
+  org.winehq.Sdk.Docs:
+    directory: share/runtime/docs
+    bundle: true
+    autodelete: true
+    no-autodownload: true
+# org.freedesktop.Platform.Compat.i386.Debug:
+#   directory: lib/debug/lib/i386-linux-gnu
+#   version: '21.08'
+#   no-autodownload: true
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/GL
+    version: '1.4'
+    versions: 21.08;1.4
+    subdirectories: true
+    no-autodownload: true
+    autodelete: false
+    add-ld-path: lib
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;lib/dri;lib/d3d;vulkan/explicit_layer.d;vulkan/implicit_layer.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+  org.freedesktop.Platform.VAAPI.Intel.i386:
+    directory: lib/i386-linux-gnu/dri/intel-vaapi-driver
+    version: '21.08'
+    versions: '21.08'
+    subdirectories: true
+    no-autodownload: true
+    autodelete: false
+    add-ld-path: lib
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+# org.freedesktop.Platform.ffmpeg-full:
+#   directory: lib/ffmpeg
+#   add-ld-path: .
+#   version: '21.08'
+#   no-autodownload: true
+#   autodelete: false
+# org.freedesktop.Platform.ffmpeg_full.i386:
+#   directory: lib32/ffmpeg
+#   add-ld-path: .
+#   version: '21.08'
+#   no-autodownload: true
+#   autodelete: false
+finish-args:
+  - --allow=multiarch
+  - --device=dri
+  - --env=GI_TYPELIB_PATH=/app/lib/girepository-1.0
+  - --env=GST_PLUGIN_PATH=/app/lib/gstreamer-1.0:/usr/lib/extensions/gstreamer-1.0:/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+  - --env=WINEARCH=win64
+  - --env=XDG_DATA_DIRS=/app/share:/usr/share:/usr/share/runtime/share:/run/host/share
+  - --persist=.wine
+  - --share=ipc
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=x11
+  - --runtime=org.winehq.Platform//master
+  - --sdk=org.winehq.Sdk//master
+cleanup:
+  - /man
+  - /share/man
+  - /lib/systemd
+  - '*.la'
+cleanup-commands:
+  - /usr/libexec/freedesktop-post.sh
+  - mkdir -p /usr/lib/debug/usr/lib/i386-linux-gnu
+  - rm -rf /usr/sdk/toolchain-i386
+cleanup-platform:
+  - /include
+  - /lib/*/cmake
+  - /lib/*/pkgconfig
+  - /lib/mkspecs
+  - /lib/pkgconfig
+  - /mkspecs
+  - /share/aclocal
+  - /share/pkgconfig
+  - /share/runtime/docs
+  - '*.a'
+  - '*.cmake'
+  - '*.prl'
+cleanup-platform-commands:
+  - /usr/libexec/freedesktop-post.sh
+modules:
+  - wine.yaml
+  # 7z can extract some self-extracted *.exe installers
+  - ../shared-modules/p7zip/p7zip.json
+  - dosbox-staging/dosbox-staging.json
+  - dxvk/dxvk-bin.json
+  - wine-gecko/wine-gecko.json
+  - wine-mono/wine-mono.json
+  - winetricks/winetricks.json
+  - name: os-release
+    post-install:
+      - mkdir -p /usr/share/runtime/lib/plugins/
+    sources:
+      - type: file
+        path: os-release
+      - type: file
+        path: issue
+      - type: file
+        path: issue.net
+      - type: file
+        path: org.winehq.Sdk.appdata.xml
+      - type: file
+        path: org.winehq.Platform.appdata.xml
+      - type: file
+        path: os-release-Makefile
+        dest-filename: Makefile
+      - type: script
+        commands: []
+        dest-filename: configure

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+local config_options=(
+  # display server
+  --with-x
+  --with-wayland
+
+  # auto-config features, explicitly enabled to fail configure on dependency miss
+  # packaged libs dependent features
+  --with-cups
+  --with-faudio
+  --with-gphoto
+  --with-gsm
+  --with-gssapi
+  --with-jpeg
+  --with-krb5
+  --with-ldap
+  # samba
+  --with-netapi
+  --with-pcap
+  --with-sane
+  --with-usb
+  --with-vkd3d
+
+# runtime libs dependent features
+  - --with-alsa
+  # TODO: dbus might be needed to be packaged, wine complains when trying to create debug log
+  --with-dbus
+  --with-fontconfig
+  --with-freetype
+  --with-gettext
+  --with-gettextpo
+  --with-gnutls
+  --with-gstreamer
+  --with-mpg123
+  --with-openal
+  --with-opencl
+  --with-opengl
+  --with-png
+  --with-pthread
+  --with-pulse
+  --with-sdl
+  --with-tiff
+  --with-udev
+  --with-unwind
+  --with-v4l2
+  --with-vulkan
+  --with-xml
+  --with-xslt
+
+  # TODO: evaluate these features
+  # isdn support
+  #--with-capi
+  # color management
+  #--with-cms
+  #--with-inotify
+  #--with-osmesa
+  #--with-quicktime
+)
+
+config_opts+=("$@")
+./configure.wine "${config_options[@]}"

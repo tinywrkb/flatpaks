@@ -1,0 +1,9 @@
+{
+    "name": "vkd3d",
+    "config-opts": [
+        "--with-spirv-tools"
+    ],
+    "sources": [
+        "sources.json"
+    ]
+}
