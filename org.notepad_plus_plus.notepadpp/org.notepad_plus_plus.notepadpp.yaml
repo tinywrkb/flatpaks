@@ -1,0 +1,38 @@
+# TODO: add mimetypes
+app-id: org.notepad_plus_plus.notepadpp
+runtime: org.winehq.Platform
+runtime-version: master
+sdk: org.winehq.Sdk
+command: npp
+finish-args:
+  - --filesystem=home
+  - --share=network
+# - --socket=fallback-x11
+  # TODO: evalute dbus access
+  - --socket=session-bus
+  - --socket=system-bus
+modules:
+  - name: notepadpp
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra npp -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      # source: https://notepad-plus-plus.org/images/logo.svg
+      - install -Dm644 ${FLATPAK_ID}.svg -t ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/
+    sources:
+      - type: extra-data
+        filename: npp-installer.exe
+        url: https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.1.9/npp.8.1.9.Installer.x64.exe
+        sha256: 23bde004114ee4d17b11608da2c78fda365874fd64194a6ea167dd3050576b42
+        size: 4345424
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - echo doing nothing
+         #- wine npp-installer.exe /S
+      - type: file
+        path: npp
+      - type: file
+        path: org.notepad_plus_plus.notepadpp.desktop
+      - type: file
+        path: org.notepad_plus_plus.notepadpp.svg

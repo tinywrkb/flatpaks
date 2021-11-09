@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Notepad++
+GenericName=Source code editor
+Comment=Free source code editor and Notepad replacement that supports several languages
+Icon=org.notepad_plus_plus.notepadpp
+Exec=npp %f
+Terminal=false
+MimeType=text/plain
+Categories=Utility;TextEditor
+Keywords=Editor;Text
