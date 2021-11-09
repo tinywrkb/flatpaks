@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec wine "C:\\Program Files\\LTC\\LTspiceXVII\\XVIIx64.exe" "$@"

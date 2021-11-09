@@ -1,0 +1,48 @@
+# TODO: add mimetypes
+# TODO: figure out unattended installation
+app-id: com.analog.ltspice
+runtime: org.winehq.Platform
+runtime-version: master
+sdk: org.winehq.Sdk
+command: ltspice
+finish-args:
+  - --filesystem=home
+  - --share=network
+# doesn't start consistently correctly in wayland
+# - --socket=fallback-x11
+  # TODO: evalute dbus access
+  - --socket=session-bus
+  - --socket=system-bus
+modules:
+  - name: ltspice
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra ltspice -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      # original icon: ltspice_400.jpg
+      # source: https://twitter.com/ltspice
+      # url: https://pbs.twimg.com/profile_images/839168408490913792/ukNPeWwa_400x400.jpg
+      - |
+        for s in 64 128 256; do
+          install -Dm644 ltspice_${s}.png ${FLATPAK_DEST}/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+        done
+    sources:
+      - type: extra-data
+        filename: ltspice-installer.exe
+        url: https://ltspice.analog.com/software/LTspiceXVII.exe
+        sha256: 83ee2d99f9e8a2f82676905b1423c709d71e25583fb9a5291b0e28d8f60f4459
+        size: 56290472
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - echo doing nothing
+      - type: file
+        path: ltspice
+      - type: file
+        path: com.analog.ltspice.desktop
+      - type: file
+        path: icons/ltspice_64.png
+      - type: file
+        path: icons/ltspice_128.png
+      - type: file
+        path: icons/ltspice_256.png

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=LTspice
+GenericName=SPICE simulator
+Comment=High performance SPICE simulation software, schematic capture and waveform viewer
+Icon=com.analog.ltspice
+Exec=ltspice %f
+Terminal=false
+#MimeType=
+Categories=Science;Engineering;Electronics
+Keywords=Analog Devices;Circuits;Electronics;Engineering;Schematic;Simulation;SPICE;Waveform
