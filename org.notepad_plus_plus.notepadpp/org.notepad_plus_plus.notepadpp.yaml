@@ -1,3 +1,6 @@
+# WARNING: WIP and experimental
+# WARNING: this will only work with a patched flatpak build which allows /proc access during apply_extra
+#          see: https://github.com/tinywrkb/pkgbuilds/blob/main/flatpak-slack/0001-Allow-proc-access-during-apply_extra.patch
 # TODO: add mimetypes
 app-id: org.notepad_plus_plus.notepadpp
 runtime: org.winehq.Platform
@@ -28,8 +31,33 @@ modules:
       - type: script
         dest-filename: apply_extra
         commands:
-          - echo doing nothing
-         #- wine npp-installer.exe /S
+          # TODO: install in a headless xorg session
+          - env WINEPREFIX=$PWD wine npp-installer.exe /S
+          - rm npp-installer.exe
+          - |
+            rm dosdevices/{c,z}\:
+            rmdir dosdevices
+
+            pushd drive_c
+
+            mv users{,.ro}
+            ln -s /var/data/wine/users users
+
+            pushd users.ro/Public
+            rmdir Desktop Documents Music Pictures Videos
+            popd
+
+            mv users/{$USER,User}
+            pushd users/User
+            rmdir Contacts Favorites Links "Saved Games" Searches Temp
+            rm Desktop Documents Downloads Music Pictures Videos
+            popd
+
+            pushd windows
+            rm -rf Installer logs temp
+            ln -s /var/cache/wine/temp temp
+            ln -s -t ./ /var/cache/wine/windows/{Installer,logs,temp}
+            popd
       - type: file
         path: npp
       - type: file

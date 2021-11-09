@@ -1,3 +1,52 @@
 #!/bin/bash
 
+# TODO: update user paths and system details in registry
+# TODO: handle common appdata
+
+cp -u /app/extra/{system,user,userdef}.reg ~/.wine/
+if [ ! -e ~/.wine/dosdevices ]; then
+  mkdir ~/.wine/dosdevices
+  ln -s ../drive_c ~/.wine/dosdevices/c\:
+  ln -s / ~/.wine/dosdevices/z\:
+fi
+if [ ! -e ~/.wine/drive_c ]; then
+  ln -s /app/extra/drive_c ~/.wine/drive_c
+fi
+
+cp --update --preserve=timestamps /app/extra/.update-timestamp ~/.wine/
+
+WINE_PROFILESDIRECTORY=/var/data/wine/users
+WINE_PUBLIC=${WINE_PROFILESDIRECTORY}/Public
+WINE_COMMON_APPDATA=/app/extra/drive_c/ProgramData
+WINE_USERPROFILE=${WINE_PROFILESDIRECTORY}/"$USER"
+WINE_APPDATA="${WINE_USERPROFILE}"/AppData/Roaming
+WINE_LOCAL_APPDATA="${WINE_USERPROFILE}"/AppData/Local
+WINE_LOCALLOW_APPDATA="${WINE_USERPROFILE}"/AppData/LocalLow
+
+mkdir -p /var/cache/wine/windows/{Installer,logs,temp}
+mkdir -p ${WINE_PUBLIC}/{Desktop,Documents,Music,Pictures,Videos}
+mkdir -p "${WINE_LOCAL_APPDATA}"/Microsoft/Windows/{History,INetCache,INetCookies}
+mkdir -p "${WINE_LOCALLOW_APPDATA}"
+mkdir -p "${WINE_APPDATA}"/Microsoft/Windows/{"Network Shortcuts","Printer Shortcuts",Recent,SendTo,Themes}
+mkdir -p "${WINE_APPDATA}"/Microsoft/Windows/"Start Menu"/Programs/{"Administrative Tools",StartUp}
+[ -e "${WINE_APPDATA}"/Microsoft/Windows/Templates ] ||
+  ln -s "$(xdg-user-dir TEMPLATES)" "${WINE_APPDATA}"/Microsoft/Windows/Templates
+
+[ -e "${WINE_USERPROFILE}"/Desktop ] ||
+  ln -s "$(xdg-user-dir DESKTOP)" "${WINE_USERPROFILE}"/Desktop
+[ -e "${WINE_USERPROFILE}"/Documents ] ||
+  ln -s "$(xdg-user-dir DOCUMENTS)" "${WINE_USERPROFILE}"/Documents
+[ -e "${WINE_USERPROFILE}"/Downloads ] ||
+  ln -s "$(xdg-user-dir DOWNLOAD)" "${WINE_USERPROFILE}"/Downloads
+[ -e "${WINE_USERPROFILE}"/Music ] ||
+  ln -s "$(xdg-user-dir MUSIC)" "${WINE_USERPROFILE}"/Music
+[ -e "${WINE_USERPROFILE}"/Pictures ] ||
+  ln -s "$(xdg-user-dir PICTURES)" "${WINE_USERPROFILE}"/Pictures
+[ -e "${WINE_USERPROFILE}"/Videos ] ||
+  ln -s "$(xdg-user-dir VIDEOS)" "${WINE_USERPROFILE}"/Videos
+
+# notepadpp specific
+[ -e "${WINE_APPDATA}"/Notepad++ ] ||
+  cp -r /app/extra/drive_c/users.ro/User/AppData/Roaming/Notepad++ "${WINE_APPDATA}"/
+
 exec wine "C:\\Program Files\\Notepad++\\notepad++.exe" "$@"
