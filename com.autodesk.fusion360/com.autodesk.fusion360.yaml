@@ -20,9 +20,10 @@ modules:
       - install -Dm755 apply_extra fusion360 install_fusion360 -t ${FLATPAK_DEST}/bin/
       - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
       - |
-        for s in 32 64 48 128 256; do
+        for s in 32 48 64 128 256; do
           install -Dm644 fusion360_${s}.png ${FLATPAK_DEST}/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
         done
+      - install -Dm644 dll_overrides.reg -t ${FLATPAK_DEST}/share/wine/
     sources:
       - type: extra-data
         filename: fusion360-installer.exe
@@ -41,11 +42,15 @@ modules:
         dest-filename: install_fusion360
         commands:
           - winetricks -q corefonts cjkfonts msxml4 msxml6 vcrun2017 fontsmooth=rgb win8
+          - setup_dxvk.sh install --without-dxgi --symlink
+          - regedit /app/share/wine/dll_overrides.reg
           - install -dm755 /tmp/.fusion-installer
           - cp --update /app/extra/lib/comtypes/gen-ro/* /tmp/.fusion-installer/
           - wine /app/extra/streamer.exe
       - type: file
         path: fusion360
+      - type: file
+        path: dll_overrides.reg
       - type: file
         path: com.autodesk.fusion360.desktop
       - type: file
