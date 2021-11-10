@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Cemu
+GenericName=Game console emulator
+Comment=Play Wii U games
+Icon=info.cemu.cemu
+Exec=cemu %f
+Terminal=false
+Categories=Game;Emulator
+Keywords=Game console;Emulator:Nintendo;Wii U

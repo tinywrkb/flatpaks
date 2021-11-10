@@ -1,0 +1,90 @@
+# WARNING: WIP and experimental
+# WARNING: this will only work with a patched flatpak build which allows /proc access during apply_extra
+#          see: https://github.com/tinywrkb/pkgbuilds/blob/main/flatpak-slack/0001-Allow-proc-access-during-apply_extra.patch
+app-id: info.cemu.cemu
+runtime: org.winehq.Platform
+runtime-version: master
+sdk: org.winehq.Sdk
+command: cemu
+finish-args:
+  - --devices=all
+  - --filesystem=xdg-download
+  - --share=network
+# - --socket=fallback-x11
+  # TODO: evalute dbus access
+  - --socket=session-bus
+  - --socket=system-bus
+modules:
+  - name: cemu
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra cemu -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      # source: https://wiki.cemu.info/images/3/32/CemuLogo2.png
+      - install -Dm644 ${FLATPAK_ID}.svg -t ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/
+      - |
+        for s in 64 128 256; do
+          install -Dm644 cemu_${s}.png ${FLATPAK_DEST}/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+        done
+    sources:
+      - type: extra-data
+        filename: cemu.zip
+        url: https://cemu.info/releases/cemu_1.25.6.zip
+        sha256: 46a7188e7b5b98ec608481ca3b9d9543dedd429ecf5e54ad30d19af26310412f
+        size: 25057402
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          # TODO: install in a headless xorg session
+          - |
+            export WINEPREFIX=$PWD
+            export Hostname=hostname
+            export TZ=UTC
+            export USER=User
+            winetricks win7
+            setup_dxvk.sh install --symlink --without-dxgi
+          - |
+            install -dm755 drive_c/"Program Files"/Cemu
+            bsdtar -xf cemu.zip --strip-components=1 -C drive_c/"Program Files"/Cemu
+            rm cemu.zip
+            pushd drive_c/"Program Files"/Cemu
+            mv gameProfiles{,-ro}
+            rmdir graphicPacks
+            ln -s -t ./ /var/data/cemu/{gameProfiles,graphicPacks}
+            rmdir shaderCache/{precompiled,transferable}
+            ln -s -t ./ /var/cache/cemu/shaderCache/{precompiled,transferable}
+          # TODO: clean system-specific unique ids
+          #        - Software\\Microsoft\\Cryptography: MachineGuid
+          - |
+            rm dosdevices/{c,z}\:
+            rmdir dosdevices
+
+            pushd drive_c
+
+            mv users{,.ro}
+            ln -s /var/data/wine/users users
+
+            pushd users.ro/Public
+            rmdir Desktop Documents Music Pictures Videos
+            popd
+
+            pushd users/User
+            rmdir Contacts Favorites Links "Saved Games" Searches Temp
+            rm Desktop Documents Downloads Music Pictures Videos
+            popd
+
+            pushd windows
+            rm -rf Installer logs temp
+            ln -s /var/cache/wine/temp temp
+            ln -s -t ./ /var/cache/wine/windows/{Installer,logs,temp}
+            popd
+      - type: file
+        path: cemu
+      - type: file
+        path: info.cemu.cemu
+      - type: file
+        path: icons/cemu_64.png
+      - type: file
+        path: icons/cemu_128.png
+      - type: file
+        path: icons/cemu_256.png
