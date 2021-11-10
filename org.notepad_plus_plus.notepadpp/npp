@@ -2,6 +2,8 @@
 
 # TODO: update user paths and system details in registry
 # TODO: handle common appdata
+# TODO: update machine ids
+#        - Software\\Microsoft\\Cryptography: MachineGuid
 
 cp -u /app/extra/{system,user,userdef}.reg ~/.wine/
 if [ ! -e ~/.wine/dosdevices ]; then

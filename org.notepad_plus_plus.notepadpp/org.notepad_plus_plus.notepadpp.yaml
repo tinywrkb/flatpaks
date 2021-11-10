@@ -32,8 +32,15 @@ modules:
         dest-filename: apply_extra
         commands:
           # TODO: install in a headless xorg session
-          - env WINEPREFIX=$PWD wine npp-installer.exe /S
+          - |
+            export WINEPREFIX=$PWD
+            export Hostname=hostname
+            export TZ=UTC
+            export USER=User
+            wine npp-installer.exe /S
           - rm npp-installer.exe
+          # TODO: clean system-specific unique ids
+          #        - Software\\Microsoft\\Cryptography: MachineGuid
           - |
             rm dosdevices/{c,z}\:
             rmdir dosdevices
@@ -47,7 +54,6 @@ modules:
             rmdir Desktop Documents Music Pictures Videos
             popd
 
-            mv users/{$USER,User}
             pushd users/User
             rmdir Contacts Favorites Links "Saved Games" Searches Temp
             rm Desktop Documents Downloads Music Pictures Videos
