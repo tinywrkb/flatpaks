@@ -3,15 +3,119 @@
 # TODO: create the prefix in the runtime
 # TODO: install in a headless xorg session
 # TODO: generic hostname
-# TODO: replace binaries with symlinks
+# TODO: remove machine ids
+# TODO: handle win32 prefix
 
 export WINEDLLPATH=/usr/lib/x86_64-linux-gnu/wine/x86_64-unix:/usr/lib/i386-linux-gnu/wine/i386-unix
 export WINEPREFIX=/app/extra
 export TZ=UTC
 export USER=User
 
+dll32_path=/usr/lib/i386-linux-gnu/wine/i386-windows
+dll64_path=/usr/lib/x86_64-linux-gnu/wine/x86_64-windows
+share_path=/usr/share/wine
+
 winetricks win7
 setup_dxvk.sh install --symlink --without-dxgi
 wineserver -w
 regedit /app/share/wine/wine-prefix-defaults.reg
 wineserver -w
+
+try_symlink() {
+  local bin_copy="$1"
+  local bin_name=$(basename "$bin_copy")
+  local bin_src=${2}/${bin_name}
+
+  [ "$bin_name" = 'ntdll.dll' ] && return
+
+  # d3d11.dll.old d3d10core.dll.old d3d10.dll.old d3d9.dll.old dxgi.dll.old
+  [[ "$bin_name" == *.dll.old ]] &&
+    bin_src=${2}/${bin_name%.old}
+
+  [ -f ${bin_src} ] &&
+    $(cmp "$bin_copy" $bin_src &>/dev/null) &&
+    rm "$bin_copy" &&
+    ln -s $bin_src "$bin_copy"
+}
+
+system_process() {
+  system_dir=$1
+  dll_path=$2
+  for f in $( find $system_dir/ -type f -a \( \
+    -name '*.acm' -o -name '*.ax' -o -name '*.com' -o -name '*.cpl' -o -name '*.dll' -o \
+    -name '*.drv' -o -name '*.exe' -o -name '*.ocx' -o -name '*.old' -o \
+    -name '*.sys' -o -name '*.tlb' \) ); do
+    try_symlink $f $dll_path
+  done
+  for f in $system_dir/*.nls; do
+    try_symlink $f ${share_path}/nls
+  done
+}
+
+default_dll_path=$dll64_path
+
+echo 'Replacing binaries with symlinks..'
+pushd drive_c/windows
+system_process system32 $default_dll_path
+system_process syswow64 $dll32_path
+try_symlink globalization/sorting/sortdefault.nls ${share_path}/nls
+
+extra_dlls=(
+  command/start.exe
+  resources/themes/light/light.msstyles
+  explorer.exe
+  hh.exe
+  notepad.exe
+  regedit.exe
+  twain.dll
+  twain_32.dll
+)
+
+for f in ${extra_dlls[@]}; do
+  try_symlink $f $default_dll_path
+done
+
+# TODO: rundll.exe winhelp.exe winhlp32.exe
+
+# TODO: handle mono binaries
+# Microsoft.NET
+for f in $( find Microsoft.NET/Framework64 -type f \
+              -a \( -name '*.dll' -o -name '*.exe' \) ); do
+  try_symlink $f $dll64_path
+done
+
+for f in $( find Microsoft.NET/Framework -type f \
+              -a \( -name '*.dll' -o -name '*.exe' \) ); do
+  try_symlink $f $dll32_path
+done
+
+# winsxs
+for f in $( find winsxs/amd64_* -type f -name '*.dll' ); do
+  try_symlink $f $dll64_path
+done
+
+for f in $( find winsxs/x86_* -type f -name '*.dll' ); do
+  try_symlink $f $dll32_path
+done
+
+popd
+
+extra_dlls=(
+  "Common Files/System/OLE DB/"{oledb32.dll,msdaps.dll}
+  "Common Files/System/ADO/msado15.dll"
+  "Internet Explorer/iexplore.exe"
+  "Windows Media Player/wmplayer.exe"
+  "Windows NT/Accessories/wordpad.exe"
+)
+
+pushd drive_c/"Program Files"
+for f in "${extra_dlls[@]}"; do
+  try_symlink "$f" $default_dll_path
+done
+popd
+
+pushd drive_c/"Program Files (x86)"
+for f in "${extra_dlls[@]}"; do
+  try_symlink "$f" $dll32_path
+done
+popd
