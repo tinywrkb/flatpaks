@@ -1,13 +1,11 @@
 # WARNING: WIP and experimental
-# WARNING: this will only work with a patched flatpak build which allows /proc access during apply_extra
-#          see: https://github.com/tinywrkb/pkgbuilds/blob/main/flatpak-slack/0001-Allow-proc-access-during-apply_extra.patch
 app-id: info.cemu.cemu
 runtime: org.winehq.Platform
 runtime-version: master
 sdk: org.winehq.Sdk
 command: cemu
 finish-args:
-  - --devices=all
+  - --device=all
   - --filesystem=xdg-download
   - --share=network
 # - --socket=fallback-x11
@@ -21,7 +19,6 @@ modules:
       - install -Dm755 apply_extra cemu -t ${FLATPAK_DEST}/bin/
       - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
       # source: https://wiki.cemu.info/images/3/32/CemuLogo2.png
-      - install -Dm644 ${FLATPAK_ID}.svg -t ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/
       - |
         for s in 64 128 256; do
           install -Dm644 cemu_${s}.png ${FLATPAK_DEST}/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
@@ -36,14 +33,16 @@ modules:
         dest-filename: apply_extra
         commands:
           # TODO: install in a headless xorg session
+          # TODO: generic hostname
           - |
-            export WINEPREFIX=$PWD
-            export Hostname=hostname
+            export WINEDLLPATH=/usr/lib/x86_64-linux-gnu/wine/x86_64-unix:/usr/lib/i386-linux-gnu/wine/i386-unix
+            export WINEPREFIX=/app/extra
             export TZ=UTC
             export USER=User
             winetricks win7
             setup_dxvk.sh install --symlink --without-dxgi
           - |
+            wineserver -w
             install -dm755 drive_c/"Program Files"/Cemu
             bsdtar -xf cemu.zip --strip-components=1 -C drive_c/"Program Files"/Cemu
             rm cemu.zip
@@ -53,7 +52,10 @@ modules:
             ln -s -t ./ /var/data/cemu/{gameProfiles,graphicPacks}
             rmdir shaderCache/{precompiled,transferable}
             ln -s -t ./ /var/cache/cemu/shaderCache/{precompiled,transferable}
-          # TODO: clean system-specific unique ids
+            # extra unpackaged resources
+            ln -s -t ./ /var/data/cemu/{keys.txt,mlc01}
+            popd
+          # TODO: clean system-specific unique ids?
           #        - Software\\Microsoft\\Cryptography: MachineGuid
           - |
             rm dosdevices/{c,z}\:
@@ -68,20 +70,20 @@ modules:
             rmdir Desktop Documents Music Pictures Videos
             popd
 
-            pushd users/User
+            pushd users.ro/User
             rmdir Contacts Favorites Links "Saved Games" Searches Temp
             rm Desktop Documents Downloads Music Pictures Videos
             popd
 
             pushd windows
             rm -rf Installer logs temp
-            ln -s /var/cache/wine/temp temp
             ln -s -t ./ /var/cache/wine/windows/{Installer,logs,temp}
+            popd
             popd
       - type: file
         path: cemu
       - type: file
-        path: info.cemu.cemu
+        path: info.cemu.cemu.desktop
       - type: file
         path: icons/cemu_64.png
       - type: file

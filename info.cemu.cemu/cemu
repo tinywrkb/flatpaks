@@ -55,7 +55,11 @@ CEMU_DATA=/var/data/cemu
 CEMU_CACHE=/var/cache/cemu
 mkdir -p \
   $CEMU_DATA/{gameProfiles,graphicPacks} \
-  $CEMU_CACHE/{precompiled,transferable}
+  $CEMU_CACHE/{precompiled,transferable} \
+  $CEMU_DATA/mlc01 \
+
+[ -e $CEMU_DATA/keys.txt ] ||
+  touch $CEMU_DATA/keys.txt
 
 [ -L $CEMU_DATA/gameProfiles/default ] ||
   ln -s /app/extra/drive_c/"Program Files"/Cemu/gameProfiles-ro/default \
