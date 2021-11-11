@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# TODO: create the prefix in the runtime
+# TODO: install in a headless xorg session
+# TODO: generic hostname
+# TODO: replace binaries with symlinks
+
+export WINEDLLPATH=/usr/lib/x86_64-linux-gnu/wine/x86_64-unix:/usr/lib/i386-linux-gnu/wine/i386-unix
+export WINEPREFIX=/app/extra
+export TZ=UTC
+export USER=User
+
+winetricks win7
+setup_dxvk.sh install --symlink --without-dxgi
+wineserver -w
+regedit /app/share/wine/wine-prefix-defaults.reg
+wineserver -w

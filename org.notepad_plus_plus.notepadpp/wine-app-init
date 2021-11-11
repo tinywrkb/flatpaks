@@ -1,0 +1,4 @@
+#!/bin/bash
+
+[ -e ${WINE_APPDATA}/Notepad++ ] ||
+  cp -r /app/extra/drive_c/users.ro/User/AppData/Roaming/Notepad++ ${WINE_APPDATA}/

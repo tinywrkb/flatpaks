@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# TODO: clean system-specific unique ids
+#        - Software\\Microsoft\\Cryptography: MachineGuid
+
+rm dosdevices/{c,z}\:
+rmdir dosdevices
+
+pushd drive_c
+
+mv users{,.ro}
+ln -s /var/data/wine/users users
+
+pushd users.ro/Public
+rmdir Desktop Documents Music Pictures Videos
+popd
+
+pushd users.ro/User
+rmdir Contacts Favorites Links "Saved Games" Searches Temp
+rm Desktop Documents Downloads Music Pictures Videos
+popd
+
+pushd windows
+rm -rf Installer logs temp
+ln -s -t ./ /var/cache/wine/windows/{Installer,logs,temp}
+popd

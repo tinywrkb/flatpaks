@@ -5,27 +5,22 @@
 # TODO: update machine ids
 #        - Software\\Microsoft\\Cryptography: MachineGuid
 
+# TODO: maybe system can be read-only
 cp -u /app/extra/{system,user,userdef}.reg ~/.wine/
-if [ ! -e ~/.wine/dosdevices ]; then
-  mkdir ~/.wine/dosdevices
+
+mkdir -p ~/.wine/dosdevices
+[  -L ~/.wine/drive_c/c\: ] ||
   ln -s ../drive_c ~/.wine/dosdevices/c\:
-  ln -s / ~/.wine/dosdevices/z\:
-fi
-if [ ! -L ~/.wine/drive_c ]; then
+
+[  -L ~/.wine/drive_c/c\: ] ||
   ln -s /app/extra/drive_c ~/.wine/drive_c
-fi
+
+[  -L ~/.wine/drive_c/z\: ] ||
+  ln -s / ~/.wine/dosdevices/z\:
 
 cp --update --preserve=timestamps /app/extra/.update-timestamp ~/.wine/
 
-WINE_PROFILESDIRECTORY=/var/data/wine/users
-WINE_PUBLIC=${WINE_PROFILESDIRECTORY}/Public
-WINE_COMMON_APPDATA=/app/extra/drive_c/ProgramData
-WINE_USERPROFILE=${WINE_PROFILESDIRECTORY}/"$USER"
-WINE_APPDATA="${WINE_USERPROFILE}"/AppData/Roaming
-WINE_LOCAL_APPDATA="${WINE_USERPROFILE}"/AppData/Local
-WINE_LOCALLOW_APPDATA="${WINE_USERPROFILE}"/AppData/LocalLow
-
-mkdir -p /var/cache/wine/windows/{Installer,logs,temp}
+mkdir -p ${WINE_CACHE}/windows/{Installer,logs,temp}
 mkdir -p ${WINE_PUBLIC}/{Desktop,Documents,Music,Pictures,Videos}
 mkdir -p "${WINE_LOCAL_APPDATA}"/Microsoft/Windows/{History,INetCache,INetCookies}
 mkdir -p "${WINE_LOCALLOW_APPDATA}"
@@ -50,8 +45,11 @@ mkdir -p "${WINE_USERPROFILE}"/{Contacts,Favorites,Links,"Saved Games",Searches,
 [ -L "${WINE_USERPROFILE}"/Videos ] ||
   ln -s "$(xdg-user-dir VIDEOS)" "${WINE_USERPROFILE}"/Videos
 
-# notepadpp specific
-[ -e "${WINE_APPDATA}"/Notepad++ ] ||
-  cp -r /app/extra/drive_c/users.ro/User/AppData/Roaming/Notepad++ "${WINE_APPDATA}"/
+[ "$USER" = "User" ] ||
+  [ -L ${WINE_PROFILESDIRECTORY}/"$USER" ] ||
+  ln -s User ${WINE_PROFILESDIRECTORY}/"$USER"
 
-exec wine "C:\\Program Files\\Notepad++\\notepad++.exe" "$@"
+[ -f "$WINE_APP_INIT" ] &&
+  source "$WINE_APP_INIT"
+
+exec wine "$WINE_EXEC" "$WINE_ARGS" "$@"

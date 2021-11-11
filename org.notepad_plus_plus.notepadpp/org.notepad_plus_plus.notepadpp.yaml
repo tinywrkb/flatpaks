@@ -7,16 +7,36 @@ sdk: org.winehq.Sdk
 command: npp
 finish-args:
   - --filesystem=home
+  - --env=WINE_EXEC=C:\\Program Files\\Notepad++\\notepad++.exe
+  #- --env=WINE_ARGS
+  - --env=WINE_APP_INIT=/app/lib/wine/wine-app-init
   - --share=network
 # - --socket=fallback-x11
+# TODO: move these to the runtime
   # TODO: evalute dbus access
   - --socket=session-bus
   - --socket=system-bus
+  # wine-dirs
+  - --env=WINE_CACHE=/var/cache/wine
+  - --env=WINE_DATA=/var/data/wine
+  # profiles
+  - --env=WINE_PROFILESDIRECTORY=/var/data/wine/users
+  - --env=WINE_PUBLIC=/var/data/wine/users/Public
+  - --env=WINE_USERPROFILE=/var/data/wine/users/User
+  # common appdata
+  - --env=WINE_COMMON_APPDATA=/app/extra/drive_c/ProgramData
+  # user appdata
+  - --env=WINE_APPDATA=/var/data/wine/users/User/AppData/Roaming
+  - --env=WINE_LOCAL_APPDATA=/var/data/wine/users/User/AppData/Local
+  - --env=WINE_LOCALLOW_APPDATA=/var/data/wine/users/user/AppData/LocalLow
 modules:
   - name: notepadpp
     buildsystem: simple
     build-commands:
-      - install -Dm755 apply_extra npp -t ${FLATPAK_DEST}/bin/
+        # TODO: move wine-wrapper, wine-prefix-*, wine-prefix-defaults.reg into the runtime
+      - install -Dm755 apply_extra npp wine-wrapper -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 wine-app-init wine-prefix-{cleanup,create} -t ${FLATPAK_DEST}/lib/wine/
+      - install -Dm644 wine-prefix-defaults.reg -t /app/share/wine/
       - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
       # source: https://notepad-plus-plus.org/images/logo.svg
       - install -Dm644 ${FLATPAK_ID}.svg -t ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/
@@ -29,44 +49,25 @@ modules:
       - type: script
         dest-filename: apply_extra
         commands:
-          # TODO: install in a headless xorg session
-          # TODO: generic hostname
-          - |
-            export WINEDLLPATH=/usr/lib/x86_64-linux-gnu/wine/x86_64-unix:/usr/lib/i386-linux-gnu/wine/i386-unix
-            export WINEPREFIX=/app/extra
-            export TZ=UTC
-            export USER=User
-            wine npp-installer.exe /S
-          - |
-            wineserver -w
-            rm npp-installer.exe
-          # TODO: clean system-specific unique ids
-          #        - Software\\Microsoft\\Cryptography: MachineGuid
-          - |
-            rm dosdevices/{c,z}\:
-            rmdir dosdevices
-
-            pushd drive_c
-
-            mv users{,.ro}
-            ln -s /var/data/wine/users users
-
-            pushd users.ro/Public
-            rmdir Desktop Documents Music Pictures Videos
-            popd
-
-            pushd users.ro/User
-            rmdir Contacts Favorites Links "Saved Games" Searches Temp
-            rm Desktop Documents Downloads Music Pictures Videos
-            popd
-
-            pushd windows
-            rm -rf Installer logs temp
-            ln -s -t ./ /var/cache/wine/windows/{Installer,logs,temp}
-            popd
-            popd
+          - source /app/lib/wine/wine-prefix-create
+          - wine npp-installer.exe /S
+          - wineserver -w
+          - rm npp-installer.exe
+          - source /app/lib/wine/wine-prefix-cleanup
       - type: file
-        path: npp
+        path: wine-wrapper
+      - type: file
+        path: wine-prefix-cleanup
+      - type: file
+        path: wine-prefix-create
+      - type: file
+        path: wine-prefix-defaults.reg
+      - type: file
+        path: wine-app-init
+      - type: script
+        dest-filename: npp
+        commands:
+          - exec wine-wrapper "$@"
       - type: file
         path: org.notepad_plus_plus.notepadpp.desktop
       - type: file
