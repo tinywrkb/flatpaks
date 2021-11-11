@@ -1,0 +1,86 @@
+# WARNING: WIP and experimental
+# TODO: add mimetypes
+app-id: com.apple.airport-utility
+runtime: org.winehq.Platform
+runtime-version: master
+sdk: org.winehq.Sdk
+command: airport-utility
+finish-args:
+  - --filesystem=home
+  - --share=network
+# - --socket=fallback-x11
+  # TODO: evalute dbus access
+  - --socket=session-bus
+  - --socket=system-bus
+modules:
+  - name: airport-utility
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra airport-utility -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      # source: https://help.apple.com/assets/5FF9078C67DDC65E885B2A93/5FF9078D67DDC65E885B2A9A/en_US/b55d001f1ae99ee0a28f2cfd0f23a4e8.png
+      - |
+        for s in 64 128 256; do
+          install -Dm644 airport-utility_${s}.png ${FLATPAK_DEST}/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+        done
+    sources:
+      - type: extra-data
+        filename: airport-installer.exe
+        url: https://download.info.apple.com/Mac_OS_X/041-0257.20120611.MkI85/AirPortSetup.exe
+        sha256: f5f578cf291abc42ba533e78bbdb2f51bf7262000e255b195f17149f55486754
+        size: 10815592
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          # TODO: install in a headless xorg session
+          # TODO: generic hostname
+          - |
+            export WINEDLLPATH=/usr/lib/x86_64-linux-gnu/wine/x86_64-unix:/usr/lib/i386-linux-gnu/wine/i386-unix
+            export WINEPREFIX=/app/extra
+            export TZ=UTC
+            export USER=User
+            winetricks win7
+            7z x airport-installer.exe {AirPort,Bonjour{,64}}.msi
+            wine msiexec /i AirPort.msi /qn
+            wineserver -w
+            wine msiexec /i Bonjour.msi /qn
+            wineserver -w
+            wine msiexec /i Bonjour64.msi /qn
+            wineserver -w
+            rm airport-installer.exe {AirPort,Bonjour{,64}}.msi
+            rm -rf drive_c/ProgramData/Apple/Installer\ Cache
+          # TODO: clean system-specific unique ids
+          #        - Software\\Microsoft\\Cryptography: MachineGuid
+          - |
+            rm dosdevices/{c,z}\:
+            rmdir dosdevices
+
+            pushd drive_c
+
+            mv users{,.ro}
+            ln -s /var/data/wine/users users
+
+            pushd users.ro/Public
+            rmdir Desktop Documents Music Pictures Videos
+            popd
+
+            pushd users.ro/User
+            rmdir Contacts Favorites Links "Saved Games" Searches Temp
+            rm Desktop Documents Downloads Music Pictures Videos
+            popd
+
+            pushd windows
+            rm -rf Installer logs temp
+            ln -s -t ./ /var/cache/wine/windows/{Installer,logs,temp}
+            popd
+            popd
+      - type: file
+        path: airport-utility
+      - type: file
+        path: com.apple.airport-utility.desktop
+      - type: file
+        path: icons/airport-utility_64.png
+      - type: file
+        path: icons/airport-utility_128.png
+      - type: file
+        path: icons/airport-utility_256.png

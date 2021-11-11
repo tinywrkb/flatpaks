@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# TODO: update user paths and system details in registry
+# TODO: handle common appdata
+# TODO: update machine ids
+#        - Software\\Microsoft\\Cryptography: MachineGuid
+
+cp -u /app/extra/{system,user,userdef}.reg ~/.wine/
+if [ ! -e ~/.wine/dosdevices ]; then
+  mkdir ~/.wine/dosdevices
+  ln -s ../drive_c ~/.wine/dosdevices/c\:
+  ln -s / ~/.wine/dosdevices/z\:
+fi
+if [ ! -L ~/.wine/drive_c ]; then
+  ln -s /app/extra/drive_c ~/.wine/drive_c
+fi
+
+cp --update --preserve=timestamps /app/extra/.update-timestamp ~/.wine/
+
+WINE_PROFILESDIRECTORY=/var/data/wine/users
+WINE_PUBLIC=${WINE_PROFILESDIRECTORY}/Public
+WINE_COMMON_APPDATA=/app/extra/drive_c/ProgramData
+WINE_USERPROFILE=${WINE_PROFILESDIRECTORY}/"$USER"
+WINE_APPDATA="${WINE_USERPROFILE}"/AppData/Roaming
+WINE_LOCAL_APPDATA="${WINE_USERPROFILE}"/AppData/Local
+WINE_LOCALLOW_APPDATA="${WINE_USERPROFILE}"/AppData/LocalLow
+
+mkdir -p /var/cache/wine/windows/{Installer,logs,temp}
+mkdir -p ${WINE_PUBLIC}/{Desktop,Documents,Music,Pictures,Videos}
+mkdir -p "${WINE_LOCAL_APPDATA}"/Microsoft/Windows/{History,INetCache,INetCookies}
+mkdir -p "${WINE_LOCALLOW_APPDATA}"
+mkdir -p "${WINE_APPDATA}"/Microsoft/Windows/{"Network Shortcuts","Printer Shortcuts",Recent,SendTo,Themes}
+mkdir -p "${WINE_APPDATA}"/Microsoft/Windows/"Start Menu"/Programs/{"Administrative Tools",StartUp}
+
+[ -L "${WINE_APPDATA}"/Microsoft/Windows/Templates ] ||
+  ln -s "$(xdg-user-dir TEMPLATES)" "${WINE_APPDATA}"/Microsoft/Windows/Templates
+
+mkdir -p "${WINE_USERPROFILE}"/{Contacts,Favorites,Links,"Saved Games",Searches,Temp}
+
+[ -L "${WINE_USERPROFILE}"/Desktop ] ||
+  ln -s "$(xdg-user-dir DESKTOP)" "${WINE_USERPROFILE}"/Desktop
+[ -L "${WINE_USERPROFILE}"/Documents ] ||
+  ln -s "$(xdg-user-dir DOCUMENTS)" "${WINE_USERPROFILE}"/Documents
+[ -L "${WINE_USERPROFILE}"/Downloads ] ||
+  ln -s "$(xdg-user-dir DOWNLOAD)" "${WINE_USERPROFILE}"/Downloads
+[ -L "${WINE_USERPROFILE}"/Music ] ||
+  ln -s "$(xdg-user-dir MUSIC)" "${WINE_USERPROFILE}"/Music
+[ -L "${WINE_USERPROFILE}"/Pictures ] ||
+  ln -s "$(xdg-user-dir PICTURES)" "${WINE_USERPROFILE}"/Pictures
+[ -L "${WINE_USERPROFILE}"/Videos ] ||
+  ln -s "$(xdg-user-dir VIDEOS)" "${WINE_USERPROFILE}"/Videos
+
+# airport-utility specific
+mkdir -p "${WINE_LOCAL_APPDATA}"/Apple/AirPort/{Configuration,Firmware}
+
+exec wine "C:\\Program Files (x86)\\AirPort\\APUtil.exe" "$@"

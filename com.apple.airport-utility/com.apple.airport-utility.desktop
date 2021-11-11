@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=AirPort Utility
+GenericName=Network Manager
+Comment=Configure and manage your Wi-Fi network and AirPort base stations, including AirPort Express, AirPort Extreme, and AirPort Time Capsule
+Icon=com.apple.airport-utility
+Exec=airport-utility
+Terminal=false
+Categories=Utility
+Keywords=Apple;AirPort;Wi-Fi
