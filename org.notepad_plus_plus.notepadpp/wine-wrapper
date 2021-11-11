@@ -8,12 +8,12 @@
 # TODO: maybe system can be read-only
 cp -u /app/extra/{system,user,userdef}.reg ~/.wine/
 
+[  -L ~/.wine/drive_c ] ||
+  ln -s /app/extra/drive_c ~/.wine/drive_c
+
 mkdir -p ~/.wine/dosdevices
 [  -L ~/.wine/drive_c/c\: ] ||
   ln -s ../drive_c ~/.wine/dosdevices/c\:
-
-[  -L ~/.wine/drive_c/c\: ] ||
-  ln -s /app/extra/drive_c ~/.wine/drive_c
 
 [  -L ~/.wine/drive_c/z\: ] ||
   ln -s / ~/.wine/dosdevices/z\:
