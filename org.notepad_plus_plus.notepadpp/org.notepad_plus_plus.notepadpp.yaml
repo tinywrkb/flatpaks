@@ -24,11 +24,12 @@ finish-args:
   - --env=WINE_PUBLIC=/var/data/wine/users/Public
   - --env=WINE_USERPROFILE=/var/data/wine/users/User
   # common appdata
+  # TODO: might need to be writable, is so, then move to WINE_DATA
   - --env=WINE_COMMON_APPDATA=/app/extra/drive_c/ProgramData
   # user appdata
   - --env=WINE_APPDATA=/var/data/wine/users/User/AppData/Roaming
   - --env=WINE_LOCAL_APPDATA=/var/data/wine/users/User/AppData/Local
-  - --env=WINE_LOCALLOW_APPDATA=/var/data/wine/users/user/AppData/LocalLow
+  - --env=WINE_LOCALLOW_APPDATA=/var/data/wine/users/User/AppData/LocalLow
 modules:
   - name: notepadpp
     buildsystem: simple
