@@ -4,6 +4,8 @@ app-id: com.github.nwg_piotr.nwg-panel
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
 command: nwg-panel
 finish-args:
   - --device=dri
@@ -107,3 +109,25 @@ modules:
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
+  - name: nwg-menu
+    # TODO: switch to offline/cached build
+    buildsystem: simple
+    build-options:
+      env:
+        - GOBIN=/app/bin
+        - GOROOT=/usr/lib/sdk/golang
+        - GOFLAGS=-modcacherw
+        - GOPATH=/run/build/nwg-menu/gopath
+      append-path: /usr/lib/sdk/golang/bin
+      build-args:
+        - --share=network
+    build-commands:
+      - sed -i 's#/usr/share#/app/share#g' {main,tools}.go
+      - go install
+      - install -Dm644 menu-start.css -t ${FLATPAK_DEST}/share/nwg-menu/
+      - install -Dm644 desktop-directories/* -t ${FLATPAK_DEST}/share/nwg-menu/desktop-directories/
+    sources:
+      - type: git
+        url: https://github.com/nwg-piotr/nwg-menu.git
+        branch: main
+        commit: 00e2fc92b7d6a7ff135cd3a83389e07250a6e827
