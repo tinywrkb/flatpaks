@@ -20,12 +20,23 @@ modules:
         - GOBIN=/app/bin
         - GOROOT=/usr/lib/sdk/golang
         - GOFLAGS=-modcacherw
-        - GOPATH=/run/build/rclone
+        - GOPATH=/run/build/rclone/gopath
       append-path: /usr/lib/sdk/golang/bin
       build-args:
         - --share=network
     build-commands:
-      - go get github.com/rclone/rclone@latest
-      #- chmod u+w -R pkg
-      - go install github.com/rclone/rclone@latest
+      - make rclone
+      - install -Dm755 rclone -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 rclone.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 MANUAL.{html,md,txt} -t ${FLATPAK_DEST}/share/doc/
+    sources:
+      - type: git
+        url: https://github.com/rclone/rclone.git
+        tag: v1.57.0
+        commit: 169990e270b2977c39bd6ecd8a2921cf30a6d2b7
+        x-checker-data:
+          type: anitya
+          project-id: 11750
+          stable-only: true
+          url-template: https://github.com/rclone/rclone/archive/v$version/rclone-$version.tar.gz
   - ../shared-modules/flatpak-spawn-wrappers/fusermount.json
