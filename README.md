@@ -138,9 +138,6 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [GitHub CLI](com.github.cli)
 * [GitHub hub](com.github.hub)
 
-#### Graphics
-* [mesa-demos](org.mesa3d.mesa-demos)
-
 ### Display server
 * [Sway](org.swaywm.sway)
 
@@ -362,6 +359,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 #### System/Benchmarking & diagnostics
 * [GFXBench](com.gfxbench.gfxbench) **(BROKEN, extreme memory leak)**
 * [Unigine Heaven](com.unigine.heaven)
+* [mesa-demos](org.mesa3d.mesa-demos)
 * [s-tui](io.github.amanusk.s-tui)
 
 ### Terminal
