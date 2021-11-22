@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=GFXBench
+GenericName=GPU Benchmark
+Comment=Test your device with game-like content across multiple graphics APIs
+Icon=com.gfxbench.gfxbench
+Exec=gfxbench
+Terminal=false
+Categories=System
+Keywords=Benchmark;GPU;Graphics;OpenGL;Mesa;AMD;Intel;NVIDIA:Radeon;Geforce

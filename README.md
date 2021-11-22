@@ -9,10 +9,6 @@ for switching to an immutable system, an OS that has a clear seperation between 
 read-only distributed OS files, and the stateful data and configs.
 
 
-### Not usable or too buggy
-* Fusion 360
-
-
 ### How to build
 
 1. Install flatpak-builder
@@ -245,7 +241,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 
 #### Engineering/CAD
 * [BRL-CAD](org.brlcad.brlcad)
-* [Fusion 360](com.autodesk.fusion360) **(WIP)**
+* [Fusion 360](com.autodesk.fusion360) **(WIP, not working correctly ATM)**
 * [LibreCAD](org.librecad.librecad)
 * [QCAD](org.qcad.qcad)
 
@@ -364,6 +360,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 ### System
 
 #### System/Benchmarking & diagnostics
+* [GFXBench](com.gfxbench.gfxbench) **(BROKEN, extreme memory leak)**
 * [Unigine Heaven](com.unigine.heaven)
 * [s-tui](io.github.amanusk.s-tui)
 

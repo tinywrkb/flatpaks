@@ -1,0 +1,52 @@
+# TODO: try to fix or drop
+app-id: com.gfxbench.gfxbench
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: gfxbench
+finish-args:
+  - --device=dri
+  - --env=QT_QPA_PLATFORM=xcb
+  - --share=ipc
+  - --socket=pulseaudio
+  - --socket=x11
+modules:
+  - name: gfxbench
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra gfxbench -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.png -t ${FLATPAK_DEST}/share/icons/hicolor/128x128/apps/
+      - |
+        install -Dm644 /dev/stdin ${FLATPAK_DEST}/etc/ld.so.conf <<EOF
+        /app/extra/platforms
+        EOF
+    sources:
+      - type: extra-data
+        url: https://gfxbench.com/download/gfxbench_gl-linux-qt-4.0.13+community_64bit.sh
+        sha256: 1676aa9147b6783067a479c774061a52eb2a1727e32fff50271e1c41a68aeeae
+        size: 52797062
+        filename: gfxbench-installer.sh
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - set -e
+          - |
+            dd iflag=skip_bytes \
+              skip=$(head -n 239 gfxbench-installer.sh | wc -c ) \
+              if=gfxbench-installer.sh |
+              bsdtar -xf - \
+              --exclude=gfxbench_gl.desktop \
+              --exclude=gfxbench_gl.png \
+              --exclude=start.sh
+          - rm -f gfxbench-installer.sh
+          - ln -s /var/config/gfxbench config
+      - type: script
+        dest-filename: gfxbench
+        commands:
+          - mkdir -p /var/config/gfxbench
+          - exec /app/extra/gfxbench_gl "$@"
+      - type: file
+        path: com.gfxbench.gfxbench.desktop
+      - type: file
+        path: com.gfxbench.gfxbench.png
