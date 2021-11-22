@@ -8,6 +8,7 @@ The catalyst for packaging these apps is to prove that it's possible to convert 
 for switching to an immutable system, an OS that has a clear seperation between the stateless
 read-only distributed OS files, and the stateful data and configs.
 
+
 ### Not usable or too buggy
 * Fusion 360
 
@@ -68,8 +69,107 @@ fc-cache
 
 4. To update the font cache of a Flatpak app sandbox just restart the app.
 
+
 #### Fontconfig related bugs
 
 * [Flatpak: Expose host fontconfig conf.d?](https://github.com/flatpak/flatpak/issues/1563)
 * [Flatpak: Expose xdg-config/fontconfig to sandbox by default](https://github.com/flatpak/flatpak/issues/3947)
 * [freedesktop-sdk: Support font extensions](https://gitlab.com/freedesktop-sdk/freedesktop-sdk/-/issues/1141)
+
+
+## List of applications
+
+### Internet
+
+#### Internet/Network connection
+
+##### Internet/Network connection/Diagnostics
+* [speedtest-cli](com.github.sivel.speedtest-cli)
+
+##### Internet/Network connection/Network managers
+* [Airport Utility](com.apple.airport-utility)
+* [iwgtk](org.twosheds.iwgtk)
+
+#### Internet/Web browsers
+* [Chrome](com.google.chrome)
+* [Chrome Unstable](com.google.chrome-unstable)
+* [Edge Dev](com.microsoft.edge-dev)
+
+#### Internet/File sharing
+
+##### Internet/File sharing/Cloud sync
+* [Insync](com.insynchq.insync)
+* [Megatools](com.megous.megatools)
+* [Rclone](org.rclone.rclone)
+
+##### Internet/File sharing/BitTorrent
+* [trxo](com.github.tinywrkb.trxo)
+* [tremc](com.github.tremc)
+
+#### Internet/Communication
+* [weechat](org.weechat.weechat)
+
+### Multimedia
+
+#### Multimedia/Codecs
+* [ffmpeg](org.ffmpeg.ffmpeg)
+
+#### Multimedia/Image
+* [PTGui](com.ptgui.ptgui)
+* [exiv2](org.exiv2.exiv2)
+* [imv](com.github.exec64.imv)
+* [jhead](com.github.matthias_wandel.jhead)
+* [qimgv](com.github.easymodo.qimgv)
+
+#### Multimedia/Audio
+* [QjackCtl](io.sourceforge.qjackctl)
+* [Qsynth](io.sourceforge.qsynth)
+* [pasystray](com.github.christophgysin.pasystray)
+* [puddletag](net.puddletag.puddletag)
+
+#### Multimedia/Video
+* [mpv](io.mpv.player)
+
+### Utilities
+
+#### Utilities/Terminal
+
+##### Utilities/Terminal/Shell tools
+* [asciinema](org.asciinema.asciinema)
+
+##### Utilities/Terminal/Text terminal emulators
+* [minicom](org.debian.minicom)
+* [picocom](com.github.npat_efault.picocom)
+
+##### Utilities/Terminal/Video terminal emulators
+* [alacritty](com.github.alacritty)
+* [wezterm](org.wezfurlong.wezterm)
+
+#### Utilities/Files
+
+##### Utilities/Files/File managers
+* [QtFM](com.github.rodlie.qtfm)
+* [Sunflower](org.sunflower_fm.sunflower)
+
+##### Utilities/Files/Archiving and compression tools
+* [unappimage](com.github.refi64.unappimage)
+
+##### Utilities/Files/Duplicates cleaners
+* [rmlint](com.github.sahib.rmlint)
+
+### Documents and texts
+
+#### Documents and texts/Text editors
+* [Neovim Qt](com.github.equalsraf.neovim-qt)
+* [Notepad++](org.notepad_plus_plus.notepadpp)
+* [l3afpad](com.github.stevenhoneyman.l3afpad)
+
+#### Documents and texts/PDF tools
+* [pdfcrack](net.sourceforge.pdfcrack)
+
+#### Documents and texts/Readers and viewers
+* [PDFSam](org.pdfsam.pdfsam)
+* [Qpdfview](net.launchpad.qpdfview)
+* [Sioyek](info.sioyek.sioyek)
+* [Zathura](org.pwmt.zathura)
+* [pdfpc](com.github.pdfpc.pdfpc)
