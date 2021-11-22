@@ -372,9 +372,10 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [picocom](com.github.npat_efault.picocom)
 
 #### Terminal/Video terminal emulators
+* [Alacritty](com.github.alacritty)
 * [GTKTerm](com.github.jeija.gtkterm)
-* [alacritty](com.github.alacritty)
-* [wezterm](org.wezfurlong.wezterm)
+* [Termite](com.github.aperezdc.termite)
+* [Wez's Terminal](org.wezfurlong.wezterm)
 
 ### Utilities
 

@@ -1,0 +1,64 @@
+# Tips
+#   * Host access
+#     1. use ssh over tcp, get keys from an already running ssh-agent
+#     2. use ssh over a unix socket with socat
+#     3. run a shell through flatpak-spawn
+#        create flatpak overrides
+#          $ flatpak override --user --talk-name=org.freedesktop.Flatpak
+#        run a shell on the host
+#          $ flatpak-spawn --host /bin/bash
+#     3. with a terminal multiplexer
+#        set environment variables
+#          SCREENDIR="$XDG_RUNTIME_DIR"/screen
+#          TMUX_TMPDIR="$XDG_RUNTIME_DIR"/tmux
+#        create $XDG_CONFIG_HOME/user-tmpfiles.d/tmux.conf
+#          d %t/tmux 0700 - - - -
+#        create $XDG_CONFIG_HOME/user-tmpfiles.d/screen.conf
+#          d %t/screen 0700 - - - -
+#        start tmpfiles.d user service
+#          $ systemctl --user enable --now systemd-tmpfiles-setup.service
+#        create flatpak overrides
+#          $ flatpak override --user --filesystem=xdg-run/tmux
+#          $ flatpak override --user --filesystem=xdg-run/screen
+app-id: com.github.aperezdc.termite
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: termite
+rename-desktop-file: termite.desktop
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /lib/systemd
+  - '*.a'
+  - '*.la'
+modules:
+  - name: termite
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/aperezdc/termite/releases/download/v16.1/termite-16.1.tar.xz
+        sha256: 16feb97ace7d5777675fa2c6cae6c9f4a1feb49d59a80b293fc81e369e8b3a6d
+        x-checker-data:
+          type: anitya
+          project-id: 11226
+          stable-only: true
+          url-template: https://github.com/aperezdc/termite/releases/download/v$version/termite-$version.tar.xz
+  - name: termite-byobu
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 ${FLATPAK_ID}.byobu.desktop -t ${FLATPAK_DEST}/share/applications/
+      - install -Dm644 ${FLATPAK_DEST}/share/{byobu/pixmaps/,icons/hicolor/scalable/apps/${FLATPAK_ID}.}byobu.svg
+    sources:
+      - type: file
+        path: com.github.aperezdc.termite.byobu.desktop
+    modules:
+      - ../shared-modules/byobu/byobu.json
