@@ -234,14 +234,14 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [SmuView](com.github.knarfs.smuview)
 * [PulseView](org.sigrok.pulseview)
 
-#### Science/Electronics/Signals/SDR
+##### Science/Electronics/Signals/SDR
 * [GNU Radio](org.gnuradio.gnuradio)
 * [Gqrx SDR](dk.gqrx.gqrx)
 * [QSpectrumAnalyzer](com.github.xmikos.qspectrumanalyzer)
 * [SDR#](com.airspy.sdrsharp) **(Latest Linux Mono compatible version)**
 * [SigDigger](com.github.batchdrake.sigdigger)
 
-### Engineering/CAD
+### Engineering
 
 #### Engineering/CAD
 * [BRL-CAD](org.brlcad.brlcad)
