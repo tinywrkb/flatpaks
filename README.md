@@ -160,7 +160,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 #### Display server/Shell
 * [Hybridbar](com.github.hcsubser.hybridbar)
 * [Waybar](com.github.alexays.waybar)
-* [nwg-panel](com.github.nwg_piotr.nwg-panel
+* [nwg-panel](com.github.nwg_piotr.nwg-panel)
 
 #### Display server/X11
 * [Xpra](org.xpra.xpra)
