@@ -1,0 +1,36 @@
+# TODO: fix config file issue if not handled by dev, https://github.com/Jeija/gtkterm/issues/40
+app-id: com.github.jeija.gtkterm
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: gtkterm
+rename-desktop-file: gtkterm.desktop
+rename-icon: gtkterm
+finish-args:
+  - --device=all
+  - --device=dri
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: gtkterm
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/Jeija/gtkterm/archive/1.1.1/gtkterm-1.1.1.tar.gz
+        sha256: db56c8bcd1a2d8c7357f49962164dbcdbb035130b3b8d3c9b77f55cf9f3333d1
+        x-checker-data:
+          type: anitya
+          project-id: 9783
+          stable-only: true
+          url-template: https://github.com/Jeija/gtkterm/archive/$version/gtkterm-$version.tar.gz
+    modules:
+      - ../flathub-shared-modules/gudev/gudev.json
+      - ../flathub-shared-modules/intltool/intltool-0.51.json
+      - ../shared-modules/vte3/vte3.json
