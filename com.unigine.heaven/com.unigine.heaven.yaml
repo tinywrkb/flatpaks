@@ -1,0 +1,50 @@
+app-id: com.unigine.heaven
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: heaven
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --socket=pulseaudio
+  - --socket=x11
+modules:
+  - name: heaven
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra heaven -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      # low quality icon from the windows app
+      #- install -Dm644 ${FLATPAK_ID}.png -t ${FLATPAK_DEST}/share/icons/hicolor/64x64/apps/
+      # source: https://benchmark.unigine.com/images/logo_heaven-6a394adac7bfff1f7e2850cef91a4627.svg
+      - install -Dm644 ${FLATPAK_ID}.svg -t ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/
+    sources:
+      - type: extra-data
+        url: https://assets.unigine.com/d/Unigine_Heaven-4.0.run
+        sha256: 1bb0204a9bd9b0bdbf2fe23aa0c32129905cb387040098b815332ddb396f36a7
+        size: 286326725
+        filename: heaven-installer.run
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - set -e
+          - |
+            dd iflag=skip_bytes \
+              skip=$(head -n 403 heaven-installer.run | wc -c ) \
+              if=heaven-installer.run |
+              bsdtar -xf - \
+              --exclude='*x86*' \
+              --exclude=./heaven \
+              --exclude=./bin/x64
+          - rm -f heaven-installer.run
+      - type: script
+        dest-filename: heaven
+        commands:
+          - cd /app/extra/bin
+          - exec ./browser_x64 -config ../data/launcher/launcher.xml "$@"
+      - type: file
+        path: com.unigine.heaven.desktop
+      #- type: file
+      #  path: com.unigine.heaven.png
+      - type: file
+        path: com.unigine.heaven.svg

@@ -364,6 +364,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 ### System
 
 #### System/Benchmarking & diagnostics
+* [Unigine Heaven](com.unigine.heaven)
 * [s-tui](io.github.amanusk.s-tui)
 
 ### Terminal

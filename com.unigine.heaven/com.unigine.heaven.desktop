@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Unigine Heaven Benchmark
+GenericName=GPU Benchmark
+Comment=GPU-intensive benchmark that hammers graphics cards to the limits
+Icon=com.unigine.heaven
+Exec=heaven
+Terminal=false
+Categories=System
+Keywords=Benchmark;GPU;Graphics;OpenGL;Mesa;AMD;Intel;NVIDIA:Radeon;Geforce
