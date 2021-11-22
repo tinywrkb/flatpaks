@@ -5,3 +5,15 @@ sdk: org.freedesktop.Sdk
 command: s-tui
 modules:
   - s-tui.json
+  - name: stress
+    sources:
+      - type: archive
+        url: https://github.com/resurrecting-open-source-projects/stress/archive/1.0.5/stress-1.0.5.tar.gz
+        sha256: 1798e49ca365d928fb194ba1b8e8d1e09963b49e9edb0a78bcbba15750bb5027
+        x-checker-data:
+          type: anitya
+          project-id: 8048
+          stable-only: true
+          url-template: https://github.com/resurrecting-open-source-projects/stress/archive/$version/stress-$version.tar.gz
+    cleanup:
+      - /share/man
