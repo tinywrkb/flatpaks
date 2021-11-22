@@ -31,7 +31,9 @@ mkdir build
 flatpak-builder --install --user --force-clean --state-dir=build/flatpak-builder --repo=build/flatpak-repo build/flatpak-target manifest.yaml
 ```
 
-### Font packages
+### Tips and tricks
+
+#### Font packages
 
 Flatpak does not support font packages or extensions. In order for Flatpak and host apps to use fonts installed as Flatpak package we need a few workarounds.
 
@@ -70,49 +72,256 @@ fc-cache
 4. To update the font cache of a Flatpak app sandbox just restart the app.
 
 
-#### Fontconfig related bugs
+##### Fontconfig related bugs
 
 * [Flatpak: Expose host fontconfig conf.d?](https://github.com/flatpak/flatpak/issues/1563)
 * [Flatpak: Expose xdg-config/fontconfig to sandbox by default](https://github.com/flatpak/flatpak/issues/3947)
 * [freedesktop-sdk: Support font extensions](https://gitlab.com/freedesktop-sdk/freedesktop-sdk/-/issues/1141)
 
 
+#### extra-data caching and avoiding download
+
+Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/FILENAME`.
+
+
 ## List of applications
+
+### Container and virtualization
+* [Fedora CoreOS Butane](io.github.coreos.butane)
+* [Virt-Manager](org.virt_manager.virt-manager)
+* [Virt-Viewer](org.virt_manager.virt-viewer)
+
+### Development
+
+#### Development/Binary analysis
+
+##### Development/Binary analysis/Assembler & disassemblers
+* [Hopper](com.hopperapp.hopper)
+* [REDasm](io.redasm.redasm)
+* [Yasm](net.tortall.yasm)
+
+##### Development/Binary analysis/ELF
+* [ABI Compliance Checker](pro.abi_laboratory.abi-compliance-checker)
+* [libabigail](org.sourceware.libabigail)
+
+##### Development/Binary analysis/Hex editors & viewers
+* [BEYE](net.sourceforge.beye)
+* [Bviplus](net.sourceforge.bviplus)
+* [dhex](net.dettus.dhex)
+* [hexer](com.gitlab.hexer)
+* [hexyl](com.github.sharkdp.hexyl)
+* [hyx](cc.yx7.hyx)
+
+##### Development/Binary analysis/Firmware
+* [Binwalk](com.refirmlabs.binwalk)
+* [UEFITool](com.github.longsoft.uefitool)
+
+##### Development/Binary analysis/PE
+* [pev](com.github.merces.pev)
+
+#### Development/Database
+* [DB Browser for SQLite](com.github.sqlitebrowser.sqlitebrowser)
+* [SQLiteStudio](pl.sqlitestudio.sqlitestudio)
+
+#### Development/Flatpak
+* [Flatpak Builder](io.github.flatpak.flatpak-builder) **(Also on Flathub as `org.flatpak.Builder`)**
+
+#### Development/Kernel
+* [Hotspot](com.kdab.hotspot)
+
+#### Development/Markup & data serialization
+* [dasel](com.github.tomwright.dasel)
+* [jq](io.github.stedolan.jq)
+* [yq](io.github.kislyuk.yq)
+
+#### Development/Python
+* [pyautogit](io.github.jwlodek.pyautogit)
+* [Pyinstaller](org.pyinstaller.pyinstaller)
+
+#### Development/VCS
+* [GitHub CLI](com.github.cli)
+* [GitHub hub](com.github.hub)
+
+#### Graphics
+* [mesa-demos](org.mesa3d.mesa-demos)
+
+### Display server
+* [Sway](org.swaywm.sway)
+
+#### Display server/Remoting and screen sharing
+* [FreeRDP](com.freerdp.freerdp)
+* [Sunshine](com.github.loki_47_6F_64.sunshine)
+* [Weylus](com.github.h_m_h.weylus)
+* [wlvncc](com.github.any1.wlvncc)
+
+#### Display server/Screen config managers
+* [wdisplays](org.swaywm.wdisplays)
+
+#### Display server/Shell
+* [Hybridbar](com.github.hcsubser.hybridbar)
+* [Waybar](com.github.alexays.waybar)
+* [nwg-panel](com.github.nwg_piotr.nwg-panel
+
+#### Display server/X11
+* [Xpra](org.xpra.xpra)
+* [xeyes](org.freedesktop.xorg.xeyes)
+* [xprop](org.freedesktop.xorg.xprop)
+
+### Documents
+
+#### Documents/Journaling
+* [Journey](cloud.journey.journey)
+
+#### Documents/Notetaking
+* [Boost Note](io.boostnote.boostnote)
+
+#### Documents/Office suites and editors
+* [Zoho Writer](com.zoho.writer)
+
+#### Documents/PDF tools
+* [PDFSam](org.pdfsam.pdfsam)
+* [pdfcrack](net.sourceforge.pdfcrack)
+
+#### Documents/Text editors
+* [Neovim Qt](com.github.equalsraf.neovim-qt)
+* [Notepad++](org.notepad_plus_plus.notepadpp)
+* [l3afpad](com.github.stevenhoneyman.l3afpad)
+
+#### Documents/Viewers
+* [Pympress](io.github.cimbali.pympress)
+* [Qpdfview](net.launchpad.qpdfview)
+* [Sioyek](info.sioyek.sioyek)
+* [Zathura](org.pwmt.zathura)
+* [pdfpc](com.github.pdfpc.pdfpc)
+
+### Electronics
+
+#### Electronics/Analog circuit simulation
+* [LTspice](com.analog.ltspice) **(WIP)**
+* [Oregano](com.github.drahnr.oregano) **(EOL)**
+* [Qucs-S](com.github.ra3xdh.qucs-s)
+* [Qucs](com.github.qucs.qucs)
+* [gSpiceUI](net.sourceforge.msw012.gspiceui)
+
+#### Electronics/Digital logic
+* [BOOLR](me.boolr.boolr) **(Abandoned)**
+* [Digital](com.github.hneemann.digital)
+* [SmartSim](uk.org.smartsim.smartsim)
+
+#### Electronics/Embedded
+* [ARM Mbed Studio](com.mbed.os.mbedstudio)
+* [Arduino CLI](io.github.arduino.arduino-cli)
+* [Arduino Create Agent](cc.arduino.arduino-create-agent)
+* [Code With Mu](mu.codewith.editor)
+* [Microchip MPLAB X IDE](com.microchip.mplabx)
+* [NXP MCUXpresso IDE](com.nxp.mcuxpressoide) **(NXP are a-holes, authenticated download is required now)**
+* [TI CCSTUDIO IDE](com.ti.ccstudio)
+
+#### Electronics/HDL
+* [Icestudio](io.icestudio.icestudio)
+* [Lattice Diamond](com.latticesemi.diamond)
+* [Papilio DesignLab IDE](net.gadgetfactory.papilio-designlab) **(Abandoned)**
+* [Intel Quartus Prime ModelSim Altera Starter Edition](com.intel.quartus_prime.modelsim_ase)
+* [Intel Quartus Prime Lite](com.intel.quartus_prime.quartus_lite)
+
+#### Electronics/Printed circuit board design
+* [Autodesk Eagle](com.autodesk.eagle)
+* [gEDA](org.geda_project.geda)
+
+#### Electronics/Signals
+
+##### Electronics/Signals/Instrumentation
+* [SmuView](com.github.knarfs.smuview)
+* [PulseView](org.sigrok.pulseview)
+
+#### Science/Electronics/Signals/SDR
+* [GNU Radio](org.gnuradio.gnuradio)
+* [Gqrx SDR](dk.gqrx.gqrx)
+* [QSpectrumAnalyzer](com.github.xmikos.qspectrumanalyzer)
+* [SDR#](com.airspy.sdrsharp) **(Latest Linux Mono compatible version)**
+* [SigDigger](com.github.batchdrake.sigdigger)
+
+### Engineering/CAD
+
+#### Engineering/CAD
+* [BRL-CAD](org.brlcad.brlcad)
+* [Fusion 360](com.autodesk.fusion360) **(WIP)**
+* [LibreCAD](org.librecad.librecad)
+* [QCAD](org.qcad.qcad)
+
+#### Engineering/Calculators and unit converters
+* [bc](org.gnu.bc)
+* [bcal](com.github.jarun.bcal)
+
+### Games
+* [Cemu](info.cemu.cemu) **(WIP)**
+
+### Files
+
+#### Files/Mobile devices
+* [Android File Transfer for Linux](com.github.whoozle.android-file-transfer-linux)
+* [ifuse](org.libimobiledevice.ifuse)
+
+#### Files/File managers
+* [QtFM](com.github.rodlie.qtfm)
+* [Sunflower](org.sunflower_fm.sunflower)
+
+#### Files/Archiving and compression tools
+* [unappimage](com.github.refi64.unappimage)
+
+#### Files/Duplicates cleaners
+* [rmlint](com.github.sahib.rmlint)
+
+### Fonts
+* [Noto CJK Fonts](org.freedesktop.Platform.Fonts.NotoCJK)
+* [Noto Emoji Font](org.freedesktop.Platform.Fonts.NotoEmoji)
+* [Noto Fonts](org.freedesktop.Platform.Fonts.Noto)
+
+### Fonts/Tools
+* [Fontweak](com.github.guoyunhe.fontweak) **(EOL)**
+* [Google Fonts Tools](com.google.fonts.gftools)
+* [LCDF Typetools](org.lcdf.lcdf-typetools)
 
 ### Internet
 
-#### Internet/Network connection
-
-##### Internet/Network connection/Diagnostics
-* [speedtest-cli](com.github.sivel.speedtest-cli)
-
-##### Internet/Network connection/Network managers
-* [Airport Utility](com.apple.airport-utility)
-* [iwgtk](org.twosheds.iwgtk)
-
-#### Internet/Web browsers
-* [Chrome](com.google.chrome)
-* [Chrome Unstable](com.google.chrome-unstable)
-* [Edge Dev](com.microsoft.edge-dev)
+#### Internet/Communication
+* [Ripcord](fm.cancel.ripcord)
+* [WeeChat](org.weechat.weechat)
 
 #### Internet/File sharing
+
+##### Internet/File sharing/BitTorrent
+* [trxo](com.github.tinywrkb.trxo)
+* [tremc](com.github.tremc)
 
 ##### Internet/File sharing/Cloud sync
 * [Insync](com.insynchq.insync)
 * [Megatools](com.megous.megatools)
 * [Rclone](org.rclone.rclone)
 
-##### Internet/File sharing/BitTorrent
-* [trxo](com.github.tinywrkb.trxo)
-* [tremc](com.github.tremc)
+#### Internet/Media downloaders
+* [youtube-dl](org.ytdl.youtube-dl)
 
-#### Internet/Communication
-* [weechat](org.weechat.weechat)
+#### Internet/URL watcher
+* [urlwatch](io.thp.urlwatch)
+
+#### Internet/Web browsers
+* [Chrome](com.google.chrome)
+* [Chrome Unstable](com.google.chrome-unstable)
+* [Edge Dev](com.microsoft.edge-dev)
+
+### Math
+
+#### Math/Algebra
+* [wxMaxima](com.github.wxmaxima_developers.wxmaxima)
 
 ### Multimedia
 
 #### Multimedia/Codecs
-* [ffmpeg](org.ffmpeg.ffmpeg)
+* [FFmpeg](org.ffmpeg.ffmpeg)
+
+#### Multimedia/Icons
+* [icoutils](org.nongnu.icoutils)
 
 #### Multimedia/Image
 * [PTGui](com.ptgui.ptgui)
@@ -121,7 +330,11 @@ fc-cache
 * [jhead](com.github.matthias_wandel.jhead)
 * [qimgv](com.github.easymodo.qimgv)
 
+##### Multimedia/Image/Screenshot
+* [Swappy](com.github.jtheoof.swappy)
+
 #### Multimedia/Audio
+* [mps-youtube](com.github.mps-youtube)
 * [QjackCtl](io.sourceforge.qjackctl)
 * [Qsynth](io.sourceforge.qsynth)
 * [pasystray](com.github.christophgysin.pasystray)
@@ -130,46 +343,50 @@ fc-cache
 #### Multimedia/Video
 * [mpv](io.mpv.player)
 
-### Utilities
+### Network
 
-#### Utilities/Terminal
+#### Network/Diagnostics
+* [speedtest-cli](com.github.sivel.speedtest-cli)
 
-##### Utilities/Terminal/Shell tools
+#### Network/Network managers
+* [Airport Utility](com.apple.airport-utility)
+* [iwgtk](org.twosheds.iwgtk)
+
+### Security
+
+#### Security/2FA, passwords & keys
+* [Authy](com.authy.authy)
+* [gpg-tui](dev.orhun.gpg-tui)
+
+#### Security/Analysis & pentesting
+* [SSHGuard](net.sshguard.sshguard)
+
+### System
+
+#### System/Benchmarking & diagnostics
+* [s-tui](io.github.amanusk.s-tui)
+
+### Terminal
+
+#### Terminal/Session tools
 * [asciinema](org.asciinema.asciinema)
 
-##### Utilities/Terminal/Text terminal emulators
+#### Terminal/Text terminal emulators
 * [minicom](org.debian.minicom)
 * [picocom](com.github.npat_efault.picocom)
 
-##### Utilities/Terminal/Video terminal emulators
+#### Terminal/Video terminal emulators
 * [alacritty](com.github.alacritty)
 * [wezterm](org.wezfurlong.wezterm)
 
-#### Utilities/Files
+### Utilities
 
-##### Utilities/Files/File managers
-* [QtFM](com.github.rodlie.qtfm)
-* [Sunflower](org.sunflower_fm.sunflower)
+#### Utilities/Calendar and date
+* [libhdate](net.sourceforge.libhdate)
+* [hebcal](io.github.hebcal.hebcal)
 
-##### Utilities/Files/Archiving and compression tools
-* [unappimage](com.github.refi64.unappimage)
+#### Utilities/Translation
+* [Translate Shell](org.soimort.translate-shell)
 
-##### Utilities/Files/Duplicates cleaners
-* [rmlint](com.github.sahib.rmlint)
-
-### Documents and texts
-
-#### Documents and texts/Text editors
-* [Neovim Qt](com.github.equalsraf.neovim-qt)
-* [Notepad++](org.notepad_plus_plus.notepadpp)
-* [l3afpad](com.github.stevenhoneyman.l3afpad)
-
-#### Documents and texts/PDF tools
-* [pdfcrack](net.sourceforge.pdfcrack)
-
-#### Documents and texts/Readers and viewers
-* [PDFSam](org.pdfsam.pdfsam)
-* [Qpdfview](net.launchpad.qpdfview)
-* [Sioyek](info.sioyek.sioyek)
-* [Zathura](org.pwmt.zathura)
-* [pdfpc](com.github.pdfpc.pdfpc)
+#### Utilities/Typing
+* [GNU Typist](org.gnu.gtypist)
