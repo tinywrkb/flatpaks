@@ -333,7 +333,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [urlwatch](io.thp.urlwatch)
 
 #### Internet/Web browsers
-* [Chrome](com.google.chrome)
+* [Chrome](com.google.chrome) **(Also on Flathub as `com.google.Chrome`)**
 * [Chrome Unstable](com.google.chrome-unstable)
 * [Edge Dev](com.microsoft.edge-dev)
 
