@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=SDLPoP
+GenericName=Game
+Comment=Play Prince of Persia
+Icon=com.github.nagyd.sdlpop
+Exec=prince
+Terminal=false
+Categories=Game;ActionGame
+Keywords=SDL2

@@ -281,6 +281,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 
 ### Games
 * [Cemu](info.cemu.cemu) **(WIP)**
+* [SDLPoP: Prince of Persia](com.github.nagyd.sdlpop)
 
 ### Files
 

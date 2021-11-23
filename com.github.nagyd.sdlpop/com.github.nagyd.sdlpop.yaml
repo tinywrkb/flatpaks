@@ -1,0 +1,59 @@
+app-id: com.github.nagyd.sdlpop
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: prince
+finish-args:
+  # TODO: test if this actually needed for gamepads
+  # TODO: might also need mounting udev database
+  - --device=all
+  - --device=dri
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: sdlpop
+    build-options:
+      cflags: -I/usr/include/SDL2
+    no-make-install: true
+    buildsystem: cmake
+    subdir: src
+    build-commands:
+      - install -Dm755 ../prince-wrapper ${FLATPAK_DEST}/bin/prince
+      - install -Dm644 ../${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      - install -Dm644 ../data/icon.png ${FLATPAK_DEST}/share/icons/hicolor/32x32/${FLATPAK_ID}.png
+      - install -Dm755 ../prince -t ${FLATPAK_DEST}/sdlpop/
+      - install -Dm644 ../SDLPoP.ini -t ${FLATPAK_DEST}/sdlpop/config-ro/
+      - |
+        cd ..
+        for f in $(find data -type f); do
+          install -Dm644 $f ${FLATPAK_DEST}/sdlpop/$f
+        done
+      - ln -s -t ${FLATPAK_DEST}/sdlpop/ /var/config/sdlpop/SDLPoP.ini
+      - mv ${FLATPAK_DEST}/sdlpop/data/music{,-ro}
+      - ln -s -t ${FLATPAK_DEST}/sdlpop/data/ /var/data/sdlpop/music
+      - install -Dm644 ../mods/mods.txt -t ${FLATPAK_DEST}/sdlpop/mods-ro/
+      - install -Dm644 ../replays/replays.txt -t ${FLATPAK_DEST}/sdlpop/replays-ro/
+      - ln -s -t ${FLATPAK_DEST}/sdlpop/ /var/data/sdlpop/{mods,replays}
+    sources:
+      - type: archive
+        url: https://github.com/NagyD/SDLPoP/archive/v1.22/SDLPoP-v1.22.tar.gz
+        sha256: 1af170f7f6def61b2ab9c3a9227feca335461d224faa99f3578fc09115ac505c
+        x-checker-data:
+          type: anitya
+          project-id: 17314
+          stable-only: true
+          url-template: https://github.com/NagyD/SDLPoP/archive/v$version/SDLPoP-$version.tar.gz
+      - type: script
+        dest-filename: prince-wrapper
+        commands:
+          - mkdir -p /var/data/sdlpop/{mods,music,replays} /var/config/sdlpop
+          - cp --no-clobber /app/sdlpop/config-ro/* /var/config/sdlpop/
+          - cp --update /app/sdlpop/data/music-ro/* /var/data/sdlpop/music/
+          - cp --update /app/sdlpop/mods-ro/* /var/data/sdlpop/mods/
+          - cp --update /app/sdlpop/replays-ro/* /var/data/sdlpop/replays/
+          - exec /app/sdlpop/prince "$@"
+      - type: file
+        path: com.github.nagyd.sdlpop.desktop
