@@ -1,3 +1,4 @@
+# TODO: fix save/load
 app-id: com.github.nagyd.sdlpop
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
