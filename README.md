@@ -79,6 +79,39 @@ fc-cache
 
 Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/FILENAME`.
 
+#### Terminal emulators: host access
+
+* SSH over tcp, use keys from an already running ssh-agent session.
+* SSH over a unix socket using socat.
+* Start a shell session on the host using flatpak-spawn.  
+  This actually doesn't work correcty, and the proper solution is implemented in [flatterm](https://gitlab.gnome.org/chergert/flatterm).
+  1. Create an override: `$ flatpak override --user --talk-name=org.freedesktop.Flatpak FLATPAK_ID`
+  2. From the sandbox, start a shell session on the host: `$ flatpak-spawn --host /bin/bash`
+* Use a terminal multiplexer.
+  1. Set the multiplexer socket path to a folder that can be bind mounted into the sandbox.
+    ```
+    export SCREENDIR=$XDG_RUNTIME_DIR/screen
+    export TMUX_TMPDIR=$XDG_RUNTIME_DIR/tmux
+    ```
+  2. Create the multiplexer socket folder on boot with systemd-tempfiles.
+    ```
+    # $XDG_CONFIG_HOME/user-tmpfiles.d/tmux.conf
+    d %t/tmux 0700 - - - -
+    ```
+    ```
+    # $XDG_CONFIG_HOME/user-tmpfiles.d/screen.conf
+    d %t/screen 0700 - - - -
+    ```
+  3. Make sure the systemd-tempfiles user service was started and enabled.
+    ```
+    $ systemctl --user enable --now systemd-tmpfiles-setup.service
+    ```
+  4. Create overrides.
+    ```
+    $ flatpak override --user --filesystem=xdg-run/tmux FLATPAK_ID
+    $ flatpak override --user --filesystem=xdg-run/screen FLATPAK_ID
+    ```
+
 
 ## List of applications
 
