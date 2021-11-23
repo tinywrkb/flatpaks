@@ -41,9 +41,10 @@ modules:
       - type: script
         dest-filename: install_fusion360
         commands:
-          - winetricks -q corefonts cjkfonts msxml4 msxml6 vcrun2017 fontsmooth=rgb win8
-          - setup_dxvk.sh install --without-dxgi --symlink
-          - regedit /app/share/wine/dll_overrides.reg
+          - wineboot -i && wineserver -w
+          - winetricks -q corefonts cjkfonts msxml4 msxml6 vcrun2017 fontsmooth=rgb win8 && wineserver -w
+          - setup_dxvk.sh install --without-dxgi --symlink && wineserver -w
+          - regedit /app/share/wine/dll_overrides.reg && wineserver -w
           - install -dm755 /tmp/.fusion-installer
           - cp --update /app/extra/lib/comtypes/gen-ro/* /tmp/.fusion-installer/
           - wine /app/extra/streamer.exe
