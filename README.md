@@ -367,7 +367,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [puddletag](net.puddletag.puddletag)
 
 #### Multimedia/Video
-* [mpv](io.mpv.player)
+* [mpv](io.mpv.player) **(Also on Flathub as `io.mpv.Mpv`)**
 
 ### Network
 
