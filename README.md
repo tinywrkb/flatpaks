@@ -392,6 +392,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 #### System/Benchmarking & diagnostics
 * [GFXBench](com.gfxbench.gfxbench) **(BROKEN, extreme memory leak)**
 * [Unigine Heaven](com.unigine.heaven)
+* [Unigine Heaven (Windows)](com.unigine.heaven-win) **(WIP)**
 * [mesa-demos](org.mesa3d.mesa-demos)
 * [s-tui](io.github.amanusk.s-tui)
 

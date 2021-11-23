@@ -1,0 +1,38 @@
+# TODO: convert to vineboot, needs display server during apply_extra or another unattended installer switch
+app-id: com.unigine.heaven-win
+runtime: org.winehq.Platform
+runtime-version: master
+sdk: org.winehq.Sdk
+command: heaven
+modules:
+  - name: heaven
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 heaven install_heaven -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      # low quality icon from the windows app
+      #- install -Dm644 ${FLATPAK_ID}.png -t ${FLATPAK_DEST}/share/icons/hicolor/64x64/apps/
+      # source: https://benchmark.unigine.com/images/logo_heaven-6a394adac7bfff1f7e2850cef91a4627.svg
+      - install -Dm644 ${FLATPAK_ID}.svg -t ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/
+    sources:
+      - type: extra-data
+        url: https://assets.unigine.com/d/Unigine_Heaven-4.0.exe
+        sha256: bf166db4578aaddaae77eeca7aa554d277f5ddc76af376df5f09f28d3322879b
+        size: 258726655
+        filename: heaven-installer.exe
+      - type: script
+        dest-filename: heaven
+        commands:
+          - exec wine "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Unigine\\Heaven Benchmark 4.0\\Heaven Benchmark 4.0.lnk" "$@"
+      - type: script
+        dest-filename: install_heaven
+        commands:
+          - wineboot -i && wineserver -w
+          - setup_dxvk.sh install --symlink && wineserver -w
+          - wine /app/extra/heaven-installer.exe /silent && wineserver -w
+      - type: file
+        path: com.unigine.heaven-win.desktop
+      #- type: file
+      #  path: com.unigine.heaven-win.png
+      - type: file
+        path: com.unigine.heaven-win.svg
