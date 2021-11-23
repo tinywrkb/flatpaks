@@ -240,7 +240,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [Arduino Create Agent](cc.arduino.arduino-create-agent)
 * [Code With Mu](mu.codewith.editor)
 * [Microchip MPLAB X IDE](com.microchip.mplabx)
-* [NXP MCUXpresso IDE](com.nxp.mcuxpressoide) **(NXP are a-holes, authenticated download is required now)**
+* [NXP MCUXpresso IDE](com.nxp.mcuxpressoide) **(Authenticated download is required now. Use the extra-data caching method)**
 * [TI CCSTUDIO IDE](com.ti.ccstudio)
 
 #### Electronics/HDL
