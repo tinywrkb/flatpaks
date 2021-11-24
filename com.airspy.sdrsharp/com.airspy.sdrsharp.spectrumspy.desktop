@@ -1,9 +1,10 @@
 [Desktop Entry]
-Encoding=UTF-8
-Name=SpectrumSpy
 Type=Application
-Comment=SpectrumSpy application
-Exec=SpectrumSpy
+Name=SpectrumSpy
+GenericName=SDR Software
+Comment=Spectrum Analyzer for Airspy
 Icon=com.airspy.sdrsharp.spectrumspy
-GenericName=SpectrumSpy
-Categories=AudioVideo;Network;
+Exec=SpectrumSpy
+Terminal=false
+Categories=Science;Electricity
+Keywords=Airspy;HackRF;Instrumentation;Radio;RTL-SDR;SDR;Signal Processing;Signals;Software Defined Radio;USRP;

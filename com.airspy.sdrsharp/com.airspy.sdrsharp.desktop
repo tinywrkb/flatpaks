@@ -1,9 +1,10 @@
 [Desktop Entry]
-Encoding=UTF-8
-Name=SDR#
 Type=Application
-Comment=SDR# application
-Exec=SDRSharp
+Name=SDR#
+GenericName=SDR Software
+Comment=The best free SDR software for Airspy and RTL-SDR dongles!
 Icon=com.airspy.sdrsharp
-GenericName=SDR#
-Categories=AudioVideo;Network;
+Exec=SDRSharp
+Terminal=false
+Categories=Science;Electricity
+Keywords=Airspy;HackRF;Instrumentation;Radio;RTL-SDR;SDR;Signal Processing;Signals;Software Defined Radio;USRP;

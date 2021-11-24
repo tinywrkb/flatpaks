@@ -1,9 +1,10 @@
 [Desktop Entry]
-Encoding=UTF-8
-Name=AirspyCalibrate
 Type=Application
-Comment=AirspyCalibrate application
-Exec=AirspyCalibrate
+Name=AirspyCalibrate
+GenericName=SDR Software
+Comment=An Airspy calibration tool
 Icon=com.airspy.sdrsharp.airspycalibrate
-GenericName=AirspyCalibrate
-Categories=AudioVideo;Network;
+Exec=AirspyCalibrate
+Terminal=false
+Categories=Science;Electricity
+Keywords=Airspy;HackRF;Instrumentation;Radio;RTL-SDR;SDR;Signal Processing;Signals;Software Defined Radio;USRP;

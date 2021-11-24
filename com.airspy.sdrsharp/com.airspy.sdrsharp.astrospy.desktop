@@ -1,9 +1,10 @@
 [Desktop Entry]
-Encoding=UTF-8
-Name=AstroSpy
 Type=Application
-Comment=AstroSpy application
-Exec=AstroSpy
+Name=AstroSpy
+GenericName=SDR Software
+Comment=Radio Astronomy with Airspy
 Icon=com.airspy.sdrsharp.astrospy
-GenericName=AstroSpy
-Categories=AudioVideo;Network;
+Exec=AstroSpy
+Terminal=false
+Categories=Science;Electricity
+Keywords=Airspy;HackRF;Instrumentation;Radio;RTL-SDR;SDR;Signal Processing;Signals;Software Defined Radio;USRP;

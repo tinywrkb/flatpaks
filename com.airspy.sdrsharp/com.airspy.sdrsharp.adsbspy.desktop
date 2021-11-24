@@ -1,9 +1,10 @@
 [Desktop Entry]
-Encoding=UTF-8
-Name=ADSBSpy
 Type=Application
-Comment=ADSBSpy application
-Exec=ADSBSpy
+Name=ADSBSpy
+GenericName=SDR Software
+Comment=An ADS-B decoder for the Airspy
 Icon=com.airspy.sdrsharp.adsbspy
-GenericName=ADSBSpy
-Categories=AudioVideo;Network;
+Exec=ADSBSpy
+Terminal=false
+Categories=Science;Electricity
+Keywords=Airspy;HackRF;Instrumentation;Radio;RTL-SDR;SDR;Signal Processing;Signals;Software Defined Radio;USRP;
