@@ -210,7 +210,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 
 #### Documents/Text editors
 * [Neovim Qt](com.github.equalsraf.neovim-qt)
-* [Notepad++](org.notepad_plus_plus.notepadpp)
+* [Notepad++](org.notepad_plus_plus.notepadpp) **(WIP)**
 * [l3afpad](com.github.stevenhoneyman.l3afpad)
 
 #### Documents/Viewers
@@ -377,7 +377,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [speedtest-cli](com.github.sivel.speedtest-cli)
 
 #### Network/Network managers
-* [Airport Utility](com.apple.airport-utility)
+* [Airport Utility](com.apple.airport-utility) **(WIP)**
 * [iwgtk](org.twosheds.iwgtk)
 
 ### Security
