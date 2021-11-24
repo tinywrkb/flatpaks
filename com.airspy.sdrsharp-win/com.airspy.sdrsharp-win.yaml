@@ -8,7 +8,6 @@ command: sdrsharp
 modules:
   - name: sdrsharp
     buildsystem: simple
-    buildsystem: simple
     build-commands:
       - install -Dm755 sdrsharp install_sdrsharp -t ${FLATPAK_DEST}/bin/
       - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
