@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Winecfg
+GenericName=Settings utility
+Comment=Configure Wine
+Icon=org.winehq.wine
+Exec=winecfg
+Terminal=false
+Categories=Settings;Utility;Emulator
+Keywords=Windows;Wine
