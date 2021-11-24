@@ -1,0 +1,54 @@
+# WARNING: no drivers are installed, will only work with SPY server (network SDR server)
+# TODO: convert to vineboot
+app-id: com.airspy.sdrsharp-win
+runtime: org.winehq.Platform
+runtime-version: master
+sdk: org.winehq.Sdk
+command: sdrsharp
+modules:
+  - name: sdrsharp
+    buildsystem: simple
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 sdrsharp install_sdrsharp -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.png -t ${FLATPAK_DEST}/share/icons/hicolor/64x64/apps/
+    sources:
+      - type: extra-data
+        url: https://www.iz3mez.it/software/SDRSharp/SDRSharp_v1830.zip
+        sha256: c7fc452f58f066e793d9994b8a5307ee0a3836e15e2236102ecb10675ddb2b12
+        size: 28158181
+        filename: sdrsharp.zip
+        x-checker-data:
+          type: anitya
+          project-id: 235213
+          stable-only: true
+          url-template: https://www.iz3mez.it/software/SDRSharp/SDRSharp_v$version.zip
+      - type: extra-data
+        url: https://download.visualstudio.microsoft.com/download/pr/1daf85dc-291b-4bb8-812e-a0df5cdb6701/85455a4a851347de26e2901e043b81e1/windowsdesktop-runtime-5.0.12-win-x64.exe
+        sha256: 620ff1ecbc2318496d17843cbb90cd682c6435ff40e601c22d16bc80e8f04549
+        size: 54943440
+        filename: dotnetcoredesktop5_x64.exe
+      - type: extra-data
+        url: https://download.visualstudio.microsoft.com/download/pr/d3318276-b6db-422e-a156-8fdab0b4f27f/c758ff5762bb1d618c093a6f125ed592/windowsdesktop-runtime-5.0.12-win-x86.exe
+        sha256: e3e2e4eda5a5118f9ca71759b5893932ee1fb7bdc9964514c57045fd68ca2911
+        size: 49326512
+        filename: dotnetcoredesktop5_x86.exe
+      - type: script
+        dest-filename: sdrsharp
+        commands:
+          - exec wine "C:\\Program Files (x86)\\SDRSharp\\SDRSharp.exe" "$@"
+      - type: script
+        dest-filename: install_sdrsharp
+        commands:
+          - wineboot -i && wineserver -w
+          - winetricks gdiplus && wineserver -w
+          # TODO: add net core 5 to winetricks
+          - wine /app/extra/dotnetcoredesktop5_x86.exe /install /quiet && wineserver -w
+          - wine /app/extra/dotnetcoredesktop5_x64.exe /install /quiet && wineserver -w
+          - install -dm755 "$HOME/.wine/drive_c/Program Files (x86)/SDRSharp/"
+          - bsdtar -xf /app/extra/sdrsharp.zip -C "$HOME/.wine/drive_c/Program Files (x86)/SDRSharp/"
+      - type: file
+        path: com.airspy.sdrsharp-win.desktop
+      - type: file
+        path: com.airspy.sdrsharp-win.png

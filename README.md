@@ -265,6 +265,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [Gqrx SDR](dk.gqrx.gqrx)
 * [QSpectrumAnalyzer](com.github.xmikos.qspectrumanalyzer)
 * [SDR#](com.airspy.sdrsharp) **(Latest Linux Mono compatible version)**
+* [SDR# (Windows)](com.airspy.sdrsharp-win) **(WIP, no drivers, SPY server only)**
 * [SigDigger](com.github.batchdrake.sigdigger)
 
 ### Engineering

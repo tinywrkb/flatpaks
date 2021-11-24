@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=SDR# (Windows)
+GenericName=SDR Software
+Comment=The best free SDR software for Airspy and RTL-SDR dongles!
+Icon=com.airspy.sdrsharp-win
+Exec=sdrsharp
+Terminal=false
+Categories=Science;Electricity
+Keywords=Airspy;HackRF;Instrumentation;Radio;RTL-SDR;SDR;Signal Processing;Signals;Software Defined Radio;USRP;
