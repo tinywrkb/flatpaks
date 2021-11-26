@@ -5,6 +5,8 @@ sdk: org.freedesktop.Sdk
 command: gdbfrontend
 finish-args:
   - --allow=devel
+  - --filesystem=home
+  - --filesystem=host
   - --share=network
   # the app will break if these vars were set by the user
   - --unset-env=TMUX
