@@ -1,0 +1,29 @@
+app-id: com.oguzhaneroglu.gdb-frontend
+runtime: org.freedesktop.Sdk
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: gdbfrontend
+finish-args:
+  - --allow=devel
+  - --share=network
+  # the app will break if these vars were set by the user
+  - --unset-env=TMUX
+  - --unset-env=TMUX_TMPDIR
+modules:
+  - name: gdbfrontend
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=/app --root=/ --optimize=1
+    sources:
+      - type: archive
+        url: https://github.com/rohanrhu/gdb-frontend/archive/v0.9.6-beta/gdb-frontend-0.9.6-beta.tar.gz
+        sha256: 559f11ec7256238d5ecad013127d9750d1f87765e34c1d117925ecf958409b34
+        x-checker-data:
+          type: anitya
+          project-id: 240071
+          stable-only: true
+          url-template: https://github.com/rohanrhu/gdb-frontend/archive/v$version/gdb-frontend-$version.tar.gz
+    modules:
+      # not a build dependency but in theis order is faster to rebuild when making changes to the app
+      - ../shared-modules/tmux/tmux.json
