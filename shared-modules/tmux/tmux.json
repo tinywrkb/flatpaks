@@ -1,0 +1,20 @@
+{
+    "name": "tmux",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/tmux/tmux/releases/download/3.2a/tmux-3.2a.tar.gz",
+            "sha256": "551553a4f82beaa8dadc9256800bcc284d7c000081e47aa6ecbb6ff36eacd05f",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 4980,
+                "stable-only": true,
+                "url-template": "https://github.com/tmux/tmux/releases/download/$version/tmux-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../libevent/libevent.json",
+        "../libutempter/libutempter.json"
+    ]
+}

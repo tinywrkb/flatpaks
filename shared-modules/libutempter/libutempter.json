@@ -1,0 +1,19 @@
+{
+    "name": "libutempter",
+    "subdir": "libutempter",
+    "no-autogen": true,
+    "make-install-args": [
+        "libdir=/app/lib",
+        "libexecdir=/app/lib",
+        "includedir=/app/include",
+        "mandir=/app/share/man"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "git://git.altlinux.org/people/ldv/packages/libutempter.git",
+            "branch": "master",
+            "commit": "63825e2244629d44dae21132b1065d7ecc0491c0"
+        }
+    ]
+}

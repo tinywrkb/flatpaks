@@ -76,62 +76,6 @@
                 }
             ]
         },
-        {
-            "name": "tmux",
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://github.com/tmux/tmux/releases/download/3.2a/tmux-3.2a.tar.gz",
-                    "sha256": "551553a4f82beaa8dadc9256800bcc284d7c000081e47aa6ecbb6ff36eacd05f",
-                    "x-checker-data": {
-                        "type": "anitya",
-                        "project-id": 4980,
-                        "stable-only": true,
-                        "url-template": "https://github.com/tmux/tmux/releases/download/$version/tmux-$version.tar.gz"
-                    }
-                }
-            ],
-            "modules": [
-                {
-                    "name": "libutempter",
-                    "subdir": "libutempter",
-                    "no-autogen": true,
-                    "make-install-args": [
-                        "libdir=/app/lib",
-                        "libexecdir=/app/lib",
-                        "includedir=/app/include",
-                        "mandir=/app/share/man"
-                    ],
-                    "sources": [
-                        {
-                            "type": "git",
-                            "url": "git://git.altlinux.org/people/ldv/packages/libutempter.git",
-                            "branch": "master",
-                            "commit": "63825e2244629d44dae21132b1065d7ecc0491c0"
-                        }
-                    ]
-                },
-                {
-                    "name": "libevent",
-                    "buildsystem": "cmake",
-                    "sources": [
-                        {
-                            "type": "archive",
-                            "url": "https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz",
-                            "sha256": "92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb",
-                            "x-checker-data": {
-                                "type": "anitya",
-                                "project-id": 1606,
-                                "stable-only": true,
-                                "url-template": "https://github.com/libevent/libevent/releases/download/release-$version-stable/libevent-$version-stable.tar.gz"
-                            }
-                        }
-                    ],
-                    "cleanup": [
-                        "/lib/cmake"
-                    ]
-                }
-            ]
-        }
+        "../tmux/tmux.json"
     ]
 }
