@@ -208,7 +208,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [Zoho Writer](com.zoho.writer)
 
 #### Documents/PDF tools
-* [PDFSam](org.pdfsam.pdfsam)
+* [PDFSam](org.pdfsam.pdfsam) **(check out [PDF Mix Tool](https://flathub.org/apps/details/eu.scarpetta.PDFMixTool), it might be a better choice)**
 * [pdfcrack](net.sourceforge.pdfcrack)
 
 #### Documents/Text editors
