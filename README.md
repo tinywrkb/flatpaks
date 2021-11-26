@@ -152,6 +152,9 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [DB Browser for SQLite](com.github.sqlitebrowser.sqlitebrowser)
 * [SQLiteStudio](pl.sqlitestudio.sqlitestudio)
 
+#### Development/Debugging
+* [GDBFrontend](com.oguzhaneroglu.gdb-frontend)
+
 #### Development/Flatpak
 * [Flatpak Builder](io.github.flatpak.flatpak-builder) **(Also on Flathub as `org.flatpak.Builder`)**
 
