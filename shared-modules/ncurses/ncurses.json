@@ -15,10 +15,7 @@
         "--with-progs"
     ],
     "post-install": [
-        "ln -s ncursesw.pc /app/lib/pkgconfig/ncurses.pc",
-        "ln -s libncursesw.so /app/lib/libncurses.so",
-        "ln -s libncursesw.so.6 /app/lib/libncurses.so.6",
-        "ln -s libncursesw.so.6.2 /app/lib/libncurses.so.6.2"
+        "./curses-compat.sh"
     ],
     "sources": [
         {
@@ -31,6 +28,10 @@
                 "stable-only": true,
                 "url-template": "https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz"
             }
+        },
+        {
+            "type": "file",
+            "path": "curses-compat.sh"
         }
     ],
     "cleanup": [
