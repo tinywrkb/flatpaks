@@ -244,6 +244,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [Code With Mu](mu.codewith.editor)
 * [Microchip MPLAB X IDE](com.microchip.mplabx)
 * [NXP MCUXpresso IDE](com.nxp.mcuxpressoide) **(Authenticated download is required now. Use the extra-data caching method)**
+* [PICsimLab](io.github.lcgamboa.picsimlab)
 * [TI CCSTUDIO IDE](com.ti.ccstudio)
 
 #### Electronics/HDL

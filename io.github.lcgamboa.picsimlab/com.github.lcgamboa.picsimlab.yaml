@@ -1,0 +1,175 @@
+app-id: io.github.lcgamboa.picsimlab
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: picsimlab
+rename-desktop-file: picsimlab.desktop
+rename-icon: picsimlab
+finish-args:
+  # for tty/usbtty access, might also need /run/udev:ro for usb hotpluging detection
+  - --device=all
+  - --device=dri
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/aclocal
+  - '*.a'
+  - '*.la'
+modules:
+  - name: picsimlab
+    no-autogen: true
+    build-commands:
+      # workaround for cp usage instead of install
+      - install -dm755 ${FLATPAK_DEST}/share/applications/
+    make-install-args:
+      - MKDIR=install -dm755
+      - prefix=${FLATPAK_DEST}
+    post-install:
+      - |
+        cd ${FLATPAK_DEST}/share
+        install -Dm644 picsimlab/picsimlab.png -t icons/hicolor/64x64/apps/
+        for app in espmsim PinViewer srtank; do
+          mv applications/{,${FLATPAK_ID}.}${app}.desktop
+          desktop-file-edit --set-key=Icon --set-value=${FLATPAK_ID}.${app} applications/${FLATPAK_ID}.${app}.desktop
+          install -Dm644 picsimlab/${app}.png icons/hicolor/64x64/apps/${FLATPAK_ID}.${app}.png
+        done
+    sources:
+      - type: archive
+        url: https://github.com/lcgamboa/picsimlab/archive/e31dd25679eae15e77400b1ac1a9e1f608c46501.tar.gz
+        sha256: 10d98abfaf250f427c7a667ca2dab65e13c3fd1cd468757e5b4e66111a03c03c
+        x-checker-data:
+          type: anitya
+          project-id: 241290
+          stable-only: true
+          versions:
+            '>': '0.8.9'
+          url-template: https://github.com/lcgamboa/picsimlab/archive/v$version.tar.gz
+      - type: shell
+        commands:
+          # temp hack, just make it build
+          # TODO: re-enable xdg-mime
+          - sed -i '/xdg-icon-resource/d;/xdg-mime/d;/update-mime-database/d;/update-desktop-database/d' src/Makefile
+          # pretty incorrect stripping here
+          - sed -i '/strip/d' src/Makefile
+      # shared liblunasvg hack
+#     - type: shell
+#       commands:
+#         - sed -i 's#^\(LIBS.*=.*\)$#\1 -L/app/lib/liblunasvg.so#' src/Makefile tools/{srtank,espmsim,PinViewer}/Makefile
+    modules:
+      - name: lxrad
+        #make-args:
+          # shared liblunasvg hack
+          #- SVGLIB=-L${FLATPAK_DEST}/lib/liblunasvg.so
+        sources:
+          - type: archive
+            url: https://github.com/lcgamboa/lxrad/archive/462ca4a7211025f5b1778f3510dcc5210df5303c.tar.gz
+            sha256: d4944e7138e27f7fca0ac7e12ebed899662e9001a83ab92f06fb4fee0d64d6eb
+            x-checker-data:
+              type: anitya
+              project-id: 241292
+              stable-only: true
+              versions:
+                '>': '0.8.9'
+              url-template: https://github.com/lcgamboa/lxrad/archive/v$version.tar.gz
+          - type: shell
+            commands:
+              # fix lunasvg location
+              - sed -i '\@^SVGLIB.*=@ s@\.\./.*/liblunasvg.a@'${FLATPAK_DEST}'/lib/liblunasvg.a@' lib/Makefile.in
+              - sed -i 's@^#include.*lunasvg.h.*$@#include <lunasvg.h>@' lib/lxutils.cc
+              - sed -i 's/^\(MKDIR.*=\).*$/\1 install -dm755/' Makefile.Conf.in
+              - sed -i 's/mkdir -p/${MKDIR}/' docs/Makefile.in
+              - sed -i '/chmod/d' {docs,share}/Makefile.in
+        modules:
+          - ../shared-modules/wxgtk/wxgtk.json
+          - name: lunasvg
+            buildsystem: cmake
+            config-opts:
+              - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+            # - -DCMAKE_CXX_FLAGS=-fPIC
+            #  - -DBUILD_SHARED_LIBS=ON
+            sources:
+              - type: archive
+                url: https://github.com/sammycage/lunasvg/archive/v2.3.0.tar.gz
+                sha256: c1a4faef9bc2f65f8c64a2770c7e10753178e7318b8f6e09b1a4f1a495524e7c
+                x-checker-data:
+                  type: anitya
+                  project-id: 241295
+                  stable-only: true
+                  url-template: https://github.com/sammycage/lunasvg/archive/v$version.tar.gz
+      - name: simavr-picsimlab
+        no-autogen: true
+        make-args:
+          - RELEASE=1
+          - build-simavr
+          # TODO: package avr-gcc and avr-libc to turn this on
+#         - build-examples
+#         - build-parts
+        make-install-args:
+          - DESTDIR=${FLATPAK_DEST}
+        sources:
+          - type: archive
+            url: https://github.com/lcgamboa/simavr/archive/v1.6a.tar.gz
+            sha256: 430d561ea0be5d316a56181ff7843208dd4aa9aba54e05216c24e08c20b89ea7
+            # TODO: add anitya entry
+#           x-checker-data:
+#             type: anitya
+#             project-id:
+#             stable-only: true
+#             url-template: https://github.com/lcgamboa/simavr/archive/v$version.tar.gz
+        modules:
+          - ../shared-modules/freeglut/freeglut.json
+      - name: picsim
+        no-autogen: true
+        make-args:
+          - AR=gcc-ar
+        make-install-args:
+          - prefix=${FLATPAK_DEST}
+        sources:
+          - type: archive
+            url: https://github.com/lcgamboa/picsim/archive/f0a066066d8930328fd4d5456eaf169cd0a65c46.tar.gz
+            sha256: ea1c1eaeac42e1a3536e6e47d8ce3b0908a86ad76749d36838fdca49c58ba97c
+            # TODO: add anitya entry
+#           x-checker-data:
+#             type: anitya
+#             project-id:
+#             stable-only: true
+#             versions:
+#               '>': '0.8.9'
+#             url-template: https://github.com/lcgamboa/picsim/archive/v$version.tar.gz
+      - name: ucsim-picsimlab
+        no-autogen: true
+        build-options:
+          cppflags: -fPIC -I./cmd.src -I./gui.src -I./sim.src
+        post-install:
+          # workaround for printing complier command instead of only targets, maybe because of the extra cppflags
+          - make -f s51.src/Makefile  -f picsimlab/print.mak print-OBJECTS_SHARED
+          - make -C picsimlab
+          - make -C picsimlab DESTDIR=${FLATPAK_DEST} install
+        sources:
+          # TODO: build stable release, and add f-e-d-c
+          - type: git
+            url: https://github.com/lcgamboa/uCsim_picsimlab
+            branch: picsimlab
+            commit: b5cb6f84eadba9367e011d11d769ce3f736e36ab
+  - name: cutecom-wrapper
+    # this needs --talk-name=org.freedesktop.Flatpak permission and maybe also --talk-name=org.freedesktop.Flatpak.*
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 cutecom -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: script
+        dest-filename: cutecom
+        commands:
+          - |
+            # try flatpak cutecom
+            flatpak-spawn --host flatpak info com.gitlab.cutecom & >/dev/null &&
+            exec flatpak-spawn --host flatpak run com.gitlab.cutecom "$@"
+          - |
+            # try host cutecom
+            flatpak-spawn --host cutecom & >/dev/null &&
+            exec flatpak-spawn --host flatpak run cutecom "$@"
+          - exit 1
