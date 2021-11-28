@@ -235,6 +235,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 #### Electronics/Digital logic
 * [BOOLR](me.boolr.boolr) **(Abandoned)**
 * [Digital](com.github.hneemann.digital)
+* [Ripes](com.github.mortbopet.ripes)
 * [SmartSim](uk.org.smartsim.smartsim)
 
 #### Electronics/Embedded
