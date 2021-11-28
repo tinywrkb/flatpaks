@@ -47,7 +47,7 @@ modules:
           stable-only: true
           versions:
             '>': '0.8.9'
-          url-template: https://github.com/lcgamboa/picsimlab/archive/v$version.tar.gz
+          url-template: https://github.com/lcgamboa/picsimlab/archive/v$version/picsimlab-$version.tar.gz
       - type: shell
         commands:
           # temp hack, just make it build
@@ -76,7 +76,7 @@ modules:
               stable-only: true
               versions:
                 '>': '0.8.9'
-              url-template: https://github.com/lcgamboa/lxrad/archive/v$version.tar.gz
+              url-template: https://github.com/lcgamboa/lxrad/archive/v$version/lxrad-$version.tar.gz
           - type: shell
             commands:
               # fix lunasvg location
@@ -94,13 +94,13 @@ modules:
             #  - -DBUILD_SHARED_LIBS=ON
             sources:
               - type: archive
-                url: https://github.com/sammycage/lunasvg/archive/v2.3.0.tar.gz
+                url: https://github.com/sammycage/lunasvg/archive/v2.3.0/lunasvg-2.3.0.tar.gz
                 sha256: c1a4faef9bc2f65f8c64a2770c7e10753178e7318b8f6e09b1a4f1a495524e7c
                 x-checker-data:
                   type: anitya
                   project-id: 241295
                   stable-only: true
-                  url-template: https://github.com/sammycage/lunasvg/archive/v$version.tar.gz
+                  url-template: https://github.com/sammycage/lunasvg/archive/v$version/lunasvg-$version.tar.gz
       - name: simavr-picsimlab
         no-autogen: true
         make-args:
@@ -111,14 +111,14 @@ modules:
           - install-simavr
         sources:
           - type: archive
-            url: https://github.com/lcgamboa/simavr/archive/v1.7.tar.gz
+            url: https://github.com/lcgamboa/simavr/archive/v1.7/simavr-1.7.tar.gz
             sha256: ec9668aab8c07b784e3d7e1fb235b88787cae72e29dc7ecb284dd6d2f5b4db8c
             # TODO: add anitya entry
 #           x-checker-data:
 #             type: anitya
 #             project-id:
 #             stable-only: true
-#             url-template: https://github.com/lcgamboa/simavr/archive/v$version.tar.gz
+#             url-template: https://github.com/lcgamboa/simavr/archive/v$version/simavr-$version.tar.gz
         modules:
           - ../shared-modules/freeglut/freeglut.json
       - name: picsim
@@ -138,7 +138,7 @@ modules:
 #             stable-only: true
 #             versions:
 #               '>': '0.8.9'
-#             url-template: https://github.com/lcgamboa/picsim/archive/v$version.tar.gz
+#             url-template: https://github.com/lcgamboa/picsim/archive/v$version/simavr-$version.tar.gz
       - name: ucsim-picsimlab
         no-autogen: true
         build-options:
