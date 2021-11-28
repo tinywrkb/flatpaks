@@ -145,7 +145,7 @@ modules:
           cppflags: -fPIC -I./cmd.src -I./gui.src -I./sim.src
         post-install:
           # workaround for printing complier command instead of only targets, maybe because of the extra cppflags
-          - make -f s51.src/Makefile  -f picsimlab/print.mak print-OBJECTS_SHARED
+          - make -f s51.src/Makefile -f picsimlab/print.mak print-OBJECTS_SHARED
           - make -C picsimlab
           - make -C picsimlab DESTDIR=${FLATPAK_DEST} install
         sources:
@@ -154,24 +154,4 @@ modules:
             url: https://github.com/lcgamboa/uCsim_picsimlab
             branch: picsimlab
             commit: b5cb6f84eadba9367e011d11d769ce3f736e36ab
-# - name: cutecom-wrapper
-#   # this needs --talk-name=org.freedesktop.Flatpak permission and maybe also --talk-name=org.freedesktop.Flatpak.*
-#   # TODO: investigate why Qt doesn't use the correct qpa platform correctly when launched by flatpak-spawn
-#   #       maybe detect this in the wrapper and force the platform
-#   buildsystem: simple
-#   build-commands:
-#     - install -Dm755 cutecom -t ${FLATPAK_DEST}/bin/
-#   sources:
-#     - type: script
-#       dest-filename: cutecom
-#       commands:
-#         - |
-#           # try flatpak cutecom
-#           flatpak-spawn --host flatpak info com.gitlab.cutecom &>/dev/null &&
-#           exec flatpak-spawn --host flatpak run com.gitlab.cutecom "$@"
-#         - |
-#           # try host cutecom
-#           flatpak-spawn --host which cutecom &>/dev/null &&
-#           exec flatpak-spawn --host flatpak run cutecom "$@"
-#         - exit 1
   - gtkterm/gtkterm.json
