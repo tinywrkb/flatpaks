@@ -1,0 +1,32 @@
+{
+    "name": "gtkterm",
+    "buildsystem": "meson",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/Jeija/gtkterm/archive/1.1.1/gtkterm-1.1.1.tar.gz",
+            "sha256": "db56c8bcd1a2d8c7357f49962164dbcdbb035130b3b8d3c9b77f55cf9f3333d1",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 9783,
+                "stable-only": true,
+                "url-template": "https://github.com/Jeija/gtkterm/archive/$version/gtkterm-$version.tar.gz"
+            }
+        },
+        {
+            "type": "shell",
+            "commands": [
+                "# quick hack until fixed in upstream, see https://github.com/Jeija/gtkterm/issues/40",
+                "sed -i '/gtktermrc/ s/HOME/XDG_CONFIG_HOME/' src/gtkterm.c"
+            ]
+        }
+    ],
+    "cleanup": [
+        "/share/applications"
+    ],
+    "modules": [
+        "../../flathub-shared-modules/gudev/gudev.json",
+        "../../flathub-shared-modules/intltool/intltool-0.51.json",
+        "../../shared-modules/vte3/vte3.json"
+    ]
+}

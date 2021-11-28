@@ -55,6 +55,8 @@ modules:
           - sed -i '/xdg-icon-resource/d;/xdg-mime/d;/update-mime-database/d;/update-desktop-database/d' src/Makefile
           # pretty incorrect stripping here
           - sed -i '/strip/d' src/Makefile
+          # use bundled gtkterm instead of cutecom
+          - sed -i -e '/lxFileExists.*cutecom/ s/usr/app/' -e 's/cutecom/gtkterm/g' src/picsimlab1.cc
       # shared liblunasvg hack
 #     - type: shell
 #       commands:
@@ -104,15 +106,13 @@ modules:
         make-args:
           - RELEASE=1
           - build-simavr
-          # TODO: package avr-gcc and avr-libc to turn this on
-#         - build-examples
-#         - build-parts
         make-install-args:
           - DESTDIR=${FLATPAK_DEST}
+          - install-simavr
         sources:
           - type: archive
-            url: https://github.com/lcgamboa/simavr/archive/v1.6a.tar.gz
-            sha256: 430d561ea0be5d316a56181ff7843208dd4aa9aba54e05216c24e08c20b89ea7
+            url: https://github.com/lcgamboa/simavr/archive/v1.7.tar.gz
+            sha256: ec9668aab8c07b784e3d7e1fb235b88787cae72e29dc7ecb284dd6d2f5b4db8c
             # TODO: add anitya entry
 #           x-checker-data:
 #             type: anitya
@@ -154,23 +154,24 @@ modules:
             url: https://github.com/lcgamboa/uCsim_picsimlab
             branch: picsimlab
             commit: b5cb6f84eadba9367e011d11d769ce3f736e36ab
-  - name: cutecom-wrapper
-    # this needs --talk-name=org.freedesktop.Flatpak permission and maybe also --talk-name=org.freedesktop.Flatpak.*
-    # TODO: investigate why Qt doesn't use the correct qpa platform correctly when launched by flatpak-spawn
-    #       maybe detect this in the wrapper and force the platform
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 cutecom -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: script
-        dest-filename: cutecom
-        commands:
-          - |
-            # try flatpak cutecom
-            flatpak-spawn --host flatpak info com.gitlab.cutecom &>/dev/null &&
-            exec flatpak-spawn --host flatpak run com.gitlab.cutecom "$@"
-          - |
-            # try host cutecom
-            flatpak-spawn --host which cutecom &>/dev/null &&
-            exec flatpak-spawn --host flatpak run cutecom "$@"
-          - exit 1
+# - name: cutecom-wrapper
+#   # this needs --talk-name=org.freedesktop.Flatpak permission and maybe also --talk-name=org.freedesktop.Flatpak.*
+#   # TODO: investigate why Qt doesn't use the correct qpa platform correctly when launched by flatpak-spawn
+#   #       maybe detect this in the wrapper and force the platform
+#   buildsystem: simple
+#   build-commands:
+#     - install -Dm755 cutecom -t ${FLATPAK_DEST}/bin/
+#   sources:
+#     - type: script
+#       dest-filename: cutecom
+#       commands:
+#         - |
+#           # try flatpak cutecom
+#           flatpak-spawn --host flatpak info com.gitlab.cutecom &>/dev/null &&
+#           exec flatpak-spawn --host flatpak run com.gitlab.cutecom "$@"
+#         - |
+#           # try host cutecom
+#           flatpak-spawn --host which cutecom &>/dev/null &&
+#           exec flatpak-spawn --host flatpak run cutecom "$@"
+#         - exit 1
+  - gtkterm/gtkterm.json
