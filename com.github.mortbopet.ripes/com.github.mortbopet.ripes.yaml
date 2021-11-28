@@ -19,22 +19,13 @@ cleanup:
 modules:
   - name: ripes
     buildsystem: cmake
-    no-make-install: true
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
-    build-commands:
-      - install -Dm755 Ripes -t ${FLATPAK_DEST}/bin/
-      - |
-        cd appdir/usr
-        for s in 16 22 24 32 48 64 128 256 512; do
-          install -Dm644 {,${FLATPAK_DEST}/}share/icons/hicolor/${s}x${s}/apps/Ripes.png
-        done
-        install -Dm644 {,${FLATPAK_DEST}/}share/applications/Ripes.desktop
     sources:
       - type: git
         url: https://github.com/mortbopet/Ripes.git
-        tag: v2.2.3
-        commit: d692d719e60dd9e6f043be337dbfa003a20dcba8
+        #tag: v2.2.3
+        commit: 7c4296fd3d7b6cf2d32b4e29f18a9e88a8f118ad
         x-checker-data:
           type: anitya
           project-id: 241361
