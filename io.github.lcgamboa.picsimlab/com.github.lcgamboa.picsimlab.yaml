@@ -156,6 +156,8 @@ modules:
             commit: b5cb6f84eadba9367e011d11d769ce3f736e36ab
   - name: cutecom-wrapper
     # this needs --talk-name=org.freedesktop.Flatpak permission and maybe also --talk-name=org.freedesktop.Flatpak.*
+    # TODO: investigate why Qt doesn't use the correct qpa platform correctly when launched by flatpak-spawn
+    #       maybe detect this in the wrapper and force the platform
     buildsystem: simple
     build-commands:
       - install -Dm755 cutecom -t ${FLATPAK_DEST}/bin/
