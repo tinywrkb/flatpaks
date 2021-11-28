@@ -413,6 +413,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 
 #### Terminal/Video terminal emulators
 * [Alacritty](com.github.alacritty)
+* [CuteCom](com.gitlab.cutecom)
 * [GTKTerm](com.github.jeija.gtkterm)
 * [Termite](com.github.aperezdc.termite)
 * [Wez's Terminal](org.wezfurlong.wezterm)

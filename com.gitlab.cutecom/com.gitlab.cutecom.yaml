@@ -1,0 +1,36 @@
+app-id: com.gitlab.cutecom
+runtime: org.kde.Platform
+runtime-version: 5.15-21.08
+sdk: org.kde.Sdk
+command: cutecom
+rename-desktop-file: cutecom.desktop
+rename-icon: cutecom
+finish-args:
+  # for tty/usbtty access, might also need /run/udev:ro for usb hotpluging detection
+  - --device=all
+  - --device=dri
+  - --share=ipc
+  # TODO: drop network access if not needed
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: cutecom
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://gitlab.com/cutecom/cutecom/-/archive/fe55f279a7da0b19948ebff6d1fb2990cccfd4fb/cutecom-fe55f279a7da0b19948ebff6d1fb2990cccfd4fb.tar.gz
+        sha256: 148bac032ba460c259bee5a9b2b78437bf08323c07147f9373cd2eafd9bc8a33
+        x-checker-data:
+          type: anitya
+          project-id: 8342
+          stable-only: true
+          versions:
+            '>': '0.51'
+          url-template: https://gitlab.com/cutecom/cutecom/-/archive/v$version/cutecom-v$version.tar.gz
