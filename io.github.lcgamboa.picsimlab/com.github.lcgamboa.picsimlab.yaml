@@ -166,10 +166,10 @@ modules:
         commands:
           - |
             # try flatpak cutecom
-            flatpak-spawn --host flatpak info com.gitlab.cutecom & >/dev/null &&
+            flatpak-spawn --host flatpak info com.gitlab.cutecom &>/dev/null &&
             exec flatpak-spawn --host flatpak run com.gitlab.cutecom "$@"
           - |
             # try host cutecom
-            flatpak-spawn --host cutecom & >/dev/null &&
+            flatpak-spawn --host which cutecom &>/dev/null &&
             exec flatpak-spawn --host flatpak run cutecom "$@"
           - exit 1
