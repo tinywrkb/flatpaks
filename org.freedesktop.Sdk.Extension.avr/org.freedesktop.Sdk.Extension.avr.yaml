@@ -1,0 +1,225 @@
+id: org.freedesktop.Sdk.Extension.avr
+branch: '21.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+build-extension: true
+separate-locales: false
+appstream-compose: false
+build-options:
+  cflags: -I/usr/lib/sdk/avr/include
+  cxxflags: -I/usr/lib/sdk/avr/include
+  ldflags: -L/usr/lib/sdk/avr/lib
+  prefix: /usr/lib/sdk/avr
+  libdir: /usr/lib/sdk/avr/lib
+  prepend-path: /usr/lib/sdk/avr/bin
+  prepend-ld-library-path: /usr/lib/sdk/avr/lib
+  prepend-pkg-config-path: /usr/lib/sdk/avr/lib/pkgconfig
+modules:
+  - name: avr-libc
+    config-opts:
+      # TODO: make use FLATPAK_ARCH instead of hardcoding this
+      # generated with config.guess
+      - --build=x86_64-unknown-linux-gnu
+      - --host=avr
+    sources:
+      - type: archive
+        url: https://download.savannah.gnu.org/releases/avr-libc/avr-libc-2.0.0.tar.bz2
+        sha256: b2dd7fd2eefd8d8646ef6a325f6f0665537e2f604ed02828ced748d49dc85b97
+        x-checker-data:
+          type: anitya
+          project-id: 14912
+          stable-only: true
+          url-template: https://download.savannah.gnu.org/releases/avr-libc/avr-libc-$version.tar.bz2
+      - type: shell
+        commands:
+          - ./bootstrap
+          - ./config.guess > config_guess.flatpak
+    modules:
+      - name: avr-gcc
+        build-options:
+          env:
+            - CFLAGS_FOR_TARGET: -O2 -pipe
+            - CXXFLAGS_FOR_TARGET: -O2 -pipe
+        builddir: true
+        config-opts:
+          - --disable-install-libiberty
+          - --disable-libssp
+          - --disable-libstdcxx-pch
+          - --disable-libunwind-exceptions
+          - --disable-linker-build-id
+          - --disable-nls
+          - --disable-werror
+          - --disable-__cxa_atexit
+          - --enable-checking=release
+          - --enable-clocale=gnu
+          - --enable-gnu-unique-object
+          - --enable-gold
+          - --enable-languages=c,c++
+          - --enable-ld=default
+          - --enable-lto
+          - --enable-plugin
+          - --enable-shared
+          - --infodir=/usr/lib/sdk/avr/share/info
+          - --libdir=/usr/lib/sdk/avr/lib
+          - --libexecdir=/usr/lib/sdk/avr/lib
+          - --mandir=/usr/lib/sdk/avr/share/man
+          - --target=avr
+          - --with-as=/usr/lib/sdk/avr/bin/avr-as
+          - --with-gnu-as
+          - --with-gnu-ld
+          - --with-ld=/usr/lib/sdk/avr/bin/avr-ld
+          - --with-plugin-ld=ld.gold
+          - --with-system-zlib
+          - --with-isl
+          - --enable-gnu-indirect-function
+        post-install:
+          - find ${FLATPAK_DEST}/lib/gcc/avr -type f -name "*.a" -exec avr-strip --strip-debug '{}' \;
+          - rm ${FLATPAK_DEST}/lib/x86_64-linux-gnu/libcc1.*
+        sources:
+          - type: archive
+            url: https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
+            sha256: d08edc536b54c372a1010ff6619dd274c0f1603aa49212ba20f7aa2cda36fa8b
+            x-checker-data:
+              type: anitya
+              project-id: 6502
+              stable-only: true
+              url-template: https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.xz
+          - type: archive
+            #url: http://isl.gforge.inria.fr/isl-0.24.tar.bz2
+            url: https://download.sourceforge.net/libisl/isl-0.24.tar.bz2
+            sha256: fcf78dd9656c10eb8cf9fbd5f59a0b6b01386205fe1934b3b287a0a1898145c0
+            dest: isl
+            x-checker-data:
+              type: anitya
+              project-id: 13286
+              stable-only: true
+              url-template: https://download.sourceforge.net/libisl/isl-$version.tar.bz2
+          - type: shell
+            commands:
+              - sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
+              - echo 11.2.0 > gcc/BASE-VER
+        modules:
+          - name: avr-binutils
+            builddir: true
+            config-opts:
+              - --with-lib-path=/usr/lib/sdk/avr/lib:/usr/lib
+              - --with-bugurl=https://flathub.org/
+              - --enable-ld=default
+              - --enable-gold
+              - --enable-plugins
+              - --enable-threads
+              - --with-pic
+              - --disable-werror
+              - --disable-multilib
+              # TODO: make use FLATPAK_ARCH instead of hardcoding this
+              # generated with config.guess
+              - --build=x86_64-pc-linux-gnu
+              - --target=avr
+            make-args:
+              - all-libctf
+              - configure-host
+              - tooldir=/usr/lib/sdk/avr
+            make-install-args:
+              - tooldir=/usr/lib/sdk/avr
+            post-install:
+              - rm ${FLATPAK_DEST}/bin/{ar,as,nm,objcopy,objdump,ranlib,strip,readelf}
+                ${FLATPAK_DEST}/lib/bfd-plugins/libdep.so
+            sources:
+              - type: archive
+                url: https://ftp.gnu.org/gnu/binutils/binutils-2.37.tar.bz2
+                sha256: 67fc1a4030d08ee877a4867d3dcab35828148f87e1fd05da6db585ed5a166bd4
+                x-checker-data:
+                  type: anitya
+                  project-id: 7981
+                  stable-only: true
+                  url-template: https://ftp.gnu.org/gnu/binutils/binutils-$version.tar.bz2
+              - type: patch
+                path: avr-binutils-size.patch
+              - type: shell
+                commands:
+                  - sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+                  - ./config.guess > config_guess.flatpak
+          - name: libmpc
+            sources:
+              - type: archive
+                url: https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
+                sha256: 17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459
+                x-checker-data:
+                  type: anitya
+                  project-id: 1667
+                  stable-only: true
+                  url-template: https://ftp.gnu.org/gnu/mpc/mpc-$version.tar.gz
+            cleanup:
+              - /share/info
+            modules:
+              - name: mpfr
+                config-opts:
+                  - --enable-shared
+                  - --enable-thread-safe
+                sources:
+                  - type: archive
+                    url: https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz
+                    sha256: 0c98a3f1732ff6ca4ea690552079da9c597872d30e96ec28414ee23c95558a7f
+                    x-checker-data:
+                      type: anitya
+                      project-id: 2019
+                      stable-only: true
+                      url-template: https://ftp.gnu.org/gnu/mpfr/mpfr-$version.tar.xz
+                  - type: patch
+                    # the cumulative patch from https://www.mpfr.org/mpfr-current/
+                    # https://www.mpfr.org/mpfr-current/allpatches
+                    # filename: mpfr-cumlative_patch-NUMBER_OF_FIXES.patch
+                    path: mpfr-cumlative_patch-13.patch
+                  - type: file
+                    url: https://www.mpfr.org/mpfr-current/allpatches
+                    sha256: 75af77904037442fcd3061a4fee2394194716c542e96989dcfac2445c842daf1
+                    dest-filename: break_build_if_patch_was_changed
+                  - type: shell
+                    commands:
+                      - autoreconf -fiv
+                cleanup:
+                  - /share/doc
+                  - /share/info
+  - name: avr-gdb
+    builddir: true
+    config-opts:
+      - --disable-nls
+      - --enable-languages=c,c++
+      - --target=avr
+      - --with-python=/usr/bin/python
+      - --with-guile=guile-2.2
+      - --with-system-readline
+      - --with-system-gdbinit=/usr/lib/sdk/avr/etc/gdb/gdbinit
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/gdb/gdb-11.1.tar.xz
+        sha256: cccfcc407b20d343fb320d4a9a2110776dd3165118ffd41f4b1b162340333f94
+        x-checker-data:
+          type: anitya
+          project-id: 11798
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/gdb/gdb-$version.tar.xz
+      - type: shell
+        commands:
+          - sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+    modules:
+      - ../shared-modules/guile/guile2.2.json
+  - name: packaging
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 {enable,install}.sh -t ${FLATPAK_DEST}/
+#     - install -Dm644 ${FLATPAK_ID}.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/
+#     - appstream-compose --basename=${FLATPAK_ID} --prefix=${FLATPAK_DEST} --origin=flatpak ${FLATPAK_ID}
+    sources:
+      - type: script
+        dest-filename: enable.sh
+        commands:
+          - export PATH=/usr/lib/sdk/avr/bin:$PATH
+          - export LD_LIBRARY_PATH=/usr/lib/sdk/avr/lib:$LD_LIBRARY_PATH
+      - type: script
+        dest-filename: install-sdk.sh
+        commands:
+          - cp -r --preserve=mode /usr/lib/sdk/avr ${FLATPAK_DEST}/
+#     - type: file
+#       path: org.freedesktop.Sdk.Extension.avr.metainfo.sml
