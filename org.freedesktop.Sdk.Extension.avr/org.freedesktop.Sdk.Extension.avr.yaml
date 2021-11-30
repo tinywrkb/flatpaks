@@ -16,6 +16,11 @@ build-options:
   prepend-path: /usr/lib/sdk/avr/bin
   prepend-ld-library-path: /usr/lib/sdk/avr/lib
   prepend-pkg-config-path: /usr/lib/sdk/avr/lib/pkgconfig
+cleanup:
+  - '*.la'
+cleanup-commands:
+  - rmdir ${FLATPAK_DEST}/lib/bfd-plugins
+  - rmdir ${FLATPAK_DEST}/lib/${FLATPAK_ARCH}-linux-gnu
 modules:
   - name: avr-libc
     config-opts:
