@@ -75,16 +75,10 @@ modules:
       - ../flathub-shared-modules/gtk2/gtk2.json
       - ../flathub-shared-modules/libsecret/libsecret.json
       - ../flathub-shared-modules/libusb/libusb.json
+      - ../flathub-shared-modules/libusb/libusb-compat.json
       - ../flathub-shared-modules/python2.7/python-2.7.json
       - ../shared-modules/gconf/gconf.json
       - ../shared-modules/ncurses5-compat/libncurses5-compat.json
-      - name: libusb-compat
-        config-opts:
-          - --disable-static
-        sources:
-          - type: archive
-            url: https://github.com/libusb/libusb-compat-0.1/releases/download/v0.1.7/libusb-compat-0.1.7.tar.gz
-            sha256: 0679ce38aa02498c1eea9c13398a0d2356883d574632a59c1e25274ed4925cf8
       - name: libcanberra
         config-opts:
           - --disable-gtk-doc
