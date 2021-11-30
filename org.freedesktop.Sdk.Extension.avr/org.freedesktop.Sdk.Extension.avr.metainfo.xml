@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="runtime">
+    <id>org.freedesktop.Sdk.Extension.avr</id>
+    <extends>org.freedesktop.Sdk</extends>
+    <name>AVR microcontrollers Sdk extension</name>
+    <summary>GNU Compiler and tools for AVR microcontrollers development</summary>
+    <!-- TODO: project_license might be required -->
+    <metadata_license>CC0-1.0</metadata_license>
+    <!-- TODO: change url to the extension repo -->
+    <url type="homepage">https://flathub.org/</url>
+    <!-- TODO: maybe don't use gcc releases here, drop this and the is-main-source property -->
+    <releases>
+        <release version="11.2.0" date="2021-07-28"/>
+    </releases>
+</component>

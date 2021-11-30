@@ -1,0 +1,23 @@
+{
+    "name": "simavr",
+    "no-autogen": true,
+    "make-install-args": [
+        "DESTDIR=${FLATPAK_DEST}"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/buserror/simavr/archive/v1.7/simavr-1.7.tar.gz",
+            "sha256": "e7b3d5f0946e84fbe76a37519d0f146d162bbf88641ee91883b3970b02c77093",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 241112,
+                "stable-only": true,
+                "url-template": "https://github.com/buserror/simavr/archive/v$version/simavr-$version.tar.gz"
+            }
+        }
+    ],
+    "modules": [
+        "../../shared-modules/freeglut/freeglut.json"
+    ]
+}

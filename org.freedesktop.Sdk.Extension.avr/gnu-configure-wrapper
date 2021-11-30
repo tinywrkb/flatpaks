@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./configure.gnu --build=$(.config-guess) "$@"

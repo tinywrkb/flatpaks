@@ -1,0 +1,23 @@
+{
+    "name": "avrdude",
+    "config-opts": [
+        "--enable-linuxgpio"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://download.savannah.gnu.org/releases/avrdude/avrdude-6.3.tar.gz",
+            "sha256": "0f9f731b6394ca7795b88359689a7fa1fba818c6e1d962513eb28da670e0a196",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 10751,
+                "stable-only": true,
+                "url-template": "https://download.savannah.gnu.org/releases/avrdude/avrdude-$version.tar.gz",
+                "modules": [
+                    "../../shared-modules/libftdi/libftdi.json",
+                    "../../shared-modules/libusb/libusb-compat.json"
+                ]
+            }
+        }
+    ]
+}
