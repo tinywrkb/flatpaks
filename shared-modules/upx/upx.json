@@ -1,0 +1,54 @@
+{
+    "name": "upx",
+    "no-autogen": true,
+    "no-make-install": true,
+    "make-args": [
+        "all",
+        "CHECK_WHITESPACE=/usr/bin/true",
+        "UPX_LZMA_VERSION=0x465",
+        "UPX_LZMADIR=/run/build/upx",
+        "CXXFLAGS_WERROR=-Wno-error=all"
+    ],
+    "build-commands": [
+        "install -Dm755 src/upx.out ${FLATPAK_DEST}/bin/upx",
+        "install -Dm644 doc/upx.1 -t ${FLATPAK_DEST}/share/man/man1/"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/upx/upx/releases/download/v3.96/upx-3.96-src.tar.xz",
+            "sha256": "47774df5c958f2868ef550fb258b97c73272cb1f44fe776b798e393465993714",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 13737,
+                "stable-only": true,
+                "url-template": "https://github.com/upx/upx/releases/download/v$version/upx-$version-src.tar.xz"
+            }
+        }
+    ],
+    "modules": [
+        {
+            "name": "ucl",
+            "build-options": {
+                "cflags": "-std=gnu90 -fPIC"
+            },
+            "config-opts": [
+                "--disable-static",
+                "--enable-shared"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.oberhumer.com/opensource/ucl/download/ucl-1.03.tar.gz",
+                    "sha256": "b865299ffd45d73412293369c9754b07637680e5c826915f097577cd27350348",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 13446,
+                        "stable-only": true,
+                        "url-template": "https://www.oberhumer.com/opensource/ucl/download/ucl-$version.tar.gz"
+                    }
+                }
+            ]
+        }
+    ]
+}
