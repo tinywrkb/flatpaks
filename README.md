@@ -235,7 +235,6 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 #### Electronics/Digital logic
 * [BOOLR](me.boolr.boolr) **(Abandoned)**
 * [Digital](com.github.hneemann.digital)
-* [Ripes](com.github.mortbopet.ripes)
 * [SmartSim](uk.org.smartsim.smartsim)
 
 #### Electronics/Embedded
@@ -414,7 +413,6 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 
 #### Terminal/Video terminal emulators
 * [Alacritty](com.github.alacritty)
-* [CuteCom](com.gitlab.cutecom)
 * [GTKTerm](com.github.jeija.gtkterm)
 * [Termite](com.github.aperezdc.termite)
 * [Wez's Terminal](org.wezfurlong.wezterm)
