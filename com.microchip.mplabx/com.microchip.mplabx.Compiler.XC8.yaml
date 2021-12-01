@@ -1,0 +1,25 @@
+id: com.microchip.mplabx.Compiler.XC8
+runtime: com.microchip.mplabx
+sdk: org.freedesktop.Sdk//21.08
+build-extension: true
+separate-locales: false
+#appstream-compose: false
+build-options:
+  prefix: /app/compilers/XC8
+modules:
+  - name: compiler-xc8
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra -t $FLATPAK_DEST/bin/
+    sources:
+      - type: extra-data
+        url: https://www.microchip.com/content/dam/mchp/documents/DEV/ProductDocuments/SoftwareTools/xc8-v2.32-full-install-linux-x64-installer.run
+        sha256: 57e52eab9a42ecf51f264bb5b56a26096affb3b66ca03f2271a67926e7225bea
+        size: 72127725
+        filename: mplabx-compiler.run
+      - type: file
+        path: apply_extra_compiler
+        dest-filename: apply_extra
+    modules:
+      # include here as the app is not available during apply_extra
+      - bitrock-unpacker/bitrock-unpacker.yaml

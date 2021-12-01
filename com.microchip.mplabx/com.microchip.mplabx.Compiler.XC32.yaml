@@ -1,0 +1,25 @@
+id: com.microchip.mplabx.Compiler.XC32
+runtime: com.microchip.mplabx
+sdk: org.freedesktop.Sdk//21.08
+build-extension: true
+separate-locales: false
+#appstream-compose: false
+build-options:
+  prefix: /app/compilers/XC32
+modules:
+  - name: compiler-xc32
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra -t $FLATPAK_DEST/bin/
+    sources:
+      - type: extra-data
+        url: https://www.microchip.com/content/dam/mchp/documents/DEV/ProductDocuments/SoftwareTools/xc32-v3.01-full-install-linux-installer.run
+        sha256: 28698be4494cc0f289681d87088f9eb5b05a65ef79585c55ecd94cc45ad5dafb
+        size: 387909122
+        filename: mplabx-compiler.run
+      - type: file
+        path: apply_extra_compiler
+        dest-filename: apply_extra
+    modules:
+      # include here as the app is not available during apply_extra
+      - bitrock-unpacker/bitrock-unpacker.yaml

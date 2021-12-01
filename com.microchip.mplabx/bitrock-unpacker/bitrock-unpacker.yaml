@@ -1,0 +1,33 @@
+name: bitrock-unpacker
+# WARNING: no license, if packaging for flathub, then it would be best to avoid the legallity
+#          uncertainty by pulling this in the extra-data step
+# original source: https://gist.github.com/mickael9/0b902da7c13207d1b86e
+buildsystem: simple
+build-commands:
+  - sed -i '/^source/ s/usr/app/' bitrock-unpacker.tcl
+  - install -Dm755 bitrock-unpacker.tcl ${FLATPAK_DEST}/bin/bitrock-unpacker
+sources:
+  - type: git
+    url: https://github.com/greyltc/bitrock-unpacker
+    branch: master
+    commit: 910499f20f760d49c36ce7b5d534b0ac004d1a08
+modules:
+  - name: sdx
+    # https://wiki.tcl-lang.org/page/sdx
+    # https://www.equi4.com/starkit/sdx.html
+    # https://chiselapp.com/user/aspect/repository/sdx/index
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 sdx.kit -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        url: http://chiselapp.com/user/aspect/repository/sdx/uv/sdx-20110317.kit
+        sha256: 04dc85d4503c037f26c2b8719e45e4e20385674fbc7404481f3c171fce0a26c3
+        dest-filename: sdx.kit
+        x-checker-data:
+          type: html
+          url: http://chiselapp.com/user/aspect/repository/sdx/index
+          version-pattern: sdx-([\d]+).kit
+          url-template: http://chiselapp.com/user/aspect/repository/sdx/uv/sdx-$version.kit
+    modules:
+      - ../../shared-modules/tclkit/tclkit.json

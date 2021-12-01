@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+# this is silly, during build and run time extension is mounted to /app/compilers/XC16
+#   during apply_extra extension is mounted to /app and the actual app isn't available
+#   and prefix is /app during build time
+export PATH=$PATH:/app/bin
+
+# extract the installer's content
+bitrock-unpacker mplabx-compiler.run ./
+rm -f mplabx-compiler.run
+
+# compiler
+mv compiler/programfiles*/* ./ && rmdir compiler{/programfiles*,}
+install -dm755 etc
+
+# license/bin
+mv licensecomponent/*Bin*/bin/{roam.lic,xclm} bin/ && rmdir licensecomponent/*Bin*/bin
+mv licensecomponent/*Bin*/etc/xclm.conf etc/ && rmdir licensecomponent/*Bin*/etc
+rmdir licensecomponent/*Bin*
+# TODO: license dir might be wrong, or maybe an actual license should added
+# TODO: add the license hack if needed
+sed -i '\@<xclm>@a \\t<xclm:LicenseDirectory xclm:path="/app/compilers/xclm/license/" />' etc/xclm.conf
+
+# license/doc
+if [ -d licensecomponent/xclmallDocs ]; then
+ mv licensecomponent/xclmallDocs/doc/* docs/ && rmdir licensecomponent/xclmallDocs{/doc,}
+fi
+
+# license/cleanup
+rm -rf licensecomponent/xclmall
+rm -rf licensecomponent/LinuxLM
+rmdir licensecomponent

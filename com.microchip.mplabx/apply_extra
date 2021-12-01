@@ -6,8 +6,8 @@ set -e
 export LD_LIBRARY_PATH=/app/lib/libfakeroot:/app/lib/libfakeroot/fakechroot:/app/lib32/libfakeroot:/app/lib32/libfakeroot/fakechroot
 
 # - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/lib/i386-linux-gnu:/usr/lib:/app/lib
-tar -xf installer.tar
-rm -f installer.tar
+tar -xf mplabx-installer.tar
+rm -f mplabx-installer.tar
 ./MPLABX-*-linux-installer.sh --tar -xf
 
 # can also extract only the mplabx installer with ./MPLABX-*-linux-installer.sh --tar -xf ./MPLABX-v5.35-linux-installer.run

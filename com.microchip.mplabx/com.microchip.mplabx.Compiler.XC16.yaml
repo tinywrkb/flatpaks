@@ -1,0 +1,25 @@
+id: com.microchip.mplabx.Compiler.XC16
+runtime: com.microchip.mplabx
+sdk: org.freedesktop.Sdk//21.08
+build-extension: true
+separate-locales: false
+#appstream-compose: false
+build-options:
+  prefix: /app/compilers/XC16
+modules:
+  - name: compiler-xc16
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra -t $FLATPAK_DEST/bin/
+    sources:
+      - type: extra-data
+        url: https://ww1.microchip.com/downloads/en/DeviceDoc/xc16-v1.70-full-install-linux64-installer.run
+        sha256: 2bf490b7b1f372578b60defe5ed5ad8023b7a04b846480f57f9d99be62b18a1d
+        size: 103716961
+        filename: mplabx-compiler.run
+      - type: file
+        path: apply_extra_compiler
+        dest-filename: apply_extra
+    modules:
+      # include here as the app is not available during apply_extra
+      - bitrock-unpacker/bitrock-unpacker.yaml

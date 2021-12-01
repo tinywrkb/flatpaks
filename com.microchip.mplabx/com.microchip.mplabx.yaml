@@ -1,12 +1,7 @@
-# TODO: add compilers as extensions
-# * MPLAB XC8 Compiler v2.20 mplabxc8
-#   https://ww1.microchip.com/downloads/en/DeviceDoc/xc8-v2.20-full-install-linux-installer.run
-# * MPLAB XC16 Compiler v1.50 / mplabxc16
-#   https://ww1.microchip.com/downloads/en/DeviceDoc/xc16-v1.50-full-install-linux64-installer.run
-# * MPLAB XC32/32++ Compiler v2.41 mplabxc32
-#   https://ww1.microchip.com/downloads/en/DeviceDoc/xc32-v2.41-full-install-linux-installer.run
-# TODO: bump runtime
-
+# TODO: add compilers support patches @ https://www.microchip.com/en-us/development-tools-tools-and-software/mplab-xc-compilers
+# TODO: evaluate if 32bit libs are still required
+# TODO: maybe switch to sdk as runtime if some dev tools are required, e.g. gdb
+# TODO: maybe add sdcc
 app-id: com.microchip.mplabx
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
@@ -15,14 +10,20 @@ sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
   - org.freedesktop.Sdk.Extension.openjdk8
   - org.freedesktop.Sdk.Extension.toolchain-i386
-#add-extensions:
+add-extensions:
+# disabled as the i386 libs were copied as a workaround for flatpak not mounting extensions during apply_extra
 #  org.freedesktop.Platform.Compat.i386:
 #    directory: lib/i386-linux-gnu
-#    version: '19.08'
+#    version: '21.08'
 #  org.freedesktop.Platform.Compat.i386.Debug:
 #    directory: lib/debug/lib/i386-linux-gnu
-#    version: '19.08'
+#    version: '21.08'
 #    no-autodownload: true
+  com.microchip.mplabx.Compiler:
+    directory: compilers
+    subdirectories: true
+    no-autodownload: true
+    auto-delete: true
 x-compat-i386-opts: &compat_i386_opts
   prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
   ldflags: -L/app/lib32
@@ -37,7 +38,6 @@ finish-args:
   - --device=all
   - --device=dri
   - --env=JAVA_HOME=/app/jre
-  - --env=PATH=/app/bin:/usr/bin:/app/jre/bin:/app/extra/mplabx/mplab_platform/bin
   - --filesystem=home
   - --persist=.cache/mplab_ide
   - --persist=.java
@@ -53,33 +53,46 @@ modules:
   - name: mplabx
     buildsystem: simple
     build-commands:
-      - install -dm755 /app/lib{,32,/i386-linux-gnu}
+      - install -dm755 ${FLATPAK_DEST}/lib{,32,/i386-linux-gnu}
       #- install -dm755 /app/lib/debug/lib/i386-linux-gnu
-      - install -Dm644 ld.so.conf -t /app/etc/
-      - install -Dm644 mplabx-install.sh -t /app/bin/
-      - install -Dm755 apply_extra -t /app/bin/
-      - install -Dm644 ${FLATPAK_ID}{,.mplab_ipe}.desktop -t /app/share/applications/
-      - install -Dm644 ide_48.png /app/share/icons/hicolor/48x48/apps/${FLATPAK_ID}.png
-      - install -Dm644 ide_256.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
-      - install -Dm644 ipe_48.png /app/share/icons/hicolor/48x48/apps/${FLATPAK_ID}.mplab_ipe.png
+      - install -dm755 ${FLATPAK_DEST}/compilers
+      - install -Dm644 ld.so.conf -t ${FLATPAK_DEST}/etc/
+      - install -Dm644 mplabx-install.sh -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 apply_extra mplab_{ide,ipe} mplabx-environment.sh -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ${FLATPAK_ID}{,.mplab_ipe}.desktop -t ${FLATPAK_DEST}/share/applications/
+      - install -Dm644 ide_48.png ${FLATPAK_DEST}/share/icons/hicolor/48x48/apps/${FLATPAK_ID}.png
+      - install -Dm644 ide_256.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
+      - install -Dm644 ipe_48.png ${FLATPAK_DEST}/share/icons/hicolor/48x48/apps/${FLATPAK_ID}.mplab_ipe.png
         # symlink executables
       - |
-          for app in mbd.sh mplab_ide mplab_ipe prjMakefilesGenerator.sh; do
-            ln -s /app/extra/mplabx/mplab_platform/bin/${app} /app/bin/${app}
+          for app in mbd.sh prjMakefilesGenerator.sh; do
+            ln -s /app/extra/mplabx/mplab_platform/bin/${app} ${FLATPAK_DEST}/bin/${app}
           done
-      - install -dm755 /app/docs
-      - install -Dm644 mplabx-override.conf /app/docs/systemd_overrides/mplabx-override.conf
-      - ln -s ../extra/docs/udev_rules /app/docs/udev_rules
+      - install -dm755 ${FLATPAK_DEST}/docs
+      - install -Dm644 mplabx-override.conf ${FLATPAK_DEST}/docs/systemd_overrides/mplabx-override.conf
+      - ln -s ../extra/docs/udev_rules ${FLATPAK_DEST}/docs/udev_rules
         # workaround for flatpak not being able to mount extensions during apply_extra
-      - cp -r /usr/lib/i386-linux-gnu/* /app/lib/i386-linux-gnu/
+      - cp -r /usr/lib/i386-linux-gnu/* ${FLATPAK_DEST}/lib/i386-linux-gnu/
     sources:
       - type: extra-data
-        filename: installer.tar
+        filename: mplabx-installer.tar
         url: https://ww1.microchip.com/downloads/en/DeviceDoc/MPLABX-v5.50(1)-linux-installer.tar
         sha256: 85be41d8da0c388c1889520b8641abf816e23ac946003b0460aaa4efaa5ad1d9
         size: 592752640
       - type: file
         path: apply_extra
+      - type: file
+        path: mplabx-environment.sh
+      - type: script
+        dest-filename: mplab_ide
+        commands:
+          - source /app/bin/mplabx-environment.sh
+          - exec /app/extra/mplabx/mplab_platform/bin/mplab_ide
+      - type: script
+        dest-filename: mplab_ipe
+        commands:
+          - source /app/bin/mplabx-environment.sh
+          - exec /app/extra/mplabx/mplab_platform/bin/mplab_ipe
       - type: file
         path: com.microchip.mplabx.desktop
       - type: file
@@ -101,17 +114,20 @@ modules:
       - ../shared-modules/fakechroot/fakechroot.json
       - ../shared-modules/fakeroot/lib32-fakeroot.json
       - ../shared-modules/fakechroot/lib32-fakechroot.json
+      # TODO: fix compilation of openjfx8 from source
+      #- openjfx8/openjfx8.json
       - name: openjfx8-bin
         buildsystem: simple
         build-commands:
-          - install -Dm755 jre/lib/amd64/* -t /app/jre/jre/lib/amd64/
-          - install -Dm644 jre/lib/ext/jfxrt.jar -t /app/jre/jre/lib/ext/
-          - install -Dm644 jre/lib/{javafx.properties,jfxswt.jar} -t /app/jre/jre/lib/
-          - install -Dm644 lib/* -t /app/jre/lib/
+          - install -Dm755 jre/lib/amd64/* -t ${FLATPAK_DEST}/jre/jre/lib/amd64/
+          - install -Dm644 jre/lib/ext/jfxrt.jar -t ${FLATPAK_DEST}/jre/jre/lib/ext/
+          - install -Dm644 jre/lib/{javafx.properties,jfxswt.jar} -t ${FLATPAK_DEST}/jre/jre/lib/
+          - install -Dm644 lib/* -t ${FLATPAK_DEST}/jre/lib/
         sources:
           - type: archive
             url: https://archive.archlinux.org/packages/j/java8-openjfx/java8-openjfx-8.u202-3-x86_64.pkg.tar.xz
             sha256: 197de9331b65824ff8303e910446c20f307a0c705f762c2a2f30f943b46f4a18
             strip-components: 4
-# TODO: get gradle to work with openjdk-1.8.0_252-adoptopenjdk
-#     - openjfx8/openjfx8.json
+      # bintrock-unpacker is needed to be packaged by extensions, as the app is not available during 
+      #   apply_extra, include it here for unpacking without an extension installed
+      - bitrock-unpacker/bitrock-unpacker.yaml
