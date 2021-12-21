@@ -35,11 +35,7 @@ modules:
       - type: script
         dest-filename: apply_extra
         commands:
-          - 7z x fusion360-installer.exe &>/dev/null
-          - rm -f fusion360-installer.exe
-          # workaround for tmpfile creation
-          - mv lib/comtypes/gen{,-ro}
-          - ln -s /tmp/.fusion-installer lib/comtypes/gen
+          - echo 'doing nothing'
       - type: script
         dest-filename: install_fusion360
         commands:
@@ -51,10 +47,7 @@ modules:
           #   - How to deploy Fusion 360 @ https://knowledge.autodesk.com/support/fusion-360/learn-explore/caas/sfdcarticles/sfdcarticles/How-to-deploy-Fusion-360.html
           #   - Fusion 360 Lab Installation Instructions @ http://www.appstreaming.autodesk.com/static/content/Fusion%20360%20Lab%20Installation.pdf
           #   - @ https://damassets.autodesk.net/content/dam/autodesk/docs/pdfs/Advanced_Fusion360_Lab_Installation_Instructions_en-GB.pdf
-          #- wine /app/extra/fusion360-installer.exe --process deploy --globalinstall --logfile c:\\users\\$USER\\temp\\fusion360-installer_$(date +'%FT%T').log --quiet && wineserver -w
-          - install -dm755 /tmp/.fusion-installer
-          - cp --update /app/extra/lib/comtypes/gen-ro/* /tmp/.fusion-installer/
-          - wine /app/extra/streamer.exe --process deploy --globalinstall --logfile c:\\users\\$USER\\temp\\streamer_$(date +'%FT%T').log --quiet && wineserver -w
+          - wine /app/extra/fusion360-installer.exe --process deploy --globalinstall --logfile c:\\users\\$USER\\temp\\fusion360-installer_$(date +'%FT%T').log --quiet && wineserver -w
       - type: file
         path: fusion360
       - type: file
