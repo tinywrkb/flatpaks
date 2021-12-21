@@ -1,5 +1,6 @@
 # WARNING: WIP, it doesn't work yet
 # TODO: add mimetypes: *. f3d and other from https://knowledge.autodesk.com/support/fusion-360/troubleshooting/caas/sfdcarticles/sfdcarticles/File-formats-supported-by-Fusion-360.html
+# INFO: skip login window with `$ fusion360 --autologin user,password`
 app-id: com.autodesk.fusion360
 runtime: org.winehq.Platform
 runtime-version: master
@@ -11,7 +12,8 @@ finish-args:
   # TODO: evalute dbus access
   - --socket=session-bus
   - --socket=system-bus
-# broken in wayland
+# broken in wayland, maybe due to the cross-process rendering issue mentioned @ https://www.winehq.org/pipermail/wine-devel/2021-December/203035.html
+#   a possible workaround is to set `QTWEBENGINE_CHROMIUM_FLAGS` as `--disable-gpu` and/or `--single-process`
 # - --socket=fallback-x11
 modules:
   - name: fusion360
@@ -45,9 +47,14 @@ modules:
           - winetricks -q corefonts cjkfonts msxml4 msxml6 vcrun2017 fontsmooth=rgb win8 && wineserver -w
           - setup_dxvk.sh install --without-dxgi --symlink && wineserver -w
           - regedit /app/share/wine/dll_overrides.reg && wineserver -w
+          # References:
+          #   - How to deploy Fusion 360 @ https://knowledge.autodesk.com/support/fusion-360/learn-explore/caas/sfdcarticles/sfdcarticles/How-to-deploy-Fusion-360.html
+          #   - Fusion 360 Lab Installation Instructions @ http://www.appstreaming.autodesk.com/static/content/Fusion%20360%20Lab%20Installation.pdf
+          #   - @ https://damassets.autodesk.net/content/dam/autodesk/docs/pdfs/Advanced_Fusion360_Lab_Installation_Instructions_en-GB.pdf
+          #- wine /app/extra/fusion360-installer.exe --process deploy --globalinstall --logfile c:\\users\\$USER\\temp\\fusion360-installer_$(date +'%FT%T').log --quiet && wineserver -w
           - install -dm755 /tmp/.fusion-installer
           - cp --update /app/extra/lib/comtypes/gen-ro/* /tmp/.fusion-installer/
-          - wine /app/extra/streamer.exe
+          - wine /app/extra/streamer.exe --process deploy --globalinstall --logfile c:\\users\\$USER\\temp\\streamer_$(date +'%FT%T').log --quiet && wineserver -w
       - type: file
         path: fusion360
       - type: file
