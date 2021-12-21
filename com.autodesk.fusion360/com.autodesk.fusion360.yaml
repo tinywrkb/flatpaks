@@ -45,8 +45,8 @@ modules:
           - regedit /app/share/wine/dll_overrides.reg && wineserver -w
           # References:
           #   - How to deploy Fusion 360 @ https://knowledge.autodesk.com/support/fusion-360/learn-explore/caas/sfdcarticles/sfdcarticles/How-to-deploy-Fusion-360.html
-          #   - Fusion 360 Lab Installation Instructions @ http://www.appstreaming.autodesk.com/static/content/Fusion%20360%20Lab%20Installation.pdf
-          #   - @ https://damassets.autodesk.net/content/dam/autodesk/docs/pdfs/Advanced_Fusion360_Lab_Installation_Instructions_en-GB.pdf
+          #   - Lab Installation Instructions @ http://www.appstreaming.autodesk.com/static/content/Fusion%20360%20Lab%20Installation.pdf
+          #   - Advanced Lab Installation Instructions @ https://damassets.autodesk.net/content/dam/autodesk/docs/pdfs/Advanced_Fusion360_Lab_Installation_Instructions_en-GB.pdf
           - wine /app/extra/fusion360-installer.exe --process deploy --globalinstall --logfile c:\\users\\$USER\\temp\\fusion360-installer_$(date +'%FT%T').log --quiet && wineserver -w
       - type: file
         path: fusion360
