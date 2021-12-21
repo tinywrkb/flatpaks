@@ -24,7 +24,7 @@ modules:
     build-commands:
       - install -Dm755 ../prince-wrapper ${FLATPAK_DEST}/bin/prince
       - install -Dm644 ../${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
-      - install -Dm644 ../data/icon.png ${FLATPAK_DEST}/share/icons/hicolor/32x32/${FLATPAK_ID}.png
+      - install -Dm644 ../data/icon.png ${FLATPAK_DEST}/share/icons/hicolor/32x32/apps/${FLATPAK_ID}.png
       - install -Dm755 ../prince -t ${FLATPAK_DEST}/sdlpop/
       - install -Dm644 ../SDLPoP.ini -t ${FLATPAK_DEST}/sdlpop/config-ro/
       - |
