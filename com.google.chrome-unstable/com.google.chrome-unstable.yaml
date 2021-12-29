@@ -9,6 +9,7 @@ finish-args:
   - --device=all
   - --device=dri
   - --env=CHROME_VERSION_EXTRA=unstable
+  - --env=GTK_PATH=/app/immodules
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
@@ -33,6 +34,13 @@ finish-args:
   # testing
 # - --socket=cups
 # - --socket=pcsc
+add-extensions:
+  org.freedesktop.Platform.IMModules:
+    directory: immodules
+    version: '21.08'
+    add-ld-path: lib
+    no-autodownload: true
+    autodelete: false
 modules:
   - name: chrome
     buildsystem: simple
@@ -46,6 +54,7 @@ modules:
       - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
       - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
       - install -Dm644 ${FLATPAK_ID}.appdata.xml -t /app/share/appdata/
+      - install -dm755  /app/immodules
     sources:
       - type: extra-data
         filename: google-chrome.deb
