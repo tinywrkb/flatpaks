@@ -1,11 +1,19 @@
 # TODO: switch to offline/cached build
 app-id: com.github.cli
-runtime: org.freedesktop.Platform
+runtime: org.freedesktop.Sdk
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.golang
 command: gh
+finish-args:
+  - --filesystem=home
+  - --filesystem=host
+  - --filesystem=~/.ssh
+  - --share=network
+  - --socket=ssh-auth
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
 modules:
   - name: github-cli
     build-options:
@@ -22,6 +30,9 @@ modules:
     post-install:
       # workaround for go annoyance
       - find /run/build/github-cli ! -perm -0200 -exec chmod u+w '{}' \;
+      - install -Dm755 ${FLATPAK_DEST}/{bin,libexec}/gh
+      - install -Dm755 gh-wrapper ${FLATPAK_DEST}/bin/gh
+      - install -Dm755 editor-wrapper ${FLATPAK_DEST}/bin/editor
     sources:
       - type: archive
         url: https://github.com/cli/cli/archive/v2.0.0.tar.gz
@@ -31,3 +42,15 @@ modules:
           project-id: 135615
           stable-only: true
           url-template: https://github.com/cli/cli/archive/v$version.tar.gz
+      - type: script
+        dest-filename: gh-wrapper
+        commands:
+          - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+          - export HOST_EDITOR=${EDITOR:-vi}
+          - export EDITOR=editor
+          - exec /app/libexec/gh "$@"
+      - type: script
+        dest-filename: editor-wrapper
+        commands:
+          - flatpak-spawn --host which ${HOST_EDITOR} || exit 1
+          - exec flatpak-spawn --host ${HOST_EDITOR} "$@"
