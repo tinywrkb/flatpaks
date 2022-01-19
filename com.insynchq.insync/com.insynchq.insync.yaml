@@ -25,6 +25,7 @@ runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: insync
 finish-args:
+  - --device=all
   - --device=dri
   - --filesystem=home
   - --own-name=org.kde.*
