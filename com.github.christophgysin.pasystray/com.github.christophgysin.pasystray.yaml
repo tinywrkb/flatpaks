@@ -50,7 +50,7 @@ modules:
           - |
             if flatpak-spawn --host which pavucontrol &>/dev/null; then
               flatpak-spawn --host pavucontrol
-            elif flatpak-spawn --host flatpak info com.github.christophgysin.pasystray &>/dev/null; then
+            elif flatpak-spawn --host flatpak info org.pulseaudio.pavucontrol &>/dev/null; then
               flatpak-spawn --host flatpak run org.pulseaudio.pavucontrol
             else
               exit 1
