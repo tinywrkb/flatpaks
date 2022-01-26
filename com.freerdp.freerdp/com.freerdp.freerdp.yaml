@@ -47,8 +47,8 @@ modules:
       - install -Dm755 ../freerdp -t /app/bin/
     sources:
       - type: archive
-        url: https://github.com/FreeRDP/FreeRDP/archive/2.4.1.tar.gz
-        sha256: 20cc4e234613db9bf89f885fc1d0bb820080b1cad66e0650fe3cb6c02ec48a59
+        url: https://github.com/FreeRDP/FreeRDP/archive/2.5.0.tar.gz
+        sha256: 1bf305141f9e0b9dce6b854ab761b5325b5a9d3b610de47e5c35edb49b3b4dcb
         x-checker-data:
           type: anitya
           project-id: 10442
