@@ -40,19 +40,18 @@ modules:
       - python3 waf install
     sources:
       - type: archive
-        url: https://github.com/mpv-player/mpv/archive/v0.33.1.tar.gz
-        sha256: 100a116b9f23bdcda3a596e9f26be3a69f166a4f1d00910d1789b6571c46f3a9
+        url: https://github.com/mpv-player/mpv/archive/8087e3371f8ffbdc8ddcbc0445392b0480ef02a4.tar.gz
+        sha256: a01446eb37c1bbcbc9cefc578058ef8779d9b6a1aafd2f56fbfe60a2eb9cb3fe
         x-checker-data:
           type: anitya
           project-id: 5348
           stable-only: true
+          versions:
+            '>': 0.34.1
           url-template: https://github.com/mpv-player/mpv/archive/v$version.tar.gz
-      # https://github.com/Oschowa/mpv/tree/pipewire
-      - type: patch
-        path: mpv-add-pipewire-audio-backend.patch
       - type: file
-        url: https://waf.io/waf-2.0.22
-        sha256: 0a09ad26a2cfc69fa26ab871cb558165b60374b5a653ff556a0c6aca63a00df1
+        url: https://waf.io/waf-2.0.23
+        sha256: 28a2e4583314a162cfcbffefb8a9202c1d7869040d30b5852da479b76d9c0491
         dest-filename: waf
         x-checker-data:
           type: anitya
@@ -60,7 +59,6 @@ modules:
           stable-only: true
           url-template: https://waf.io/waf-$version
     modules:
-      - ../shared-modules/pipewire/pipewire.json
       - name: luajit
         no-autogen: true
         cleanup:
@@ -110,21 +108,21 @@ modules:
       - install -Dm644 mpris.so -t /app/lib/mpv/
     sources:
       - type: archive
-        url: https://github.com/hoyon/mpv-mpris/archive/0.2.tar.gz
-        sha256: d21a9617759bc368d6e9cb229d099b12968f0e673db5cd0bf12d8a251516d81a
+        url: https://github.com/hoyon/mpv-mpris/archive/0.6.tar.gz
+        sha256: 8b4493cc29d09f175d6f55e6905e77429228b51241f2ae4c3681e35fefef9ae8
         x-checker-data:
           type: anitya
-          project-id: 137688
+          project-id: 236434
           stable-only: true
           url-template: https://github.com/hoyon/mpv-mpris/archive/$version.tar.gz
-  - name: mpvpaper
-    buildsystem: meson
-    sources:
-      - type: archive
-        url: https://github.com/GhostNaN/mpvpaper/archive/1.1.tar.gz
-        sha256: dc774d3ec0a14cc955af6426427870163bab858f5878ada71706473884359a33
-        x-checker-data:
-          type: anitya
-          project-id: 235058
-          stable-only: true
-          url-template: https://github.com/GhostNaN/mpvpaper/archive/$version.tar.gz
+# - name: mpvpaper
+#   buildsystem: meson
+#   sources:
+#     - type: archive
+#       url: https://github.com/GhostNaN/mpvpaper/archive/1.2.tar.gz
+#       sha256: 4bd11c9f2ff46a331ef5177cf63141d63c91ff356ab87a3fb67faec1d4d87bff
+#       x-checker-data:
+#         type: anitya
+#         project-id: 235058
+#         stable-only: true
+#         url-template: https://github.com/GhostNaN/mpvpaper/archive/$version.tar.gz
