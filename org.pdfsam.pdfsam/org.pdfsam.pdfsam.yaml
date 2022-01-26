@@ -47,9 +47,9 @@ modules:
         path: resources
       - type: extra-data
         filename: pdfsam-linux.zip
-        url: https://github.com/torakiki/pdfsam/releases/download/v4.2.6/pdfsam-4.2.6-linux.tar.gz
-        sha256: d0f0e650d5a77bcfb2ece4d395a7bc362e96f5d7c8350dcfe14bd3f3dde64917
-        size: 57684907
+        url: https://github.com/torakiki/pdfsam/releases/download/v4.2.12/pdfsam-4.2.12-linux.tar.gz
+        sha256: 870a635e7b26dae8511f28b21e62f61acc868a582ace3971eafa25da185d75f2
+        size: 65885108
         x-checker-data:
           type: anitya
           project-id: 12290
