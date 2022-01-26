@@ -102,6 +102,7 @@ modules:
               stable-only: true
               url-template: https://www.freedesktop.org/software/uchardet/releases/uchardet-$version.tar.xz
   - ../shared-modules/flatpak-spawn-wrappers/youtube-dl.json
+  - ../shared-modules/flatpak-spawn-wrappers/yt-dlp.json
   - name: mpv-mpris
     buildsystem: simple
     build-commands:
