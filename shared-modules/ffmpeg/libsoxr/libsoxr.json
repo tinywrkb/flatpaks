@@ -20,7 +20,7 @@
                 "type": "anitya",
                 "project-id": 4859,
                 "stable-only": true,
-                "url-template": "https://downloads.sourceforge.net/soxr/soxr-$version.tar.gz"
+                "url-template": "https://downloads.sourceforge.net/soxr/soxr-$version-Source.tar.xz"
             }
         }
     ]

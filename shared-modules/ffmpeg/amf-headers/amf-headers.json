@@ -8,8 +8,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://github.com/GPUOpen-LibrariesAndSDKs/AMF/archive/v.1.4.21/AMF-.1.4.21.tar.gz",
-            "sha256": "ffbd24e6e6bc47faff8e91061357046544c32733048b459f227986ea5fe30456",
+            "url": "https://github.com/GPUOpen-LibrariesAndSDKs/AMF/archive/v1.4.23/AMF-1.4.23.tar.gz",
+            "sha256": "7c8a5c91bca54e257258e4efcc61925921f2efe432efd34cf77dd9dc1803c38a",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 138182,
