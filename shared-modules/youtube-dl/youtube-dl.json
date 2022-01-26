@@ -18,5 +18,8 @@
                 "tag-template": "$version"
             }
         }
+    ],
+    "modules": [
+        "../python-pycryptodomex/python-pycryptodomex.json"
     ]
 }
