@@ -1,0 +1,16 @@
+{
+  "name": "yt-dlp",
+  "buildsystem": "simple",
+  "build-commands": [
+    "install -Dm755 yt-dlp -t /app/bin/"
+  ],
+  "sources": [
+    {
+      "type": "script",
+      "dest-filename": "yt-dlp",
+      "commands": [
+        "flatpak-spawn --host flatpak run com.github.yt-dlp \"$@\""
+      ]
+    }
+  ]
+}

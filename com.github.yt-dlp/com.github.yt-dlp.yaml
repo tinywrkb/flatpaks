@@ -1,0 +1,17 @@
+app-id: com.github.yt-dlp
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: yt-dlp
+finish-args:
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --share=network
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak.*
+modules:
+  # TODO: add fsw: aria2, atomicparsley, rtmpdump
+  - ../shared-modules/yt-dlp/yt-dlp.json
+  - ../shared-modules/flatpak-spawn-wrappers/ffmpeg.json

@@ -1,0 +1,18 @@
+{
+    "name": "python-mutagen",
+    "buildsystem": "simple",
+    "build-commands": [
+        "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"mutagen\" --no-build-isolation"
+    ],
+    "sources": [
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/f3/d9/2232a4cb9a98e2d2501f7e58d193bc49c956ef23756d7423ba1bd87e386d/mutagen-1.45.1.tar.gz",
+            "sha256": "6397602efb3c2d7baebd2166ed85731ae1c1d475abca22090b7141ff5034b3e1",
+            "x-checker-data": {
+                "type": "pypi",
+                "name": "mutagen"
+            }
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "name": "yt-dlp",
+    "buildsystem": "simple",
+    "build-commands": [
+        "python3 setup.py build",
+        "python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/yt-dlp/yt-dlp",
+            "tag": "2022.01.21",
+            "commit": "b54e1255ce175447b4f78c6a6b01ea68fd7d8ce0",
+            "x-checker-data": {
+                "type": "git",
+                "tag-pattern": "^([\\d.]+)$"
+            }
+        }
+    ],
+    "modules": [
+        "../python-mutagen/python-mutagen.json",
+        "../python-pycryptodomex/python-pycryptodomex.json",
+        "../python-websockets/python-websockets.json"
+    ]
+}
