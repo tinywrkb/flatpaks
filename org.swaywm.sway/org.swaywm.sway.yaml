@@ -29,6 +29,10 @@ cleanup:
   - '*.la'
 modules:
   - name: sway
+    build-options:
+      env:
+        # workaround to use the updated meson version
+        - PYTHONPATH=/app/lib/python3.9/site-packages
     buildsystem: meson
     config-opts:
       - -Dwerror=false
@@ -43,8 +47,10 @@ modules:
     sources:
       - type: git
         url: https://github.com/swaywm/sway.git
-        # input_method_v2 popups: https://github.com/swaywm/sway/pull/5890
-        branch: pull/5890/head
+        tag: '1.7'
+      # input_method_v2 popups: https://github.com/swaywm/sway/pull/5890
+      - type: patch
+        path: 0001-text_input-Implement-input-method-popups.patch
     modules:
       - ../shared-modules/json-c/json-c.json
       - name: wlroots
@@ -55,15 +61,12 @@ modules:
         buildsystem: meson
         config-opts:
           - --libdir=lib
-          - -Dlogind=disabled
-          - -Dlibseat=disabled
           - -Dxwayland=disabled
-          - -Dx11-backend=disabled
           - -Dexamples=false
         sources:
           - type: git
-            url: https://github.com/swaywm/wlroots.git
-            branch: master
+            url: https://gitlab.freedesktop.org/wlroots/wlroots.git
+            tag: 0.15.0
         modules:
           - ../shared-modules/meson/meson.json
           # this doesn't work, wlroots hardcodes /tmp/.X11-unix and flatpak covers it with tmpfs
@@ -108,6 +111,29 @@ modules:
           #        - type: archive
           #          url: https://xorg.freedesktop.org/archive/individual/font/font-util-1.3.2.tar.bz2
           #          sha256: 3ad880444123ac06a7238546fa38a2a6ad7f7e0cc3614de7e103863616522282
+          # freedesktop 21.08's libdrm is too old
+          - name: libdrm
+            buildsystem: meson
+            config-opts:
+              - -Dlibkms=false
+              - -Dintel=false
+              - -Dradeon=false
+              - -Damdgpu=false
+              - -Dnouveau=false
+              - -Dvmwgfx=false
+              - -Dcairo-tests=false
+              - -Dman-pages=false
+              - -Dvalgrind=false
+              - -Dudev=false
+            sources:
+              - type: archive
+                url: https://dri.freedesktop.org/libdrm/libdrm-2.4.109.tar.xz
+                sha256: 629352e08c1fe84862ca046598d8a08ce14d26ab25ee1f4704f993d074cb7f26
+                x-checker-data:
+                  type: anitya
+                  project-id: 1596
+                  stable-only: true
+                  url-template: https://dri.freedesktop.org/libdrm/libdrm-$version.tar.xz
           - name: libinput
             buildsystem: meson
             config-opts:
@@ -119,8 +145,8 @@ modules:
               - --libexec=lib
             sources:
               - type: archive
-                url: https://freedesktop.org/software/libinput/libinput-1.19.0.tar.xz
-                sha256: 3d3a2f12b4a65cd82684121ae4b33cdc3ad541c761a55e8eb73a8e5e443cccbb
+                url: https://freedesktop.org/software/libinput/libinput-1.19.3.tar.xz
+                sha256: 3cae78ccde19d7d0f387e58bc734d4d17ab5f6426f54a9e8b728c90b17baa068
                 x-checker-data:
                   type: anitya
                   project-id: 5781
@@ -156,13 +182,27 @@ modules:
               - -Dman-pages=disabled
             sources:
               - type: archive
-                url: https://git.sr.ht/~kennylevinsen/seatd/archive/0.6.2.tar.gz
-                sha256: 1e2745ea39266de40d5beb24011782da95468b81ecfa410dd0db5ff75c665727
+                url: https://git.sr.ht/~kennylevinsen/seatd/archive/0.6.3.tar.gz
+                sha256: 5226850c163b485aebe71da0d3f4941761637e146a5c9393cb40c52617ad84a8
                 x-checker-data:
                   type: anitya
                   project-id: 234932
                   stable-only: true
                   url-template: https://git.sr.ht/~kennylevinsen/seatd/archive/$version.tar.gz
+          - name: wayland
+            buildsystem: meson
+            config-opts:
+              - -Dtests=false
+              - -Ddocumentation=false
+            sources:
+              - type: archive
+                url: https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz
+                sha256: b8a034154c7059772e0fdbd27dbfcda6c732df29cae56a82274f6ec5d7cd8725
+                x-checker-data:
+                  type: anitya
+                  project-id: 10061
+                  stable-only: true
+                  url-template: https://wayland.freedesktop.org/releases/wayland-$version.tar.xz
   - name: package
     buildsystem: simple
     build-commands:
@@ -172,7 +212,7 @@ modules:
         dest-filename: sway.sh
         commands:
           - |
-              export WAYLAND_DISPLAY=$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
-              export SWAYSOCK=$XDG_RUNTIME_DIR/app/org.swaywm.sway/sway-ipc.sock
-              export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR/app/org.swaywm.sway
-              exec sway "$@"
+            export WAYLAND_DISPLAY=$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
+            export SWAYSOCK=$XDG_RUNTIME_DIR/app/org.swaywm.sway/sway-ipc.sock
+            export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR/app/org.swaywm.sway
+            exec sway "$@"
