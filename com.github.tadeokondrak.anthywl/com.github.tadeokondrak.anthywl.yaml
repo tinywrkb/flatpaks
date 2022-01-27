@@ -1,0 +1,38 @@
+app-id: com.github.tadeokondrak.anthywl
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: anthywl
+finish-args:
+  - --device=dri
+  - --share=network
+  - --socket=session-bus
+  - --socket=wayland
+  - --socket=x11
+modules:
+  - name: anthywl
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/tadeokondrak/anthywl
+        branch: master
+        commit: f424052f853a4a8aea928a0f3b293b489a014134
+    modules:
+      - name: anthy
+        # https://es.osdn.net/projects/anthy
+        sources:
+          - type: archive
+            url: https://osdn.dl.osdn.net/anthy/37536/anthy-9100h.tar.gz
+            sha256: d256f075f018b4a3cb0d165ed6151fda4ba7db1621727e0eb54569b6e2275547
+            x-checker-data:
+              type: html
+              url: https://osdn.net/projects/anthy/releases/rss
+              version-pattern: downloads/[\d]*/anthy-([\d]+[\w]{1})\.tar.gz
+              url-template: https://osdn.dl.osdn.net/anthy/37536/anthy-$version.tar.gz
+      - name: libscfg
+        buildsystem: meson
+        sources:
+          - type: git
+            url: https://git.sr.ht/~emersion/libscfg
+            branch: master
+            commit: a4f023d2e1c2c2ac71eb23a989bd58bd3f77fb2a
