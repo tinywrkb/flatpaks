@@ -1,0 +1,73 @@
+app-id: com.gitlab.klamonte.xtermdoom
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk
+command: xtermdoom
+finish-args:
+  - --env=JAVA_HOME=/app/jre
+  - --env=JEXER_ARGS=-Djexer.ECMA48.sixelPaletteSize=64 -Djexer.ECMA48.sixelFastAndDirty=true -Djexer.Swing=false
+  - --env=PATH=/app/bin:/usr/bin:/app/jre/bin
+  - --env=TERM=xterm
+  - --socket=pulseaudio
+modules:
+  - name: xtermdoom
+    build-options:
+      append-path: /usr/lib/sdk/openjdk/bin
+      env:
+        - JAVA_HOME=/usr/lib/sdk/openjdk/jvm/openjdk-17
+    buildsystem: simple
+    build-commands:
+      - ant build
+      - install -Dm644 build/jar/xtermdoom.jar -t ${FLATPAK_DEST}/lib/xtermdoom/
+      - install -Dm755 xtermdoom -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: git
+        url: https://gitlab.com/klamonte/xtermdoom
+        branch: main
+        commit: 72b90f5870c451e3ba3bd94a02941139584708b2
+      - type: script
+        dest-filename: xtermdoom
+        commands:
+          - cd /var/data
+          - |
+            [ -e doom1.wad ] || ln -s /app/extra/doom1.wad doom1.wad
+          - java $JEXER_ARGS -jar /app/lib/xtermdoom/xtermdoom.jar 2>/var/cache/xtermdoom.log
+          - reset
+    modules:
+      - name: openjre
+        buildsystem: simple
+        build-commands:
+          - /usr/lib/sdk/openjdk/install.sh
+# - name: freedoom
+#   buildsystem: simple
+#   build-commands:
+#     - install -Dm755 apply_extra -t ${FLATPAK_DEST}/bin/
+#   sources:
+#     - type: extra-data
+#       filename: freedoom.zip
+#       url: https://github.com/freedoom/freedoom/releases/download/v0.12.1/freedoom-0.12.1.zip
+#       sha256: f42c6810fc89b0282de1466c2c9c7c9818031a8d556256a6db1b69f6a77b5806
+#       size: 21996221
+#     - type: script
+#       dest-filename: apply_extra
+#       commands:
+#         - bsdtar -xf freedoom.zip --strip-components=1 '*.wad'
+#         - rm -f freedoom.zip
+#         - mv {free,}doom1.wad
+#         - mv {free,}doom2.wad
+  - name: doom-shareware
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: extra-data
+        filename: doom1.wad
+        url: https://distro.ibiblio.org/slitaz/sources/packages/d/doom1.wad
+        sha256: 1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771
+        size: 4196020
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - echo "Installing Doom shareware data"
