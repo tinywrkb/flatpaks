@@ -11,6 +11,9 @@ cleanup:
 modules:
   - name: dhex
     no-autogen: true
+    post-install:
+      - mv ${FLATPAK_DEST}/bin/dhex{,.bin}
+      - install -Dm755 dhex.sh ${FLATPAK_DEST}/bin/dhex
     sources:
       - type: archive
         url: http://www.dettus.net/dhex/dhex_0.69.tar.gz
@@ -22,5 +25,9 @@ modules:
           url-template: http://www.dettus.net/dhex/dhex_$version.tar.gz
       - type: patch
         path: dhex.patch
+      - type: script
+        dest-filename: dhex.sh
+        commands:
+          - exec dhex.bin -f /var/config/dhexrc "$@"
     modules:
       - ../shared-modules/ncurses/libncurses.json
