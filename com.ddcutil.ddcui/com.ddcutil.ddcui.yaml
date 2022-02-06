@@ -1,0 +1,79 @@
+app-id: com.ddcutil.ddcui
+runtime: org.kde.Platform
+runtime-version: 5.15-21.08
+sdk: org.kde.Sdk
+command: ddcui
+rename-desktop-file: ddcui.desktop
+rename-icon: ddcui
+rename-appdata-file: ddcui.appdata.xml
+finish-args:
+  - --device=all
+  - --device=dri
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: ddcui
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://github.com/rockowitz/ddcui/archive/v0.2.1/ddcui-0.2.1.tar.gz
+        sha256: b2832080de3a4d632b8e4cdd8402552765082335aadb70eed3184fcdf47fa63b
+        x-checker-data:
+          type: anitya
+          project-id: 242393
+          stable-only: true
+          url-template: https://github.com/rockowitz/ddcui/archive/v$version/ddcui-$version.tar.gz
+    modules:
+      - name: ddcutil
+        sources:
+          - type: archive
+            url: https://github.com/rockowitz/ddcutil/archive/v1.2.2/ddcutil-1.2.2.tar.gz
+            sha256: f6766a00b78decc0bff7345093afb444d60172967555276c93916d181287744e
+            x-checker-data:
+              type: anitya
+              project-id: 242390
+              stable-only: true
+              url-template: https://github.com/rockowitz/ddcutil/archive/v$version/ddcutil-$version.tar.gz
+        modules:
+          - ../shared-modules/libusb/libusb.json
+          - name: i2c-tools
+            no-autogen: true
+            make-args:
+              - BUILD_STATIC_LIB=0
+            make-install-args:
+              - BUILD_STATIC_LIB=0
+              - PREFIX=${FLATPAK_DEST}
+              - sbindir=${FLATPAK_DEST}/bin
+            sources:
+              - type: archive
+                url: https://www.kernel.org/pub/software/utils/i2c-tools/i2c-tools-4.3.tar.xz
+                sha256: 1f899e43603184fac32f34d72498fc737952dbc9c97a8dd9467fadfdf4600cf9
+                x-checker-data:
+                  type: anitya
+                  project-id: 9272
+                  stable-only: true
+                  url-template: https://www.kernel.org/pub/software/utils/i2c-tools/i2c-tools-$version.tar.xz
+            cleanup:
+              - /bin
+              - /share/man
+          - name: kmod
+            config-opts:
+              - --disable-tools
+            sources:
+              - type: archive
+                url: https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-29.tar.xz
+                sha256: 0b80eea7aa184ac6fd20cafa2a1fdf290ffecc70869a797079e2cc5c6225a52a
+                x-checker-data:
+                  type: anitya
+                  project-id: 1517
+                  stable-only: true
+                  url-template: https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-$version.tar.xz
+            cleanup:
+              - /share/bash-completion
