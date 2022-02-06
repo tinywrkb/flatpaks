@@ -10,7 +10,8 @@ add-extensions:
     no-autodownload: true
 command: ffmpegthumbnailer
 finish-args:
-  - --device=dri
+  # TODO: evaluate possibility of hw acceleration and usefulness
+  #- --device=dri
   - --filesystem=home
   # for image preview with ranger add this override
   #- --filesystem=xdg-cache/ranger
