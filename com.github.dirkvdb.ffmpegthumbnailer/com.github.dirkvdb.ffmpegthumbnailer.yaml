@@ -1,0 +1,32 @@
+app-id: com.github.dirkvdb.ffmpegthumbnailer
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+add-extensions:
+  org.freedesktop.Platform.ffmpeg-full:
+    directory: lib/ffmpeg
+    version: '21.08'
+    add-ld-path: .
+    no-autodownload: true
+command: ffmpegthumbnailer
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  # for image preview with ranger add this override
+  #- --filesystem=xdg-cache/ranger
+modules:
+  - name: ffmpegthumbnailer
+    buildsystem: cmake
+    post-install:
+      - install -dm755 ${FLATPAK_DEST}/lib/ffmpeg
+    sources:
+      - type: archive
+        url: https://github.com/dirkvdb/ffmpegthumbnailer/archive/d92e191dd793b12cee0a0f685f5a8d8252988399.tar.gz
+        sha256: 751a57d474bdae635ae81f43f171c3572c4bc8ed4f521c5a396671f5f5df3f0c
+        x-checker-data:
+          type: anitya
+          project-id: 230661
+          stable-only: true
+          versions:
+            '>': '2.2.2'
+          url-template: https://github.com/dirkvdb/ffmpegthumbnailer/archive/$version/ffmpegthumbnailer-$version.tar.gz
