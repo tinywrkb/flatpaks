@@ -65,5 +65,8 @@ modules:
     modules:
       - ../shared-modules/avahi/libavahi.json
       - ../shared-modules/boost/boost.json
+      # TODO: might be able to switch to the ffmpeg-full extension when ffmpeg will have hevc encoder, see config
+      #  - https://gitlab.com/freedesktop-sdk/freedesktop-sdk/-/blob/master/elements/extensions/ffmpeg-full/ffmpeg.bst
+      #  - https://gitlab.com/freedesktop-sdk/freedesktop-sdk/-/blob/master/elements/include/ffmpeg.yml
       - ../shared-modules/ffmpeg/ffmpeg-minimal.json
       - ../shared-modules/libevdev/libevdev.json
