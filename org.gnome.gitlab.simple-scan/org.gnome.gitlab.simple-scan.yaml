@@ -1,0 +1,52 @@
+# this package does not provides a sane daemon, you need to set up separately
+app-id: org.gnome.gitlab.simple-scan
+runtime: org.gnome.Platform
+runtime-version: '41'
+sdk: org.gnome.Sdk
+command: simple-scan
+rename-desktop-file: simple-scan.desktop
+rename-icon: org.gnome.SimpleScan
+finish-args:
+  - --device=dri
+  - --own-name=org.gnome.SimpleScan
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=x11
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/vala
+  - '*.a'
+  - '*.la'
+modules:
+  - name: simple-scan
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://gitlab.gnome.org/GNOME/simple-scan/-/archive/40.7/simple-scan-40.7.tar.gz
+        sha256: 89f7adb9d7a9e1e52a176af6d52df5e855729ec58e7088488ff27ea19364ebec
+        x-checker-data:
+          # TODO: fix f-e-d-c
+          type: gnome
+          name: simple-scan
+          stable-only: true
+    modules:
+      - ../shared-modules/sane/sane.json
+      - name: libgusb
+        buildsystem: meson
+        config-opts:
+          - -Ddocs=false
+          - -Dtests=false
+        sources:
+          - type: archive
+            url: https://github.com/hughsie/libgusb/archive/0.3.10/libgusb-0.3.10.tar.gz
+            sha256: e699b06f4809f9d166b13dc9f5812b0dd026591d3cae90ec5483aa2687f3b80b
+            x-checker-data:
+              type: anitya
+              project-id: 5505
+              stable-only: true
+              url-template: https://github.com/hughsie/libgusb/archive/$version/libgusb-$version.tar.gz
+        modules:
+        - ../shared-modules/libusb/libusb.json
