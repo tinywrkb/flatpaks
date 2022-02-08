@@ -3,9 +3,10 @@
     "config-opts": [
         "--disable-glib",
         "--disable-gobject",
+        "--disable-gtk3",
         "--disable-libevent",
         "--disable-qt5",
-        "--disable-gtk3",
+        "--disable-static",
         "--enable-dbus",
         "--disable-gdbm",
         "--disable-libdaemon",
@@ -17,7 +18,8 @@
     ],
     "cleanup": [
         "/bin",
-        "share/man"
+        "/lib/avahi",
+        "/share/man"
     ],
     "sources": [
         {
