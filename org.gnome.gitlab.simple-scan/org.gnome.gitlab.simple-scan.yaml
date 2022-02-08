@@ -1,3 +1,4 @@
+# WARNING: this might not work yet
 # this package does not provides a sane daemon, you need to set up separately
 app-id: org.gnome.gitlab.simple-scan
 runtime: org.gnome.Platform
