@@ -15,16 +15,27 @@
             }
         }
     },
+    "config-opts": [
+        "--bindir=${FLATPAK_DEST}/bin32",
+        "--sbindir=${FLATPAK_DEST}/bin32",
+        "--with-avahi",
+        "--with-poppler-glib",
+        "--without-gphoto2",
+        "--without-snmp",
+        "--without-usb",
+        "--without-v4l",
+        "BACKENDS=escl net"
+    ],
     "sources": [
         "sources.json"
     ],
     "modules": [
-        "../libgphoto2/lib32-libgphoto2.json"
+        "../avahi/lib32-libavahi.json",
+        "../poppler/lib32-poppler.json"
     ],
     "cleanup": [
-        "/bin",
+        "/bin32",
         "/etc",
-        "/sbin",
         "/share/doc",
         "/share/man",
         "/share/sane"

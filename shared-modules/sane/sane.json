@@ -1,5 +1,5 @@
 {
-    "name": "libsane",
+    "name": "sane",
     "config-opts": [
         "--sbindir=${FLATPAK_DEST}/bin",
         "--with-avahi",
@@ -18,7 +18,6 @@
         "../poppler/poppler.json"
     ],
     "cleanup": [
-        "/bin",
         "/etc",
         "/share/doc",
         "/share/man",
