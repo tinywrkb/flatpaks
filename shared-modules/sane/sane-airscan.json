@@ -1,12 +1,6 @@
 {
     "name": "sane-airscan",
     "buildsystem": "meson",
-    "post-install": [
-        "cp ${FLATPAK_DEST}/etc/sane.d/dll.conf ./",
-        "rm ${FLATPAK_DEST}/etc/sane.d/dll.conf",
-        "echo -e 'airscan' >> dll.conf",
-        "cp dll.conf ${FLATPAK_DEST}/etc/sane.d/"
-    ],
     "sources": [
         {
             "type": "archive",
