@@ -1,5 +1,9 @@
 # TODO: allow changing at least net.conf for remote access, if can even working with a host daemon running
 # this package does not provides a sane daemon, you need to set up separately
+# TODO: validate net backend with configured remotes
+# TODO: validate net backend with dns-sd remotes
+# TODO: validate escl backend
+# TODO: validate airscan backend with escl and wsd
 app-id: org.gnome.gitlab.simple-scan
 runtime: org.gnome.Platform
 runtime-version: '41'
