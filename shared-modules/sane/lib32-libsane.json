@@ -26,6 +26,10 @@
         "--without-v4l",
         "BACKENDS=escl net"
     ],
+    "post-install": [
+        "sed -i 's/^# \\(localhost\\)/\\1/' ${FLATPAK_DEST}/etc/sane.d/net.conf",
+        "echo -e 'escl\\nnet' > ${FLATPAK_DEST}/etc/sane.d/dll.conf"
+    ],
     "sources": [
         "sources.json"
     ],
@@ -35,7 +39,8 @@
     ],
     "cleanup": [
         "/bin32",
-        "/etc",
+        "/etc/sane.d/dll.d",
+        "/etc/sane.d/saned.conf",
         "/share/doc",
         "/share/man",
         "/share/sane"

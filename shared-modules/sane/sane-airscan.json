@@ -1,0 +1,20 @@
+{
+    "name": "sane-airscan",
+    "buildsystem": "meson",
+    "post-install": [
+        "cp ${FLATPAK_DEST}/etc/sane.d/dll.conf ./",
+        "rm ${FLATPAK_DEST}/etc/sane.d/dll.conf",
+        "echo -e 'airscan' >> dll.conf",
+        "cp dll.conf ${FLATPAK_DEST}/etc/sane.d/"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://github.com/alexpevzner/sane-airscan/archive/0.99.27/sane-airscan-0.99.27.tar.gz",
+            "sha256": "0d84ca10f9e80d8f5f6bc0f30911660667b6d5b9df8d3fd45be0dcc29775aa84"
+        }
+    ],
+    "modules": [
+        "sane.json"
+    ]
+}
