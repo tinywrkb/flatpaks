@@ -9,6 +9,8 @@ rename-desktop-file: simple-scan.desktop
 rename-icon: org.gnome.SimpleScan
 finish-args:
   - --device=dri
+  # allow the user to override the defaults. sane.d must include dll.conf for this to work
+  - --env=SANE_CONFIG_DIR=/var/config/sane.d:/app/etc/sane.d
   - --own-name=org.gnome.SimpleScan
   - --share=ipc
   - --share=network
