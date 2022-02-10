@@ -1,4 +1,4 @@
-# WARNING: this might not work yet
+# TODO: allow changing at least net.conf for remote access, if can even working with a host daemon running
 # this package does not provides a sane daemon, you need to set up separately
 app-id: org.gnome.gitlab.simple-scan
 runtime: org.gnome.Platform
@@ -15,6 +15,10 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --socket=x11
+  # TODO: fix this, needed for the app to start
+  - --socket=session-bus
+  # TODO: fix this, needed for sane
+  - --socket=system-bus
 cleanup:
   - /include
   - /lib/pkgconfig
@@ -34,7 +38,7 @@ modules:
           name: simple-scan
           stable-only: true
     modules:
-      - ../shared-modules/sane/sane.json
+      - ../shared-modules/sane/sane-airscan.json
       - name: libgusb
         buildsystem: meson
         config-opts:
