@@ -10,7 +10,7 @@
                 "type": "anitya",
                 "project-id": 121086,
                 "stable-only": true,
-                "url-template": "https://github.com/alexpevzner/sane-airscan/archive/$version/sane-airscan-$version.tar.gz",
+                "url-template": "https://github.com/alexpevzner/sane-airscan/archive/$version/sane-airscan-$version.tar.gz"
             }
         }
     ],
