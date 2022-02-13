@@ -19,7 +19,7 @@
     ],
     "modules": [
         "../avahi/libavahi.json",
-        "../poppler/poppler.json"
+        "../poppler/libpoppler.json"
     ],
     "cleanup": [
         "/etc/sane.d/dll.d",

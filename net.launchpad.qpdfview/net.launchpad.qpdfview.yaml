@@ -48,6 +48,6 @@ modules:
         commands:
           - sed -i '/#include <QVector>/a#include <QPainterPath>' sources/model.h
     modules:
-      - ../shared-modules/poppler/poppler.json
+      - ../shared-modules/poppler/libpoppler.json
       - ../shared-modules/libspectre/libspectre.json
       - ../shared-modules/djvulibre/djvulibre.json

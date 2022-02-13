@@ -68,7 +68,7 @@ modules:
           stable-only: true
           url-template: https://github.com/pwmt/zathura-pdf-poppler/archive/$version.tar.gz
     modules:
-      - ../shared-modules/poppler/poppler.json
+      - ../shared-modules/poppler/libpoppler.json
   - name: zathura-pdf-djvu
     buildsystem: meson
     sources:

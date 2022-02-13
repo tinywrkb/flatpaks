@@ -22,7 +22,7 @@ modules:
       - install -Dm644 /app/share/{pixmaps,icons/hicolor/128x128/apps}/pympress.png
     modules:
       - ../shared-modules/python-gobject/python-gobject.json
-      - ../shared-modules/poppler/poppler.json
+      - ../shared-modules/poppler/libpoppler.json
       - name: perl-dependencies
         buildsystem: simple
         build-options:

@@ -15,6 +15,7 @@
         "sources.json"
     ],
     "cleanup": [
+        "/bin",
         "/share"
     ],
     "modules": [

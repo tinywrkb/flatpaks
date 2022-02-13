@@ -1,0 +1,13 @@
+[
+    {
+        "type": "archive",
+        "url": "https://poppler.freedesktop.org/poppler-21.10.0.tar.xz",
+        "sha256": "964b5b16290fbec3fae57c2a5bcdea49bb0736bd750c3a3711c47995c9efc394",
+        "x-checker-data": {
+            "type": "anitya",
+            "project-id": 3686,
+            "stable-only": true,
+            "url-template": "https://poppler.freedesktop.org/poppler-$version.tar.xz"
+        }
+    }
+]

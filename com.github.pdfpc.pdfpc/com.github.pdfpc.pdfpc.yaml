@@ -33,7 +33,7 @@ modules:
           stable-only: true
           url-template: https://github.com/pdfpc/pdfpc/archive/v$version/pdfpc-$version.tar.gz
     modules:
-      - ../shared-modules/poppler/poppler.json
+      - ../shared-modules/poppler/libpoppler.json
       - name: discount
         make-args:
           - -j1
