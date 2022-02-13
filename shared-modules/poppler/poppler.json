@@ -14,9 +14,6 @@
     "sources": [
         "sources.json"
     ],
-    "cleanup": [
-        "/share"
-    ],
     "modules": [
         "../openjpeg2/openjpeg2.json"
     ]
