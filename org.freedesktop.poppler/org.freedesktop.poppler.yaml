@@ -1,0 +1,15 @@
+app-id: org.freedesktop.poppler
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+# TODO: add a wrapper with subcommands
+command: /bin/bash
+finish-args:
+  - --filesystem=home
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /lib/girepository-1.0
+  - /share/gir-1.0
+modules:
+  - ../shared-modules/poppler/poppler.json
