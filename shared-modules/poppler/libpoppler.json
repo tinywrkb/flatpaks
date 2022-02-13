@@ -16,7 +16,7 @@
     ],
     "cleanup": [
         "/bin",
-        "/share"
+        "/share/man"
     ],
     "modules": [
         "../openjpeg2/openjpeg2.json"
