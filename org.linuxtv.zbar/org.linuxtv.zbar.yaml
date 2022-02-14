@@ -1,0 +1,51 @@
+# TODO: add desktop file
+app-id: org.linuxtv.zbar
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: zbarcam-gtk
+finish-args:
+  - --device=all
+  - --device=dri
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=x11
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/doc
+  - '*.a'
+  - '*.la'
+modules:
+  - name: zbar
+    config-opts:
+      - --disable-doc
+      - --disable-rpath
+      - --disable-static
+      - --enable-introspection=no
+      - --enable-nls=yes
+      - --enable-video=yes
+      - --with-dbus=no
+      - --with-gir=no
+      - --with-gtk=gtk3
+      - --with-imagemagick=yes
+      - --with-jpeg=yes
+      - --with-python=no
+      - --with-x=yes
+      - --with-xshm=yes
+      - --with-xv=yes
+    sources:
+      - type: archive
+        url: https://github.com/mchehab/zbar/archive/0.23.90/zbar-0.23.90.tar.gz
+        sha256: 25fdd6726d5c4c6f95c95d37591bfbb2dde63d13d0b10cb1350923ea8b11963b
+        x-checker-data:
+          type: anitya
+          project-id: 13689
+          stable-only: false
+          url-template: https://github.com/mchehab/zbar/archive/$version/zbar-$version.tar.gz
+      - type: shell
+        commands:
+          - autoreconf -fiv
+    modules:
+      - ../shared-modules/imagemagick/imagemagick.json
