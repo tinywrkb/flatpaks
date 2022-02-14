@@ -1,5 +1,9 @@
 {
     "name": "imagemagick",
+    "config-opts": [
+        "--disable-docs",
+        "--disable-static"
+    ],
     "sources": [
         {
             "type": "archive",
