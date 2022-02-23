@@ -22,21 +22,29 @@ git submodule update
 ```
 mkdir build
 ```
-4. Build the package with flatpak-builder and install it as a user Flatpak app. Replace `manifest.yaml` with the path to application manifest.
+4. Build the package with flatpak-builder and install it as a user Flatpak app.
+   Replace `manifest.yaml` with the path to application manifest.
 ```
-flatpak-builder --install --user --force-clean --state-dir=build/flatpak-builder --repo=build/flatpak-repo build/flatpak-target manifest.yaml
+flatpak-builder --install --user --force-clean \
+  --state-dir=build/flatpak-builder \
+  --repo=build/flatpak-repo build/flatpak-target \
+  manifest.yaml
 ```
 
 ### Tips and tricks
 
 #### Font packages
 
-Flatpak does not support font packages or extensions. In order for Flatpak and host apps to use fonts installed as Flatpak package we need a few workarounds.
+Flatpak does not support font packages or extensions. In order for Flatpak and host apps to use
+fonts installed as Flatpak package we need a few workarounds.
 
 
-1. Give all our Flatpak apps access to the user's fontconfig configuration file, and also the font package installed path.  
-Due to a mismatch of `XDG_CONFIG_DIR` value between the host and the Flatpak sandbox (a different path for each app), we need to set some environment variables.  
-Also note that the fontconfig variable value need to be an absolute path, meaning it needs to be expanded before given to the `flatpak override` command.
+1. Give all our Flatpak apps access to the user's fontconfig configuration file, and also the font
+   package installed path.  
+   Due to a mismatch of `XDG_CONFIG_DIR` value between the host and the Flatpak sandbox (a different
+   path for each app), we need to set some environment variables.  
+   Also note that the fontconfig variable value need to be an absolute path, meaning it needs to be
+   expanded before given to the `flatpak override` command.
 ```
 $ flatpak override --user \
     --filesystem=~/.config/fontconfig:ro \
@@ -46,13 +54,15 @@ $ flatpak override --user \
     --env=FONTCONFIG_PATH=$XDG_CONFIG_HOME/fontconfig/conf.d
 ```
 
-If your fontconfig folder is in dotfiles, then apps that use the `--persist=.` permission (e.g. Steam) will fail to start after a first seccessful run and will output the following error message.
+If your fontconfig folder is in dotfiles, then apps that use the `--persist=.` permission (e.g. Steam)
+will fail to start after a first seccessful run and will output the following error message.
 
 ```
 bwrap: Can't make symlink at /home/USER/.config/fontconfig: File exists
 ```
-The workaround for this issue is to create first a `~/.config/fontconfig` folder before creating the dotfiles symlinks, so the folder will be bind mounted into the container instead of having
-flatpak try creating a `~/.config/fontconfig` symlink on each run.
+The workaround for this issue is to create first a `~/.config/fontconfig` folder before creating
+the dotfiles symlinks, so the folder will be bind mounted into the container instead of having
+flatpak try creating a `~/.config/fontconfig` symlink on each run.  
 This workaround requires adding a filesystem access permission to the dotfiles folder.
 ```
 $ flatpak override --user \
@@ -60,9 +70,12 @@ $ flatpak override --user \
 ```
 
 
-2. Adding the following to `$XDG_CONFIG_HOME/fontconfig/fonts.conf` will tell fontconfig to include the Flatpak font package in its scan.  
-The first directive is required because fc-cache omits the default font locations when scanning inside a Flatpak sandbox, and that's due to our use of `FONTCONFIG_FILE` variable.  
-Note that you need to replace `{FontName}` with the name of the font as defined in the Flatpak app ID, see for example the Noto fonts packages.
+2. Adding the following to `$XDG_CONFIG_HOME/fontconfig/fonts.conf` will tell fontconfig to include
+   the Flatpak font package in its scan.  
+   The first directive is required because fc-cache omits the default font locations when scanning
+   inside a Flatpak sandbox, and that's due to our use of `FONTCONFIG_FILE` variable.  
+   Note that you need to replace `{FontName}` with the name of the font as defined in the Flatpak
+   app ID, see for example the Noto fonts packages.
 
 ```
 <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
