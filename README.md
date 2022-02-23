@@ -39,11 +39,26 @@ Due to a mismatch of `XDG_CONFIG_DIR` value between the host and the Flatpak san
 Also note that the fontconfig variable value need to be an absolute path, meaning it needs to be expanded before given to the `flatpak override` command.
 ```
 $ flatpak override --user \
+    --filesystem=~/.config/fontconfig:ro \
     --filesystem=~/.local/share/flatpak:ro \
     --filesystem=/var/lib/flatpak:ro \
     --env=FONTCONFIG_FILE=$XDG_CONFIG_HOME/fontconfig/fonts.conf \
     --env=FONTCONFIG_PATH=$XDG_CONFIG_HOME/fontconfig/conf.d
 ```
+
+If your fontconfig folder is in dotfiles, then apps that use the `--persist=.` permission (e.g. Steam) will fail to start after a first seccessful run and will output the following error message.
+
+```
+bwrap: Can't make symlink at /home/USER/.config/fontconfig: File exists
+```
+The workaround for this issue is to create first a `~/.config/fontconfig` folder before creating the dotfiles symlinks, so the folder will be bind mounted into the container instead of having
+flatpak try creating a `~/.config/fontconfig` symlink on each run.
+This workaround requires adding a filesystem access permission to the dotfiles folder.
+```
+$ flatpak override --user \
+    --filesystem=~/.dotfiles/fontconfig/.config/fontconfig:ro
+```
+
 
 2. Adding the following to `$XDG_CONFIG_HOME/fontconfig/fonts.conf` will tell fontconfig to include the Flatpak font package in its scan.  
 The first directive is required because fc-cache omits the default font locations when scanning inside a Flatpak sandbox, and that's due to our use of `FONTCONFIG_FILE` variable.  
