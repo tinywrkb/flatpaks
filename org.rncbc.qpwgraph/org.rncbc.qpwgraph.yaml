@@ -1,0 +1,35 @@
+app-id: org.rncbc.qpwgraph
+runtime: org.kde.Platform
+runtime-version: '6.2'
+sdk: org.kde.Sdk
+command: qpwgraph
+rename-desktop-file: org.freedesktop.rncbc.qpwgraph.desktop
+rename-icon: qpwgraph
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-run/pipewire-0:ro
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=x11
+  - --talk-name=com.canonical.AppMenu.Registrar
+  - --talk-name=com.canonical.dbusmenu
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  # might be needed for tray icon
+  #- --own-name=org.kde.*
+modules:
+  - name: qpwgraph
+    buildsystem: cmake
+    config-opts:
+      - -DCONFIG_BUILD_TYPE=release
+    sources:
+      - type: archive
+        url: https://gitlab.freedesktop.org/rncbc/qpwgraph/-/archive/v0.2.1/qpwgraph-v0.2.1.tar.gz
+        sha256: 5f250e2cc482aaaf7754aa2b7437dfa279313866dc0c0691a8a829f35edb9628
+        x-checker-data:
+          type: anitya
+          project-id: 242723
+          stable-only: true
+          url-template: https://gitlab.freedesktop.org/rncbc/qpwgraph/-/archive/v$version/qpwgraph-v$version.tar.gz
