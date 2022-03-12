@@ -24,43 +24,34 @@ finish-args:
   - --talk-name=com.canonical.dbusmenu
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
-cleanup:
-  - /include
-  - /lib/pkgconfig
-  - /share/man
-  - '*.a'
-  - '*.la'
 modules:
   - name: cider
     buildsystem: simple
     build-commands:
-      - install -Dm755 -t /app/bin/ apply_extra cider stub_sandbox
+      - install -dm755 ${FLATPAK_DEST}/cider
+      - |
+        bsdtar -Oxf cider.deb 'data.tar*' |
+        bsdtar -xf - \
+        -C ${FLATPAK_DEST}/cider \
+        --strip-components=3 \
+        ./opt/Cider
+      - install -Dm755 stub_sandbox ${FLATPAK_DEST}/cider/chrome-sandbox
+      - install -Dm755 cider -t ${FLATPAK_DEST}/bin/
       - |
         for s in 16 32 48 64 128 256 512; do
-          install -Dm644 ${s}.png /app/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+          install -Dm644 ${s}.png ${FLATPAK_DEST}/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
         done
-      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
     sources:
-      - type: extra-data
-        filename: cider.deb
+      - type: file
+        dest-filename: cider.deb
         url: https://1308-429851205-gh.circle-artifacts.com/0/~/Cider/dist/artifacts/cider_1.3.1308_amd64.deb
         sha256: 342abde96bac9668e7238860ba435171edd72077ed9f4b385a3546c4d8f96995
-        size: 82816984
-      - type: script
-        dest-filename: apply_extra
-        commands:
-          - |
-            bsdtar -Oxf cider.deb 'data.tar*' |
-            bsdtar -xf - \
-            --strip-components=3 \
-            ./opt/Cider
-          - rm -f cider.deb
-          - install -Dm755 /app/bin/stub_sandbox chrome-sandbox
       - type: script
         dest-filename: cider
         commands:
           - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
-          - exec zypak-wrapper /app/extra/cider "$@"
+          - exec zypak-wrapper /app/cider/cider "$@"
       - type: script
         dest-filename: stub_sandbox
         commands:
