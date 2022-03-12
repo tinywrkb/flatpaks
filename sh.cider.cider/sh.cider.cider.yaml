@@ -47,6 +47,10 @@ modules:
         dest-filename: cider.deb
         url: https://1308-429851205-gh.circle-artifacts.com/0/~/Cider/dist/artifacts/cider_1.3.1308_amd64.deb
         sha256: 342abde96bac9668e7238860ba435171edd72077ed9f4b385a3546c4d8f96995
+        x-checker-data:
+          type: html
+          url: https://circleci.com/api/v1.1/project/gh/ciderapp/Cider/latest/artifacts?branch=main&filter=successful
+          pattern: (https://.*circle-artifacts.com/.+/cider_([\d\.]+)_amd64.deb)
       - type: script
         dest-filename: cider
         commands:
