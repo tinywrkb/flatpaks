@@ -2,6 +2,8 @@ app-id: com.google.chrome-unstable
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+base: org.chromium.Chromium.BaseApp
+base-version: '21.08'
 command: chrome
 cleanup:
   - /lib/pkgconfig
@@ -9,7 +11,7 @@ finish-args:
   - --device=all
   - --device=dri
   - --env=CHROME_VERSION_EXTRA=unstable
-  - --env=GTK_PATH=/app/immodules
+  - --env=GTK_PATH=/app/lib/gtkmodules
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
@@ -17,7 +19,9 @@ finish-args:
   - --filesystem=xdg-videos
   - --filesystem=~/.local/share/applications
   - --filesystem=~/.local/share/icons
+  - --filesystem=/run/.heim_org.h5l.kcm-socket
   - --own-name=org.mpris.MediaPlayer2.chrome.*
+  - --require-version=1.8.2
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
@@ -26,6 +30,7 @@ finish-args:
   - --system-talk-name=org.bluez
   - --system-talk-name=org.freedesktop.RealtimeKit1
   - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=com.canonical.AppMenu.Registrar
   - --talk-name=org.freedesktop.FileManager1
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.ScreenSaver
@@ -34,18 +39,15 @@ finish-args:
   # testing
 # - --socket=cups
 # - --socket=pcsc
-add-extensions:
-  org.freedesktop.Platform.IMModules:
-    directory: immodules
-    version: '21.08'
-    add-ld-path: lib
-    no-autodownload: true
-    autodelete: false
+# https://github.com/flathub/org.chromium.Chromium.BaseApp/pull/3
+#cleanup-commands:
+#  - /app/cleanup-BaseApp.sh
 modules:
+  - ../shared-modules/zypak/zypak.json
   - name: chrome
     buildsystem: simple
     build-commands:
-      - install -Dm755 apply_extra chrome -t /app/bin/
+      - install -Dm755 -t /app/bin/ apply_extra chrome stub_sandbox
       - |
         install -Dm644 /dev/stdin /app/etc/cobalt.ini <<EOF
         [Application]
@@ -58,9 +60,9 @@ modules:
     sources:
       - type: extra-data
         filename: google-chrome.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_100.0.4867.0-1_amd64.deb
-        sha256: 0a8e286ee536c79d31f02068f60bd8f18527485a843ad118b1172a5538cde885
-        size: 83276364
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-unstable/google-chrome-unstable_101.0.4929.5-1_amd64.deb
+        sha256: 2d2c76707929f1312382d5b363de41cf1f95558e4c0cd5babb9d8baf0dfae018
+        size: 87522080
         x-checker-data:
           type: debian-repo
           package-name: google-chrome-unstable
@@ -83,15 +85,15 @@ modules:
         dest-filename: chrome
         commands:
           - exec cobalt "$@"
+      - type: script
+        dest-filename: stub_sandbox
+        commands:
+          - |
+            echo Stub sandbox ignoring command: $@
+            exit 1
       - type: file
         path: com.google.chrome-unstable.appdata.xml
       - type: file
         path: com.google.chrome-unstable.desktop
       - type: file
         path: com.google.chrome-unstable.svg
-    modules:
-      - ../shared-modules/zypak/zypak.json
-      - ../shared-modules/libsecret/libsecret.json
-      - ../shared-modules/flextop/flextop.json
-      - ../shared-modules/cobalt/cobalt.json
-      - ../shared-modules/pipewire/pipewire-0.2.json
