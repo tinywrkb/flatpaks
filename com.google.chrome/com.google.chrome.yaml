@@ -1,47 +1,39 @@
-# WARNING: This is not ready for everyday use.
-#
-# Known issues
-#   * When using gnome-keyring, Chrome creates its own default.keyring file in xdg-data/keyrings even
-#       though it keeps its safe storage key in the user's login keyring from the host.
-#     default.keyring is probably used for passwords but I didn't confirm it as apperently there's no tool
-#       for importing a keyring file or displaying its content, and creating a new keyring in seahorse and
-#       replacing its file doesn't make the content of default.keyring accessible via seahorse.
-#   * No access to the user's certificates from the host.
-#     If you need it then bind mount with --filesystem=~/.pki override.
-#   * Hardware security tokens do not work. Only a Yubikey was tested.
-#   * Some performance issues, like:
-#       Added latency for page refresh/new tab, maybe a non-issue and related to my local dns settings
-#         but I didn't investigate it further.
-#       New background tab fails to load the page or partially loads.
-#
-# Related bugs
-#   * https://bugs.chromium.org/p/chromium/issues/detail?id=1038587
-
 app-id: com.google.chrome
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+base: org.chromium.Chromium.BaseApp
+base-version: '21.08'
 command: chrome
 cleanup:
   - /lib/pkgconfig
+# https://github.com/flathub/org.chromium.Chromium.BaseApp/pull/3
+#cleanup-commands:
+#  - /app/cleanup-BaseApp.sh
 finish-args:
   - --device=all
   - --device=dri
   - --env=CHROME_VERSION_EXTRA=stable
+  - --env=GTK_PATH=/app/lib/gtkmodules
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
   - --filesystem=xdg-videos
+  - --filesystem=xdg-run/pipewire-0
   - --filesystem=~/.local/share/applications
   - --filesystem=~/.local/share/icons
+  - --filesystem=/run/.heim_org.h5l.kcm-socket
   - --own-name=org.mpris.MediaPlayer2.chrome.*
+  - --require-version=1.8.2
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
   - --socket=wayland
   - --socket=x11
   - --system-talk-name=org.bluez
+  - --system-talk-name=org.freedesktop.RealtimeKit1
   - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=com.canonical.AppMenu.Registrar
   - --talk-name=org.freedesktop.FileManager1
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.ScreenSaver
@@ -51,10 +43,11 @@ finish-args:
 # - --socket=cups
 # - --socket=pcsc
 modules:
+  - ../shared-modules/zypak/zypak.json
   - name: chrome
     buildsystem: simple
     build-commands:
-      - install -Dm755 apply_extra chrome -t /app/bin/
+      - install -Dm755 -t /app/bin/ apply_extra chrome stub_sandbox
       - |
         install -Dm644 /dev/stdin /app/etc/cobalt.ini <<EOF
         [Application]
@@ -66,9 +59,9 @@ modules:
     sources:
       - type: extra-data
         filename: google-chrome.deb
-        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_97.0.4692.99-1_amd64.deb
-        sha256: 48334071fa2462698301231e9d63b647f558eecc6e60a6d9cfc71805a1564ea1
-        size: 90862320
+        url: http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_99.0.4844.51-1_amd64.deb
+        sha256: a19354b3f8eee069cec49cdc44bea43d7f0cbddf6a94bb49c1e221a4ee757812
+        size: 83028384
         x-checker-data:
           type: debian-repo
           package-name: google-chrome-stable
@@ -91,15 +84,15 @@ modules:
         dest-filename: chrome
         commands:
           - exec cobalt "$@"
+      - type: script
+        dest-filename: stub_sandbox
+        commands:
+          - |
+            echo Stub sandbox ignoring command: $@
+            exit 1
       - type: file
         path: com.google.chrome.appdata.xml
       - type: file
         path: com.google.chrome.desktop
       - type: file
         path: com.google.chrome.svg
-    modules:
-      - ../shared-modules/zypak/zypak.json
-      - ../shared-modules/libsecret/libsecret.json
-      - ../shared-modules/flextop/flextop.json
-      - ../shared-modules/cobalt/cobalt.json
-      - ../shared-modules/pipewire/pipewire-0.2.json
