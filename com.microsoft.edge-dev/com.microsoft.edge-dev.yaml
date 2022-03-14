@@ -2,14 +2,19 @@ app-id: com.microsoft.edge-dev
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
+base: org.chromium.Chromium.BaseApp
+base-version: '21.08'
 command: edge
 finish-args:
   - --device=all
   - --device=dri
   - --env=CHROME_VERSION_EXTRA=dev
+  - --env=GTK_PATH=/app/lib/gtkmodules
   - --filesystem=xdg-download
   - --filesystem=xdg-run/pipewire-0:ro
+  - --filesystem=/run/.heim_org.h5l.kcm-socket
   - --own-name=org.mpris.MediaPlayer2.edge.*
+  - --require-version=1.8.2
   - --share=ipc
   - --share=network
   - --socket=cups
@@ -18,19 +23,20 @@ finish-args:
   - --socket=x11
   - --system-talk-name=org.freedesktop.Avahi
   - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=com.canonical.AppMenu.Registrar
   - --talk-name=org.freedesktop.FileManager1
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.secrets
   - --talk-name=org.gnome.SessionManager
+# https://github.com/flathub/org.chromium.Chromium.BaseApp/pull/3
+#cleanup-commands:
+#  - /app/cleanup-BaseApp.sh
 modules:
-  - ../shared-modules/libsecret/libsecret.json
   - ../shared-modules/zypak/zypak.json
-  - ../shared-modules/flextop/flextop.json
-  - ../shared-modules/cobalt/cobalt.json
   - name: edge
     buildsystem: simple
     build-commands:
-      - install -Dm755 -t /app/bin/ apply_extra edge
+      - install -Dm755 -t /app/bin/ apply_extra edge stub_sandbox
       - |
         install -Dm644 /dev/stdin /app/etc/cobalt.ini <<EOF
         [Application]
@@ -45,8 +51,8 @@ modules:
     sources:
       - type: extra-data
         # From https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev
-        url: https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/microsoft-edge-dev_99.0.1150.2-1_amd64.deb
-        sha256: a89bb048cfe13043d0a562d97cd6712d3579eaa8468625ac21b4c4445b9e89e6
+        url: https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/microsoft-edge-dev_100.0.1185.7-1_amd64.deb
+        sha256: 041646bfe1defef14bce8c71be63e44eff13e211e33b036a5cdae043c1c493b6
         filename: edge.deb
         x-checker-data:
           type: debian-repo
@@ -54,7 +60,7 @@ modules:
           root: https://packages.microsoft.com/repos/edge
           dist: stable
           component: main
-        size: 117323658
+        size: 119033748
       - type: script
         dest-filename: apply_extra
         commands:
@@ -71,6 +77,12 @@ modules:
         dest-filename: edge
         commands:
           - exec cobalt "$@"
+      - type: script
+        dest-filename: stub_sandbox
+        commands:
+          - |
+            echo Stub sandbox ignoring command: $@
+            exit 1
       - type: file
         path: com.microsoft.edge-dev.desktop
       - type: file
