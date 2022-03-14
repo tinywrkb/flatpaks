@@ -7,6 +7,9 @@ base-version: '21.08'
 command: chrome
 cleanup:
   - /lib/pkgconfig
+# https://github.com/flathub/org.chromium.Chromium.BaseApp/pull/3
+#cleanup-commands:
+#  - /app/cleanup-BaseApp.sh
 finish-args:
   - --device=all
   - --device=dri
@@ -15,8 +18,8 @@ finish-args:
   - --filesystem=xdg-download
   - --filesystem=xdg-music
   - --filesystem=xdg-pictures
-  - --filesystem=xdg-run/pipewire-0
   - --filesystem=xdg-videos
+  - --filesystem=xdg-run/pipewire-0
   - --filesystem=~/.local/share/applications
   - --filesystem=~/.local/share/icons
   - --filesystem=/run/.heim_org.h5l.kcm-socket
@@ -39,9 +42,6 @@ finish-args:
   # testing
 # - --socket=cups
 # - --socket=pcsc
-# https://github.com/flathub/org.chromium.Chromium.BaseApp/pull/3
-#cleanup-commands:
-#  - /app/cleanup-BaseApp.sh
 modules:
   - ../shared-modules/zypak/zypak.json
   - name: chrome
@@ -56,7 +56,6 @@ modules:
       - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
       - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
       - install -Dm644 ${FLATPAK_ID}.appdata.xml -t /app/share/appdata/
-      - install -dm755  /app/immodules
     sources:
       - type: extra-data
         filename: google-chrome.deb
