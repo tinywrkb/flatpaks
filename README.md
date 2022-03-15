@@ -247,7 +247,6 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 #### Documents/Viewers
 * [Pympress](io.github.cimbali.pympress)
 * [Qpdfview](net.launchpad.qpdfview)
-* [Sioyek](info.sioyek.sioyek)
 * [Zathura](org.pwmt.zathura)
 * [pdfpc](com.github.pdfpc.pdfpc)
 
