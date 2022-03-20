@@ -28,11 +28,14 @@ finish-args:
   - --device=all
   - --device=dri
   - --filesystem=home
+  # TODO: consider removing this
   - --own-name=org.kde.*
   - --share=ipc
   - --socket=fallback-x11
   - --socket=wayland
   - --socket=x11
+  - --talk-name=com.canonical.AppMenu.Registrar
+  - --talk-name=com.canonical.dbusmenu
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
   # workaround for the unix file socket
