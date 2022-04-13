@@ -13,6 +13,6 @@ flatpak build-init --arch=aarch64 --type=extension --extension-tag=org.freedeskt
 
 curl -L "$_QEMU_DOWNLOAD" | bsdtar -Oxf - | install -Dm755 /dev/stdin "$_BUILDDIR"/files/bin/qemu-aarch64-static
 
-flatpak build-finish --arch=aarch64 --type=extension --extension-tag=org.freedesktop.Sdk.Extension "$_BUILDDIR"
+flatpak build-finish "$_BUILDDIR"
 
 flatpak build-export $_REPO "$_BUILDDIR" $_BRANCH
