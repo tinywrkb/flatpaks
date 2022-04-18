@@ -1,0 +1,44 @@
+app-id: org.kde.kdesvn
+runtime: org.kde.Sdk
+runtime-version: 5.15-21.08
+sdk: org.kde.Sdk
+command: kdesvn
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+rename-icon: kdesvn
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+modules:
+  - name: kdesvn
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DSUBVERSION_INSTALL_PATH=/app
+    sources:
+      - type: archive
+        url: https://invent.kde.org/sdk/kdesvn/-/archive/f38805aeafa304574b51cbc11091fd8bdb2ded8c/kdesvn-f38805aeafa304574b51cbc11091fd8bdb2ded8c.tar.gz
+        sha256: 648cafd09bbe96a80b087717a1246095ff2caaf28673369e88b24341b0e903fb
+        #x-checker-data:
+        #  type: html
+        #  url: https://apps.kde.org/kdesvn/index.xml
+        #  version-pattern: Release ([\d.-]+) of kdesvn
+        #  url-template: https://invent.kde.org/sdk/kdesvn/-/archive/v$version/kdesvn-v$version.tar.gz
+     #- type: git
+     #  url: https://invent.kde.org/sdk/kdesvn.git
+     #  tag: v1.0.0
+     #  commit: dfafsdfsd
+     #  x-checker-data:
+     #    type: json
+     #    url: https://invent.kde.org/api/v4/projects/sdk%2Fkdesvn/repository/tags
+     #    tag-query: first(.[].name | match( "^v[\\d.]+" ) | .string)
+     #    version-query: $tag | sub("^v"; "")
+    modules:
+      - ../shared-modules/subversion/subversion.json
