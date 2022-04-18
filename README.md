@@ -201,6 +201,7 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 #### Development/VCS
 * [GitHub CLI](com.github.cli)
 * [GitHub hub](com.github.hub)
+* [kdesvn](org.kde.kdesvn)
 
 ### Display server
 * [Sway](org.swaywm.sway)
