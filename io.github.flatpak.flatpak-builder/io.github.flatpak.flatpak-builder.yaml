@@ -57,5 +57,6 @@ modules:
         modules:
           - ../shared-modules/fuse/fuse2.json
           - ../shared-modules/breezy/breezy.json
+          - ../shared-modules/subversion/subversion.json
       - ../shared-modules/flatpak-spawn-wrappers/flatpak.json
       - ../shared-modules/rpmextract/rpmextract.json
