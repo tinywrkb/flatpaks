@@ -1,0 +1,122 @@
+{
+    "name": "subversion",
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://dlcdn.apache.org/subversion/subversion-1.14.2.tar.gz",
+            "sha256": "fd826afad03db7a580722839927dc664f3e93398fe88b66905732c8530971353",
+            "x-checker-data": {
+                "type": "anitya",
+                "project-id": 4905,
+                "stable-only": true,
+                "url-template": "https://dlcdn.apache.org/subversion/subversion-$version.tar.gz"
+            }
+        }
+    ],
+    "cleanup": [
+        "/share/man"
+    ],
+    "modules": [
+        {
+            "name": "apr-util",
+            "config-opts": [
+                "--with-apr=/app"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.apache.org/dist/apr/apr-util-1.6.1.tar.bz2",
+                    "sha256": "d3e12f7b6ad12687572a3a39475545a072608f4ba03a6ce8a3778f607dd0035b",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 96,
+                        "stable-only": true,
+                        "url-template": "https://www.apache.org/dist/apr/apr-util-$version.tar.bz2"
+                    }
+                }
+            ],
+            "cleanup": [
+                "/bin",
+                "*.exp"
+            ],
+            "modules": [
+                {
+                    "name": "apr",
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://www.apache.org/dist/apr/apr-1.7.0.tar.bz2",
+                            "sha256": "e2e148f0b2e99b8e5c6caa09f6d4fb4dd3e83f744aa72a952f94f5a14436f7ea",
+                            "x-checker-data": {
+                                "type": "anitya",
+                                "project-id": 95,
+                                "stable-only": true,
+                                "url-template": "https://www.apache.org/dist/apr/apr-$version.tar.bz2"
+                            }
+                        }
+                    ],
+                    "cleanup": [
+                        "/bin",
+                        "/build-1",
+                        "*.exp"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "libutf8proc",
+            "buildsystem": "cmake",
+            "builddir": true,
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/JuliaStrings/utf8proc/archive/v2.7.0/utf8proc-2.7.0.tar.gz",
+                    "sha256": "4bb121e297293c0fd55f08f83afab6d35d48f0af4ecc07523ad8ec99aa2b12a1",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 7455,
+                        "stable-only": true,
+                        "url-template": "https://github.com/JuliaStrings/utf8proc/archive/v$version/utf8proc-$version.tar.gz"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "serf",
+            "buildsystem": "simple",
+            "build-commands": [
+                "python scons.py APR=${FLATPAK_DEST}/bin/apr-1-config APU=${FLATPAK_DEST}/bin/apu-1-config PREFIX=${FLATPAK_DEST}",
+                "python scons.py install"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.apache.org/dist/serf/serf-1.3.9.tar.bz2",
+                    "sha256": "549c2d21c577a8a9c0450facb5cca809f26591f048e466552240947bdf7a87cc",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 1720,
+                        "stable-only": true,
+                        "url-template": "https://www.apache.org/dist/serf/serf-$version.tar.bz2"
+                    }
+                },
+                {
+                    "type": "patch",
+                    "path": "scons-python3.patch"
+                },
+                {
+                    "type": "archive",
+                    "strip-components": 0,
+                    "url": "http://prdownloads.sourceforge.net/scons/scons-local-4.3.0.tar.gz",
+                    "sha256": "a2bf3d71427518d48000cef66525e47633c2347d4cd907b705bc2d5c09845bbb",
+                    "x-checker-data": {
+                        "type": "html",
+                        "url": "https://scons.org/pages/download.html",
+                        "version-pattern": "scons-local-([\\d.-]+).tar.gz",
+                        "url-template": "http://prdownloads.sourceforge.net/scons/scons-local-$version.tar.gz"
+                    }
+                }
+            ]
+        }
+    ]
+}
