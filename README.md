@@ -177,7 +177,6 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 * [pev](com.github.merces.pev)
 
 #### Development/Database
-* [DB Browser for SQLite](com.github.sqlitebrowser.sqlitebrowser)
 * [SQLiteStudio](pl.sqlitestudio.sqlitestudio)
 
 #### Development/Debugging
