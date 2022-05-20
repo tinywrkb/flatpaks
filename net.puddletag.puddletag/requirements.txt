@@ -1,4 +1,0 @@
-configobj
-mutagen
-pillow
-pyparsing
