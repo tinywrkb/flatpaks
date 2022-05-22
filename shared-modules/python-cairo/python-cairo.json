@@ -7,8 +7,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://github.com/pygobject/pycairo/archive/v1.20.1.tar.gz",
-            "sha256": "34f0a86ee5d98f3fca1f09dd3960d43ea9937b2df44f5270d2eb94f529677150",
+            "url": "https://github.com/pygobject/pycairo/archive/v1.21.0.tar.gz",
+            "sha256": "5e88e718b58751c96aa496914dd1b6a0531488f501cedfb6cd40bb307d69b88c",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 13166,
