@@ -83,16 +83,16 @@ modules:
   - name: virt-manager
     buildsystem: simple
     build-commands:
-      - python setup.py configure --prefix=/app
+      - python setup.py configure --prefix=${FLATPAK_DEST}
       - python setup.py build
-      #- python setup.py install --root=/
-      - python setup.py --no-update-icon-cache install --root /
-      - python -m compileall /app/share/virt-manager
-      - python -O -m compileall /app/share/virt-manager
+      - python setup.py --no-update-icon-cache --no-compile-schemas install --root=/
+      - python -m compileall ${FLATPAK_DEST}/share/virt-manager
+      - python -O -m compileall ${FLATPAK_DEST}/share/virt-manager
+      - glib-compile-schemas ${FLATPAK_DEST}/share/glib-2.0/schemas
     sources:
       - type: archive
-        url: https://github.com/virt-manager/virt-manager/archive/v3.2.0.tar.gz
-        sha256: 74bf899e25ef2751e6b9b7b46a4e79760cd3e8adb5a5fc474944507a4587e0fd
+        url: https://github.com/virt-manager/virt-manager/archive/v4.0.0.tar.gz
+        sha256: a5098e196ef14e6c64ffdbbcacb2d1dbfaf2753eaaa3fc5b7ef07a0ebd63c4a6
         x-checker-data:
           type: anitya
           project-id: 8183
@@ -114,5 +114,5 @@ modules:
       - ../shared-modules/vte3/vte3.json
       - ../flathub-shared-modules/libappindicator/libappindicator-gtk3-introspection-12.10.json
       # flatpak run --command=flatpak-pip-generator io.github.flatpak.flatpak-builder-tools -o python-requests requests
-      - python-requests.json
+      - python-requests/python-requests.json
       - libosinfo/libosinfo.json

@@ -9,8 +9,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://www.spice-space.org/download/gtk/spice-gtk-0.39.tar.xz",
-            "sha256": "23acbee197eaaec9bce6e6bfd885bd8f79708332639243ff04833020865713cd",
+            "url": "https://www.spice-space.org/download/gtk/spice-gtk-0.40.tar.xz",
+            "sha256": "23f5ff7fa80b75647ce73cda5eaf8b322f3432dbbb7f6f3a839634618adbced3",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 11576,
@@ -24,17 +24,17 @@
             "name": "python-pyparsing",
             "buildsystem": "simple",
             "build-commands": [
-                "python3 setup.py build",
-                "python3 setup.py install --root=/ --prefix=app/"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=file://${PWD} --prefix=${FLATPAK_DEST} pyparsing --no-build-isolation"
             ],
             "sources": [
                 {
-                    "type": "archive",
-                    "url": "https://files.pythonhosted.org/packages/c1/47/dfc9c342c9842bbe0036c7f763d2d6686bcf5eb1808ba3e170afdb282210/pyparsing-2.4.7.tar.gz",
-                    "sha256": "c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1",
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/6c/10/a7d0fa5baea8fe7b50f448ab742f26f52b80bfca85ac2be9d35cdd9a3246/pyparsing-3.0.9-py3-none-any.whl",
+                    "sha256": "5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc",
                     "x-checker-data": {
                         "type": "pypi",
-                        "name": "pyparsing"
+                        "name": "pyparsing",
+                        "packagetype": "bdist_wheel"
                     }
                 }
             ],
@@ -91,8 +91,8 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://spice-space.org/download/usbredir/usbredir-0.11.0.tar.xz",
-                    "sha256": "72dd5f3aa90dfbc0510b5149bb5b1654c8f21fdc405dfce7b5dc163dcff19cba",
+                    "url": "https://spice-space.org/download/usbredir/usbredir-0.12.0.tar.xz",
+                    "sha256": "fbb44025bf55e1ce8d84afc7596bfa47c8a36cd603c6fa440f9102c1c9761e6d",
                     "x-checker-data": {
                         "type": "anitya",
                         "project-id": 16012,
@@ -150,8 +150,8 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.3/spice-protocol-v0.14.3.tar.gz",
-                    "sha256": "80ae89643e253dc5ddc5b2120cd3cf9d9565d00026ff261dd140d4b8c5deaa64",
+                    "url": "https://gitlab.freedesktop.org/spice/spice-protocol/-/archive/v0.14.4/spice-protocol-v0.14.4.tar.gz",
+                    "sha256": "9c31fa533ad531d1b816ffd0c24b4785d133e7bb397f72d35f7a6d59bcd7d53a",
                     "x-checker-data": {
                         "type": "anitya",
                         "project-id": 14892,

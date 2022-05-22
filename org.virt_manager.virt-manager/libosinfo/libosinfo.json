@@ -8,8 +8,8 @@
     "sources": [
         {
             "type": "archive",
-            "url": "https://releases.pagure.org/libosinfo/libosinfo-1.9.0.tar.xz",
-            "sha256": "b4f3418154ef3f43d9420827294916aea1827021afc06e1644fc56951830a359",
+            "url": "https://releases.pagure.org/libosinfo/libosinfo-1.10.0.tar.xz",
+            "sha256": "a252e00fc580deb21da0da8c0aa03b8c31e8440b8448c8b98143fab477d32305",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 155460,
@@ -32,8 +32,8 @@
             "sources": [
                 {
                     "type": "file",
-                    "url": "https://releases.pagure.org/libosinfo/osinfo-db-20210903.tar.xz",
-                    "sha256": "30e7d3f21bc0d3a24fd23da29f6364afe896d7c9e2dfb39f0999ffc6b7730834",
+                    "url": "https://releases.pagure.org/libosinfo/osinfo-db-20220516.tar.xz",
+                    "sha256": "d60f69d8afc9dcc53d76a2fb68d54c26d1fdc3a822b95c1801de58c3c66cda6d",
                     "dest-filename": "osinfo-db.tar.xz",
                     "x-checker-data": {
                         "type": "anitya",
@@ -50,8 +50,8 @@
                     "sources": [
                         {
                             "type": "archive",
-                            "url": "https://releases.pagure.org/libosinfo/osinfo-db-tools-1.9.0.tar.xz",
-                            "sha256": "255f1c878bacec70c3020ff5a9cb0f6bd861ca0009f24608df5ef6f62d5243c0",
+                            "url": "https://releases.pagure.org/libosinfo/osinfo-db-tools-1.10.0.tar.xz",
+                            "sha256": "802cdd53b416706ea5844f046ddcfb658c1b4906b9f940c79ac7abc50981ca68",
                             "x-checker-data": {
                                 "type": "anitya",
                                 "project-id": 226782,

@@ -2,14 +2,14 @@
     "name": "libvirt-python",
     "buildsystem": "simple",
     "build-commands": [
-        "python3 setup.py clean",
-        "python3 setup.py install --root=/ --prefix=app/"
+        "python3 setup.py build",
+        "python3 setup.py install --skip-build --prefix=/app --root=/ --optimize=1"
     ],
     "sources": [
         {
             "type": "archive",
-            "url": "https://libvirt.org/sources/python/libvirt-python-7.7.0.tar.gz",
-            "sha256": "cc8d6528cef7cf395c5d97566328f16faef6b5653a500b0e88c9c0fc36b72cdb",
+            "url": "https://libvirt.org/sources/python/libvirt-python-8.3.0.tar.gz",
+            "sha256": "e936ff747c1d72b6618eebb7236ae69c255ca9e0de6e4153d95d8b9c6b2ecfc1",
             "x-checker-data": {
                 "type": "anitya",
                 "project-id": 13829,
