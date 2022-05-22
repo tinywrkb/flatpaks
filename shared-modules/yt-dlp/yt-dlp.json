@@ -9,8 +9,8 @@
         {
             "type": "git",
             "url": "https://github.com/yt-dlp/yt-dlp",
-            "tag": "2022.01.21",
-            "commit": "b54e1255ce175447b4f78c6a6b01ea68fd7d8ce0",
+            "tag": "2022.05.18",
+            "commit": "926ccc84ef91498f3147b07d15eb5f40cd070471",
             "x-checker-data": {
                 "type": "git",
                 "tag-pattern": "^([\\d.]+)$"

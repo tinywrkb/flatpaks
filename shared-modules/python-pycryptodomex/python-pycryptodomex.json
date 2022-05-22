@@ -7,8 +7,8 @@
     "sources": [
         {
             "type": "file",
-            "url": "https://files.pythonhosted.org/packages/7a/21/f399ba8dfd6e40eee444151af3237af22788b8b16077c75ec0419125f619/pycryptodomex-3.13.0.tar.gz",
-            "sha256": "63443230247837dd03c5d4028cae5cb2e6793a9ae110e321798bee48a04ff3e9",
+            "url": "https://files.pythonhosted.org/packages/24/40/e249ac3845a2333ce50f1bb02299ffb766babdfe80ca9d31e0158ad06afd/pycryptodomex-3.14.1.tar.gz",
+            "sha256": "2ce76ed0081fd6ac8c74edc75b9d14eca2064173af79843c24fa62573263c1f2",
             "x-checker-data": {
                 "type": "pypi",
                 "name": "pycryptodomex"
