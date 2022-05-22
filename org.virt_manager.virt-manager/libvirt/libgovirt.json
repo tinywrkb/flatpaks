@@ -1,18 +1,15 @@
 {
     "name": "libgovirt",
-    "config-opts": [
-        "--enable-static=no"
-    ],
+    "buildsystem": "meson",
     "sources": [
         {
             "type": "archive",
-            "url": "https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v0.3.8/libgovirt-v0.3.8.tar.gz",
-            "sha256": "a3f00dd14553d4c85d1a1b31a8182642b5ead66314a1ed137c2242d46ecb5f32",
+            "url": "https://download.gnome.org/sources/libgovirt/0.3/libgovirt-0.3.8.tar.xz",
+            "sha256": "1dc9186229176bdfa9f25fd8fa82c0a058b6a60c1cc807c7507ec8a93c0f1df8",
             "x-checker-data": {
-                "type": "anitya",
-                "project-id": 229567,
-                "stable-only": true,
-                "url-template": "https://gitlab.gnome.org/GNOME/libgovirt/-/archive/v$version/libgovirt-v$version.tar.gz"
+                "type": "gnome",
+                "name": "libgovirt",
+                "stable-only": true
             }
         }
     ],
@@ -22,13 +19,12 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://gitlab.gnome.org/GNOME/librest/-/archive/0.8.1/librest-0.8.1.tar.gz",
-                    "sha256": "2bdd1be07a9150b1c6ceea6e01dedf2efcff564381cae0cd6c7330403efe59d7",
+                    "url": "https://download.gnome.org/sources/rest/0.8/rest-0.8.1.tar.xz",
+                    "sha256": "0513aad38e5d3cedd4ae3c551634e3be1b9baaa79775e53b2dba9456f15b01c9",
                     "x-checker-data": {
-                        "type": "anitya",
-                        "project-id": 4194,
-                        "stable-only": true,
-                        "url-template": "https://gitlab.gnome.org/GNOME/librest/-/archive/$version/librest-$version.tar.gz"
+                        "type": "gnome",
+                        "name": "rest",
+                        "stable-only": true
                     }
                 }
             ]

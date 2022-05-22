@@ -46,8 +46,8 @@ modules:
       - mv /app/share/mime/packages/{virt-viewer,${FLATPAK_ID}}-mime.xml
     sources:
       - type: archive
-        url: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v10.0/virt-viewer-v10.0.tar.gz
-        sha256: 5671bc0d3f97386a43057ed1bb47bf64cc429f064fcf3609367bdb7aafbbab5a
+        url: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v11.0/virt-viewer-v11.0.tar.gz
+        sha256: 73e2f0148dd49c5ff5e8c5d0e9d9de592931895e89e2300e3de4ae96d8380a9b
         x-checker-data:
           type: anitya
           project-id: 15273
