@@ -23,6 +23,11 @@ modules:
       - type: archive
         url: https://github.com/tsujan/Kvantum/releases/download/V1.0.2/Kvantum-1.0.2.tar.xz
         sha256: a3445a83f2aae12f62814b41764b4e1409a6f1114d7fad355f9ccb7a318d30ec
+        x-checker-data:
+          type: anitya
+          project-id: 17749
+          stable-only: true
+          url-template: https://github.com/tsujan/Kvantum/releases/download/V$version/Kvantum-$version.tar.xz
      #- type: patch
      #  path: kvantum-no-native-filedialog.patch
       - type: shell
