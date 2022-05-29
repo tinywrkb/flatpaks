@@ -1,0 +1,13 @@
+diff --git a/Kvantum/kvantummanager/KvantumManager.cpp b/Kvantum/kvantummanager/KvantumManager.cpp
+index 1ff5b670..1a33af5b 100644
+--- a/Kvantum/kvantummanager/KvantumManager.cpp
++++ b/Kvantum/kvantummanager/KvantumManager.cpp
+@@ -382,7 +382,7 @@ void KvantumManager::openTheme()
+                                                           lastPath_,
+                                                           QFileDialog::ShowDirsOnly
+                                                           | QFileDialog::ReadOnly
+-                                                          /*| QFileDialog::DontUseNativeDialog*/);
++                                                          | QFileDialog::DontUseNativeDialog);
+     ui->lineEdit->setText (filePath);
+     lastPath_ = filePath;
+ }

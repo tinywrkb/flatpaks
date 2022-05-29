@@ -1,0 +1,26 @@
+app-id: com.github.tsujan.kvantum
+runtime: org.kde.Platform
+runtime-version: 5.15-21.08
+sdk: org.kde.Sdk
+command: kvantummanager
+rename-desktop-file: kvantummanager.desktop
+rename-icon: kvantum
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-config/Kvantum:create
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+modules:
+  - name: kvantum
+    buildsystem: cmake
+    subdir: Kvantum
+    sources:
+      - type: archive
+        url: https://github.com/tsujan/Kvantum/releases/download/V1.0.2/Kvantum-1.0.2.tar.xz
+        sha256: a3445a83f2aae12f62814b41764b4e1409a6f1114d7fad355f9ccb7a318d30ec
+     #- type: patch
+     #  path: kvantum-no-native-filedialog.patch
+      - type: shell
+        commands:
+          - sed -i '/set(KVANTUM_STYLE_DIR/ s|${_Qt5_PLUGIN_INSTALL_DIR}|/app/plugins|' Kvantum/style/CMakeLists.txt
