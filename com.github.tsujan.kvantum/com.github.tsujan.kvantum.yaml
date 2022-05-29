@@ -1,3 +1,7 @@
+# references
+#   - https://github.com/flathub/org.kde.KStyle.Kvantum
+#   - https://github.com/tsujan/Kvantum/blob/master/Kvantum/README.md
+#   - https://www.reddit.com/r/linux/comments/psit31/flatpak_now_supports_qt_theming_with_kvantum/
 app-id: com.github.tsujan.kvantum
 runtime: org.kde.Platform
 runtime-version: 5.15-21.08
