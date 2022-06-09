@@ -29,14 +29,13 @@ modules:
       - type: script
         dest-filename: apply_extra
         commands:
-          - rpmextract.sh diamond.rpm
+          # extract app
+          - bsdtar -xf diamond.rpm --strip-components=5 ./usr/local/diamond
           - rm -f diamond.rpm
-          - mv usr/local/diamond/*/* ./
-          - rm -rf usr
           - |
               for f in $(find ./ -maxdepth 1 -type d -printf '%P\n'); do
                 if [ -e ${f}/${f}.tar.gz ]; then
-                  tar -xf ${f}/${f}.tar.gz -C ${f}/
+                  bsdtar -xf ${f}/${f}.tar.gz -C ${f}/
                   rm -f ${f}/${f}.tar.gz
                 fi
               done
@@ -46,5 +45,3 @@ modules:
         path: com.latticesemi.diamond.desktop
       - type: file
         path: com.latticesemi.diamond.png
-    modules:
-      - ../shared-modules/rpmextract/rpmextract.json
