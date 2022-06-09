@@ -26,6 +26,11 @@ modules:
         sha256: 4e0457b9379e53f2a68517141348c23be59594e5ce66a404c8d9409f05c619eb
         size: 1879818513
         filename: diamond.rpm
+      - type: extra-data
+        url:  http://files.latticesemi.com/Diamond/3.12.1/diamond_3_12-sp1-454-2-x86_64-linux.rpm
+        sha256: 912d5f4dabb67cbccbea7509bdb8f52407b612051113c4322a2bc3c29be93561
+        size: 582731213
+        filename: diamond_sp.rpm
       - type: script
         dest-filename: apply_extra
         commands:
@@ -39,6 +44,51 @@ modules:
                   rm -f ${f}/${f}.tar.gz
                 fi
               done
+
+          # apply service pack
+          - bsdtar -xf diamond_sp.rpm --strip-components=6 ./usr/local/diamond
+          - rm -f diamond_sp.rpm
+
+          # update version information
+          - |
+            VERSION=$(awk '/Diamond Production Build/{print $4}' data/installation_history.txt | awk 'BEGIN{FS="."; OFS="."} {print $1, $2}')
+            BUILD_REV=$(awk '/set BUILD_REV/{print $4}' cp_pack)
+            PATCH_ID=$(awk '/set PATCH_ID/{print $4}' cp_pack)
+            VER_ID=$(echo $VERSION | awk 'BEGIN{FS="."; OFS="_"} {print $1, $2}')
+            MINOR=$(echo $BUILD_REV | awk  'BEGIN{FS="."; OFS="."} {print $2, $3}')
+            BNUMBER=$(echo $BUILD_REV | awk  'BEGIN{FS="."; OFS="."} {print $4}')
+            SUFFIX=_x64
+
+            # data/installation_history.txt
+            VER_STR="$(echo "Diamond ${BUILD_REV} Service Pack ${PATCH_ID}    Date: $(date)")"
+            sed -i "1s;^;$VER_STR\n;" data/installation_history.txt
+
+            # data/ispsys.ini
+            awk -i inplace 'BEGIN { FS = "="; minor = ARGV[2]; ARGV[2] = ""; bnum = ARGV[3]; ARGV[3] = ""; build_rev = ARGV[4]; ARGV[4] = ""};
+              { if ($1 == "MinorVersion")
+                    printf "%s=%s\n", $1, minor
+                else if ($1 == "BuildNumber")
+                    printf "%s=%s\n", $1, bnum
+                else if ($1 == "ProductType")
+                    printf "%s=%s\n", $1, build_rev
+                else
+                    printf "%s\n", $0
+              }' data/ispsys.ini $MINOR $BNUMBER $BUILD_REV
+
+            # ispfpga/data/ispsys.ini
+            awk -i inplace 'BEGIN { FS = "="; minor = ARGV[2]; ARGV[2] = ""; bnum = ARGV[3]; ARGV[3] = ""; build_rev = ARGV[4]; ARGV[4] = ""};
+              { if ($1 == "MinorVersion")
+                    printf "%s=%s\n", $1, minor
+                else if ($1 == "BuildNumber")
+                    printf "%s=%s\n", $1, bnum
+                else if ($1 == "ProductType")
+                    printf "%s=%s\n", $1, build_rev
+                else
+                    printf "%s\n", $0
+              }' ispfpga/data/ispsys.ini $MINOR $BNUMBER $BUILD_REV
+
+          - rm -f cp_pack
+
       - type: file
         path: diamond
       - type: file
