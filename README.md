@@ -207,7 +207,6 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 
 #### Display server/Remoting and screen sharing
 * [FreeRDP](com.freerdp.freerdp)
-* [Sunshine](com.github.loki_47_6F_64.sunshine)
 * [Weylus](com.github.h_m_h.weylus)
 * [wlvncc](com.github.any1.wlvncc)
 
