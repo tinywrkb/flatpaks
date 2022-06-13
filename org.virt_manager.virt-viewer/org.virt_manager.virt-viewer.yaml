@@ -54,10 +54,10 @@ modules:
           stable-only: true
           url-template: https://gitlab.com/virt-viewer/virt-viewer/-/archive/v$version/virt-viewer-v$version.tar.gz
     modules:
-      - ../org.virt_manager.virt-manager/libvirt/libvirt.json
-      - ../org.virt_manager.virt-manager/libvirt/libvirt-glib.json
-      - ../org.virt_manager.virt-manager/libvirt/libgovirt.json
-      - ../org.virt_manager.virt-manager/gtk-vnc/gtk-vnc.json
-      - ../org.virt_manager.virt-manager/spice-gtk/spice-gtk.json
+      - ../libvirt/libvirt.json
+      - ../libvirt/libvirt-glib.json
+      - ../libvirt/libgovirt.json
+      - ../gtk-vnc/gtk-vnc.json
+      - ../spice-gtk/spice-gtk.json
       - ../flathub-shared-modules/intltool/intltool-0.51.json
       - ../shared-modules/vte3/vte3.json
