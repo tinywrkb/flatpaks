@@ -145,7 +145,6 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 
 ### Container and virtualization
 * [Fedora CoreOS Butane](io.github.coreos.butane)
-* [Virt-Manager](org.virt_manager.virt-manager)
 * [Virt-Viewer](org.virt_manager.virt-viewer)
 
 ### Development
