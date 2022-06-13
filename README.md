@@ -392,7 +392,6 @@ Copy the extra-data source into `FLATAPK_INSTALLATION_PATH/extra-data/CHECKSUM/F
 #### Multimedia/Audio
 * [mps-youtube](com.github.mps-youtube)
 * [QjackCtl](io.sourceforge.qjackctl)
-* [Qsynth](io.sourceforge.qsynth)
 * [pasystray](com.github.christophgysin.pasystray)
 * [puddletag](net.puddletag.puddletag)
 
