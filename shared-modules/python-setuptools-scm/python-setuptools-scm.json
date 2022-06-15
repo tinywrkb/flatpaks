@@ -1,7 +1,0 @@
-{
-    "name": "python-setuptools-scm",
-    "modules": [
-        "python-tomli-dependencies.json",
-        "python-dependencies.json"
-    ]
-}

@@ -1,3 +1,0 @@
-semantic-version
-setuptools-rust
-cffi
