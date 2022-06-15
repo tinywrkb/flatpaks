@@ -1,0 +1,6 @@
+[submodule "flathub-shared-modules"]
+	path = flathub-shared-modules
+	url = https://github.com/flathub/shared-modules.git
+[submodule "shared-modules"]
+	path = shared-modules
+	url = https://github.com/tinywrkb/flatpak-shared-modules
