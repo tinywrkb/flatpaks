@@ -5,6 +5,8 @@ app-id: org.gnuradio.gnuradio
 runtime: org.kde.Platform
 runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
+base: com.riverbankcomputing.PyQt.BaseApp
+base-version: 5.15-21.08
 command: gnuradio-companion
 rename-desktop-file: gnuradio-grc.desktop
 rename-icon: gnuradio-grc
@@ -18,13 +20,17 @@ finish-args:
   - --share=network
   - --socket=fallback-x11
   - --socket=wayland
-  - --socket=x11
 cleanup:
 #  - /include
 #  - /lib/pkgconfig
   - /share/man
   - '*.a'
   - '*.la'
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+build-options:
+  env:
+    - BASEAPP_REMOVE_WEBENGINE=1
 modules:
   - name: gnuradio
     buildsystem: cmake
@@ -50,7 +56,6 @@ modules:
       - ../shared-modules/gsl/gsl.json
       - ../shared-modules/gsm/gsm.json
       - ../shared-modules/portaudio/portaudio.json
-      - ../shared-modules/pyqt5/pyqt5.json
       - ../shared-modules/python-gobject/python-gobject.json
       - ../shared-modules/python-lxml/python-lxml.json
       - ../shared-modules/python-yaml/python-yaml.json
