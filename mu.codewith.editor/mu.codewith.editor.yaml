@@ -4,6 +4,8 @@ runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
+base: com.riverbankcomputing.PyQt.BaseApp
+base-version: 5.15-21.08
 command: mu-editor
 finish-args:
   - --device=all
@@ -14,6 +16,11 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --socket=x11
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+build-options:
+  env:
+    - BASEAPP_REMOVE_WEBENGINE=1
 modules:
   - name: mu
     build-options:
@@ -39,7 +46,6 @@ modules:
         branch: master
         commit: 952ab173d7fff0929b583ed339ab1eeef569a7bc
     modules:
-      - ../shared-modules/pyqt5/pyqt5.json
       - name: pyqt5-chart
         config-opts:
           - --api-dir=/app/share/qt/qsci/api/python
