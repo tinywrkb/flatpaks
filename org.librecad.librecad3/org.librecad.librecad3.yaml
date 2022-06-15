@@ -1,0 +1,124 @@
+# TODO: missing default_ui_settings.json and wrong location
+# TODO: wrong paths in path.lua
+# TODO: filesystem mess
+app-id: org.librecad.librecad3
+runtime: org.kde.Platform
+runtime-version: '5.15-21.08'
+sdk: org.kde.Sdk
+command: librecad
+#rename-desktop-file: librecad.desktop
+#rename-icon: librecad
+finish-args:
+  - --device=dri
+  - --filesystem=home
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+modules:
+  - name: librecad3
+    buildsystem: cmake
+    config-opts:
+      - -Wno-dev
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DWITH_UNITTESTS=OFF
+      - -DWITH_RENDERING_UNITTESTS=OFF
+#   post-install:
+#     - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+#     - install -Dm644 ${FLATPAK_ID}.png -t ${FLATPAK_DEST}/share/icons/hicolor/_x_/apps/
+#     - install -Dm644 ${FLATPAK_ID}.mimetype.xml -t ${FLATPAK_DEST}/share/mime/application/
+#     - install -Dm644 ${FLATPAK_ID}.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo
+    sources:
+      - type: git
+        url: https://github.com/LibreCAD/LibreCAD_3.git
+        branch: master
+        commit: e85d0992c655a45a1b789f333caa0cd4e2aae98a
+      - type: shell
+        commands:
+          - sed -i 's|${PROJECT_BINARY_DIR}|/app|' CMakeLists.txt
+    modules:
+      - ../flathub-shared-modules/glew/glew.json
+      - ../flathub-shared-modules/glu/glu-9.json
+      - ../shared-modules/lua53/lua53.json
+      - name: boost
+        buildsystem: simple
+        build-commands:
+          - ./bootstrap.sh
+          - ./b2 --with-{date_time,filesystem,log,program_options,system,thread} variant=release debug-symbols=off link=shared runtime-link=shared --prefix=${FLATPAK_DEST} install
+        sources:
+          - type: archive
+            url: https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.bz2
+            sha256: 475d589d51a7f8b3ba2ba4eda022b170e562ca3b760ee922c146b6c65856ef39
+            x-checker-data:
+              type: anitya
+              project-id: 6845
+              stable-only: true
+              url-template: https://boostorg.jfrog.io/artifactory/main/release/$major.$minor.$patch/source/boost_${major}_${minor}_$patch.tar.bz2
+      - name: eigen
+        buildsystem: cmake
+        builddir: true
+        config-opts:
+          - -DBUILD_TESTING=OFF
+        sources:
+          - type: archive
+            url: https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+            sha256: 8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72
+      - name: glfw
+        buildsystem: cmake
+        config-opts:
+          - -DBUILD_SHARED_LIBS=ON
+          - -DGLFW_BUILD_EXAMPLES=OFF
+          - -DGLFW_BUILD_TESTS=OFF
+          - -DGLFW_BUILD_DOCS=OFF
+          - -DGLFW_BUILD_X11=ON
+          - -DGLFW_BUILD_WAYLAND=ON
+        sources:
+          - type: archive
+            url: https://github.com/glfw/glfw/releases/download/3.3.7/glfw-3.3.7.zip
+            sha256: 4ef0c544a8ace9a6cd0e0aef8250090f89fea1bf96e9fc1d9d6f76386c290c9c
+      - name: glm
+        buildsystem: cmake
+        no-make-install: true
+        config-opts:
+          - -DBUILD_TESTING=OFF
+          - -DBUILD_SHARED_LIBS=ON
+          - -DBUILD_STATIC_LIBS=OFF
+        build-commands:
+          - |
+            for f in $(find glm -maxdepth 2 -type f -a \( -name '*.h' -o -name '*.hpp' -o -name '*.inl' \)); do
+              install -vDm644 ${f} ${FLATPAK_DEST}/include/${f}
+            done
+         #- install -Dm644 glm/libglm_shared.so -t ${FLATPAK_DEST}/lib/
+        sources:
+          - type: archive
+            url: https://github.com/g-truc/glm/releases/download/0.9.9.8/glm-0.9.9.8.zip
+            sha256: 37e2a3d62ea3322e43593c34bae29f57e3e251ea89f4067506c94043769ade4c
+      - name: libdxfrw
+        buildsystem: cmake
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=Release
+          - -DBUILD_SHARED_LIBS=ON
+        sources:
+          - type: git
+            url: https://github.com/LibreCAD/libdxfrw.git
+            branch: LibreCAD_3
+            commit: f766eb3d4bac1fcb020e43c53f40745bd75e9abe
+         #- type: archive
+         #  url: https://github.com/LibreCAD/libdxfrw/archive/1.1.0-rc1/libdxfrw-1.1.0-rc1.tar.gz
+         #  sha256: 82cf15f4a6d5952602d768030ed20df68ba611028ae71397cfb8c51cebb30e2e
+      - name: rapidjson
+        buildsystem: cmake
+        config-opts:
+          - -DRAPIDJSON_BUILD_DOC=OFF
+          - -DRAPIDJSON_BUILD_EXAMPLES=OFF
+          - -DRAPIDJSON_BUILD_TESTS=OFF
+        sources:
+          - type: archive
+            url: https://github.com/Tencent/rapidjson/archive/v1.1.0/rapidjson-1.1.0.tar.gz
+            sha256: bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e
