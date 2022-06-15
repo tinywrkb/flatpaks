@@ -1,0 +1,40 @@
+app-id: com.cutefishos.calculator
+runtime: org.kde.Platform
+runtime-version: 5.15-21.08
+sdk: org.kde.Sdk
+command: cutefish-calculator
+rename-desktop-file: cutefish-calculator.desktop
+rename-icon: cutefish-calculator
+finish-args:
+  - --env=QT_QPA_PLATFORM=xcb
+  - --device=dri
+  - --share=ipc
+# - --socket=fallback-x11
+# - --socket=wayland
+  - --socket=x11
+modules:
+  - name: cutefish-calculator
+    buildsystem: cmake
+    post-install:
+      - install -Dm644 icons/Crule/apps/scalable/cutefish-calculator.svg -t ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/
+    sources:
+      - type: archive
+        url: https://github.com/cutefishos/calculator/archive/0.4/calculator-0.4.tar.gz
+        sha256: 6c50f80545c4d96f1632541da53cd030e353237177f3de8b014a5d3d469102da
+      - type: archive
+        url: https://github.com/cutefishos/icons/archive/0.8/icons-0.8.tar.gz
+        sha256: 521ff9ba7536f3329a3ba8520fc91392c99904bc874fc6c7f3d3afefa427b36a
+        dest: icons
+      - type: shell
+        commands:
+          - sed -i 's|/usr|/app|g' CMakeLists.txt
+    modules:
+      - name: fishui
+        buildsystem: cmake-ninja
+        sources:
+          - type: archive
+            url: https://github.com/cutefishos/fishui/archive/0.8/fishui-0.8.tar.gz
+            sha256: 6c71df73639ffaf76c26908ae6ea0611461a62a3864b14f69a0799a8011c1556
+          - type: shell
+            commands:
+              - sed -i 's|${INSTALL_QMLDIR}|/app/lib/qml|g' src/CMakeLists.txt
