@@ -3,6 +3,8 @@ app-id: com.github.xmikos.qspectrumanalyzer
 runtime: org.kde.Platform
 runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
+base: com.riverbankcomputing.PyQt.BaseApp
+base-version: 5.15-21.08
 command: qspectrumanalyzer
 rename-desktop-file: qspectrumanalyzer.desktop
 rename-icon: qspectrumanalyzer
@@ -22,6 +24,11 @@ cleanup:
   - /lib/pkgconfig
   - '*.a'
   - '*.la'
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+build-options:
+  env:
+    - BASEAPP_REMOVE_WEBENGINE=1
 modules:
   - name: qspectrumanalyzer
     buildsystem: simple
@@ -48,7 +55,6 @@ modules:
       - type: file
         path: flatpak-spawn-wrapper
     modules:
-      - ../shared-modules/pyqt5/pyqt5.json
       - ../shared-modules/python-qt.py/python-qt.py.json
       - name: python-pyqtgraph
         buildsystem: simple
