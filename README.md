@@ -111,6 +111,7 @@ fc-cache
 * [Flatpak: Expose host fontconfig conf.d?](https://github.com/flatpak/flatpak/issues/1563)
 * [Flatpak: Expose xdg-config/fontconfig to sandbox by default](https://github.com/flatpak/flatpak/issues/3947)
 * [freedesktop-sdk: Support font extensions](https://gitlab.com/freedesktop-sdk/freedesktop-sdk/-/issues/1141)
+* [Fontconfig: Add support for XDG_DATA_DIRS](https://gitlab.freedesktop.org/fontconfig/fontconfig/-/commit/6f27f42e6140030715075aa3bd3e5cc9e2fdc6f1)
 
 
 #### extra-data caching and avoiding download
