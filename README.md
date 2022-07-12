@@ -103,7 +103,7 @@ cd ~
 fc-cache
 ```
 
-4. To update the font cache of a Flatpak app sandbox just restart the app.
+5. To update the font cache of a Flatpak app sandbox just restart the app.
 
 
 ##### Fontconfig related bugs
