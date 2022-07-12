@@ -50,8 +50,7 @@ $ flatpak override --user \
     --filesystem=~/.config/fontconfig:ro \
     --filesystem=~/.local/share/flatpak:ro \
     --filesystem=/var/lib/flatpak:ro \
-    --env=FONTCONFIG_FILE=$XDG_CONFIG_HOME/fontconfig/fonts.conf \
-    --env=FONTCONFIG_PATH=$XDG_CONFIG_HOME/fontconfig/conf.d
+    --env=FONTCONFIG_FILE=$XDG_CONFIG_HOME/fontconfig/fonts.conf
 ```
 
 If your fontconfig folder is in dotfiles, then apps that use the `--persist=.` permission (e.g. Steam)
@@ -86,7 +85,18 @@ $ flatpak override --user \
 <include ignore_missing="yes">/var/lib/flatpak/app/org.freedesktop.Platform.Fonts.{FontName}/current/active/files/share/fonts/conf.d</include>
 ```
 
-3. Now we can update the host's font cache.
+3. You can also set `FONTCONFIG_PATH`, but make sure that your user's `fonts.conf` is including the system's `conf.d`
+folder, as fontconfig might not find the system's `conf.d` if it was set as a relative path in the system's `fonts.conf`.
+```
+$ flatpak override --user \
+    --env=FONTCONFIG_PATH=$XDG_CONFIG_HOME/fontconfig
+```
+Add the `include` element to your user's `fonts.conf`.
+```
+<include ignore_missing="yes">/etc/fonts/conf.d</include>
+```
+
+4. Now we can update the host's font cache.
 
 ```
 cd ~
