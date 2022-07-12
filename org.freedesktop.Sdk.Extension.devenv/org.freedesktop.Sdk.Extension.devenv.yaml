@@ -1,0 +1,231 @@
+# TODO: fix enable-sdks.sh
+# TODO: flatpak-builder like env vars, maybe as opted-in
+# TODO: set local installation targets
+#         node: NPM_PACKAGES=xdg-data/npm-packages
+#               PATH+=:xdg-data/npm-packages/bin
+#         python
+#         golang
+#         rust
+# TODO: add more editors
+# TODO: add more patched fonts
+#         updated noto @ https://github.com/powerline/fontpatcher with latest fonts
+#         nerd-fonts @ https://github.com/ryanoasis/nerd-fonts
+# TODO: add more shells: fish, zsh
+# TODO: add term emulators? alacritty, foot
+# TODO: virtenv helpers/wrappers: pyenv
+
+# documentation
+#
+#   fontconfig
+#     add to fonts.conf see flatpaks README.md
+#     now: <dir>/usr/lib/sdk/devenv/share/fonts/powerline</dir>
+#     next: <dir prefix="xdg">fonts/powerline</dir>
+#     see also https://gitlab.freedesktop.org/fontconfig/fontconfig/-/commit/6f27f42e6140030715075aa3bd3e5cc9e2fdc6f1
+#
+#   easily enable after entering a sandbox
+#     add override for envvar
+#       `$ flatpak override --user --env=ENABLE_DEVENV=/usr/lib/sdk/devenv/bin/enable-development-environment`
+#     enter sandbox and then use envvar to run shell
+#       `$ $ENABLE_DEVENV`
+#
+#   enter a sandbox with enabled shell
+#     set envvar in host shell
+#       `$ export fpde=/usr/lib/sdk/devenv/bin/enable-development-environment`
+#     enter sandbox
+#       `$ flatpak run --command=$fpde org.freedesktop.Sdk//21.08`
+#
+#   enable by default, only works with actual apps, not runtimes
+#     add persist override
+#       `$ flatpak override --user --persist=. FLATPAK_ID`
+#     enter sandbox
+#       `$ flatpak run FLATPAK_ID`
+#     create .bashrc
+#       `$ echo 'source $ENABLE_DEVENV' > .bashrc`
+#
+#   permissions
+#     ssh
+#       --filesystem=xdg-config/ssh:ro
+#       --filesystem=xdg-run/ssh-agent:ro
+#       --filesystem=~/.user/hiddendots/openssh:ro
+#       --env=SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent/sock
+#       --persist=.ssh
+#     gnupg
+#       --filesystem=xdg-config/gnupg:ro
+#     code
+#       --filesystem=~/projects
+#     ccache
+#       --filesystem=xdg-cache/ccache
+#     byobu
+#       --filesystem=xdg-config/byobu/.ssh-agent
+#       --filesystem=xdg-run/tmux
+#     flatpak-spawn
+#       --talk-name=org.freedesktop.Flatpak
+#     git
+#       --filesystem=xdg-config/git:ro
+
+id: org.freedesktop.Sdk.Extension.devenv
+branch: '21.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+build-extension: true
+separate-locales: false
+build-options:
+  cflags: -I/usr/lib/sdk/devenv/include
+  cxxflags: -I/usr/lib/sdk/devenv/include
+  ldflags: -L/usr/lib/sdk/devenv/lib
+  prefix: /usr/lib/sdk/devenv
+  libdir: /usr/lib/sdk/devenv/lib
+  prepend-path: /usr/lib/sdk/devenv/bin
+  prepend-ld-library-path: /usr/lib/sdk/devenv/lib
+  prepend-pkg-config-path: /usr/lib/sdk/devenv/lib/pkgconfig
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/doc
+  - '*.a'
+  - '*.la'
+modules:
+  - ../shared-modules/byobu/byobu.json
+  - ../shared-modules/jq/jq.json
+  - ../shared-modules/neovim/neovim.json
+  - ../shared-modules/p7zip/p7zip.json
+
+  - name: bash
+    build-options:
+      cflags: -DDEFAULT_PATH_VALUE='"/usr/bin"' -DSTANDARD_UTILS_PATH='"/usr/bin"'
+        -DDEFAULT_BASHRC='"~/.config/bash/bash.bashrc"' -DSYS_BASHRC='"/usr/lib/sdk/devenv/etc/bash.bashrc"'
+        -DSYS_BASH_LOGOUT='"/usr/lib/sdk/devenv/etc/bash.bash_logout"' -DNON_INTERACTIVE_LOGIN_SHELLS
+    config-opts:
+      - --enable-readline
+      - --with-curses
+      - --with-installed-readline
+      - --without-bash-malloc
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/bash/bash-5.1.16.tar.gz
+        sha256: 5bac17218d3911834520dad13cd1f85ab944e1c09ae1aba55906be1f8192f558
+        x-checker-data:
+          type: anitya
+          project-id: 166
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/bash/bash-$version.tar.gz
+
+  - name: go-yq
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 yq -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: yq
+        url: https://github.com/mikefarah/yq/releases/download/v4.25.3/yq_linux_amd64
+        sha256: cb66f4382a65d0443824f0a0fcda9c5c5f7b6bd4e4346539b2f0abc647ecf0ea
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/mikefarah/yq/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version
+            + "/yq_linux_amd64"'
+
+  - name: host-spawn
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 host-spawn -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: host-spawn
+        url: https://github.com/1player/host-spawn/releases/download/1.0.1/host-spawn-x86_64
+        sha256: 8458a0e200f99d535b778147a4c1b665ac14c1940b363d18e0d620631b29d312
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/1player/host-spawn/releases/latest
+          version-query: .tag_name
+          url-query: '"https://github.com/1player/host-spawn/releases/download/" +
+            $version + "/host-spawn-x86_64"'
+
+  - name: powerline-fonts
+    buildsystem: simple
+    build-commands:
+      # fc-match: Noto Mono for Powerline
+      - install -Dm644 NotoMono/Noto\ Mono\ for\ Powerline.ttf ${FLATPAK_DEST}/share/fonts/powerline/NotoSansMonoPowerline.ttf
+    sources:
+      - type: git
+        url: https://github.com/powerline/fonts
+        branch: master
+        commit: e80e3eba9091dac0655a0a77472e10f53e754bb0
+
+  - name: powerline-go
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 powerline-go -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: powerline-go
+        url: https://github.com/justjanne/powerline-go/releases/download/v1.22.1/powerline-go-linux-amd64
+        sha256: 1cdd4fdb5dea23fc25d59e4cc845960c60bf8ead0e9b004351ee3479d805ecb4
+        x-checker-data:
+          type: anitya
+          project-id: 16076
+          stable-only: true
+          url-template: https://github.com/justjanne/powerline-go/releases/download/v$version/powerline-go-linux-amd64
+
+  - name: stow
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/stow/stow-2.3.1.tar.gz
+        sha256: 09d5d99671b78537fd9b2c0b39a5e9761a7a0e979f6fdb7eabfa58ee45f03d4b
+        x-checker-data:
+          type: anitya
+          project-id: 4900
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/stow/stow-$version.tar.gz
+    cleanup:
+      - /share/doc
+      - /share/info
+
+  - name: packaging
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 enable{,-bash,-sdks}.sh -t ${FLATPAK_DEST}/
+      - install -Dm755 enable-development-environment -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 bash.bashrc inputrc -t ${FLATPAK_DEST}/etc/
+      - install -Dm755 ssh -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: script
+        dest-filename: enable.sh
+        commands:
+          - |
+            if [ -z "$FLATPAK_DEVELOPMENT_ENVIRONMENT" ]; then
+              export FLATPAK_DEVELOPMENT_ENVIRONMENT=1
+              export PATH=/usr/lib/sdk/devenv/bin:$PATH
+              export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/sdk/devenv/lib
+              export XDG_DATA_DIRS=$XDG_DATA_DIRS:/usr/lib/sdk/devenv/share
+            fi
+      - type: script
+        dest-filename: enable-bash.sh
+        commands:
+          - source /usr/lib/sdk/devenv/enable.sh
+          - exec /usr/bin/bash -i --rc-file ~/projects/flatpak-dotuser/dots/bash/.bashrc
+      - type: script
+        dest-filename: enable-development-environment
+        commands:
+          - |
+            if [ -z "$FLATPAK_DEVELOPMENT_ENVIRONMENT" ]; then
+              source /usr/lib/sdk/devenv/enable.sh
+              exec bash -i
+            fi
+      - type: script
+        dest-filename: ssh
+        commands:
+          - |
+            /usr/bin/ssh \
+            -F /home/${USER}/.config/ssh/config \
+            -o "UserKnownHostsFile /home/${USER}/.config/ssh/known_hosts" \
+            "$@"
+
+      - type: file
+        path: enable-sdks.sh
+      - type: file
+        path: bash.bashrc
+      - type: file
+        path: inputrc
