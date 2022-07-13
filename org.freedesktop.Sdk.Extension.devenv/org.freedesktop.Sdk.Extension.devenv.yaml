@@ -10,8 +10,8 @@
 # TODO: add more patched fonts
 #         updated noto @ https://github.com/powerline/fontpatcher with latest fonts
 #         nerd-fonts @ https://github.com/ryanoasis/nerd-fonts
-# TODO: add term tools: fzf, broot, fzy, skim, ugrep
-# TODO: bash-completion
+# TODO: add term tools: broot, fzy, skim, ugrep
+# TODO: investigate broken host tmux sessions
 
 # documentation
 #
@@ -470,6 +470,145 @@ modules:
           stable-only: true
           url-template: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz
 
+  - name: github-cli
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 bin/gh -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - bin/gh completion -s bash | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/bash-completion/completions/gh
+      - bin/gh completion -s fish | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/fish/vendor_completions.d/gh.fish
+      - bin/gh completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_gh
+    sources:
+      - type: archive
+        url: https://github.com/cli/cli/releases/download/v2.14.1/gh_2.14.1_linux_amd64.tar.gz
+        sha256: 21539943893f2edbefc5bf7bcdd5c1060038ef9e0b052a68d52dce2f55f9818e
+        x-checker-data:
+          type: anitya
+          project-id: 135615
+          stable-only: true
+          url-template: https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz
+
+  - name: github-hub
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 bin/hub -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 etc/hub.bash_completion.sh ${FLATPAK_DEST}/share/bash-completion/completions/hub
+      - install -Dm644 etc/hub.fish_completion ${FLATPAK_DEST}/share/fish/vendor_completions.d/hub.fish
+      - install -Dm644 etc/hub.zsh_completion ${FLATPAK_DEST}/share/zsh/site-functions/_hub
+      - cp -a share/vim ${FLATPAK_DEST}/share/
+    sources:
+      - type: archive
+        url: https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz
+        sha256: 74d95fdfb3c78c8af4e2025b04b916ad905ab99a361778500d58269847c7922d
+        x-checker-data:
+          type: anitya
+          project-id: 5368
+          stable-only: true
+          url-template: https://github.com/github/hub/releases/download/v$version/hub-linux-amd64-$version.tgz
+
+  - name: gitlab-cli
+    buildsystem: simple
+    build-commands:
+      - bsdtar -Oxf glab.deb 'data.tar*' | bsdtar -xf - --strip-components=2
+      - install -Dm755 bin/glab -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - bin/glab completion -s bash | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/bash-completion/completions/glab
+      - bin/glab completion -s fish | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/fish/vendor_completions.d/glab.fish
+      - bin/glab completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_glab
+    sources:
+      - type: file
+        dest-filename: glab.deb
+        url: https://github.com/profclems/glab/releases/download/v1.22.0/glab_1.22.0_Linux_x86_64.deb
+        sha256: 5761f235ee5ef358dabcb8a5d86013572eb504cc43237b84c258114ab3fd7c27
+        x-checker-data:
+          type: anitya
+          project-id: 127208
+          stable-only: true
+          url-template: https://github.com/profclems/glab/releases/download/v$version/glab_${version}_Linux_x86_64.deb
+
+  - name: gitlab-release-cli
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 release-cli -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: release-cli
+        url: https://gitlab.com/gitlab-org/release-cli/-/releases/v0.11.0/downloads/bin/release-cli-linux-amd64
+        sha256: c3bc1c23c3c91267c550e8ab8b53f6b699ec914046434dff3857b4d317f179e1
+        x-checker-data:
+          type: anitya
+          project-id: 267525
+          stable-only: true
+          url-template: https://gitlab.com/gitlab-org/release-cli/-/releases/v$version/downloads/bin/release-cli-linux-amd64
+
+  - name: gitea-tea
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 tea -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 contrib/autocomplete.sh ${FLATPAK_DEST}/share/bash-completion/completions/tea
+      - install -Dm644 contrib/autocomplete.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_tea
+    sources:
+      - type: file
+        dest-filename: tea
+        url: https://gitea.com/gitea/tea/releases/download/v0.8.0/tea-0.8.0-linux-amd64
+        sha256: 8bc99e0532548365f3d86a5ec319772121a844d54a01cb51cddb030d05f27a0c
+        x-checker-data:
+          type: json
+          url: https://gitea.com/api/v1/repos/gitea/tea/releases
+          version-query: first(.[].tag_name | sub("^v"; ""))
+          url-query: '"https://gitea.com/gitea/tea/releases/download/v" + $version + "/tea-" + $version + "-linux-amd64"'
+      - type: archive
+        url: https://gitea.com/gitea/tea/archive/v0.8.0.tar.gz
+        sha256: 6c73c0a7b66cdfd1e5a302257d54df06a3a41eb9bdbfeb547966db431ae23b23
+        x-checker-data:
+          type: json
+          url: https://gitea.com/api/v1/repos/gitea/tea/releases
+          version-query: first(.[].tag_name | sub("^v"; ""))
+          url-query: '"https://gitea.com/gitea/tea/archive/v" + $version + ".tar.gz"'
+
+  - name: fzf
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 fzf bin/fzf-tmux -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 shell/completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/fzf
+     #- install -Dm644 shell/completion.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/fzf.fish
+      - install -Dm644 shell/completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_fzf
+      - install -Dm644 shell/key-bindings.{bash,zsh} -t ${FLATPAK_DEST}/share/fzf/
+      - install -Dm644 shell/key-bindings.fish ${FLATPAK_DEST}/share/fish/vendor_functions.d/fzf_key_bindings.fish
+      - install -Dm644 doc/fzf.txt -t ${FLATPAK_DEST}/share/vim/vimfiles/doc/
+      - install -Dm644 plugin/fzf.vim -t ${FLATPAK_DEST}/share/vim/vimfiles/plugin/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/junegunn/fzf/releases/download/0.30.0/fzf-0.30.0-linux_amd64.tar.gz
+        sha256: 53b136e0566a1b3ab57c28dffadb3d0392ad0968a714e65862cf4497152674e5
+        x-checker-data:
+          type: anitya
+          project-id: 15856
+          stable-only: true
+          url-template: https://github.com/junegunn/fzf/releases/download/$version/fzf-$version-linux_amd64.tar.gz
+      - type: archive
+        url: https://github.com/junegunn/fzf/archive/0.30.0/fzf-0.30.0.tar.gz
+        sha256: a3428f510b7136e39104a002f19b2e563090496cb5205fa2e4c5967d34a20124
+        x-checker-data:
+          type: anitya
+          project-id: 15856
+          stable-only: true
+          url-template: https://github.com/junegunn/fzf/archive/$version/fzf-$version.tar.gz
+
+  - name: bash-completion
+    sources:
+      - type: archive
+        url: https://github.com/scop/bash-completion/releases/download/2.11/bash-completion-2.11.tar.xz
+        sha256: 73a8894bad94dee83ab468fa09f628daffd567e8bef1a24277f1e9a0daf911ac
+        x-checker-data:
+          type: anitya
+          project-id: 5667
+          stable-only: true
+          url-template: https://github.com/scop/bash-completion/releases/download/$version/bash-completion-$version.tar.xz
+
   - name: packaging
     buildsystem: simple
     build-commands:
@@ -507,6 +646,7 @@ modules:
                   export TERMINFO_DIRS+="${SDKPATH}/share/terminfo:"
                 fi
               fi
+              source ${SDKPATH}/share/bash-completion/bash_completion
             fi
       - type: script
         dest-filename: enable-bash.sh
