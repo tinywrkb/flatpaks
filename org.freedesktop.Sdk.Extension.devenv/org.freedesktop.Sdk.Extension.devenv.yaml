@@ -41,6 +41,11 @@
 #     create .bashrc
 #       `$ echo 'source $ENABLE_DEVENV' > .bashrc`
 #
+#   terminfo: use updated db
+#     optional as it's already set by the enable.sh script
+#     if added to an app packaging, must use quotes like the example
+#     - '--env=TERMINFO_DIRS=/usr/lib/sdk/devenv/share/terminfo:'
+#
 #   permissions
 #     ssh
 #       --filesystem=xdg-config/ssh:ro
@@ -101,6 +106,7 @@ cleanup:
   - '*.la'
 modules:
   - ../shared-modules/byobu/byobu.json
+  - ../shared-modules/imagemagick/imagemagick.json
   - ../shared-modules/jq/jq.json
   - ../shared-modules/neovim/neovim.json
   - ../shared-modules/p7zip/p7zip.json
@@ -437,6 +443,33 @@ modules:
               stable-only: true
               url-template: https://codeberg.org/dnkl/fcft/archive/$version.tar.gz
 
+  - name: terminfo-db
+    config-opts:
+      - --bindir=/var/bin
+      - --includedir=/var/include
+      - --libdir=/var/lib
+      - --enable-db-install
+      - --without-ada
+      - --without-curses-h
+      - --without-cxx
+      - --without-cxx-binding
+      - --without-debug
+      - --without-manpages
+      - --without-normal
+      - --without-progs
+      - --without-tests
+    make-install-args:
+      - tabsetdir=/var/share/tabset
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz
+        sha256: 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
+        x-checker-data:
+          type: anitya
+          project-id: 234776
+          stable-only: true
+          url-template: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz
+
   - name: packaging
     buildsystem: simple
     build-commands:
@@ -466,6 +499,13 @@ modules:
                 export PYTHONPATH=${SDKPATH}/lib/python/site-packages
               else
                 export PYTHONPATH+=:${SDKPATH}/lib/python/site-packages
+              fi
+              if [[ ":$TERMINFO_DIRS:" != *":${SDKPATH}/share/terminfo:"* ]]; then
+                if [[ "$TERMINFO_DIRS" != *":" ]] && [ -n "$TERMINFO_DIRS" ]; then
+                  export TERMINFO_DIRS+=":${SDKPATH}/share/terminfo:"
+                else
+                  export TERMINFO_DIRS+="${SDKPATH}/share/terminfo:"
+                fi
               fi
             fi
       - type: script
