@@ -1,0 +1,219 @@
+From 8c6404629f8a7d4abe879721dfa636ac8e320789 Mon Sep 17 00:00:00 2001
+From: Sergey Nazaryev <sergey@nazaryev.com>
+Date: Sat, 16 Jan 2021 05:20:05 +0200
+Subject: [PATCH 1/2] Use more accurate way to obtain image size
+
+https://stackoverflow.com/a/39778771
+---
+ ranger/ext/img_display.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ranger/ext/img_display.py b/ranger/ext/img_display.py
+index b738f458dc..2834da0518 100644
+--- a/ranger/ext/img_display.py
++++ b/ranger/ext/img_display.py
+@@ -360,7 +360,7 @@ def _get_image_dimensions(path):
+                 file_handle.seek(0)
+                 size = 2
+                 ftype = 0
+-                while not 0xc0 <= ftype <= 0xcf:
++                while not 0xc0 <= ftype <= 0xcf or ftype in (0xc4, 0xc8, 0xcc):
+                     file_handle.seek(size, 1)
+                     byte = file_handle.read(1)
+                     while ord(byte) == 0xff:
+
+From c7dab8c8dba2ed54821f5b016475fa196f887d0f Mon Sep 17 00:00:00 2001
+From: Sergey Nazaryev <sergey@nazaryev.ru>
+Date: Wed, 30 Sep 2020 00:49:10 +0300
+Subject: [PATCH 2/2] Add experimental sixel support for image preview
+
+---
+ README.md                    |  2 +-
+ doc/ranger.1                 | 12 ++++++++-
+ doc/ranger.pod               |  9 +++++++
+ ranger/config/rc.conf        |  5 ++++
+ ranger/container/settings.py |  2 +-
+ ranger/ext/img_display.py    | 48 ++++++++++++++++++++++++++++++------
+ 6 files changed, 67 insertions(+), 11 deletions(-)
+
+diff --git a/README.md b/README.md
+index f18d320e6c..3525c089c4 100644
+--- a/README.md
++++ b/README.md
+@@ -89,7 +89,7 @@ For enhanced file previews (with `scope.sh`):
+ 
+ * `img2txt` (from `caca-utils`) for ASCII-art image previews
+ * `w3mimgdisplay`, `ueberzug`, `mpv`, `iTerm2`, `kitty`, `terminology` or `urxvt` for image previews
+-* `convert` (from `imagemagick`) to auto-rotate images and for SVG previews
++* `convert` (from `imagemagick`) to auto-rotate images, for SVG previews and for `sixel` image preview method
+ * `ffmpegthumbnailer` for video thumbnails
+ * `highlight`, `bat` or `pygmentize` for syntax highlighting of code
+ * `atool`, `bsdtar`, `unrar` and/or `7z` to preview archives
+diff --git a/doc/ranger.1 b/doc/ranger.1
+index e1c025ed0b..89d2f8d43c 100644
+--- a/doc/ranger.1
++++ b/doc/ranger.1
+@@ -308,7 +308,7 @@ are automatically used when available but completely optional.
+ \&\f(CW\*(C`w3mimgdisplay\*(C'\fR, \f(CW\*(C`ueberzug\*(C'\fR, \f(CW\*(C`mpv\*(C'\fR, \f(CW\*(C`iTerm2\*(C'\fR, \f(CW\*(C`kitty\*(C'\fR, \f(CW\*(C`terminology\*(C'\fR or
+ \&\f(CW\*(C`urxvt\*(C'\fR for image previews
+ .IP "\-" 2
+-\&\f(CW\*(C`convert\*(C'\fR (from \f(CW\*(C`imagemagick\*(C'\fR) to auto-rotate images and for \s-1SVG\s0 previews
++\&\f(CW\*(C`convert\*(C'\fR (from \f(CW\*(C`imagemagick\*(C'\fR) to auto-rotate images, for \s-1SVG\s0 previews and for \f(CW\*(C`sixel\*(C'\fR image preview method
+ .IP "\-" 2
+ \&\f(CW\*(C`ffmpegthumbnailer\*(C'\fR for video thumbnails
+ .IP "\-" 2
+@@ -412,6 +412,16 @@ To enable this feature, install the program \*(L"w3m\*(R" and set the option
+ .PP
+ When using a terminal with a nonzero border which is not automatically detected, the w3m preview will be misaligned.
+ Use the \f(CW\*(C`w3m_offset\*(C'\fR option to manually adjust the image offset. This should be the same value as the terminal's border value.
++.PP
++\fIsixel\fR
++.IX Subsection "sixel"
++.PP
++This method allows to preview images over ssh, requires certain terminals which
++support Sixel graphics format (tested on \*(L"xterm\*(R", \*(L"iTerm2\*(R"
++\&\*(L"mintty\*(R", \*(L"foot\*(R" and \*(L"mlterm\*(R").
++.PP
++To enable this feature, install the program \*(L"ImageMagick\*(R" and set the option
++\&\f(CW\*(C`preview_images_method\*(C'\fR to sixel.
+ .SS "\s-1SELECTION\s0"
+ .IX Subsection "SELECTION"
+ The \fIselection\fR is defined as \*(L"All marked files \s-1IF THERE ARE ANY,\s0 otherwise
+diff --git a/doc/ranger.pod b/doc/ranger.pod
+index 4cd5335a46..58cd8cc0b0 100644
+--- a/doc/ranger.pod
++++ b/doc/ranger.pod
+@@ -359,6 +359,15 @@ C<preview_images_method> to w3m.
+ When using a terminal with a nonzero border which is not automatically detected, the w3m preview will be misaligned.
+ Use the C<w3m_offset> option to manually adjust the image offset. This should be the same value as the terminal's border value.
+ 
++=head3 sixel
++
++This method allows to preview images over ssh, requires certain terminals which
++support Sixel graphics format (tested on "xterm", "iTerm2" "mintty", "foot" and
++"mlterm").
++
++To enable this feature, install the program "ImageMagick" and set the option
++C<preview_images_method> to sixel.
++
+ =head2 SELECTION
+ 
+ The I<selection> is defined as "All marked files IF THERE ARE ANY, otherwise
+diff --git a/ranger/config/rc.conf b/ranger/config/rc.conf
+index dc6c771766..6d385ff286 100644
+--- a/ranger/config/rc.conf
++++ b/ranger/config/rc.conf
+@@ -113,6 +113,11 @@ set preview_images false
+ #   Preview images in full color with the external command "ueberzug".
+ #   Images are shown by using a child window.
+ #   Only for users who run X11 in GNU/Linux.
++#
++# * sixel:
++#   Preview images in full color using old Sixel graphics format. This
++#   requires ImageMagick and a terminal which supports Sixel (e.g. xterm,
++#   iTerm2, mintty, foot).
+ set preview_images_method w3m
+ 
+ # Delay in seconds before displaying an image with the w3m method.
+diff --git a/ranger/container/settings.py b/ranger/container/settings.py
+index e7d6775db7..4aa70ee7e3 100644
+--- a/ranger/container/settings.py
++++ b/ranger/container/settings.py
+@@ -113,7 +113,7 @@
+     'one_indexed': [False, True],
+     'preview_images_method': ['w3m', 'iterm2', 'terminology',
+                               'urxvt', 'urxvt-full', 'kitty',
+-                              'ueberzug'],
++                              'ueberzug', 'sixel'],
+     'vcs_backend_bzr': ['disabled', 'local', 'enabled'],
+     'vcs_backend_git': ['enabled', 'disabled', 'local'],
+     'vcs_backend_hg': ['disabled', 'local', 'enabled'],
+diff --git a/ranger/ext/img_display.py b/ranger/ext/img_display.py
+index 2834da0518..13a4c45988 100644
+--- a/ranger/ext/img_display.py
++++ b/ranger/ext/img_display.py
+@@ -22,7 +22,7 @@
+ import warnings
+ import json
+ import threading
+-from subprocess import Popen, PIPE
++from subprocess import Popen, PIPE, check_output
+ from collections import defaultdict
+ 
+ import termios
+@@ -290,11 +290,13 @@ def quit(self):
+ 
+     def _generate_iterm2_input(self, path, max_cols, max_rows):
+         """Prepare the image content of path for image display in iTerm2"""
+-        image_width, image_height = self._get_image_dimensions(path)
++        image_width, image_height = self.get_image_dimensions(path)
+         if max_cols == 0 or max_rows == 0 or image_width == 0 or image_height == 0:
+             return ""
+-        image_width = self._fit_width(
+-            image_width, image_height, max_cols, max_rows)
++        max_width = self.fm.settings.iterm2_font_width * max_cols
++        max_height = self.fm.settings.iterm2_font_height * max_rows
++        image_width = self.fit_width(
++            image_width, image_height, max_width, max_height)
+         content = self._encode_image_content(path)
+         display_protocol = "\033"
+         close_protocol = "\a"
+@@ -310,9 +312,8 @@ def _generate_iterm2_input(self, path, max_cols, max_rows):
+             close_protocol)
+         return text
+ 
+-    def _fit_width(self, width, height, max_cols, max_rows):
+-        max_width = self.fm.settings.iterm2_font_width * max_cols
+-        max_height = self.fm.settings.iterm2_font_height * max_rows
++    @staticmethod
++    def fit_width(width, height, max_width, max_height):
+         if height > max_height:
+             if width > max_width:
+                 width_scale = max_width / width
+@@ -338,7 +339,7 @@ def _encode_image_content(path):
+             return base64.b64encode(fobj.read()).decode('utf-8')
+ 
+     @staticmethod
+-    def _get_image_dimensions(path):
++    def get_image_dimensions(path):
+         """Determine image size using imghdr"""
+         file_handle = open(path, 'rb')
+         file_header = file_handle.read(24)
+@@ -418,6 +419,37 @@ def quit(self):
+         self.clear(0, 0, 0, 0)
+ 
+ 
++@register_image_displayer("sixel")
++class SixelImageDisplayer(ImageDisplayer, FileManagerAware):
++    def draw(self, path, start_x, start_y, width, height):
++        rows, cols, xpixels, ypixels = self._get_terminal_dimensions()
++        image_width, image_height = ITerm2ImageDisplayer.get_image_dimensions(path)
++
++        fit_image_width = int(ITerm2ImageDisplayer.fit_width(
++            image_width, image_height, (xpixels // cols) * width, (ypixels // rows) * height))
++        fit_image_height = image_height * fit_image_width // image_width
++
++        sixel = check_output(['convert', path + '[0]',
++                              '-geometry', '{0}x{1}'.format(fit_image_width, fit_image_height),
++                              'sixel:-'])
++
++        move_cur(start_y, start_x)
++        sys.stdout.buffer.write(sixel)
++        sys.stdout.flush()
++
++    @staticmethod
++    def _get_terminal_dimensions():
++        farg = struct.pack("HHHH", 0, 0, 0, 0)
++        fd_stdout = sys.stdout.fileno()
++        fretint = fcntl.ioctl(fd_stdout, termios.TIOCGWINSZ, farg)
++        return struct.unpack("HHHH", fretint)
++
++    def clear(self, start_x, start_y, width, height):
++        self.fm.ui.win.redrawwin()
++        self.fm.ui.win.refresh()
++        self.fm.ui.win.redrawwin()
++
++
+ @register_image_displayer("urxvt")
+ class URXVTImageDisplayer(ImageDisplayer, FileManagerAware):
+     """Implementation of ImageDisplayer working by setting the urxvt

@@ -1,0 +1,318 @@
+From a4797eafea387199ce708b5a38d5ffb099bc1093 Mon Sep 17 00:00:00 2001
+From: Toni Kukurin <tkukurin@gmail.com>
+Date: Sun, 23 Feb 2020 09:52:36 +0100
+Subject: [PATCH 1/6] Update ui.py
+
+Fix 'FileNotFound' if `screen` is not available
+---
+ ranger/gui/ui.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ranger/gui/ui.py b/ranger/gui/ui.py
+index d2dbb759..5ffdf4a4 100644
+--- a/ranger/gui/ui.py
++++ b/ranger/gui/ui.py
+@@ -497,7 +497,7 @@ class UI(  # pylint: disable=too-many-instance-attributes,too-many-public-method
+                 # gives out a warning if $TERM is not "screen"
+                 try:
+                     self._screen_title = check_output(
+-                        ['screen', '-Q', 'title']).strip()
++                        ['screen', '-Q', 'title'], shell=True).strip()
+                 except CalledProcessError:
+                     self._screen_title = None
+ 
+-- 
+2.36.1
+
+
+From d181f458080dc0d84b3caa653b0ca0bd33f36e04 Mon Sep 17 00:00:00 2001
+From: toonn <toonn@toonn.io>
+Date: Mon, 2 Mar 2020 20:55:17 +0100
+Subject: [PATCH 2/6] Change approach to multiplexer title renaming
+
+There were a couple bugs causing ranger to miss opportunities to restore
+multiplexer window names in tmux.
+
+Fixes #1805
+---
+ ranger/gui/ui.py | 99 ++++++++++++++++++++++++++++--------------------
+ 1 file changed, 58 insertions(+), 41 deletions(-)
+
+diff --git a/ranger/gui/ui.py b/ranger/gui/ui.py
+index 5ffdf4a4..dc4379ac 100644
+--- a/ranger/gui/ui.py
++++ b/ranger/gui/ui.py
+@@ -9,6 +9,7 @@ import threading
+ import curses
+ from subprocess import CalledProcessError
+ 
++from ranger.ext.get_executables import get_executables
+ from ranger.ext.keybinding_parser import KeyBuffer, KeyMaps, ALT_KEY
+ from ranger.ext.lazy_property import lazy_property
+ from ranger.ext.signals import Signal
+@@ -49,6 +50,16 @@ def _setup_mouse(signal):
+         curses.mousemask(0)
+ 
+ 
++def _in_tmux():
++    return ('TMUX' in os.environ
++            and 'tmux' in get_executables())
++
++
++def _in_screen():
++    return ('screen' in os.environ['TERM']
++            and 'screen' in get_executables())
++
++
+ class UI(  # pylint: disable=too-many-instance-attributes,too-many-public-methods
+         DisplayableContainer):
+     ALLOWED_VIEWMODES = 'miller', 'multipane'
+@@ -73,8 +84,8 @@ class UI(  # pylint: disable=too-many-instance-attributes,too-many-public-method
+         self.multiplexer = None
+         self._draw_title = None
+         self._tmux_automatic_rename = None
+-        self._tmux_title = None
+-        self._screen_title = None
++        self._multiplexer_title = None
++        self._multiplexer_title = None
+         self.browser = None
+ 
+         if fm is not None:
+@@ -469,58 +480,64 @@ class UI(  # pylint: disable=too-many-instance-attributes,too-many-public-method
+     # Handles window renaming behaviour of the terminal multiplexers
+     # GNU Screen and Tmux
+     def handle_multiplexer(self):
+-        if self.settings.update_tmux_title:
+-            if 'TMUX' in os.environ:
+-                # Stores the automatic-rename setting
+-                # prints out a warning if the allow-rename in tmux is not set
+-                tmux_allow_rename = check_output(
+-                    ['tmux', 'show-window-options', '-v',
+-                     'allow-rename']).strip()
+-                if tmux_allow_rename == 'off':
+-                    self.fm.notify('Warning: allow-rename not set in Tmux!',
+-                                   bad=True)
+-                elif self._tmux_title is None:
+-                    self._tmux_title = check_output(
+-                        ['tmux', 'display-message', '-p', '#W']).strip()
+-                else:
++        if (self.settings.update_tmux_title and not self._multiplexer_title):
++            try:
++                if _in_tmux():
++                    # Stores the automatic-rename setting
++                    # prints out a warning if allow-rename isn't set in tmux
+                     try:
++                        tmux_allow_rename = check_output(
++                            ['tmux', 'show-window-options', '-v',
++                             'allow-rename']).strip()
++                    except CalledProcessError:
++                        tmux_allow_rename = 'off'
++                    if tmux_allow_rename == 'off':
++                        self.fm.notify('Warning: allow-rename not set in Tmux!',
++                                       bad=True)
++                    else:
++                        self._multiplexer_title = check_output(
++                            ['tmux', 'display-message', '-p', '#W']).strip()
+                         self._tmux_automatic_rename = check_output(
+                             ['tmux', 'show-window-options', '-v',
+                              'automatic-rename']).strip()
+                         if self._tmux_automatic_rename == 'on':
+                             check_output(['tmux', 'set-window-option',
+                                           'automatic-rename', 'off'])
+-                    except CalledProcessError:
+-                        pass
+-            elif 'screen' in os.environ['TERM'] and self._screen_title is None:
+-                # Stores the screen window name before renaming it
+-                # gives out a warning if $TERM is not "screen"
+-                try:
+-                    self._screen_title = check_output(
+-                        ['screen', '-Q', 'title'], shell=True).strip()
+-                except CalledProcessError:
+-                    self._screen_title = None
++                elif _in_screen():
++                    # Stores the screen window name before renaming it
++                    # gives out a warning if $TERM is not "screen"
++                    self._multiplexer_title = check_output(
++                        ['screen', '-Q', 'title']).strip()
++            except CalledProcessError:
++                self.fm.notify("Couldn't access previous multiplexer window"
++                               " name, won't be able to restore.",
++                               bad=False)
++            if not self._multiplexer_title:
++                self._multiplexer_title = os.environ.get(
++                    "SHELL",
++                    "shell").split("/")[-1]
+ 
+             sys.stdout.write("\033kranger\033\\")
+             sys.stdout.flush()
+ 
+     # Restore window name
+     def restore_multiplexer_name(self):
+-        try:
+-            if 'TMUX' in os.environ:
+-                if self._tmux_automatic_rename:
+-                    check_output(['tmux', 'set-window-option',
+-                                  'automatic-rename',
+-                                  self._tmux_automatic_rename])
+-                else:
+-                    check_output(['tmux', 'set-window-option', '-u',
+-                                  'automatic-rename'])
+-                if self._tmux_title:
+-                    check_output(['tmux', 'rename-window', self._tmux_title])
+-            elif 'screen' in os.environ['TERM'] and self._screen_title:
+-                check_output(['screen', '-X', 'title', self._screen_title])
+-        except CalledProcessError:
+-            self.fm.notify("Could not restore window-name!", bad=True)
++        if self._multiplexer_title:
++            try:
++                if _in_tmux():
++                    if self._tmux_automatic_rename:
++                        check_output(['tmux', 'set-window-option',
++                                      'automatic-rename',
++                                      self._tmux_automatic_rename])
++                    else:
++                        check_output(['tmux', 'set-window-option', '-u',
++                                      'automatic-rename'])
++            except CalledProcessError:
++                self.fm.notify("Could not restore multiplexer window name!",
++                               bad=True)
++
++            sys.stdout.write("\033k{}\033\\".format(self._multiplexer_title))
++            sys.stdout.flush()
+ 
+     def hint(self, text=None):
+         self.status.hint = text
+-- 
+2.36.1
+
+
+From de5eb39c0a4ae6572ff189f9ff73be8ce578be96 Mon Sep 17 00:00:00 2001
+From: toonn <toonn@toonn.io>
+Date: Wed, 4 Mar 2020 11:47:21 +0100
+Subject: [PATCH 3/6] Drop double setting and prefer basename over split
+
+---
+ ranger/gui/ui.py | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/ranger/gui/ui.py b/ranger/gui/ui.py
+index dc4379ac..a2ea7778 100644
+--- a/ranger/gui/ui.py
++++ b/ranger/gui/ui.py
+@@ -85,7 +85,6 @@ class UI(  # pylint: disable=too-many-instance-attributes,too-many-public-method
+         self._draw_title = None
+         self._tmux_automatic_rename = None
+         self._multiplexer_title = None
+-        self._multiplexer_title = None
+         self.browser = None
+ 
+         if fm is not None:
+@@ -513,9 +512,8 @@ class UI(  # pylint: disable=too-many-instance-attributes,too-many-public-method
+                                " name, won't be able to restore.",
+                                bad=False)
+             if not self._multiplexer_title:
+-                self._multiplexer_title = os.environ.get(
+-                    "SHELL",
+-                    "shell").split("/")[-1]
++                self._multiplexer_title = os.path.basename(
++                    os.environ.get("SHELL", "shell"))
+ 
+             sys.stdout.write("\033kranger\033\\")
+             sys.stdout.flush()
+-- 
+2.36.1
+
+
+From 2c00573b8c62033af9d54353cf5e7bba2e246a24 Mon Sep 17 00:00:00 2001
+From: toonn <toonn@toonn.io>
+Date: Sun, 5 Jul 2020 15:25:24 +0200
+Subject: [PATCH 4/6] Fix two issues caught by pylint3k
+
+One lacking `from __future__ import absolute_import` and one
+implicit-format-spec (a custom check!) : )
+---
+ ranger/gui/ui.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ranger/gui/ui.py b/ranger/gui/ui.py
+index a2ea7778..7763efa4 100644
+--- a/ranger/gui/ui.py
++++ b/ranger/gui/ui.py
+@@ -534,7 +534,7 @@ class UI(  # pylint: disable=too-many-instance-attributes,too-many-public-method
+                 self.fm.notify("Could not restore multiplexer window name!",
+                                bad=True)
+ 
+-            sys.stdout.write("\033k{}\033\\".format(self._multiplexer_title))
++            sys.stdout.write("\033k{0}\033\\".format(self._multiplexer_title))
+             sys.stdout.flush()
+ 
+     def hint(self, text=None):
+-- 
+2.36.1
+
+
+From 6350789917b3257d745f119efe66be8a45070dd3 Mon Sep 17 00:00:00 2001
+From: lverweijen <lverweijen>
+Date: Thu, 31 Dec 2020 02:36:11 +0100
+Subject: [PATCH 5/6] Ignore TMUX-env variable when it's empty
+
+Fixes #2195
+---
+ ranger/gui/ui.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ranger/gui/ui.py b/ranger/gui/ui.py
+index 7763efa4..2f272b1f 100644
+--- a/ranger/gui/ui.py
++++ b/ranger/gui/ui.py
+@@ -51,7 +51,7 @@ def _setup_mouse(signal):
+ 
+ 
+ def _in_tmux():
+-    return ('TMUX' in os.environ
++    return (os.environ.get('TMUX')
+             and 'tmux' in get_executables())
+ 
+ 
+-- 
+2.36.1
+
+
+From 7f3064e241e890f0394444e6fbe6469b3f46443c Mon Sep 17 00:00:00 2001
+From: toonn <toonn@toonn.io>
+Date: Sat, 28 Aug 2021 11:44:00 +0200
+Subject: [PATCH 6/6] ui: Fix crash when TMUX not in environment
+
+Made a mistake when merging #2201. If the "TMUX" key isn't in the
+environment dictionary we'll get a KeyError. Providing an empty string
+default should fix the problem.
+
+I applied the same logic to the check for screen because TERM isn't
+guaranteed to be in the environment either, though this verges os
+malicious.
+---
+ ranger/gui/ui.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ranger/gui/ui.py b/ranger/gui/ui.py
+index 2f272b1f..eede9b34 100644
+--- a/ranger/gui/ui.py
++++ b/ranger/gui/ui.py
+@@ -51,12 +51,12 @@ def _setup_mouse(signal):
+ 
+ 
+ def _in_tmux():
+-    return (os.environ.get('TMUX')
++    return (os.environ.get("TMUX", "")
+             and 'tmux' in get_executables())
+ 
+ 
+ def _in_screen():
+-    return ('screen' in os.environ['TERM']
++    return ('screen' in os.environ.get("TERM", "")
+             and 'screen' in get_executables())
+ 
+ 
+-- 
+2.36.1
+

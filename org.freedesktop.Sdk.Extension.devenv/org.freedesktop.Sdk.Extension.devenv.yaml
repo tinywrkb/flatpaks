@@ -6,13 +6,12 @@
 #         python
 #         golang
 #         rust
-# TODO: add more editors
+# TODO: add more editors: kakoune
 # TODO: add more patched fonts
 #         updated noto @ https://github.com/powerline/fontpatcher with latest fonts
 #         nerd-fonts @ https://github.com/ryanoasis/nerd-fonts
-# TODO: add more shells: fish, zsh
-# TODO: add term emulators? alacritty, foot
-# TODO: virtenv helpers/wrappers: pyenv
+# TODO: add term tools: fzf, broot, fzy, skim, ugrep
+# TODO: bash-completion
 
 # documentation
 #
@@ -45,10 +44,21 @@
 #   permissions
 #     ssh
 #       --filesystem=xdg-config/ssh:ro
-#       --filesystem=xdg-run/ssh-agent:ro
-#       --filesystem=~/.user/hiddendots/openssh:ro
-#       --env=SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent/sock
-#       --persist=.ssh
+#       my secret store for storing keys, needed due to symlinks from xdg-config/ssh
+#         --filesystem=~/.user/hiddendots/openssh:ro
+#       this is the location of my ssh-agent's socket, and likely not needed anymore with new flatpak releases
+#         --filesystem=xdg-run/ssh-agent:ro
+#       this might be already enabled, it only used by gnome-keyring's agent, and basically bind mounts bind-mounts the xdg-run/ssh-auth
+#         --socket=ssh-auth
+#       for app/sandbox specific setting, like automatically added known hosts
+#         --persist=.ssh
+#       only needed with older than flatpak 1.11.1 https://github.com/flatpak/flatpak/commit/0e0e98e7ef0498946d8172ac6d266679434aab6a
+#         --env=SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent/sock
+#       when using non-default ssh config folder, explictly set IdentityFile
+#         Host *
+#           IdentityFile ~/.config/ssh/id_rsa
+#           IdentityFile ...
+#
 #     gnupg
 #       --filesystem=xdg-config/gnupg:ro
 #     code
@@ -62,6 +72,9 @@
 #       --talk-name=org.freedesktop.Flatpak
 #     git
 #       --filesystem=xdg-config/git:ro
+#     nvim
+#       --filesystem=xdg-config/nvim:ro
+#       --filesystem=xdg-data/nvim:ro
 
 id: org.freedesktop.Sdk.Extension.devenv
 branch: '21.08'
@@ -82,6 +95,7 @@ build-options:
 cleanup:
   - /include
   - /lib/pkgconfig
+  - /share/applications
   - /share/doc
   - '*.a'
   - '*.la'
@@ -183,13 +197,256 @@ modules:
       - /share/doc
       - /share/info
 
+  - name: ranger
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
+    sources:
+      - type: archive
+        url: https://ranger.github.io/ranger-1.9.3.tar.gz
+        sha256: ce088a04c91c25263a9675dc5c43514b7ec1b38c8ea43d9a9d00923ff6cdd251
+        x-checker-data:
+          type: html
+          url: https://ranger.github.io/download.html
+          version-pattern: ranger-([\d\.-]+).tar.gz
+          url-template: https://ranger.github.io/ranger-$version.tar.gz
+      - type: patch
+        path: ranger-sixel.patch
+      - type: patch
+        path: ranger-tmux-fixes.patch
+
+  - name: exa
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 bin/exa -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 completions/exa.bash ${FLATPAK_DEST}/share/bash-completion/completions/exa
+      - install -Dm644 completions/exa.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/exa.fish
+      - install -Dm644 completions/exa.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_exa
+      - install -Dm644 man/exa.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 man/exa_colors.5 -t ${FLATPAK_DEST}/share/man/man5/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-v0.10.1.zip
+        sha256: a65a87bd545e969979ae9388f6333167f041a1f09fa9d60b32fd3072348ff6ce
+        x-checker-data:
+          type: anitya
+          project-id: 16575
+          stable-only: true
+          url-template: https://github.com/ogham/exa/releases/download/v$version/exa-linux-x86_64-v$version.zip
+
+  - name: lsd
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 lsd -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 autocomplete/lsd.bash-completion ${FLATPAK_DEST}/share/bash-completion/completions/lsd
+      - install -Dm644 autocomplete/lsd.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
+      - install -Dm644 autocomplete/_lsd -t ${FLATPAK_DEST}/share/zsh/site-functions/
+      - install -Dm644 lsd.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 1d5ad5b09c8f5b974f96439725b150fb87e4587e27d57a1d8c4486a73629890c
+        x-checker-data:
+          type: anitya
+          project-id: 20242
+          stable-only: true
+          url-template: https://github.com/Peltoche/lsd/releases/download/$version/lsd-$version-x86_64-unknown-linux-gnu.tar.gz
+
+  - name: vifm
+    sources:
+      - type: archive
+        url: https://prdownloads.sourceforge.net/vifm/vifm-0.12.tar.bz2
+        sha256: 33a9618f32b35b5b8c64483884f9ad09963ca8465b2935def79159028e27b2c0
+        x-checker-data:
+          type: html
+          url: https://vifm.info/downloads.shtml
+          version-pattern: vifm-([\d\.-]*).tar.bz2
+          url-template: https://prdownloads.sourceforge.net/vifm/vifm-$version.tar.bz2
+
+  - name: rmtrash
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 rmtrash rmdirtrash -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        url: https://github.com/PhrozenByte/rmtrash/archive/v1.14/rmtrash-1.14.tar.gz
+        sha256: 119cf1a5e9c5ecadb95cfcc46999a5db6d55e0bb822f411c9a1b9c7d0cdf76b7
+        x-checker-data:
+          type: anitya
+          project-id: 267500
+          stable-only: true
+          url-template: https://github.com/PhrozenByte/rmtrash/archive/v$version/rmtrash-$version.tar.gz
+    modules:
+      - name: trash-cli
+        buildsystem: simple
+        build-commands:
+          - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST trash-cli --no-build-isolation
+        sources:
+          - type: file
+            url: https://files.pythonhosted.org/packages/36/d2/6415cda6cdd81ee0eb07b357e96a03c96a78af324d7eb2c52ff51d080210/trash-cli-0.22.4.16.tar.gz
+            sha256: ec60ff1a038402f4b1e7360b32707bc36dc275fa32e512bb81274c0375d20003
+            x-checker-data:
+              type: pypi
+              name: trash-cli
+          - type: file
+            url: https://files.pythonhosted.org/packages/d6/de/0999ea2562b96d7165812606b18f7169307b60cd378bc29cf3673322c7e9/psutil-5.9.1.tar.gz
+            sha256: 57f1819b5d9e95cdfb0c881a8a5b7d542ed0b7c522d575706a80bedc848c8954
+            x-checker-data:
+              type: pypi
+              name: psutil
+
+  - name: neovide
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 neovide -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        strip-components: 3
+        url: https://github.com/neovide/neovide/releases/download/0.9.0/neovide.tar.gz
+        sha256: 684cbcaeb2e67f1d95822ef80e03e1475395d537f2032f47b8202fe48c428b08
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/neovide/neovide/releases/latest
+          version-query: .tag_name
+          url-query: '"https://github.com/neovide/neovide/releases/download/" + $version + "/neovide.tar.gz"'
+
+  - name: pyenv
+    buildsystem: simple
+    build-commands:
+      - install -dm755 ${FLATPAK_DEST}/share/pyenv
+      - cp -a libexec plugins pyenv.d ${FLATPAK_DEST}/share/pyenv/
+      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*} -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 completions/pyenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/pyenv
+      - install -Dm644 completions/pyenv.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
+      - install -Dm644 completions/pyenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_pyenv
+      - install -Dm644 man/man1/pyenv.1 -t ${FLATPAK_DEST}/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/pyenv/pyenv/archive/v2.3.2/pyenv-2.3.2.tar.gz
+        sha256: 150ac8f7161c00e8e613bf5e273306f674b60037e3dace9c6bb7611dceb17144
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/pyenv/pyenv/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-" + $version + ".tar.gz"'
+    cleanup:
+      - /share/pyenv/pyenv.d/install
+      - /share/pyenv/plugins/python-build/scripts
+      - /share/pyenv/plugins/python-build/test
+      - .gitignore
+      - LICENSE
+      - README.md
+      - install.sh
+
+  - name: fish
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=None
+      - -Wno-dev
+    sources:
+      - type: archive
+        url: https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz
+        sha256: 291e4ec7c6c3fea54dc1aed057ce3d42b356fa6f70865627b2c7dfcecaefd210
+        x-checker-data:
+          type: anitya
+          project-id: 815
+          stable-only: true
+          url-template: https://github.com/fish-shell/fish-shell/releases/download/$version/fish-$version.tar.xz
+
+  - name: zsh
+    build-options:
+      cflags: -I/usr/lib/x86_64-linux-gnu/include
+    config-opts:
+      - --docdir=${FLATPAK_DEST}/share/doc/zsh
+      - --htmldir=${FLATPAK_DEST}/share/doc/zsh/html
+      - --enable-etcdir=${FLATPAK_DEST}/etc/zsh
+      - --enable-zshenv=${FLATPAK_DEST}/etc/zsh/zshenv
+      - --enable-zlogin=${FLATPAK_DEST}/etc/zsh/zlogin
+      - --enable-zlogout=${FLATPAK_DEST}/etc/zsh/zlogout
+      - --enable-zprofile=${FLATPAK_DEST}/etc/zsh/zprofile
+      - --enable-zshrc=${FLATPAK_DEST}/etc/zsh/zshrc
+      - --enable-maildir-support
+      - --enable-multibyte
+      - --enable-function-subdirs
+      - --enable-fndir=${FLATPAK_DEST}/share/zsh/functions
+      - --enable-scriptdir=${FLATPAK_DEST}/share/zsh/scripts
+      - --with-tcsetpgrp
+      - --enable-pcre
+      - --enable-cap
+      - --enable-zsh-secure-free
+    sources:
+      - type: archive
+        url: https://www.zsh.org/pub/zsh-5.9.tar.xz
+        sha256: 9b8d1ecedd5b5e81fbf1918e876752a7dd948e05c1a0dba10ab863842d45acd5
+        x-checker-data:
+          type: anitya
+          project-id: 5307
+          stable-only: true
+          url-template: https://www.zsh.org/pub/zsh-$version.tar.xz
+
+  - name: termite
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://github.com/aperezdc/termite/releases/download/v16.4/termite-16.4.tar.xz
+        sha256: e9a2105ca9310b616647cb63a0d0c8be7dbf003fd0ca68c5e4c64ed57a0b20ad
+        x-checker-data:
+          type: anitya
+          project-id: 11226
+          stable-only: true
+          url-template: https://github.com/aperezdc/termite/releases/download/v$version/termite-$version.tar.xz
+    cleanup:
+      - /lib/systemd
+
+  - name: foot
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://codeberg.org/dnkl/foot/archive/1.12.1.tar.gz
+        sha256: 14e307ac89454b682bb9f1bc644043779f4462df656034fcc4c1e72b18fbffdd
+        x-checker-data:
+          type: anitya
+          project-id: 141611
+          stable-only: true
+          url-template: https://codeberg.org/dnkl/foot/archive/$version.tar.gz
+    modules:
+      - name: tllist
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://codeberg.org/dnkl/tllist/archive/1.0.5.tar.gz
+            sha256: b0f32c9b2c2015c8d8dd068fd4e8b586aa91ca1670badc274ec962559ee0aadd
+            x-checker-data:
+              type: anitya
+              project-id: 141661
+              stable-only: true
+              url-template: https://codeberg.org/dnkl/tllist/archive/$version.tar.gz
+        cleanup:
+          - '*'
+      - name: fcft
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://codeberg.org/dnkl/fcft/archive/3.1.2.tar.gz
+            sha256: f571afe693d3fa11fe36e97c7a2ecbbf9313755ee31c1ec3dcc648796b8e6db0
+            x-checker-data:
+              type: anitya
+              project-id: 143240
+              stable-only: true
+              url-template: https://codeberg.org/dnkl/fcft/archive/$version.tar.gz
+
   - name: packaging
     buildsystem: simple
     build-commands:
+      - install -dm755 ${FLATPAK_DEST}/lib
+      - ln -s python$(python -c 'import sys; print("%s.%s" %sys.version_info[0:2])') ${FLATPAK_DEST}/lib/python
       - install -Dm755 enable{,-bash,-sdks}.sh -t ${FLATPAK_DEST}/
       - install -Dm755 enable-development-environment -t ${FLATPAK_DEST}/bin/
       - install -Dm644 bash.bashrc inputrc -t ${FLATPAK_DEST}/etc/
       - install -Dm755 ssh -t ${FLATPAK_DEST}/bin/
+      - ln -s nvim ${FLATPAK_DEST}/bin/vim
     sources:
       - type: script
         dest-filename: enable.sh
@@ -197,9 +454,19 @@ modules:
           - |
             if [ -z "$FLATPAK_DEVELOPMENT_ENVIRONMENT" ]; then
               export FLATPAK_DEVELOPMENT_ENVIRONMENT=1
-              export PATH=/usr/lib/sdk/devenv/bin:$PATH
-              export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/sdk/devenv/lib
-              export XDG_DATA_DIRS=$XDG_DATA_DIRS:/usr/lib/sdk/devenv/share
+              SDKPATH=/usr/lib/sdk/devenv
+              export PATH=${SDKPATH}/bin:$PATH
+              export XDG_DATA_DIRS=$XDG_DATA_DIRS:${SDKPATH}/share
+              if [ -z "$LD_LIBRARY_PATH" ]; then
+                export LD_LIBRARY_PATH=${SDKPATH}/lib
+              else
+                export LD_LIBRARY_PATH+=:${SDKPATH}/lib
+              fi
+              if [ -z "$PYTHONPATH" ]; then
+                export PYTHONPATH=${SDKPATH}/lib/python/site-packages
+              else
+                export PYTHONPATH+=:${SDKPATH}/lib/python/site-packages
+              fi
             fi
       - type: script
         dest-filename: enable-bash.sh
@@ -222,7 +489,6 @@ modules:
             -F /home/${USER}/.config/ssh/config \
             -o "UserKnownHostsFile /home/${USER}/.config/ssh/known_hosts" \
             "$@"
-
       - type: file
         path: enable-sdks.sh
       - type: file
