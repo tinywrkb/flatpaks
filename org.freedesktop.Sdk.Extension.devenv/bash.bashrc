@@ -114,6 +114,9 @@ fi
 ##############################    Completions     ##############################
 ################################################################################
 
+# bash-completion
+try_source ${DEVELOPMENT_ENVIRONMENT_SDK}/share/bash-completion/bash_completion
+
 # bash git completion
 try_catch_source /usr/share/git/completion/git-completion.bash
 

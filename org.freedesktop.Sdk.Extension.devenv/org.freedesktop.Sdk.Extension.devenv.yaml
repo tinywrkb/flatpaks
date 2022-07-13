@@ -646,7 +646,6 @@ modules:
                   export TERMINFO_DIRS+="${SDKPATH}/share/terminfo:"
                 fi
               fi
-              source ${SDKPATH}/share/bash-completion/bash_completion
             fi
       - type: script
         dest-filename: enable-bash.sh
