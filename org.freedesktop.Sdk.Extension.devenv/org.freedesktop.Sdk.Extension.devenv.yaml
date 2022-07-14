@@ -169,10 +169,15 @@ modules:
       # fc-match: Noto Mono for Powerline
       - install -Dm644 NotoMono/Noto\ Mono\ for\ Powerline.ttf ${FLATPAK_DEST}/share/fonts/powerline/NotoSansMonoPowerline.ttf
     sources:
-      - type: git
-        url: https://github.com/powerline/fonts
-        branch: master
-        commit: e80e3eba9091dac0655a0a77472e10f53e754bb0
+      - type: archive
+        url: https://github.com/powerline/fonts/archive/4622ed562eb077e502524c8a1add6d5454a057b7/powerline-4622ed562eb077e502524c8a1add6d5454a057b7.tar.gz
+        sha256: 7f98d7e313d44f49c7637ce43469918cf6ba1fae1398ff5603392f7d2bc916c0
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/powerline/fonts/commits?sha=master&path=NotoMono&per_page=1
+          version-query: .[].sha
+          timestamp-query: .[].commit.committer.date
+          url-query: '"https://github.com/powerline/fonts/archive/" + $version + "/powerline-" + $version + ".tar.gz"'
 
   - name: powerline-go
     buildsystem: simple
