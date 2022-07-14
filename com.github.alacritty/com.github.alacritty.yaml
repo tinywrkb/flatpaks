@@ -31,6 +31,8 @@ modules:
       - install -D -m644 extra/linux/Alacritty.desktop /app/share/applications/Alacritty.desktop
       - install -D -m644 extra/linux/io.alacritty.Alacritty.appdata.xml /app/share/appdata/io.alacritty.Alacritty.appdata.xml
       - install -D -m644 extra/logo/alacritty-term.svg /app/share/icons/hicolor/scalable/apps//Alacritty.svg
+      - install -D -m644 extra/linux/Alacritty.desktop /app/share/applications/${FLATPAK_ID}-x11.desktop
+      - desktop-file-edit --set-key=Name --set-value="Alacritty (x11)"  --set-key=Exec --set-value="env WINIT_UNIX_BACKEND=x11 alacritty" --set-key=Icon --set-value=${FLATPAK_ID} /app/share/applications/${FLATPAK_ID}-x11.desktop
     sources:
       - type: archive
         url: https://github.com/alacritty/alacritty/archive/v0.9.0.tar.gz
