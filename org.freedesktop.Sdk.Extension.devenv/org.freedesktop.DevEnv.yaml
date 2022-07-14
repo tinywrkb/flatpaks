@@ -1,0 +1,35 @@
+app-id: org.freedesktop.DevEnv
+runtime: org.freedesktop.Sdk
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: devenv
+finish-args:
+  - --allow=devel
+  - --device=all
+  - --device=dri
+  - --filesystem=home
+  - --filesystem=host
+  - --filesystem=xdg-cache/ccache
+  - --filesystem=xdg-config/git:ro
+  - --filesystem=xdg-config/nvim:ro
+  - --filesystem=xdg-config/ssh:ro
+  - --filesystem=xdg-data/nvim:ro
+  - --share=ipc
+  - --share=network
+  - --socket=session-bus
+  - --socket=ssh-auth
+  - --socket=system-bus
+  - --socket=wayland
+  - --socket=x11
+  - --talk-name=org.freedesktop.Flatpak
+modules:
+  - name: devenv
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 devenv -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: script
+        dest-filename: devenv
+        commands:
+          - source /usr/lib/sdk/devenv/bin/enable-development-environment
+          - exec bash
