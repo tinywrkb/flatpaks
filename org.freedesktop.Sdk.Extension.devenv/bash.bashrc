@@ -115,7 +115,7 @@ fi
 ################################################################################
 
 # bash-completion
-try_source ${DEVELOPMENT_ENVIRONMENT_SDK}/share/bash-completion/bash_completion
+try_catch_source ${DEVELOPMENT_ENVIRONMENT_SDK}/share/bash-completion/bash_completion
 
 # bash git completion
 try_catch_source /usr/share/git/completion/git-completion.bash
@@ -123,6 +123,7 @@ try_catch_source /usr/share/git/completion/git-completion.bash
 # complete-alias
 if ! is_defined_complete_alias; then
   try_source ~/.local/apps/bash-complete-alias ||
+    try_source ${DEVELOPMENT_ENVIRONMENT_SDK}/share/bash-complete-alias/complete_alias ||
     try_catch_source /usr/share/bash-complete-alias/complete_alias
   set_complete_alias
 fi
