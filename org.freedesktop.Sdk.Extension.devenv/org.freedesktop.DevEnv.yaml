@@ -10,10 +10,12 @@ finish-args:
   - --filesystem=home
   - --filesystem=host
   - --filesystem=xdg-cache/ccache
+  - --filesystem=xdg-cache/broot:ro
   - --filesystem=xdg-config/git:ro
   - --filesystem=xdg-config/nvim:ro
   - --filesystem=xdg-config/ssh:ro
   - --filesystem=xdg-data/nvim:ro
+  - --persist=.ssh
   - --share=ipc
   - --share=network
   - --socket=session-bus
