@@ -491,8 +491,8 @@ modules:
       - bin/gh completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_gh
     sources:
       - type: archive
-        url: https://github.com/cli/cli/releases/download/v2.14.1/gh_2.14.1_linux_amd64.tar.gz
-        sha256: 21539943893f2edbefc5bf7bcdd5c1060038ef9e0b052a68d52dce2f55f9818e
+        url: https://github.com/cli/cli/releases/download/v2.14.2/gh_2.14.2_linux_amd64.tar.gz
+        sha256: 3d4be4bf3446622c51192529f963d8719a2c78cc545aeab6fefff1c9ecf5b346
         x-checker-data:
           type: anitya
           project-id: 135615
@@ -648,31 +648,31 @@ modules:
           project-id: 17726
           stable-only: true
           url-template: https://github.com/mawww/kakoune/releases/download/v$version/kakoune-$version.tar.bz2
-
-  - name: kak-lsp
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 kak-lsp -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 kak-lsp.toml -t ${FLATPAK_DEST}/share/kak-lsp/examples/
-      - install -Dm644 rc/lsp.kak -t ${FLATPAK_DEST}/share/kak-lsp/rc/
-    sources:
-      - type: archive
-        url: https://github.com/kak-lsp/kak-lsp/archive/v12.2.1/kak-lsp-12.2.1.tar.gz
-        sha256: 3769883060ff837a6eb8220943290e32fcafa9fe86a9c2231b1cdb391d35be66
-        x-checker-data:
-          type: anitya
-          project-id: 267541
-          stable-only: true
-          url-template: https://github.com/kak-lsp/kak-lsp/archive/v$version/kak-lsp-$version.tar.gz
-      - type: archive
-        strip-components: 0
-        url: https://github.com/kak-lsp/kak-lsp/releases/download/v12.2.1/kak-lsp-v12.2.1-x86_64-unknown-linux-musl.tar.gz
-        sha256: 967ebf39a4942765c6a36dc4ca411603a173d70b4d69be80db91eab306e9a0ac
-        x-checker-data:
-          type: anitya
-          project-id: 267541
-          stable-only: true
-          url-template: https://github.com/kak-lsp/kak-lsp/releases/download/v$version/kak-lsp-v$version-x86_64-unknown-linux-musl.tar.gz
+    modules:
+      - name: kak-lsp
+        buildsystem: simple
+        build-commands:
+          - install -Dm755 kak-lsp -t ${FLATPAK_DEST}/bin/
+          - install -Dm644 kak-lsp.toml -t ${FLATPAK_DEST}/share/kak-lsp/examples/
+          - install -Dm644 rc/lsp.kak -t ${FLATPAK_DEST}/share/kak-lsp/rc/
+        sources:
+          - type: archive
+            url: https://github.com/kak-lsp/kak-lsp/archive/v12.2.1/kak-lsp-12.2.1.tar.gz
+            sha256: 3769883060ff837a6eb8220943290e32fcafa9fe86a9c2231b1cdb391d35be66
+            x-checker-data:
+              type: anitya
+              project-id: 267541
+              stable-only: true
+              url-template: https://github.com/kak-lsp/kak-lsp/archive/v$version/kak-lsp-$version.tar.gz
+          - type: archive
+            strip-components: 0
+            url: https://github.com/kak-lsp/kak-lsp/releases/download/v12.2.1/kak-lsp-v12.2.1-x86_64-unknown-linux-musl.tar.gz
+            sha256: 967ebf39a4942765c6a36dc4ca411603a173d70b4d69be80db91eab306e9a0ac
+            x-checker-data:
+              type: anitya
+              project-id: 267541
+              stable-only: true
+              url-template: https://github.com/kak-lsp/kak-lsp/releases/download/v$version/kak-lsp-v$version-x86_64-unknown-linux-musl.tar.gz
 
   - name: fzy
     no-autogen: true
@@ -753,10 +753,8 @@ modules:
     build-commands:
       - install -dm755 ${FLATPAK_DEST}/lib
       - ln -s python$(python -c 'import sys; print("%s.%s" %sys.version_info[0:2])') ${FLATPAK_DEST}/lib/python
-      - install -Dm755 enable{,-bash,-sdks}.sh -t ${FLATPAK_DEST}/
-      - install -Dm755 enable-development-environment -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 enable{,-sdks}.sh enable-development-environment ssh -t ${FLATPAK_DEST}/
       - install -Dm644 bash.bashrc inputrc -t ${FLATPAK_DEST}/etc/
-      - install -Dm755 ssh -t ${FLATPAK_DEST}/bin/
       - ln -s nvim ${FLATPAK_DEST}/bin/vim
     sources:
       - type: script
@@ -786,11 +784,6 @@ modules:
                 fi
               fi
             fi
-      - type: script
-        dest-filename: enable-bash.sh
-        commands:
-          - source /usr/lib/sdk/devenv/enable.sh
-          - exec /usr/bin/bash -i --rc-file ~/projects/flatpak-dotuser/dots/bash/.bashrc
       - type: script
         dest-filename: enable-development-environment
         commands:
