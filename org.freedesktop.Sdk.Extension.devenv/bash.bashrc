@@ -198,6 +198,12 @@ else
   export INPUTRC="$DEVELOPMENT_ENVIRONMENT_SDK/etc/inputrc"
 fi
 
+# less
+# flatpak workround as less doesn't check .config if XDG_CONFIG_HOME is set
+if [ -f "$HOME/.config/lesskey" ]; then
+  export LESSKEYIN="$HOME/.config/less"
+fi
+
 # svn
 alias svn='svn --config-dir "$XDG_CONFIG_HOME/subversion"'
 

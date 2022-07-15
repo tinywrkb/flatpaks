@@ -74,6 +74,10 @@
 #     nvim
 #       --filesystem=xdg-config/nvim:ro
 #       --filesystem=xdg-data/nvim:ro
+#     less
+#       new less versions don't need a binary lesskey.bin, source default to XDG_CONFIG_HOME/lesskey,
+#       only LESSKEYIN envvar needed for host compat
+#       --filesystem=xdg-config/lesskey:ro
 
 id: org.freedesktop.Sdk.Extension.devenv
 branch: '21.08'
