@@ -753,7 +753,8 @@ modules:
     build-commands:
       - install -dm755 ${FLATPAK_DEST}/lib
       - ln -s python$(python -c 'import sys; print("%s.%s" %sys.version_info[0:2])') ${FLATPAK_DEST}/lib/python
-      - install -Dm755 enable{,-sdks}.sh enable-development-environment ssh -t ${FLATPAK_DEST}/
+      - install -Dm755 enable{,-sdks}.sh -t ${FLATPAK_DEST}/
+      - install -Dm755 enable-development-environment ssh -t ${FLATPAK_DEST}/bin/
       - install -Dm644 bash.bashrc inputrc -t ${FLATPAK_DEST}/etc/
       - ln -s nvim ${FLATPAK_DEST}/bin/vim
     sources:
