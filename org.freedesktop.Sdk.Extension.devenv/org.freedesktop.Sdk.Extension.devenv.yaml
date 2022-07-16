@@ -99,10 +99,10 @@ build-options:
 cleanup:
   - /include
   - /lib/pkgconfig
+  - /lib/*.a
   - /share/applications
   - /share/cmake
   - /share/doc
-  - '*.a'
   - '*.la'
 modules:
   - ../shared-modules/byobu/byobu.json
@@ -111,16 +111,86 @@ modules:
   - ../shared-modules/neovim/neovim.json
   - ../shared-modules/p7zip/p7zip.json
 
-  - name: bash
+  - name: musl
+    config-opts:
+      - --libdir=$(prefix)/lib/musl
+      - --includedir=$(prefix)/lib/musl/include
+      - --syslibdir=$(prefix)/lib
+      - --enable-wrapper=all
+      - --disable-shared
+    sources:
+      - type: archive
+        url: https://musl.libc.org/releases/musl-1.2.3.tar.gz
+        sha256: 7d5b0b6062521e4627e099e4c9dc8248d32a30285e959b7eecaa780cf8cfd4a4
+        x-checker-data:
+          type: html
+          url: https://musl.libc.org/
+          version-pattern: musl-([\d\.]+).tar.gz
+          url-template: https://musl.libc.org/releases/musl-$version.tar.gz
+
+  - name: ncurses-static
+    build-options:
+      cflags: -static
+      env:
+        - CC=musl-gcc
+    config-opts:
+      # TODO: set terminfo dirs default
+      - --without-dlsym
+      - --disable-db-install
+      - --enable-widec
+      - --enable-pc-files
+      - --with-normal
+      - --without-ada
+      - --without-cxx
+      - --without-cxx-binding
+      - --without-debug
+      - --without-manpages
+      - --without-progs
+      - --without-tests
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz
+        sha256: 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
+        x-checker-data:
+          type: anitya
+          project-id: 234776
+          stable-only: true
+          url-template: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz
+
+  - name: readline-static
+    build-options:
+      cflags: -static
+      env:
+        - CC=musl-gcc
+    config-opts:
+      - --disable-shared
+      - --with-curses
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/readline/readline-8.1.tar.gz
+        sha256: f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02
+        x-checker-data:
+          type: anitya
+          project-id: 4173
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/bash/bash-$version.tar.gz
+
+  - name: bash-static
     build-options:
       cflags: -DDEFAULT_PATH_VALUE='"/usr/bin"' -DSTANDARD_UTILS_PATH='"/usr/bin"'
         -DDEFAULT_BASHRC='"~/.config/bash/bash.bashrc"' -DSYS_BASHRC='"/usr/lib/sdk/devenv/etc/bash.bashrc"'
         -DSYS_BASH_LOGOUT='"/usr/lib/sdk/devenv/etc/bash.bash_logout"' -DNON_INTERACTIVE_LOGIN_SHELLS
+        -static
+      env:
+        - CC=musl-gcc
     config-opts:
+      - --enable-static-link
       - --enable-readline
       - --with-curses
       - --with-installed-readline
       - --without-bash-malloc
+    make-args:
+      - TERMCAP_LIB=-lncursesw
     sources:
       - type: archive
         url: https://ftp.gnu.org/gnu/bash/bash-5.1.16.tar.gz
@@ -195,7 +265,11 @@ modules:
           stable-only: true
           url-template: https://github.com/justjanne/powerline-go/releases/download/v$version/powerline-go-linux-amd64
 
-  - name: stow
+  - name: stow-static
+    build-options:
+      cflags: -static
+      env:
+        - CC=musl-gcc
     sources:
       - type: archive
         url: https://ftp.gnu.org/gnu/stow/stow-2.3.1.tar.gz
@@ -266,7 +340,14 @@ modules:
           stable-only: true
           url-template: https://github.com/Peltoche/lsd/releases/download/$version/lsd-$version-x86_64-unknown-linux-gnu.tar.gz
 
-  - name: vifm
+  - name: vifm-static
+    build-options:
+      cflags: -static
+      env:
+        - CC=musl-gcc
+    config-opts:
+      # actually used to set -I${vifm_cv_curses}/include/${curses_lib_name}
+      - --with-curses=/usr/lib/sdk/devenv
     sources:
       - type: archive
         url: https://prdownloads.sourceforge.net/vifm/vifm-0.12.tar.bz2
@@ -674,7 +755,11 @@ modules:
               stable-only: true
               url-template: https://github.com/kak-lsp/kak-lsp/releases/download/v$version/kak-lsp-v$version-x86_64-unknown-linux-musl.tar.gz
 
-  - name: fzy
+  - name: fzy-static
+    build-options:
+      cflags: -static
+      env:
+        - CC=musl-gcc
     no-autogen: true
     make-install-args:
       - PREFIX=${FLATPAK_DEST}
