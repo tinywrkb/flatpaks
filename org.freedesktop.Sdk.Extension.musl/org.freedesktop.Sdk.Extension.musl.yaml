@@ -1,0 +1,82 @@
+id: org.freedesktop.Sdk.Extension.musl
+branch: '21.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+build-extension: true
+separate-locales: false
+build-options:
+  cflags: -I/usr/lib/sdk/musl/include
+  cxxflags: -I/usr/lib/sdk/musl/include
+  ldflags: -L/usr/lib/sdk/musl/lib
+  prefix: /usr/lib/sdk/musl
+  libdir: /usr/lib/sdk/musl/lib
+  prepend-path: /usr/lib/sdk/musl/bin
+  prepend-ld-library-path: /usr/lib/sdk/musl/lib
+  prepend-pkg-config-path: /usr/lib/sdk/musl/lib/pkgconfig
+  strip: true
+modules:
+  - name: musl-shared
+    build-options: &musl_build_opt
+      append-path: /usr/lib/sdk/musl/musl-shared/bin
+#     build-args:
+#       - --share=network
+    no-autogen: true
+    make-args:
+      - DL_CMD=echo
+    make-install-args:
+      - OUTPUT=${FLATPAK_DEST}/musl-shared
+    sources: &musl_sources
+      - type: git
+        url: https://github.com/richfelker/musl-cross-make
+        branch: master
+        commit: fe915821b652a7fa37b34a596f47d8e20bc72338
+      - type: file
+        dest: sources
+        dest-filename: config.sub
+        url: http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=3d5db9ebe860
+        sha256: 75d5d255a2a273b6e651f82eecfabf6cbcd8eaeae70e86b417384c8f4a58d8d3
+      - type: file
+        dest: sources/binutils-2.33.1.tar.xz.tmp
+        url: https://ftp.gnu.org/gnu/binutils/binutils-2.33.1.tar.xz
+        sha256: ab66fc2d1c3ec0359b8e08843c9f33b63e8707efdff5e4cc5c200eae24722cbf
+      - type: file
+        dest: sources/gcc-9.4.0.tar.xz.tmp
+        url: https://ftp.gnu.org/gnu/gcc/gcc-9.4.0/gcc-9.4.0.tar.xz
+        sha256: c95da32f440378d7751dd95533186f7fc05ceb4fb65eb5b85234e6299eb9838e
+      - type: file
+        dest: sources/gmp-6.1.2.tar.bz2.tmp
+        url: https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
+        sha256: 5275bb04f4863a13516b2f39392ac5e272f5e1bb8057b18aec1c9b79d73d8fb2
+      - type: file
+        dest: sources/linux-headers-4.19.88-1.tar.xz.tmp
+        url: http://ftp.barfooze.de/pub/sabotage/tarballs/linux-headers-4.19.88-1.tar.xz
+        sha256: 995bc76ccf0c40d752b5ea67c022232a17eef6c9ec80ea74ea742e3c19992813
+      - type: file
+        dest: sources/mpc-1.1.0.tar.gz.tmp
+        url: https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz
+        sha256: 6985c538143c1208dcb1ac42cedad6ff52e267b47e5f970183a3e75125b43c2e
+      - type: file
+        dest: sources/mpfr-4.0.2.tar.bz2.tmp
+        url: https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.bz2
+        sha256: c05e3f02d09e0e9019384cdd58e0f19c64e6db1fd6f5ecf77b4b1c61ca253acc
+      - type: file
+        dest: sources/musl-1.2.3.tar.gz.tmp
+        url: https://www.musl-libc.org/releases/musl-1.2.3.tar.gz
+        sha256: 7d5b0b6062521e4627e099e4c9dc8248d32a30285e959b7eecaa780cf8cfd4a4
+      - type: file
+        path: config.mak
+    cleanup:
+      - '*'
+  - name: musl-static
+    build-options: *musl_build_opt
+    no-autogen: true
+    make-args:
+      - DL_CMD=echo
+      - COMMON_CONFIG += CC="x86_64-linux-musl-gcc -static --static" CXX="x86_64-linux-musl-g++ -static --static"
+    make-install-args:
+      - OUTPUT=${FLATPAK_BUILDER_BUILDDIR}/target
+    post-install:
+      # workaround for failing to strip: install to builddir and copy to FLATPAK_DEST
+      - cp -r target/* ${FLATPAK_DEST}/
+    sources: *musl_sources
