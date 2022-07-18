@@ -141,8 +141,9 @@ modules:
   - name: ncurses-static
     build-options: *musl-static-build-options
     config-opts:
-      # TODO: set terminfo dirs default
       - --without-dlsym
+      - --with-terminfo-dirs=${datadir}/share/terminfo:/var/lib/devenv/share/terminfo:/usr/share/terminfo
+     #- --with-default-terminfo-dir=${datadir}/terminfo
       - --disable-db-install
       - --enable-widec
       - --enable-pc-files
@@ -350,12 +351,6 @@ modules:
         config-opts:
           - --enable-static
           - --enable-utempter
-          - LIBTINFO_LIBS=/usr/lib/sdk/devenv/lib/libncursesw.a
-          - LIBTINFO_CFLAGS=-I/usr/lib/sdk/devenv/include/ncursesw
-          - LIBNCURSES_LIBS=/usr/lib/sdk/devenv/lib/libncursesw.a
-          - LIBNCURSES_CFLAGS=-I/usr/lib/sdk/devenv/include/ncursesw
-          - LIBNCURSESW_LIBS=/usr/lib/sdk/devenv/lib/libncursesw.a
-          - LIBNCURSESW_CFLAGS=-I/usr/lib/sdk/devenv/include/ncursesw
         sources:
           - type: archive
             url: https://github.com/tmux/tmux/releases/download/3.3a/tmux-3.3a.tar.gz
