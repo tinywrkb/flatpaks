@@ -204,15 +204,10 @@ modules:
           project-id: 166
           stable-only: true
           url-template: https://ftp.gnu.org/gnu/bash/bash-$version.tar.gz
-      - type: shell
-        commands:
-          - sed -e '$a#define DEFAULT_BASHRC "~/.config/bash/bash.bashrc"'
-            -e '$a#define DEFAULT_PATH_VALUE "/usr/bin"'
-            -e '$a#define STANDARD_UTILS_PATH "/usr/bin"'
-            -e '$a#define SYS_BASHRC "/usr/lib/sdk/devenv/etc/bash.bashrc"'
-            -e '$a#define SYS_BASH_LOGOUT "/usr/lib/sdk/devenv/etc/bash.bash_logout"'
-            -e '$a#define NON_INTERACTIVE_LOGIN_SHELLS'
-            -i config-top.h
+      - type: patch
+        path: bash-config-top.h-set-devenv-defaults.patch
+      - type: patch
+        path: bash-add-localstatedir-bashrc-support.patch
 
   - name: p7zip-static
     build-options: *musl-static-build-options
