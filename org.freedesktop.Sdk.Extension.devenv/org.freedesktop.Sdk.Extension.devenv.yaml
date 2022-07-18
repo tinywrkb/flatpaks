@@ -214,6 +214,7 @@ modules:
     build-options: *musl-static-build-options
     no-autogen: true
     make-args:
+     # TODO: build 7z with shared musl libc
      #- 7z
       - 7zr
       - 7za
@@ -304,8 +305,8 @@ modules:
             build-options: *musl-static-build-options
             config-opts:
               - --enable-static
-              - --sbindir=/app/bin
-              - --sysconfdir=/app/etc
+              - --sbindir=${prefix}/bin
+              - --sysconfdir=${prefix}/etc
             post-install:
               - rm ${FLATPAK_DEST}/lib/libgpm.so*
             sources:
@@ -363,7 +364,7 @@ modules:
         modules:
           - name: libevent-static
             # TODO: add openssl-static dependency
-            # TODO: try again to build static with cmake
+            # TODO: try again to build static lib with cmake
             build-options: *musl-static-build-options
             config-opts:
               - --disable-shared
@@ -435,23 +436,13 @@ modules:
               url-template: https://github.com/kkos/oniguruma/releases/download/v$version/onig-$version.tar.gz
 
   - name: neovim-static
-   #build-options: *musl-static-build-options
-    build-options:
-      cflags: -fPIC -static -Wl,-Bstatic -lluajit-5.1 -I/usr/lib/sdk/musl/x86_64-linux-musl/include
-     #cflags-override: true
-      cxxflags: -fPIC -static -Wl,-Bstatic -I/usr/lib/sdk/musl/x86_64-linux-musl/include
-      ldflags: -fPIC -static -Wl,-Bstatic -lluajit-5.1
-      env:
-        - CC=x86_64-linux-musl-gcc
-        - CXX=x86_64-linux-musl-g++
-      prepend-path: /usr/lib/sdk/musl/bin:/usr/lib/sdk/musl/x86_64-linux-musl/bin:/usr/lib/sdk/devenv/bin
+    build-options: *musl-static-build-options
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      # wrong detection of msgpack set this to /usr/include
       - -DMSGPACK_INCLUDE_DIRS=/usr/lib/sdk/devenv/include
-     #- -DUSE_BUNDLED=OFF
       - -DENABLE_LIBINTL=OFF
       - -DENABLE_LIBICONV=OFF
-     #- -DUSE_BUNDLED_LUA=ON
     buildsystem: cmake-ninja
     builddir: true
     cleanup:
@@ -469,8 +460,8 @@ modules:
           url-template: https://github.com/neovim/neovim/archive/v$version/neovim-$version.tar.gz
       - type: shell
         commands:
+          # detection of runtime libs adds -I/usr/include before toolchain headers
           - sed -i '/^include_directories.*config/i include_directories("/usr/lib/sdk/musl/x86_64-linux-musl/include")' CMakeLists.txt
-         #- rm ${FLATPAK_DEST}/lib/libluajit-*.so*
     modules:
       - name: libluv-static
         build-options: *musl-static-build-options
@@ -630,7 +621,6 @@ modules:
         make-args:
           - USE_SYSTEM_MPACK=yes
           - LUA_INCLUDE=-I${FLATPAK_DEST}/include/luajit-2.1/
-         #- LIBS=-L${FLATPAK_DEST}/lib/libluajit-5.1.a
         make-install-args:
           - USE_SYSTEM_MPACK=yes
         sources:
@@ -689,7 +679,7 @@ modules:
                 <: '0.2'
         cleanup:
           - /bin
-      - name: msgpack-c
+      - name: msgpack-c-static
         build-options: *musl-static-build-options
         buildsystem: cmake-ninja
         config-opts:
@@ -706,7 +696,7 @@ modules:
               url-template: https://github.com/msgpack/msgpack-c/releases/download/c-$version/msgpack-c-$version.tar.gz
         cleanup:
           - /lib/cmake
-      - name: tree-sitter
+      - name: tree-sitter-static
         build-options: *musl-static-build-options
         no-autogen: true
         make-install-args:
@@ -722,55 +712,288 @@ modules:
               project-id: 142464
               stable-only: true
               url-template: https://github.com/tree-sitter/tree-sitter/archive/v$version/tree-sitter-$version.tar.gz
-#     - name: name: wl-clipboard
-#       build-options: *musl-static-build-options
-#       buildsystem: meson
-#       config-opts:
-#         - -Dfishcompletiondir=no
-#         - -Dzshcompletiondir=no
-#       cleanup:
-#         - /share/bash-completion
-#         - /share/zsh
-#       sources:
-#         - type: archive
-#           url: https://github.com/bugaevc/wl-clipboard/archive/v2.1.0/wl-clipboard-2.1.0.tar.gz
-#           sha256: 72dab9a7d3835c76d6ff2089f15ffec9e064a321e5f3cbbe961a8fa81aff5573
-#           x-checker-data:
-#             type: anitya
-#             project-id: 49082
-#             stable-only: true
-#             url-template: https://github.com/bugaevc/wl-clipboard/archive/v$version/wl-clipboard-$version.tar.gz
-#       modules:
-#         - name: wayland-static
-#           build-options: *musl-static-build-options
-#           buildsystem: meson
-#     - name: xclip
-#       build-options: *musl-static-build-options
-#       sources:
-#         - type: archive
-#           url: https://github.com/astrand/xclip/archive/0.13/xclip-0.13.tar.gz
-#           sha256: ca5b8804e3c910a66423a882d79bf3c9450b875ac8528791fb60ec9de667f758
-#           x-checker-data:
-#             type: anitya
-#             project-id: 14150
-#             stable-only: true
-#             url-template: https://github.com/astrand/xclip/archive/$version/xclip-$version.tar.gz
-#       cleanup:
-#         - /bin/xclip-*file
-#       modules:
-#         - name: libxmu
-#           build-options: *musl-static-build-options
-#           sources:
-#             - type: archive
-#               url: https://xorg.freedesktop.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
-#               sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
-#               x-checker-data:
-#                 type: anitya
-#                 project-id: 1785
-#                 stable-only: true
-#                 url-template: https://xorg.freedesktop.org/releases/individual/lib/libXmu-$version.tar.bz2
-#           cleanup:
-#             - /share/doc
+      - name: wl-clipboard-static
+        build-options: *musl-static-build-options
+        buildsystem: meson
+        config-opts:
+          - -Dfishcompletiondir=no
+          - -Dzshcompletiondir=no
+        cleanup:
+          - /share/bash-completion
+          - /share/zsh
+        sources:
+          - type: archive
+            url: https://github.com/bugaevc/wl-clipboard/archive/v2.1.0/wl-clipboard-2.1.0.tar.gz
+            sha256: 72dab9a7d3835c76d6ff2089f15ffec9e064a321e5f3cbbe961a8fa81aff5573
+            x-checker-data:
+              type: anitya
+              project-id: 49082
+              stable-only: true
+              url-template: https://github.com/bugaevc/wl-clipboard/archive/v$version/wl-clipboard-$version.tar.gz
+        modules:
+          - name: wayland-static
+            build-options: *musl-static-build-options
+            buildsystem: meson
+            config-opts:
+              - --default-library=static
+              - -Dtests=false
+              - -Ddocumentation=false
+              - -Ddtd_validation=false
+            sources:
+              - type: archive
+                url: https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.21.0/downloads/wayland-1.21.0.tar.xz
+                sha256: 6dc64d7fc16837a693a51cfdb2e568db538bfdc9f457d4656285bb9594ef11ac
+                x-checker-data:
+                  type: anitya
+                  project-id: 10061
+                  stable-only: true
+                  url-template: https://gitlab.freedesktop.org/wayland/wayland/-/releases/$version/downloads/wayland-$version.tar.xz
+            cleanup:
+              - /bin
+              - /share/wayland
+            modules:
+              - name: expat-static
+                build-options: *musl-static-build-options
+                buildsystem: cmake
+                config-opts:
+                  - -DEXPAT_BUILD_TOOLS=OFF
+                  - -DEXPAT_BUILD_EXAMPLES=OFF
+                  - -DEXPAT_BUILD_TESTS=OFF
+                  - -DEXPAT_SHARED_LIBS=OFF
+                  - -DEXPAT_BUILD_DOCS=OFF
+                sources:
+                  - type: archive
+                    url: https://github.com/libexpat/libexpat/releases/download/R_2_4_8/expat-2.4.8.tar.gz
+                    sha256: 398f6d95bf808d3108e27547b372cb4ac8dc2298a3c4251eb7aa3d4c6d4bb3e2
+                    x-checker-data:
+                      type: anitya
+                      project-id: 770
+                      stable-only: true
+                      url-template: https://github.com/libexpat/libexpat/releases/download/R_${version0}_${version1}_${version2}/expat-$version.tar.gz
+              - name: libffi-static
+               #build-options: *musl-static-build-options
+                build-options:
+                  cflags: -static -fPIC
+                  cxxflags: -static -fPIC
+                  ldflags: -static -fPIC
+                  env:
+                    - CC=x86_64-linux-musl-gcc
+                    - CXX=x86_64-linux-musl-g++
+                config-opts:
+                  - --disable-shared
+                sources:
+                  - type: archive
+                    url: https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz
+                    sha256: 540fb721619a6aba3bdeef7d940d8e9e0e6d2c193595bc243241b77ff9e93620
+                    x-checker-data:
+                      type: anitya
+                      project-id: 1611
+                      stable-only: true
+                      url-template: https://github.com/libffi/libffi/releases/download/v$version/libffi-$version.tar.gz
+      - name: xclip-static
+       #build-options: *musl-static-build-options
+        build-options:
+          cflags: -static
+          cxxflags: -static
+          ldflags: -static
+          env:
+            - CC=x86_64-linux-musl-gcc
+            - CXX=x86_64-linux-musl-g++
+            - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu -lXmuu -lXt -lSM -lICE
+        sources:
+          - type: archive
+            url: https://github.com/astrand/xclip/archive/0.13/xclip-0.13.tar.gz
+            sha256: ca5b8804e3c910a66423a882d79bf3c9450b875ac8528791fb60ec9de667f758
+            x-checker-data:
+              type: anitya
+              project-id: 14150
+              stable-only: true
+              url-template: https://github.com/astrand/xclip/archive/$version/xclip-$version.tar.gz
+        cleanup:
+          - /bin/xclip-*file
+#     - name: xsel-static
+#      #build-options: *musl-static-build-options
+#       build-options:
+#         cflags: -static
+#         cxxflags: -static
+#         ldflags: -static
+#         env:
+#           - CC=x86_64-linux-musl-gcc
+#           - CXX=x86_64-linux-musl-g++
+#           - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu -lXmuu -lXt
+        sources:
+          - type: archive
+            url: https://github.com/kfish/xsel/archive/9fc4e3e4e3f1231cabfdc2e1438155f9390bc517/xsel-9fc4e3e4e3f1231cabfdc2e1438155f9390bc517.tar.gz
+            sha256: 6269fa7b58f157bd5796b1ce82797922fe62495a61b95f565c48708a12030443
+           #x-checker-data:
+           #  type: anitya
+           #  project-id:
+           #  stable-only: true
+           #  url-template:
+        modules:
+          - name: libxmu-static
+            build-options: *musl-static-build-options
+            config-opts:
+              - --disable-shared
+              - --disable-docs
+              - --disable-unix-transport
+              - --disable-tcp-transport
+              - --disable-ipv6
+              - --disable-local-transport
+            sources:
+              - type: archive
+                url: https://xorg.freedesktop.org/releases/individual/lib/libXmu-1.1.3.tar.bz2
+                sha256: 9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731
+                x-checker-data:
+                  type: anitya
+                  project-id: 1785
+                  stable-only: true
+                  url-template: https://xorg.freedesktop.org/releases/individual/lib/libXmu-$version.tar.bz2
+            cleanup:
+              - /share/doc
+            modules:
+              - name: xorg-util-macros
+                make-install-args:
+                  - pkgconfigdir=${FLATPAK_DEST}/lib/pkgconfig
+                sources:
+                  - type: archive
+                    url: https://www.x.org/releases/individual/util/util-macros-1.19.3.tar.gz
+                    sha256: 624bb6c3a4613d18114a7e3849a3d70f2d7af9dc6eabeaba98060d87e3aef35b
+              - name: xorgproto
+                post-install:
+                  - mv ${FLATPAK_DEST}/share/pkgconfig/* ${FLATPAK_DEST}/lib/pkgconfig/
+                sources:
+                  - type: archive
+                    url: https://xorg.freedesktop.org/archive/individual/proto/xorgproto-2022.1.tar.gz
+                    sha256: 2a399e77d98fe53e9056726a1934b62cbaa6c41d7b1f41a354911b0925363343
+              - name: xtrans
+                make-install-args:
+                  - pkgconfigdir=${FLATPAK_DEST}/lib/pkgconfig
+                sources:
+                  - type: archive
+                    url: https://www.x.org/releases/individual/lib/xtrans-1.4.0.tar.gz
+                    sha256: 48ed850ce772fef1b44ca23639b0a57e38884045ed2cbb18ab137ef33ec713f9
+              - name: libx11-static
+                build-options: *musl-static-build-options
+                config-opts:
+                  - --disable-shared
+                  - --disable-specs
+                  - --disable-unix-transport
+                  - --disable-tcp-transport
+                  - --disable-ipv6
+                  - --disable-local-transport
+                  - --disable-xf86bigfont
+                sources:
+                  - type: archive
+                    url: https://www.x.org/releases/individual/lib/libX11-1.8.1.tar.gz
+                    sha256: d52f0a7c02a45449f37b0831d99ff936d92eb4ce8b4c97dc17a63cea79ce5a76
+                modules:
+                  - name: libxcb-static
+                    build-options: *musl-static-build-options
+                    config-opts:
+                      - --disable-shared
+                      - --enable-xinput
+                      - --enable-xkb
+                      - --disable-devel-docs
+                      - --disable-composite
+                      - --disable-damage
+                      - --disable-dpms
+                      - --disable-dri2
+                      - --disable-dri3
+                      - --disable-glx
+                      - --disable-present
+                      - --disable-randr
+                      - --disable-record
+                      - --disable-render
+                      - --disable-resource
+                      - --disable-screensaver
+                      - --disable-shape
+                      - --disable-shm
+                      - --disable-sync
+                      - --disable-xevie
+                      - --disable-xfixes
+                      - --disable-xfree86-dri
+                      - --disable-xinerama
+                      - --disable-xtest
+                      - --disable-xv
+                      - --disable-xvmc
+                    sources:
+                      - type: archive
+                        url: https://www.x.org/archive/individual/lib/libxcb-1.15.tar.xz
+                        sha256: cc38744f817cf6814c847e2df37fcb8997357d72fa4bcbc228ae0fe47219a059
+                    modules:
+                      - name: libxau-static
+                        build-options: *musl-static-build-options
+                        config-opts:
+                          - --disable-shared
+                        sources:
+                          - type: archive
+                            url: https://www.x.org/releases/individual/lib/libXau-1.0.9.tar.gz
+                            sha256: 1f123d8304b082ad63a9e89376400a3b1d4c29e67e3ea07b3f659cccca690eea
+                      - name: libxdmcp-static
+                        build-options: *musl-static-build-options
+                        config-opts:
+                          - --disable-shared
+                        sources:
+                          - type: archive
+                            url: https://www.x.org/releases/individual/lib/libXdmcp-1.1.3.tar.gz
+                            sha256: 2ef9653d32e09d1bf1b837d0e0311024979653fe755ad3aaada8db1aa6ea180c
+                      - name: xcb-proto
+                        build-options: *musl-static-build-options
+                        config-opts:
+                          - --disable-shared
+                        make-install-args:
+                          - pkgconfigdir=${FLATPAK_DEST}/lib/pkgconfig
+                        sources:
+                          - type: archive
+                            url: https://xorg.freedesktop.org/archive/individual/proto/xcb-proto-1.15.2.tar.gz
+                            sha256: 6b1ed9cd7cf35e37913eeecca37e5b85b14903002942b3e332f321335c27a8eb
+              - name: libxext-static
+                build-options: *musl-static-build-options
+                config-opts:
+                  - --disable-shared
+                sources:
+                  - type: archive
+                    url: https://www.x.org/releases/individual/lib/libXext-1.3.4.tar.gz
+                    sha256: 8ef0789f282826661ff40a8eef22430378516ac580167da35cc948be9041aac1
+              - name: libxt-static
+                build-options: *musl-static-build-options
+                config-opts:
+                  - --disable-shared
+                  - --disable-specs
+                sources:
+                  - type: archive
+                    url: https://www.x.org/releases/individual/lib/libXt-1.2.1.tar.gz
+                    sha256: 6da1bfa9dd0ed87430a5ce95b129485086394df308998ebe34d98e378e3dfb33
+                  - type: shell
+                    commands:
+                      - sed -e 's/\(--mode=compile $(CC)\)/\1 -all-static/'
+                        -e 's/\(--mode=link $(CCLD)\)/\1 -all-static/'
+                        -i util/Makefile.in
+                modules:
+                  - name: libsm-static
+                    build-options: *musl-static-build-options
+                    config-opts:
+                      - --disable-shared
+                      - --disable-docs
+                      - --disable-unix-transport
+                      - --disable-tcp-transport
+                      - --disable-ipv6
+                      - --disable-local-transport
+                      - --without-libuuid
+                    sources:
+                      - type: archive
+                        url: https://www.x.org/releases/individual/lib/libSM-1.2.3.tar.gz
+                        sha256: 1e92408417cb6c6c477a8a6104291001a40b3bb56a4a60608fdd9cd2c5a0f320
+                    modules:
+                      - name: libice-static
+                        build-options: *musl-static-build-options
+                        config-opts:
+                          - --disable-shared
+                        sources:
+                          - type: archive
+                            url: https://www.x.org/releases/individual/lib/libICE-1.0.10.tar.gz
+                            sha256: 1116bc64c772fd127a0d0c0ffa2833479905e3d3d8197740b3abd5f292f22d2d
 
   - name: go-yq
     buildsystem: simple
