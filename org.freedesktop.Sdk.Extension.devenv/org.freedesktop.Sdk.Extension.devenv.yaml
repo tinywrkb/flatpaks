@@ -9,6 +9,9 @@
 # TODO: still dynamic: hub, neovide, psutils (python), lua bindings
 # TODO: package python apps as single static executable: ranger, trash-cli
 # TODO: maybe set dynamic loader to libc.musl-x86_64.so.1 (alpine) when dynamically linking
+# TODO: add tarball generation script
+# TODO: test portability, needs to work when switching to /var/lib
+# TODO: investigate the possiblity to keep extension accessible after update, maybe bindfs mount
 
 # documentation
 #
@@ -161,7 +164,10 @@ modules:
       - --without-progs
       - --without-tests
     post-install:
+      - ln -s libncursesw.a ${FLATPAK_DEST}/lib/libcurses.a
+      - ln -s libncursesw.a ${FLATPAK_DEST}/lib/libncurses.a
       - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/tinfo.pc
+      - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/curses.pc
       - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/ncurses.pc
     sources:
       - type: archive
@@ -190,6 +196,8 @@ modules:
           project-id: 4173
           stable-only: true
           url-template: https://ftp.gnu.org/gnu/bash/bash-$version.tar.gz
+      - type: patch
+        path: readline-set-devenv-defaults.patch
 
   - name: bash-static
     build-options: *musl-static-build-options
@@ -214,6 +222,10 @@ modules:
         path: bash-config-top.h-set-devenv-defaults.patch
       - type: patch
         path: bash-add-localstatedir-bashrc-support.patch
+      - type: shell
+        commands:
+          # never build these libs
+          - rm -r lib/{readline,termcap}/*.c
 
   - name: p7zip-static
     build-options: *musl-static-build-options

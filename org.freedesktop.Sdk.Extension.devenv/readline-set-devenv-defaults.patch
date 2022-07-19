@@ -1,0 +1,70 @@
+diff --git a/readline.c b/readline.c
+index e61d188..f2e9cc2 100644
+--- a/readline.c
++++ b/readline.c
+@@ -117,10 +117,10 @@ int rl_gnu_readline_p = 1;
+ 
+ /* A pointer to the keymap that is currently in use.
+    By default, it is the standard emacs keymap. */
+-Keymap _rl_keymap = emacs_standard_keymap;
++Keymap _rl_keymap = vi_movement_keymap;
+ 
+ /* The current style of editing. */
+-int rl_editing_mode = emacs_mode;
++int rl_editing_mode = vi_mode;
+ 
+ /* The current insert mode:  input (the default) or overwrite */
+ int rl_insert_mode = RL_IM_DEFAULT;
+@@ -316,7 +316,7 @@ int _rl_echo_control_chars = 1;
+ 
+ /* Non-zero means to prefix the displayed prompt with a character indicating
+    the editing mode: @ for emacs, : for vi-command, + for vi-insert. */
+-int _rl_show_mode_in_prompt = 0;
++int _rl_show_mode_in_prompt = 1;
+ 
+ /* Non-zero means to attempt to put the terminal in `bracketed paste mode',
+    where it will prefix pasted text with an escape sequence and send
+@@ -1352,6 +1352,12 @@ bind_arrow_keys_internal (Keymap map)
+   rl_bind_keyseq_if_unbound ("\033[1;5D", rl_backward_word);
+   rl_bind_keyseq_if_unbound ("\033[3;5~", rl_kill_word);
+ 
++  /* Key binding for control-backspace/h keys */
++  rl_bind_keyseq ("\b", rl_backward_kill_word);
++
++  /* Key bindings for control-delete keys */
++  rl_bind_keyseq_if_unbound ("\033[3;5~", rl_kill_word);
++
+   /* Key bindings for alt-arrow keys */
+   rl_bind_keyseq_if_unbound ("\033[1;3C", rl_forward_word);
+   rl_bind_keyseq_if_unbound ("\033[1;3D", rl_backward_word);
+diff --git a/rlconf.h b/rlconf.h
+index b6d6a2f..e1880f7 100644
+--- a/rlconf.h
++++ b/rlconf.h
+@@ -40,10 +40,10 @@
+ #define PREFIX_META_HACK
+ 
+ /* The next-to-last-ditch effort file name for a user-specific init file. */
+-#define DEFAULT_INPUTRC "~/.inputrc"
++#define DEFAULT_INPUTRC "~/config/readline/inputrc"
+ 
+ /* The ultimate last-ditch filename for an init file -- system-wide. */
+-#define SYS_INPUTRC "/etc/inputrc"
++#define SYS_INPUTRC "/usr/lib/sdk/devenv/etc/inputrc"
+ 
+ /* If defined, expand tabs to spaces. */
+ #define DISPLAY_TABS
+@@ -71,9 +71,9 @@
+ #define RL_EMACS_MODESTR_DEFAULT	"@"
+ #define RL_EMACS_MODESTR_DEFLEN		1
+ 
+-#define RL_VI_INS_MODESTR_DEFAULT	"(ins)"
+-#define RL_VI_INS_MODESTR_DEFLEN	5
+-#define RL_VI_CMD_MODESTR_DEFAULT	"(cmd)"
+-#define RL_VI_CMD_MODESTR_DEFLEN	5
++#define RL_VI_INS_MODESTR_DEFAULT	"\1\e[97m\e[48;5;2m\2+\1\e[0m\2"
++#define RL_VI_INS_MODESTR_DEFLEN	17
++#define RL_VI_CMD_MODESTR_DEFAULT	"\1\e[97m\e[48;5;1m\2:\1\e[0m\2"
++#define RL_VI_CMD_MODESTR_DEFLEN	17
+ 
+ #endif /* _RLCONF_H_ */
