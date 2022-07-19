@@ -6,6 +6,9 @@
 #                 PATH+=:xdg-data/npm-packages/bin
 # TODO: add more patched fonts: nerd-fonts
 # TODO: investigate broken host tmux sessions
+# TODO: still dynamic: hub, neovide, psutils (python), lua bindings
+# TODO: package python apps as single static executable: ranger, trash-cli
+# TODO: maybe set dynamic loader to libc.musl-x86_64.so.1 (alpine) when dynamically linking
 
 # documentation
 #
@@ -111,10 +114,12 @@ cleanup:
   - /share/applications
   - /share/cmake
   - /share/doc
+  - /share/man/man3
+  - /share/man/man5
+  - /share/man/man7
+  - /share/man/man8
   - '*.la'
 modules:
-# - ../shared-modules/imagemagick/imagemagick.json
-
 # - name: musl
 #   config-opts:
 #     - --libdir=$(prefix)/lib/musl
@@ -821,15 +826,15 @@ modules:
 #           - CC=x86_64-linux-musl-gcc
 #           - CXX=x86_64-linux-musl-g++
 #           - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu -lXmuu -lXt
-        sources:
-          - type: archive
-            url: https://github.com/kfish/xsel/archive/9fc4e3e4e3f1231cabfdc2e1438155f9390bc517/xsel-9fc4e3e4e3f1231cabfdc2e1438155f9390bc517.tar.gz
-            sha256: 6269fa7b58f157bd5796b1ce82797922fe62495a61b95f565c48708a12030443
-           #x-checker-data:
-           #  type: anitya
-           #  project-id:
-           #  stable-only: true
-           #  url-template:
+#       sources:
+#         - type: archive
+#           url: https://github.com/kfish/xsel/archive/9fc4e3e4e3f1231cabfdc2e1438155f9390bc517/xsel-9fc4e3e4e3f1231cabfdc2e1438155f9390bc517.tar.gz
+#           sha256: 6269fa7b58f157bd5796b1ce82797922fe62495a61b95f565c48708a12030443
+#          #x-checker-data:
+#          #  type: anitya
+#          #  project-id:
+#          #  stable-only: true
+#          #  url-template:
         modules:
           - name: libxmu-static
             build-options: *musl-static-build-options
@@ -1105,13 +1110,13 @@ modules:
     sources:
       - type: archive
         strip-components: 0
-        url: https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-v0.10.1.zip
-        sha256: a65a87bd545e969979ae9388f6333167f041a1f09fa9d60b32fd3072348ff6ce
+        url: https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-musl-v0.10.1.zip
+        sha256: 790311d6167c2b439dee253d548c8fcb67809aa6704bc2c4f2b8dd25cf6fdd31
         x-checker-data:
           type: anitya
           project-id: 16575
           stable-only: true
-          url-template: https://github.com/ogham/exa/releases/download/v$version/exa-linux-x86_64-v$version.zip
+          url-template: https://github.com/ogham/exa/releases/download/v$version/exa-linux-x86_64-musl-v$version.zip
 
   - name: lsd
     buildsystem: simple
@@ -1123,8 +1128,8 @@ modules:
       - install -Dm644 lsd.1 -t ${FLATPAK_DEST}/share/man/man1/
     sources:
       - type: archive
-        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-gnu.tar.gz
-        sha256: 1d5ad5b09c8f5b974f96439725b150fb87e4587e27d57a1d8c4486a73629890c
+        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: 0adadefe27ea59cee0de226849d21dee4009064c431eca125b93995289f9ffbc
         x-checker-data:
           type: anitya
           project-id: 20242
@@ -1637,7 +1642,15 @@ modules:
           stable-only: true
           url-template: https://github.com/lotabout/skim/releases/download/v$version/skim-v$version-x86_64-unknown-linux-musl.tar.gz
 
-  - name: ugrep
+  - name: ugrep-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --without-pcre2
+      - --without-zlib
+      - --without-bzlib
+      - --without-lzma
+      - --without-lz4
+      - --without-zstd
     sources:
       - type: archive
         url: https://github.com/Genivia/ugrep/archive/v3.8.3/ugrep-3.8.3.tar.gz
@@ -1647,11 +1660,19 @@ modules:
           project-id: 187554
           stable-only: true
           url-template: https://github.com/Genivia/ugrep/archive/v$version/ugrep-$version.tar.gz
+    modules:
+      # TODO:
+      - name: pcre2-static
+      - name: zlib-static
+      - name: bzlib-static
+      - name: lzma-static
+      - name: lz4-static
+      - name: zstd-static
 
   - name: broot
     buildsystem: simple
     build-commands:
-      - install -Dm755 x86_64-unknown-linux-gnu/broot -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 x86_64-unknown-linux-musl/broot -t ${FLATPAK_DEST}/bin/
       - install -Dm755 broot.1 -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 completion/broot.bash ${FLATPAK_DEST}/share/bash-completion/completions/broot
       - install -Dm644 completion/broot.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/broot.fish
@@ -1667,6 +1688,68 @@ modules:
           project-id: 141357
           stable-only: true
           url-template: https://github.com/Canop/broot/releases/download/v$version/broot_$version.zip
+
+  - name: patchelf-static
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://github.com/NixOS/patchelf/archive/0.13.tar.gz
+        sha256: 60c6aeadb673de9cc1838b630c81f61e31c501de324ef7f1e8094a2431197d09
+        x-checker-data:
+          type: anitya
+          project-id: 2598
+          stable-only: true
+          url-template: https://github.com/NixOS/patchelf/archive/$version.tar.gz
+
+  - name: sic
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 convert sic -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 sic.bash ${FLATPAK_DEST}/share/bash-completion/completions/sic
+      - install -Dm644 sic.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/sic.fish
+      - install -Dm644 _sic ${FLATPAK_DEST}/share/zsh/site-functions/_sic
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/foresterre/sic/releases/download/v0.20.0/shell_completions.zip
+        sha256: 45dbbc2af3eb18ae05d8aeeff748a15a052fb2fc3b4ca703c193df8aa0b0ee0b
+        x-checker-data:
+          type: anitya
+          project-id: 268144
+          stable-only: true
+          url-template: https://github.com/foresterre/sic/releases/download/v$version/shell_completions.zip
+      - type: archive
+        strip-components: 0
+        url: https://github.com/foresterre/sic/releases/download/v0.20.0/sic-0.20.0-x86_64-unknown-linux-gnu.zip
+        sha256: dd75ef69e5495939ac81af93a29aea9228eb09f7f0c7757c1cf501ec0eb92f30
+        x-checker-data:
+          type: anitya
+          project-id: 268144
+          stable-only: true
+          url-template: https://github.com/foresterre/sic/releases/download/v$version/sic-$version-x86_64-unknown-linux-gnu.zip
+      - type: script
+        # get ranger-sixel working without imagemagick
+        dest-filename: convert
+        commands:
+          - # infile -geometry wxh sixel:-
+          - exec sic --input "${1%\[0\]}" --resize "${3%x*}" "${3#*x}" --output-format BMP 2>/dev/null | img2sixel -
+
+  - name: libsixel-static
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - --default-library=static
+      - -Dimg2sixel=enabled
+      - -Dsixel2png=disabled
+      - -Dgdk-pixbuf2=disabled
+      - -Dgd=disabled
+      - -Dlibcurl=disabled
+      - -Djpeg=disabled
+      - -Dpng=disabled
+    sources:
+      - type: archive
+        url: https://github.com/libsixel/libsixel/archive/2855eea71effe4d09890f4633f7dd568dbdfae3f/lixsixel-2855eea71effe4d09890f4633f7dd568dbdfae3f.zip
+        sha256: 717be779849010e0a9d0d8e1057c4838978857113ce1487086c8204a79edccfa
 
   - name: packaging
     buildsystem: simple
