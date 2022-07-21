@@ -6,7 +6,7 @@
 #                 PATH+=:xdg-data/npm-packages/bin
 # TODO: add more patched fonts: nerd-fonts
 # TODO: investigate broken host tmux sessions
-# TODO: still dynamic: hub, neovide, psutils (python), lua bindings
+# TODO: still dynamic: hub, neovide, psutils (python), luajit bindings
 # TODO: package python apps as single static executable: ranger, trash-cli
 # TODO: maybe set dynamic loader to libc.musl-x86_64.so.1 (alpine) when dynamically linking
 # TODO: add tarball generation script
@@ -113,6 +113,21 @@ x-musl-static-build-options: &musl-static-build-options
   env:
     - CC=x86_64-linux-musl-gcc
     - CXX=x86_64-linux-musl-g++
+x-musl-static-fpic-build-options: &musl-static-fpic-build-options
+  cflags: -static -fPIC
+  cxxflags: -static -fPIC
+  ldflags: -static -fPIC
+  env:
+    - CC=x86_64-linux-musl-gcc
+    - CXX=x86_64-linux-musl-g++
+x-musl-shared-build-options: &musl-shared-build-options
+  cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+  cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+  ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+  env:
+    - CC=x86_64-linux-musl-gcc
+    - CXX=x86_64-linux-musl-g++
+
 cleanup:
   - /include
   - /lib/cmake
@@ -151,6 +166,7 @@ modules:
 #         url-template: https://musl.libc.org/releases/musl-$version.tar.gz
 
   - name: musl-libc-shared
+    # TODO: unique loader and lib names, no loader path in shared libs
     buildsystem: simple
     build-commands:
       - install -Dm755 /usr/lib/sdk/musl/x86_64-linux-musl/lib/libc.so -t ${FLATPAK_DEST}/lib/musl
@@ -164,6 +180,11 @@ modules:
       - type: archive
         url: https://download.savannah.gnu.org/releases/acl/acl-2.3.1.tar.gz
         sha256: 760c61c68901b37fdd5eefeeaf4c0c7a26bdfdd8ac747a1edff1ce0e243c11af
+        x-checker-data:
+          type: anitya
+          project-id: 16
+          stable-only: true
+          url-template: https://download.savannah.gnu.org/releases/acl/acl-$version.tar.gz
     modules:
       - name: attr-static
         build-options: *musl-static-build-options
@@ -173,9 +194,16 @@ modules:
           - type: archive
             url: https://download.savannah.gnu.org/releases/attr/attr-2.5.1.tar.gz
             sha256: bae1c6949b258a0d68001367ce0c741cebdacdd3b62965d17e5eb23cd78adaf8
+            x-checker-data:
+              type: anitya
+              project-id: 137
+              stable-only: true
+              url-template: https://download.savannah.gnu.org/releases/attr/attr-$version.tar.gz
+    cleanup:
+      - '*'
 
   - name: bzip2-static
-    build-options: *musl-static-build-options
+    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
     no-autogen: true
     make-install-args:
       - PREFIX=${FLATPAK_DEST}
@@ -183,9 +211,77 @@ modules:
       - type: archive
         url: https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
         sha256: ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269
+        x-checker-data:
+          type: anitya
+          project-id: 237
+          stable-only: true
+          url-template: https://sourceware.org/pub/bzip2/bzip2-$version.tar.gz
       - type: shell
         commands:
           - sed -i '/^CC=/d;/^CFLAGS=/d' Makefile
+    cleanup:
+      - '*'
+
+  - name: expat-static
+    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    buildsystem: cmake
+    config-opts:
+      - -DEXPAT_BUILD_TOOLS=OFF
+      - -DEXPAT_BUILD_EXAMPLES=OFF
+      - -DEXPAT_BUILD_TESTS=OFF
+      - -DEXPAT_SHARED_LIBS=OFF
+      - -DEXPAT_BUILD_DOCS=OFF
+    sources:
+      - type: archive
+        url: https://github.com/libexpat/libexpat/releases/download/R_2_4_8/expat-2.4.8.tar.gz
+        sha256: 398f6d95bf808d3108e27547b372cb4ac8dc2298a3c4251eb7aa3d4c6d4bb3e2
+        x-checker-data:
+          type: anitya
+          project-id: 770
+          stable-only: true
+          url-template: https://github.com/libexpat/libexpat/releases/download/R_${version0}_${version1}_${version2}/expat-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: libffi-static
+    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: archive
+        url: https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz
+        sha256: 540fb721619a6aba3bdeef7d940d8e9e0e6d2c193595bc243241b77ff9e93620
+        x-checker-data:
+          type: anitya
+          project-id: 1611
+          stable-only: true
+          url-template: https://github.com/libffi/libffi/releases/download/v$version/libffi-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: libsixel-static
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - --default-library=static
+      - -Dimg2sixel=enabled
+      - -Dsixel2png=disabled
+      - -Dgdk-pixbuf2=disabled
+      - -Dgd=disabled
+      - -Dlibcurl=disabled
+      - -Djpeg=disabled
+      - -Dpng=disabled
+    sources:
+      - type: archive
+        url: https://github.com/libsixel/libsixel/archive/2855eea71effe4d09890f4633f7dd568dbdfae3f/lixsixel-2855eea71effe4d09890f4633f7dd568dbdfae3f.zip
+        sha256: 717be779849010e0a9d0d8e1057c4838978857113ce1487086c8204a79edccfa
+        x-checker-data:
+          type: anitya
+          project-id: 243242
+          stable-only: true
+          versions:
+            '>': 1.10.3
+          url-template: https://github.com/libsixel/libsixel/archive/v$version/lixsixel-$version.zip
     cleanup:
       - '*'
 
@@ -199,104 +295,21 @@ modules:
       - type: archive
         url: https://github.com/lz4/lz4/archive/fb46a7fe8cd99bb9b8d9fc95d8fa6c238593a740/lz4-fb46a7fe8cd99bb9b8d9fc95d8fa6c238593a740.tar.gz
         sha256: e6d99a8f522f42e1e960d9035c662e009ac09c7857a3eff23e145a2930a1511e
+        x-checker-data:
+          type: anitya
+          project-id: 1865
+          stable-only: true
+          versions:
+            '>': 1.9.3
+          url-template: https://github.com/lz4/lz4/archive/v$version/lz4-$version.tar.gz
       - type: shell
         commands:
           - sed -i '/^BUILD_SHARED:=/ s/yes/no/' lib/Makefile
-
-  - name: xz-static
-    build-options: *musl-static-build-options
-    config-opts:
-      - --disable-shared
-      - --disable-xz
-      - --disable-xzdec
-      - --disable-lzmadec
-      - --disable-lzmainfo
-      - --disable-lzma-links
-      - --disable-scripts
-      - --disable-doc
-    sources:
-      - type: archive
-        url: https://tukaani.org/xz/xz-5.2.5.tar.gz
-        sha256: f6f4910fd033078738bd82bfba4f49219d03b17eb0794eb91efbae419f4aba10
-
-  - name: zlib-static
-    build-options: *musl-static-build-options
-    config-opts:
-      - --static
-    sources:
-      - type: archive
-        url: https://zlib.net/zlib-1.2.12.tar.gz
-        sha256: 91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9
-
-  - name: zstd-static # depends on lz4 xz zlib
-    build-options: *musl-static-build-options
-    subdir: build/cmake
-    buildsystem: cmake
-    config-opts:
-      - -DZSTD_BUILD_PROGRAMS=OFF
-      - -DZSTD_BUILD_STATIC=ON
-      - -DZSTD_BUILD_SHARED=OFF
-    sources:
-      - type: archive
-        url: https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz
-        sha256: 7c42d56fac126929a6a85dbc73ff1db2411d04f104fae9bdea51305663a83fd0
-
-  - name: pcre2-static # depends on bzip2 readline zlib
-    build-options: *musl-static-build-options
-    config-opts:
-      - --disable-shared
-      - --enable-pcre2-16
-      - --enable-pcre2-32
-      - --enable-jit
-    post-install:
-      - rm ${FLATPAK_DEST}/bin/pcre2{grep,test}
-    sources:
-      - type: archive
-        url: https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.40/pcre2-10.40.tar.gz
-        sha256: ded42661cab30ada2e72ebff9e725e745b4b16ce831993635136f2ef86177724
-    cleanup:
-      - '*'
-
-  - name: openssl-static
-    build-options: *musl-static-build-options
-    config-opts:
-     #- --help
-      - --libdir=lib
-      - --openssldir=${FLATPAK_DEST}/ssl
-      - -static
-      - no-ssl3-method
-      - enable-ec_nistp_64_gcc_128
-      - linux-x86_64
-      - -Wa,--noexecstack
-    sources:
-      - type: archive
-        url: https://www.openssl.org/source/openssl-1.1.1q.tar.gz
-        sha256: d7939ce614029cdff0b6c20f0e2e5703158a489a72b2507b8bd51bf8c8fd10ca
-      - type: shell
-        commands:
-          - ln -s {C,c}onfigure
-
-  - name: xxhash-static
-    build-options: *musl-static-build-options
-    no-autogen: true
-    make-args:
-      - lib
-    make-install-args:
-      - prefix=${FLATPAK_DEST}
-    sources:
-      - type: archive
-        url: https://github.com/Cyan4973/xxHash/archive/v0.8.1/xxhash-0.8.1.tar.gz
-        sha256: 3bb6b7d6f30c591dd65aaaff1c8b7a5b94d81687998ca9400082c739a690436c
-      - type: shell
-        commands:
-          - sed -e '/$(INSTALL_PROGRAM) $(LIBXXH)/d'
-            -e '/ln -sf $(LIBXXH)/d'
-            -i Makefile
     cleanup:
       - '*'
 
   - name: ncurses-static
-    build-options: *musl-static-build-options
+    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
     config-opts:
       - --without-dlsym
       - --with-terminfo-dirs=${datadir}/share/terminfo:/var/lib/devenv/share/terminfo:/usr/share/terminfo
@@ -330,23 +343,41 @@ modules:
       - type: shell
         commands:
           - install -dm755 ${FLATPAK_DEST}/lib/pkgconfig
+    cleanup:
+      - '*'
 
-  - name: readline-static
+  - name: openssl-static
     build-options: *musl-static-build-options
     config-opts:
-      - --disable-shared
-      - --with-curses
+      - --libdir=lib
+      - --openssldir=${FLATPAK_DEST}/ssl
+      - -static
+      - no-ssl3-method
+      - enable-ec_nistp_64_gcc_128
+      - linux-x86_64
+      - -Wa,--noexecstack
     sources:
       - type: archive
-        url: https://ftp.gnu.org/gnu/readline/readline-8.1.tar.gz
-        sha256: f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02
+        url: https://www.openssl.org/source/openssl-1.1.1q.tar.gz
+        sha256: d7939ce614029cdff0b6c20f0e2e5703158a489a72b2507b8bd51bf8c8fd10ca
         x-checker-data:
           type: anitya
-          project-id: 4173
+          project-id: 2566
           stable-only: true
-          url-template: https://ftp.gnu.org/gnu/bash/bash-$version.tar.gz
+          versions:
+            '<': 2.0.0
+          version-scheme: semantic
+          url-template: https://www.openssl.org/source/openssl-$version.tar.gz
       - type: patch
-        path: readline-set-devenv-defaults.patch
+        # https://github.com/openssl/openssl/issues/14574
+        path: openssl-static-threads.patch
+        options:
+          - --reverse
+      - type: shell
+        commands:
+          - ln -s {C,c}onfigure
+    cleanup:
+      - '*'
 
   - name: popt-static
     build-options: *musl-static-build-options
@@ -361,14 +392,155 @@ modules:
           project-id: 3689
           stable-only: true
           url-template: http://ftp.rpm.org/popt/releases/popt-$version0.x/popt-$version.tar.gz
+    cleanup:
+      - '*'
 
-  - name: libevent-static
-    # TODO: add openssl-static dependency
+  - name: xxhash-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-args:
+      - lib
+    make-install-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/Cyan4973/xxHash/archive/v0.8.1/xxhash-0.8.1.tar.gz
+        sha256: 3bb6b7d6f30c591dd65aaaff1c8b7a5b94d81687998ca9400082c739a690436c
+        x-checker-data:
+          type: anitya
+          project-id: 17583
+          stable-only: true
+          url-template: https://github.com/Cyan4973/xxHash/archive/v$version/xxhash-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -e '/$(INSTALL_PROGRAM) $(LIBXXH)/d'
+            -e '/ln -sf $(LIBXXH)/d'
+            -i Makefile
+    cleanup:
+      - '*'
+
+  - name: xz-static
+    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    config-opts:
+      - --disable-shared
+      - --disable-xz
+      - --disable-xzdec
+      - --disable-lzmadec
+      - --disable-lzmainfo
+      - --disable-lzma-links
+      - --disable-scripts
+      - --disable-doc
+    sources:
+      - type: archive
+        url: https://tukaani.org/xz/xz-5.2.5.tar.gz
+        sha256: f6f4910fd033078738bd82bfba4f49219d03b17eb0794eb91efbae419f4aba10
+        x-checker-data:
+          type: anitya
+          project-id: 5277
+          stable-only: true
+          url-template: https://tukaani.org/xz/xz-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: zlib-static
+    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    config-opts:
+      - --static
+    sources:
+      - type: archive
+        url: https://zlib.net/zlib-1.2.12.tar.gz
+        sha256: 91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9
+        x-checker-data:
+          type: anitya
+          project-id: 5303
+          stable-only: true
+          url-template: https://zlib.net/zlib-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: zstd-static # depends on lz4 xz zlib
+    build-options: *musl-static-build-options
+    subdir: build/cmake
+    buildsystem: cmake
+    config-opts:
+      - -DZSTD_BUILD_PROGRAMS=OFF
+      - -DZSTD_BUILD_STATIC=ON
+      - -DZSTD_BUILD_SHARED=OFF
+    sources:
+      - type: archive
+        url: https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz
+        sha256: 7c42d56fac126929a6a85dbc73ff1db2411d04f104fae9bdea51305663a83fd0
+        x-checker-data:
+          type: anitya
+          project-id: 12083
+          stable-only: true
+          url-template: https://github.com/facebook/zstd/releases/download/v$version/zstd-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: readline-static # depends on ncurses
+    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    config-opts:
+      - --disable-shared
+      - --with-curses
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/readline/readline-8.1.tar.gz
+        sha256: f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02
+        x-checker-data:
+          type: anitya
+          project-id: 4173
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/readline/readline-$version.tar.gz
+      - type: patch
+        path: readline-set-devenv-defaults.patch
+    cleanup:
+      - '*'
+
+  - name: gdbm-static # depends on readline
+    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    config-opts:
+      - --disable-shared
+      - --enable-libgdbm-compat
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz
+        sha256: 74b1081d21fff13ae4bd7c16e5d6e504a4c26f7cde1dca0d963a484174bbcacd
+        x-checker-data:
+          type: anitya
+          project-id: 13254
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/gdbm/gdbm-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: pcre2-static # depends on bzip2 readline zlib
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+      - --enable-pcre2-16
+      - --enable-pcre2-32
+      - --enable-jit
+    post-install:
+      - rm ${FLATPAK_DEST}/bin/pcre2{grep,test}
+    sources:
+      - type: archive
+        url: https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.40/pcre2-10.40.tar.gz
+        sha256: ded42661cab30ada2e72ebff9e725e745b4b16ce831993635136f2ef86177724
+        x-checker-data:
+          type: anitya
+          project-id: 5832
+          stable-only: true
+          url-template: https://github.com/PCRE2Project/pcre2/releases/download/pcre2-$version/pcre2-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: libevent-static  # depends on openssl
     # TODO: try again to build static lib with cmake
     build-options: *musl-static-build-options
     config-opts:
       - --disable-shared
-      - --disable-openssl
+      - --enable-openssl
     sources:
       - type: archive
         url: https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
@@ -379,27 +551,9 @@ modules:
           stable-only: true
           url-template: https://github.com/libevent/libevent/releases/download/release-$version-stable/libevent-$version-stable.tar.gz
     cleanup:
-      - /bin
-      - /lib/cmake
+      - '*'
 
-  - name: libsixel-static
-    build-options: *musl-static-build-options
-    buildsystem: meson
-    config-opts:
-      - --default-library=static
-      - -Dimg2sixel=enabled
-      - -Dsixel2png=disabled
-      - -Dgdk-pixbuf2=disabled
-      - -Dgd=disabled
-      - -Dlibcurl=disabled
-      - -Djpeg=disabled
-      - -Dpng=disabled
-    sources:
-      - type: archive
-        url: https://github.com/libsixel/libsixel/archive/2855eea71effe4d09890f4633f7dd568dbdfae3f/lixsixel-2855eea71effe4d09890f4633f7dd568dbdfae3f.zip
-        sha256: 717be779849010e0a9d0d8e1057c4838978857113ce1487086c8204a79edccfa
-
-  - name: wayland-static
+  - name: wayland-static # depends on expat liffi
     build-options: *musl-static-build-options
     buildsystem: meson
     config-opts:
@@ -417,47 +571,7 @@ modules:
           stable-only: true
           url-template: https://gitlab.freedesktop.org/wayland/wayland/-/releases/$version/downloads/wayland-$version.tar.xz
     cleanup:
-      - /bin
-      - /share/wayland
-    modules:
-      - name: expat-static
-        build-options: *musl-static-build-options
-        buildsystem: cmake
-        config-opts:
-          - -DEXPAT_BUILD_TOOLS=OFF
-          - -DEXPAT_BUILD_EXAMPLES=OFF
-          - -DEXPAT_BUILD_TESTS=OFF
-          - -DEXPAT_SHARED_LIBS=OFF
-          - -DEXPAT_BUILD_DOCS=OFF
-        sources:
-          - type: archive
-            url: https://github.com/libexpat/libexpat/releases/download/R_2_4_8/expat-2.4.8.tar.gz
-            sha256: 398f6d95bf808d3108e27547b372cb4ac8dc2298a3c4251eb7aa3d4c6d4bb3e2
-            x-checker-data:
-              type: anitya
-              project-id: 770
-              stable-only: true
-              url-template: https://github.com/libexpat/libexpat/releases/download/R_${version0}_${version1}_${version2}/expat-$version.tar.gz
-      - name: libffi-static
-       #build-options: *musl-static-build-options
-        build-options:
-          cflags: -static -fPIC
-          cxxflags: -static -fPIC
-          ldflags: -static -fPIC
-          env:
-            - CC=x86_64-linux-musl-gcc
-            - CXX=x86_64-linux-musl-g++
-        config-opts:
-          - --disable-shared
-        sources:
-          - type: archive
-            url: https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz
-            sha256: 540fb721619a6aba3bdeef7d940d8e9e0e6d2c193595bc243241b77ff9e93620
-            x-checker-data:
-              type: anitya
-              project-id: 1611
-              stable-only: true
-              url-template: https://github.com/libffi/libffi/releases/download/v$version/libffi-$version.tar.gz
+      - '*'
 
   - name: libxmu-static
     build-options: *musl-static-build-options
@@ -478,7 +592,7 @@ modules:
           stable-only: true
           url-template: https://xorg.freedesktop.org/releases/individual/lib/libXmu-$version.tar.bz2
     cleanup:
-      - /share/doc
+      - '*'
     modules:
       - name: xorg-util-macros
         make-install-args:
@@ -487,6 +601,13 @@ modules:
           - type: archive
             url: https://www.x.org/releases/individual/util/util-macros-1.19.3.tar.gz
             sha256: 624bb6c3a4613d18114a7e3849a3d70f2d7af9dc6eabeaba98060d87e3aef35b
+            x-checker-data:
+              type: anitya
+              project-id: 15037
+              stable-only: true
+              url-template: https://www.x.org/releases/individual/util/util-macros-$version.tar.gz
+        cleanup:
+          - '*'
       - name: xorgproto
         post-install:
           - mv ${FLATPAK_DEST}/share/pkgconfig/* ${FLATPAK_DEST}/lib/pkgconfig/
@@ -494,6 +615,13 @@ modules:
           - type: archive
             url: https://xorg.freedesktop.org/archive/individual/proto/xorgproto-2022.1.tar.gz
             sha256: 2a399e77d98fe53e9056726a1934b62cbaa6c41d7b1f41a354911b0925363343
+            x-checker-data:
+              type: anitya
+              project-id: 17190
+              stable-only: true
+              url-template: https://xorg.freedesktop.org/archive/individual/proto/xorgproto-$version.tar.gz
+        cleanup:
+          - '*'
       - name: xtrans
         make-install-args:
           - pkgconfigdir=${FLATPAK_DEST}/lib/pkgconfig
@@ -501,6 +629,13 @@ modules:
           - type: archive
             url: https://www.x.org/releases/individual/lib/xtrans-1.4.0.tar.gz
             sha256: 48ed850ce772fef1b44ca23639b0a57e38884045ed2cbb18ab137ef33ec713f9
+            x-checker-data:
+              type: anitya
+              project-id: 13651
+              stable-only: true
+              url-template: https://www.x.org/releases/individual/lib/xtrans-$version.tar.gz
+        cleanup:
+          - '*'
       - name: libx11-static
         build-options: *musl-static-build-options
         config-opts:
@@ -515,6 +650,13 @@ modules:
           - type: archive
             url: https://www.x.org/releases/individual/lib/libX11-1.8.1.tar.gz
             sha256: d52f0a7c02a45449f37b0831d99ff936d92eb4ce8b4c97dc17a63cea79ce5a76
+            x-checker-data:
+              type: anitya
+              project-id: 1764
+              stable-only: true
+              url-template: https://www.x.org/releases/individual/lib/libX11-$version.tar.gz
+        cleanup:
+          - '*'
         modules:
           - name: libxcb-static
             build-options: *musl-static-build-options
@@ -549,6 +691,13 @@ modules:
               - type: archive
                 url: https://www.x.org/archive/individual/lib/libxcb-1.15.tar.xz
                 sha256: cc38744f817cf6814c847e2df37fcb8997357d72fa4bcbc228ae0fe47219a059
+                x-checker-data:
+                  type: anitya
+                  project-id: 1767
+                  stable-only: true
+                  url-template: https://www.x.org/archive/individual/lib/libxcb-$version.tar.xz
+            cleanup:
+              - '*'
             modules:
               - name: libxau-static
                 build-options: *musl-static-build-options
@@ -558,6 +707,13 @@ modules:
                   - type: archive
                     url: https://www.x.org/releases/individual/lib/libXau-1.0.9.tar.gz
                     sha256: 1f123d8304b082ad63a9e89376400a3b1d4c29e67e3ea07b3f659cccca690eea
+                x-checker-data:
+                  type: anitya
+                  project-id: 1765
+                  stable-only: true
+                  url-template: https://www.x.org/releases/individual/lib/libXau-$version.tar.gz
+                cleanup:
+                  - '*'
               - name: libxdmcp-static
                 build-options: *musl-static-build-options
                 config-opts:
@@ -566,6 +722,13 @@ modules:
                   - type: archive
                     url: https://www.x.org/releases/individual/lib/libXdmcp-1.1.3.tar.gz
                     sha256: 2ef9653d32e09d1bf1b837d0e0311024979653fe755ad3aaada8db1aa6ea180c
+                    x-checker-data:
+                      type: anitya
+                      project-id: 1772
+                      stable-only: true
+                      url-template: https://www.x.org/releases/individual/lib/libXdmcp-$version.tar.gz
+                cleanup:
+                  - '*'
               - name: xcb-proto
                 build-options: *musl-static-build-options
                 config-opts:
@@ -576,6 +739,13 @@ modules:
                   - type: archive
                     url: https://xorg.freedesktop.org/archive/individual/proto/xcb-proto-1.15.2.tar.gz
                     sha256: 6b1ed9cd7cf35e37913eeecca37e5b85b14903002942b3e332f321335c27a8eb
+                    x-checker-data:
+                      type: anitya
+                      project-id: 13646
+                      stable-only: true
+                      url-template: https://xorg.freedesktop.org/archive/individual/proto/xcb-proto-$version.tar.gz
+                cleanup:
+                  - '*'
       - name: libxext-static
         build-options: *musl-static-build-options
         config-opts:
@@ -584,6 +754,13 @@ modules:
           - type: archive
             url: https://www.x.org/releases/individual/lib/libXext-1.3.4.tar.gz
             sha256: 8ef0789f282826661ff40a8eef22430378516ac580167da35cc948be9041aac1
+            x-checker-data:
+              type: anitya
+              project-id: 1774
+              stable-only: true
+              url-template: https://www.x.org/releases/individual/lib/libXext-$version.tar.gz
+        cleanup:
+          - '*'
       - name: libxt-static
         build-options: *musl-static-build-options
         config-opts:
@@ -593,11 +770,18 @@ modules:
           - type: archive
             url: https://www.x.org/releases/individual/lib/libXt-1.2.1.tar.gz
             sha256: 6da1bfa9dd0ed87430a5ce95b129485086394df308998ebe34d98e378e3dfb33
+            x-checker-data:
+              type: anitya
+              project-id: 1793
+              stable-only: true
+              url-template: https://www.x.org/releases/individual/lib/libXt-$version.tar.gz
           - type: shell
             commands:
               - sed -e 's/\(--mode=compile $(CC)\)/\1 -all-static/'
                 -e 's/\(--mode=link $(CCLD)\)/\1 -all-static/'
                 -i util/Makefile.in
+        cleanup:
+          - '*'
         modules:
           - name: libsm-static
             build-options: *musl-static-build-options
@@ -613,6 +797,13 @@ modules:
               - type: archive
                 url: https://www.x.org/releases/individual/lib/libSM-1.2.3.tar.gz
                 sha256: 1e92408417cb6c6c477a8a6104291001a40b3bb56a4a60608fdd9cd2c5a0f320
+            x-checker-data:
+              type: anitya
+              project-id: 1726
+              stable-only: true
+              url-template: https://www.x.org/releases/individual/lib/libSM-$version.tar.gz
+            cleanup:
+              - '*'
             modules:
               - name: libice-static
                 build-options: *musl-static-build-options
@@ -622,7 +813,101 @@ modules:
                   - type: archive
                     url: https://www.x.org/releases/individual/lib/libICE-1.0.10.tar.gz
                     sha256: 1116bc64c772fd127a0d0c0ffa2833479905e3d3d8197740b3abd5f292f22d2d
+                x-checker-data:
+                  type: anitya
+                  project-id: 1638
+                  stable-only: true
+                  url-template: https://www.x.org/releases/individual/lib/libICE-$version.tar.gz
+                cleanup:
+                  - '*'
 
+
+  ############################
+  ####      Python        ####
+  ############################
+
+  - name: python
+    # TODO: fix gdbm symbol gdbm_version_cmp locating issue
+   #build-options: *musl-shared-build-options
+    build-options:
+      cppflags: -I/usr/lib/sdk/devenv/include -I/usr/lib/sdk/devenv/include/ncursesw
+      cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+      cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+      ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+      env:
+        - CC=x86_64-linux-musl-gcc
+        - CXX=x86_64-linux-musl-g++
+    config-opts:
+     #- --enable-optimizations
+     #- --with-computed-gotos
+     #- --with-lto
+      - --disable-test-modules
+      - --without-doc-strings
+      - --with-dbmliborder=gdbm:ndbm
+      - --with-system-expat
+      - --with-system-ffi
+      # TODO: add libmpdec lib?
+     #- --with-system-libmpdec
+    sources:
+      - type: archive
+        url: https://www.python.org/ftp/python/3.10.5/Python-3.10.5.tar.xz
+        sha256: 8437efd5b106ef0a75aabfbf23d880625120a73a86a22ade4d2e2e68d7b74486
+        x-checker-data:
+          type: anitya
+          project-id: 13254
+          stable-only: true
+          url-template: https://www.python.org/ftp/python/$version/Python-$version.tar.xz
+      - type: shell
+        commands:
+          - sed 's|/usr/include|${prefix}/include|' -i configure
+          - rm -r Modules/expat
+          - rm -r Modules/_ctypes/{darwin,libffi}*
+         #- rm -r Modules/_decimal/libmpdec
+          - rm ${FLATPAK_DEST}/lib/libgdbm.a
+    cleanup:
+      - '*'
+
+  - name: pyenv
+    buildsystem: simple
+    build-commands:
+      - install -dm755 ${FLATPAK_DEST}/share/pyenv
+      - cp -a libexec plugins pyenv.d ${FLATPAK_DEST}/share/pyenv/
+      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*} -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 completions/pyenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/pyenv
+      - install -Dm644 completions/pyenv.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
+      - install -Dm644 completions/pyenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_pyenv
+      - install -Dm644 man/man1/pyenv.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/pyenv/pyenv/archive/v2.3.2/pyenv-2.3.2.tar.gz
+        sha256: 150ac8f7161c00e8e613bf5e273306f674b60037e3dace9c6bb7611dceb17144
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/pyenv/pyenv/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-" + $version + ".tar.gz"'
+    cleanup:
+      - /share/pyenv/pyenv.d/install
+      - /share/pyenv/plugins/python-build/scripts
+      - /share/pyenv/plugins/python-build/test
+      - .gitignore
+      - LICENSE
+      - README.md
+      - install.sh
+
+  - name: pyoxidizer
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 pyoxidizer ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        url: https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.22.0/pyoxidizer-0.22.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: be8fb5d28a3b2405ed672b711199f6dad41b1293551a9023866b2f082e6decc6
+        x-checker-data:
+          type: anitya
+          project-id: 198997
+          stable-only: true
+          url-template: https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.22.0/pyoxidizer-${version}-x86_64-unknown-linux-musl.tar.gz
 
   ############################
   ####       Shell        ####
@@ -657,6 +942,7 @@ modules:
           - rm -r lib/{readline,termcap}/*.c
 
   - name: bash-completion
+    # TODO: fix pkgconf target
     sources:
       - type: archive
         url: https://github.com/scop/bash-completion/releases/download/2.11/bash-completion-2.11.tar.xz
@@ -758,6 +1044,11 @@ modules:
           - type: archive
             url: https://kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.64.tar.xz
             sha256: c8465e1f0b068d5fc06199231135ccac7adb56d662b1de93589252e8cd071e13
+            x-checker-data:
+              type: anitya
+              project-id: 1569
+              stable-only: true
+              url-template: https://kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-$version.tar.xz
 
   - name: powerline-fonts
     # TODO: generate updated patched fonts with https://github.com/powerline/fontpatcher
@@ -1116,15 +1407,8 @@ modules:
                   project-id: 10784
                   stable-only: true
                   url-template: https://github.com/libuv/libuv/archive/v$version/libuv-$version.tar.gz
-          - name: luajit-static
-           #build-options: *musl-static-build-options
-            build-options:
-              cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-              cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-              ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-              env:
-                - CC=x86_64-linux-musl-gcc
-                - CXX=x86_64-linux-musl-g++
+          - name: luajit
+            build-options: *musl-shared-build-options
             no-autogen: true
             make-args:
               - PREFIX=${FLATPAK_DEST}
@@ -1185,7 +1469,9 @@ modules:
                   stable-only: true
                   url-template: https://github.com/neovim/unibilium/archive/v$version/unibilium-$version.tar.gz
       - name: lua-lpeg
+        # TODO: clean this
         build-options: *musl-static-build-options
+       #build-options: *musl-shared-build-options
         buildsystem: simple
         build-commands:
           - |
@@ -1232,14 +1518,7 @@ modules:
         cleanup:
           - '*'
       - name: lua-mpack
-       #build-options: *musl-static-build-options
-        build-options:
-          cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-          cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-          ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-          env:
-            - CC=x86_64-linux-musl-gcc
-            - CXX=x86_64-linux-musl-g++
+        build-options: *musl-shared-build-options
         no-autogen: true
         make-args:
           - USE_SYSTEM_MPACK=yes
@@ -1264,10 +1543,8 @@ modules:
           - '*'
         modules:
           - name: mpack-static
-            build-options: *musl-static-build-options
+            build-options: *musl-static-fpic-build-options # NOTE: lua-mpack needs -fPIC
             no-autogen: true
-            make-args:
-              - XCFLAGS=-fPIC
             make-install-args:
               - PREFIX=${FLATPAK_DEST}
             sources:
@@ -1542,6 +1819,11 @@ modules:
       - type: archive
         url: https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
         sha256: ee4e0751ab108b6da4f47c52da187d5177dc371f0f512a7caaec5434e711c091
+        x-checker-data:
+          type: anitya
+          project-id: 15461
+          stable-only: true
+          url-template: https://github.com/BurntSushi/ripgrep/releases/download/$version/ripgrep-$version-x86_64-unknown-linux-musl.tar.gz
 
   - name: fzy-static
     build-options: *musl-static-build-options
@@ -1866,21 +2148,7 @@ modules:
   ####     Trash can      ####
   ############################
 
-  - name: gomi
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 gomi -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: archive
-        strip-components: 0
-        url: https://github.com/b4b4r07/gomi/releases/download/v1.1.3/gomi_linux_x86_64.tar.gz
-        sha256: 9fa9915b7c41dc81b49e943703b21f20e79298b76f00e02a2080b3175b7088d5
-        x-checker-data:
-          type: anitya
-          project-id: 269031
-          stable-only: true
-          url-template: https://github.com/b4b4r07/gomi/releases/download/v$version/gomi_linux_x86_64.tar.gz
-
+  # TODO: evaluate garbage @ https://git.sr.ht/~mzhang/garbage
   - name: rmtrash
     buildsystem: simple
     build-commands:
@@ -1896,6 +2164,13 @@ modules:
           url-template: https://github.com/PhrozenByte/rmtrash/archive/v$version/rmtrash-$version.tar.gz
     modules:
       - name: trash-cli
+#       build-options:
+#         cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+#         cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+#         ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+#         env:
+#           - CC=x86_64-linux-musl-gcc
+#           - CXX=x86_64-linux-musl-g++
         buildsystem: simple
         build-commands:
           - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST trash-cli --no-build-isolation
@@ -2059,48 +2334,11 @@ modules:
       - type: archive
         url: https://github.com/WayneD/rsync/archive/v3.2.4/-rsync-3.2.4.tar.gz
         sha256: 4d8543cf5da694169e1d51bd9f757a80a1fa9c3d6cb1100e9816a7e85ed57aec
-
-
-  ############################
-  ####      Python        ####
-  ############################
-
-  - name: pyenv
-    buildsystem: simple
-    build-commands:
-      - install -dm755 ${FLATPAK_DEST}/share/pyenv
-      - cp -a libexec plugins pyenv.d ${FLATPAK_DEST}/share/pyenv/
-      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*} -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 completions/pyenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/pyenv
-      - install -Dm644 completions/pyenv.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
-      - install -Dm644 completions/pyenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_pyenv
-      - install -Dm644 man/man1/pyenv.1 -t ${FLATPAK_DEST}/share/man/man1/
-    sources:
-      - type: archive
-        url: https://github.com/pyenv/pyenv/archive/v2.3.2/pyenv-2.3.2.tar.gz
-        sha256: 150ac8f7161c00e8e613bf5e273306f674b60037e3dace9c6bb7611dceb17144
         x-checker-data:
-          type: json
-          url: https://api.github.com/repos/pyenv/pyenv/releases/latest
-          version-query: .tag_name | sub("^v"; "")
-          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-" + $version + ".tar.gz"'
-    cleanup:
-      - /share/pyenv/pyenv.d/install
-      - /share/pyenv/plugins/python-build/scripts
-      - /share/pyenv/plugins/python-build/test
-      - .gitignore
-      - LICENSE
-      - README.md
-      - install.sh
-
-  - name: pyoxidizer
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 pyoxidizer ${FLATPAK_DEST}/bin/
-    sources:
-      - type: archive
-        url: https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.22.0/pyoxidizer-0.22.0-x86_64-unknown-linux-musl.tar.gz
-        sha256: be8fb5d28a3b2405ed672b711199f6dad41b1293551a9023866b2f082e6decc6
+          type: anitya
+          project-id: 4217
+          stable-only: true
+          url-template: https://github.com/WayneD/rsync/archive/v$version/-rsync-$version.tar.gz
 
 
   ############################
