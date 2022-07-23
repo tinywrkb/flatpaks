@@ -1,0 +1,44 @@
+From cfd7225fbb9507b2e443a494459bdaab5236d29d Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Wed, 2 Sep 2020 16:57:46 -0400
+Subject: [PATCH] Fix -static builds
+
+Pull in check from #10878
+Move disabling of pic, threads and statics up higher before they
+are checked.
+
+Fixes #12772
+
+Reviewed-by: Tomas Mraz <tmraz@fedoraproject.org>
+Reviewed-by: Richard Levitte <levitte@openssl.org>
+(Merged from https://github.com/openssl/openssl/pull/12773)
+---
+ Configure | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Configure b/Configure
+index 1d73d06e1b3..f25b84bff29 100755
+--- a/Configure
++++ b/Configure
+@@ -1201,6 +1201,10 @@ foreach (keys %useradd) {
+ # At this point, we can forget everything about %user and %useradd,
+ # because it's now all been merged into the corresponding $config entry
+ 
++if (grep { $_ eq '-static' } @{$config{LDFLAGS}}) {
++    disable('static', 'pic', 'threads');
++}
++
+ # Allow overriding the build file name
+ $config{build_file} = env('BUILDFILE') || $target{build_file} || "Makefile";
+ 
+@@ -1521,10 +1525,6 @@ if ($strict_warnings)
+                 }
+         }
+ 
+-if (grep { $_ eq '-static' } @{$config{LDFLAGS}}) {
+-    disable('static', 'pic', 'threads');
+-}
+-
+ $config{CFLAGS} = [ map { $_ eq '--ossl-strict-warnings'
+                               ? @strict_warnings_collection
+                               : ( $_ ) }
