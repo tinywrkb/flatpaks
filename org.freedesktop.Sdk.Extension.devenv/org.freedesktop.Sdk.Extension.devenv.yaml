@@ -1041,29 +1041,37 @@ modules:
           stable-only: true
           url-template: https://github.com/cykerway/complete-alias/archive/$version/complete-alias-$version.tar.gz
 
-# - name: fish
-#   build-options: *musl-static-build-options
-#   buildsystem: cmake
-#   config-opts:
-#     - -DCMAKE_BUILD_TYPE=Release
-#     - -Wno-dev
-#    #- -DWITH_GETTEXT=OFF
-#    #- -DSYS_PCRE2_INCLUDE_DIR=/usr/lib/sdk/devenv/include
-#    #- -DSYS_PCRE2_LIB=/usr/lib/sdk/devenv/lib/libpcre2-32.a
-#    #- -DCURSES_INCLUDE_DIRS=/usr/lib/sdk/devenv/include/ncursesw
-#    #- -DTPARM_INCLUDES=/usr/lib/sdk/devenv/include/ncursesw/term.h
-#    #- -DCURSES_LIBRARY=/usr/lib/sdk/devenv/lib/libncursesw.a
-#    #- -DCURSES_TINFO=/usr/lib/sdk/devenv/lib/libncursesw.a
-#    #- -DCMAKE_CXX_FLAGS=-DHAVE_CURSES_H -DHAVE_TERM_H
-#   sources:
-#     - type: archive
-#       url: https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz
-#       sha256: 291e4ec7c6c3fea54dc1aed057ce3d42b356fa6f70865627b2c7dfcecaefd210
-#       x-checker-data:
-#         type: anitya
-#         project-id: 815
-#         stable-only: true
-#         url-template: https://github.com/fish-shell/fish-shell/releases/download/$version/fish-$version.tar.xz
+  - name: fish
+    build-options: *musl-static-build-options
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -Wno-dev
+      - -DWITH_GETTEXT=OFF
+      - -DSYS_PCRE2_INCLUDE_DIR=/usr/lib/sdk/devenv/include
+      - -DSYS_PCRE2_LIB=/usr/lib/sdk/devenv/lib/libpcre2-32.a
+      - -DNCURSES_INCLUDE_DIRS=/usr/lib/sdk/devenv/include/ncursesw
+      - -DTPARM_INCLUDES=/usr/lib/sdk/devenv/include/ncursesw/term.h
+      - -DNCURSES_LIBRARY=/usr/lib/sdk/devenv/lib/libncursesw.a
+      - -DCURSES_TINFO=/usr/lib/sdk/devenv/lib/libncursesw.a
+      - -DCMAKE_CXX_FLAGS=-DHAVE_NCURSES_H -DHAVE_TERM_H
+      - -DTPUTS_USES_INT_ARG=1
+    sources:
+      - type: archive
+        url: https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz
+        sha256: 291e4ec7c6c3fea54dc1aed057ce3d42b356fa6f70865627b2c7dfcecaefd210
+        x-checker-data:
+          type: anitya
+          project-id: 815
+          stable-only: true
+          url-template: https://github.com/fish-shell/fish-shell/releases/download/$version/fish-$version.tar.xz
+      - type: shell
+        commands:
+          - sed -i '/Fish does not support static linking/ s/FATAL_ERROR/WARNING/' CMakeLists.txt
+    cleanup:
+      - /etc
+      - /share/applications
+      - /share/pixmaps
 
   - name: zsh-static
     build-options: *musl-static-build-options
