@@ -7,7 +7,6 @@
 # TODO: add more patched fonts: nerd-fonts
 # TODO: investigate broken host tmux sessions
 # TODO: still dynamic: hub, neovide, psutils (python), luajit bindings
-# TODO: package python apps as single static executable: ranger, trash-cli
 # TODO: maybe set dynamic loader to libc.musl-x86_64.so.1 (alpine) when dynamically linking
 # TODO: add tarball generation script
 # TODO: test portability, needs to work when switching to /var/lib
@@ -838,6 +837,7 @@ modules:
         - CC=x86_64-linux-musl-gcc
         - CXX=x86_64-linux-musl-g++
     config-opts:
+      - --enable-shared
      #- --enable-optimizations
      #- --with-computed-gotos
      #- --with-lto
@@ -864,6 +864,21 @@ modules:
           - rm -r Modules/_ctypes/{darwin,libffi}*
          #- rm -r Modules/_decimal/libmpdec
           - rm ${FLATPAK_DEST}/lib/libgdbm.a
+    cleanup:
+      - '*'
+
+  - name: python-wheel
+    build-options: *musl-shared-build-options
+    buildsystem: simple
+    build-commands:
+      - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST wheel --no-build-isolation
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/c0/6c/9f840c2e55b67b90745af06a540964b73589256cb10cc10057c87ac78fc2/wheel-0.37.1.tar.gz
+        sha256: e9a504e793efbca1b8e0e9cb979a249cf4a0a7b5b8c9e8b65a5e39d49529c1c4
+        x-checker-data:
+          type: pypi
+          name: wheel
     cleanup:
       - '*'
 
@@ -894,6 +909,59 @@ modules:
       - LICENSE
       - README.md
       - install.sh
+
+  - name: pyinstaller
+    build-options: *musl-shared-build-options
+    buildsystem: simple
+    build-commands:
+      - ln -s ${FLATPAK_DEST}/lib/musl/libc.so ${FLATPAK_DEST}/bin/ldd
+     #- |
+     #  cd bootloader
+     #  ./waf all
+      - python3 setup.py build
+      - python3 setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
+    sources:
+      - type: archive
+        url: https://github.com/pyinstaller/pyinstaller/archive/v5.2/pyinstaller-5.2.tar.gz
+        sha256: f48a29ef9b12a5b4bb1b8f37a33f38cdc034869c946425d5b4217d97a42beaa7
+        x-checker-data:
+          type: anitya
+          project-id: 122995
+          stable-only: true
+          url-template: https://github.com/pyinstaller/pyinstaller/archive/v$version/pyinstaller-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: pyinstaller-hooks-contrib
+    buildsystem: simple
+    build-commands:
+      - python3 setup.py build
+      - python3 setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
+    sources:
+      - type: archive
+        url: https://github.com/pyinstaller/pyinstaller-hooks-contrib/archive/2022.8/pyinstaller-hooks-contrib-2022.8.tar.gz
+        sha256: 8b90f6b26959016ea38b5d0bac81b966888b3a30cb1069128d255c91de27e47d
+        x-checker-data:
+          type: anitya
+          project-id: 91839
+          stable-only: true
+          url-template: https://github.com/pyinstaller/pyinstaller-hooks-contrib/archive/$version/pyinstaller-hooks-contrib-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: altgraph
+    buildsystem: simple
+    build-commands:
+      - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST altgraph --no-build-isolation
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/84/3f/1a5c9bef54cac9bf41edd6f4aaf61cd52ed578e10ccc607e0278012cb4a5/altgraph-0.17.2-py2.py3-none-any.whl
+        sha256: 743628f2ac6a7c26f5d9223c91ed8ecbba535f506f4b6f558885a8a56a105857
+        x-checker-data:
+          type: pypi
+          name: altgraph
+    cleanup:
+      - '*'
 
   - name: pyoxidizer
     buildsystem: simple
@@ -1954,8 +2022,9 @@ modules:
   - name: ranger
     buildsystem: simple
     build-commands:
-      - python setup.py build
-      - python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
+      - python3 setup.py build
+      - python3 setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
+      - mv ${FLATPAK_DEST}/bin/ranger{,-org}
     sources:
       - type: archive
         url: https://ranger.github.io/ranger-1.9.3.tar.gz
@@ -1969,6 +2038,17 @@ modules:
         path: ranger-sixel.patch
       - type: patch
         path: ranger-tmux-fixes.patch
+    cleanup:
+      - '*'
+
+  - name: ranger-portable
+    build-options: *musl-shared-build-options
+    buildsystem: simple
+    build-commands:
+      - ln -s ${FLATPAK_DEST}/bin/ranger-org ranger-portable
+      - pyinstaller --onedir --collect-all ranger ranger-portable
+      - cp -r dist/ranger-portable ${FLATPAK_DEST}/lib/
+      - ln -s ../lib/ranger-portable/ranger-portable ${FLATPAK_DEST}/bin/ranger
 
   - name: vifm-static
     build-options: *musl-static-build-options
@@ -2164,6 +2244,7 @@ modules:
           url-template: https://github.com/PhrozenByte/rmtrash/archive/v$version/rmtrash-$version.tar.gz
     modules:
       - name: trash-cli
+        build-options: *musl-shared-build-options
 #       build-options:
 #         cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
 #         cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
@@ -2174,6 +2255,10 @@ modules:
         buildsystem: simple
         build-commands:
           - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST trash-cli --no-build-isolation
+          - |
+            for app in trash{,-empty,-list,-put,-restore,-rm}; do
+              mv ${FLATPAK_DEST}/bin/${app}{,-org}
+            done
         sources:
           - type: file
             url: https://files.pythonhosted.org/packages/36/d2/6415cda6cdd81ee0eb07b357e96a03c96a78af324d7eb2c52ff51d080210/trash-cli-0.22.4.16.tar.gz
@@ -2187,7 +2272,34 @@ modules:
             x-checker-data:
               type: pypi
               name: psutil
+        cleanup:
+          - '*'
 
+  - name: trash-cli-portable
+    build-options: *musl-shared-build-options
+    buildsystem: simple
+    build-commands:
+      - |
+        for app in trash{,-empty,-list,-put,-restore,-rm}; do
+          ln -s ${FLATPAK_DEST}/bin/${app}-org ${app}
+        done
+     #- |
+     #  for app in trash{,-empty,-list,-put,-restore,-rm}; do
+     #    pyi-makespec ${app}
+     #  done
+      - pyinstaller trashcli.spec
+      - install -dm755 ${FLATPAK_DEST}/lib/trash-cli-portable
+      - |
+        for app in trash{,-empty,-list,-put,-restore,-rm}; do
+          cp -r dist/${app}/* ${FLATPAK_DEST}/lib/trash-cli-portable/
+        done
+      - |
+        for app in trash{,-empty,-list,-put,-restore,-rm}; do
+          ln -s ../lib/trash-cli-portable/${app} ${FLATPAK_DEST}/bin/${app}
+        done
+    sources:
+      - type: file
+        path: trashcli.spec
 
   ############################
   ####     Dotfiles       ####
