@@ -6,14 +6,13 @@
 #                 PATH+=:xdg-data/npm-packages/bin
 # TODO: add more patched fonts: nerd-fonts
 # TODO: investigate broken host tmux sessions
-# TODO: still dynamic: hub, neovide, psutils (python), luajit bindings
+# TODO: still dynamic: chafa, hub, neovide, python app, luajit bindings
 # TODO: maybe set dynamic loader to libc.musl-x86_64.so.1 (alpine) when dynamically linking
 # TODO: add tarball generation script
 # TODO: test portability, needs to work when switching to /var/lib
 # TODO: investigate the possiblity to keep extension accessible after update, maybe bindfs mount
-# TODO: cleanup
-# TODO: disable locales / gettext
 # TODO: see other useful tools @ https://github.com/agarrharr/awesome-cli-apps
+# TODO: trashcli: set environment variable for trash bin location?
 
 # documentation
 #
@@ -133,7 +132,6 @@ cleanup:
   - /lib/pkgconfig
   - /lib/*.a
   - /share/aclocal
-  - /share/applications
   - /share/cmake
   - /share/doc
   - /share/man/man3
@@ -141,6 +139,7 @@ cleanup:
   - /share/man/man7
   - /share/man/man8
   - '*.la'
+
 modules:
 
   ############################
@@ -965,19 +964,19 @@ modules:
     cleanup:
       - '*'
 
-  - name: pyoxidizer
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 pyoxidizer ${FLATPAK_DEST}/bin/
-    sources:
-      - type: archive
-        url: https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.22.0/pyoxidizer-0.22.0-x86_64-unknown-linux-musl.tar.gz
-        sha256: be8fb5d28a3b2405ed672b711199f6dad41b1293551a9023866b2f082e6decc6
-        x-checker-data:
-          type: anitya
-          project-id: 198997
-          stable-only: true
-          url-template: https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.22.0/pyoxidizer-${version}-x86_64-unknown-linux-musl.tar.gz
+# - name: pyoxidizer
+#   buildsystem: simple
+#   build-commands:
+#     - install -Dm755 pyoxidizer ${FLATPAK_DEST}/bin/
+#   sources:
+#     - type: archive
+#       url: https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.22.0/pyoxidizer-0.22.0-x86_64-unknown-linux-musl.tar.gz
+#       sha256: be8fb5d28a3b2405ed672b711199f6dad41b1293551a9023866b2f082e6decc6
+#       x-checker-data:
+#         type: anitya
+#         project-id: 198997
+#         stable-only: true
+#         url-template: https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.22.0/pyoxidizer-${version}-x86_64-unknown-linux-musl.tar.gz
 
   ############################
   ####       Shell        ####
@@ -988,6 +987,7 @@ modules:
     config-opts:
       - --enable-static-link
       - --enable-readline
+      - --disable-nls
       - --with-curses
       - --with-installed-readline
       - --without-bash-malloc
@@ -1010,9 +1010,10 @@ modules:
         commands:
           # never build these libs
           - rm -r lib/{readline,termcap}/*.c
+    cleanup:
+      - /share/info
 
   - name: bash-completion
-    # TODO: fix pkgconf target
     sources:
       - type: archive
         url: https://github.com/scop/bash-completion/releases/download/2.11/bash-completion-2.11.tar.xz
@@ -1022,6 +1023,9 @@ modules:
           project-id: 5667
           stable-only: true
           url-template: https://github.com/scop/bash-completion/releases/download/$version/bash-completion-$version.tar.xz
+      - type: shell
+        commands:
+          - sed -i '/^pkgconfigdir.*=/ s/datadir/libdir/' Makefile.in
 
   - name: bash-complete-alias
     buildsystem: simple
@@ -1239,6 +1243,10 @@ modules:
       - type: shell
         commands:
           - sed -i 's#^\(SOCKETDIR\)=.*#\1=/tmp/screens#' etc/byobu/socketdir
+    cleanup:
+      - /share/byobu/desktop
+      - /share/byobu/pixmaps
+      - /share/dbus-1
     modules:
       - name: libnewt-static
         build-options: *musl-static-build-options
@@ -1257,6 +1265,8 @@ modules:
                 -e '/^all:/ s/_snack.$(SOEXT)//'
                 -e '/^install:/ s/install-sh//'
                 -i Makefile.in
+        cleanup:
+          - /share/locale
         modules:
           - name: libxcrypt-static
             build-options: *musl-static-build-options
@@ -1274,6 +1284,8 @@ modules:
                   project-id: 16436
                   stable-only: true
                   url-template: https://github.com/besser82/libxcrypt/archive/v$version.tar.gz
+            cleanup:
+              - '*'
           - name: gpm-static
             build-options: *musl-static-build-options
             config-opts:
@@ -1300,6 +1312,8 @@ modules:
                     -e '\|^all:| s/libgpm.so//'
                     -e '\|$(CC) @LDFLAGS@| s/\($(CC)\)/\1 @CFLAGS@ $(CFLAGS)/'
                     -i src/Makefile.in
+            cleanup:
+              - /share/info
           - name: slang-static
             build-options: *musl-static-build-options
             no-parallel-make: true
@@ -1320,6 +1334,8 @@ modules:
                   project-id: 4829
                   stable-only: true
                   url-template: https://www.jedsoft.org/releases/slang/slang-$version.tar.bz2
+            cleanup:
+              - '*'
 
   - name: tmux-static
     build-options: *musl-static-build-options
@@ -1813,7 +1829,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 x86_64-unknown-linux-musl/broot -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 broot.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 broot.1 -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 completion/broot.bash ${FLATPAK_DEST}/share/bash-completion/completions/broot
       - install -Dm644 completion/broot.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/broot.fish
       - install -Dm644 completion/_broot ${FLATPAK_DEST}/share/zsh/site-functions/_broot
@@ -1833,7 +1849,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 sk bin/sk-tmux -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 shell/completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/sk
       - install -Dm644 shell/completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_sk
       - install -Dm644 shell/key-bindings.{bash,zsh} -t ${FLATPAK_DEST}/share/skim/
@@ -1881,7 +1897,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 rg -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 doc/rg.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 doc/rg.1 -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 complete/rg.bash ${FLATPAK_DEST}/share/bash-completion/completions/rg
       - install -Dm644 complete/rg.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/rg.fish
       - install -Dm644 complete/_rg ${FLATPAK_DEST}/share/zsh/site-functions/_rg
@@ -1926,7 +1942,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 fzf bin/fzf-tmux -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 shell/completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/fzf
      #- install -Dm644 shell/completion.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/fzf.fish
       - install -Dm644 shell/completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_fzf
@@ -1963,7 +1979,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 lf -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 lf.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 lf.1 -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 etc/lf.bash ${FLATPAK_DEST}/share/bash-completion/completions/lf
       - install -Dm644 etc/lf.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/lf.fish
       - install -Dm644 etc/lf.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_lf
@@ -1995,7 +2011,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 nnn-musl-static ${FLATPAK_DEST}/bin/nnn
-      - install -Dm755 nnn.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 nnn.1 -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 misc/auto-completion/bash/nnn-completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/nnn
       - install -Dm644 misc/auto-completion/fish/nnn.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/nnn.fish
       - install -Dm644 misc/auto-completion/zsh/_nnn ${FLATPAK_DEST}/share/zsh/site-functions/_nnn
@@ -2068,6 +2084,9 @@ modules:
           url: https://vifm.info/downloads.shtml
           version-pattern: vifm-([\d\.-]*).tar.bz2
           url-template: https://prdownloads.sourceforge.net/vifm/vifm-$version.tar.bz2
+    cleanup:
+      - /share/applications
+      - /share/pixmaps
 
 
   ############################
@@ -2078,7 +2097,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 bin/gh -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
       - bin/gh completion -s bash | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/bash-completion/completions/gh
       - bin/gh completion -s fish | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/fish/vendor_completions.d/gh.fish
       - bin/gh completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_gh
@@ -2096,7 +2115,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 bin/hub -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 etc/hub.bash_completion.sh ${FLATPAK_DEST}/share/bash-completion/completions/hub
       - install -Dm644 etc/hub.fish_completion ${FLATPAK_DEST}/share/fish/vendor_completions.d/hub.fish
       - install -Dm644 etc/hub.zsh_completion ${FLATPAK_DEST}/share/zsh/site-functions/_hub
@@ -2116,7 +2135,7 @@ modules:
     build-commands:
       - bsdtar -Oxf glab.deb 'data.tar*' | bsdtar -xf - --strip-components=2
       - install -Dm755 bin/glab -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
       - bin/glab completion -s bash | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/bash-completion/completions/glab
       - bin/glab completion -s fish | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/fish/vendor_completions.d/glab.fish
       - bin/glab completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_glab
@@ -2382,7 +2401,7 @@ modules:
       - chafa.1
     build-commands:
       - install -Dm755 bin/chafa -t ${FLATPAK_DEST}/bin/
-      - install -Dm755 docs/chafa.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 docs/chafa.1 -t ${FLATPAK_DEST}/share/man/man1/
     sources:
       - type: archive
         url: https://github.com/hpjansson/chafa/releases/download/1.12.3/chafa-1.12.3.tar.xz
