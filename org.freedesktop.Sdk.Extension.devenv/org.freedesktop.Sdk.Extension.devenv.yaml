@@ -184,6 +184,8 @@ modules:
           project-id: 16
           stable-only: true
           url-template: https://download.savannah.gnu.org/releases/acl/acl-$version.tar.gz
+    cleanup:
+      - '*'
     modules:
       - name: attr-static
         build-options: *musl-static-build-options
@@ -198,8 +200,8 @@ modules:
               project-id: 137
               stable-only: true
               url-template: https://download.savannah.gnu.org/releases/attr/attr-$version.tar.gz
-    cleanup:
-      - '*'
+        cleanup:
+          - '*'
 
   - name: bzip2-static
     build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
@@ -2049,6 +2051,8 @@ modules:
       - pyinstaller --onedir --collect-all ranger ranger-portable
       - cp -r dist/ranger-portable ${FLATPAK_DEST}/lib/
       - ln -s ../lib/ranger-portable/ranger-portable ${FLATPAK_DEST}/bin/ranger
+    cleanup:
+      - /lib/python*
 
   - name: vifm-static
     build-options: *musl-static-build-options
@@ -2300,12 +2304,15 @@ modules:
     sources:
       - type: file
         path: trashcli.spec
+    cleanup:
+      - /lib/python*
 
   ############################
   ####     Dotfiles       ####
   ############################
 
-  - name: stow-static
+  - name: stow
+    # TODO: replace this with binary alternative
     build-options: *musl-static-build-options
     sources:
       - type: archive
