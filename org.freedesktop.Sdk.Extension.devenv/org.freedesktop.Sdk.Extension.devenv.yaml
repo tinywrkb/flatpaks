@@ -2401,13 +2401,13 @@ modules:
       - install -Dm644 lsd.1 -t ${FLATPAK_DEST}/share/man/man1/
     sources:
       - type: archive
-        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-gnu.tar.gz
-        sha256: 1d5ad5b09c8f5b974f96439725b150fb87e4587e27d57a1d8c4486a73629890c
+        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: 0adadefe27ea59cee0de226849d21dee4009064c431eca125b93995289f9ffbc
         x-checker-data:
           type: anitya
           project-id: 20242
           stable-only: true
-          url-template: https://github.com/Peltoche/lsd/releases/download/$version/lsd-$version-x86_64-unknown-linux-gnu.tar.gz
+          url-template: https://github.com/Peltoche/lsd/releases/download/$version/lsd-$version-x86_64-unknown-linux-musl.tar.gz
 
 
   ############################
