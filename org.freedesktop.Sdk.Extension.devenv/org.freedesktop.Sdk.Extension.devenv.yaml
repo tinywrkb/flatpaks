@@ -203,7 +203,8 @@ modules:
           - '*'
 
   - name: bzip2-static
-    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
     no-autogen: true
     make-install-args:
       - PREFIX=${FLATPAK_DEST}
@@ -223,7 +224,8 @@ modules:
       - '*'
 
   - name: expat-static
-    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
     buildsystem: cmake
     config-opts:
       - -DEXPAT_BUILD_TOOLS=OFF
@@ -244,7 +246,8 @@ modules:
       - '*'
 
   - name: libffi-static
-    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --disable-shared
     sources:
@@ -309,7 +312,8 @@ modules:
       - '*'
 
   - name: ncurses-static
-    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --without-dlsym
       - --with-terminfo-dirs=${datadir}/share/terminfo:/var/lib/devenv/share/terminfo:/usr/share/terminfo
@@ -365,7 +369,7 @@ modules:
           project-id: 2566
           stable-only: true
           versions:
-            '<': 2.0.0
+            <: 2.0.0
           version-scheme: semantic
           url-template: https://www.openssl.org/source/openssl-$version.tar.gz
       - type: patch
@@ -413,14 +417,13 @@ modules:
           url-template: https://github.com/Cyan4973/xxHash/archive/v$version/xxhash-$version.tar.gz
       - type: shell
         commands:
-          - sed -e '/$(INSTALL_PROGRAM) $(LIBXXH)/d'
-            -e '/ln -sf $(LIBXXH)/d'
-            -i Makefile
+          - sed -e '/$(INSTALL_PROGRAM) $(LIBXXH)/d' -e '/ln -sf $(LIBXXH)/d' -i Makefile
     cleanup:
       - '*'
 
   - name: xz-static
-    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --disable-shared
       - --disable-xz
@@ -443,7 +446,8 @@ modules:
       - '*'
 
   - name: zlib-static
-    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --static
     sources:
@@ -479,14 +483,15 @@ modules:
       - '*'
 
   - name: readline-static # depends on ncurses
-    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --disable-shared
       - --with-curses
     sources:
       - type: archive
-        url: https://ftp.gnu.org/gnu/readline/readline-8.1.tar.gz
-        sha256: f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02
+        url: https://ftp.gnu.org/gnu/readline/readline-8.1.2.tar.gz
+        sha256: 7589a2381a8419e68654a47623ce7dfcb756815c8fee726b98f90bf668af7bc6
         x-checker-data:
           type: anitya
           project-id: 4173
@@ -498,7 +503,8 @@ modules:
       - '*'
 
   - name: gdbm-static # depends on readline
-    build-options: *musl-static-fpic-build-options # NOTE: python needs -fPIC
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --disable-shared
       - --enable-libgdbm-compat
@@ -777,9 +783,8 @@ modules:
               url-template: https://www.x.org/releases/individual/lib/libXt-$version.tar.gz
           - type: shell
             commands:
-              - sed -e 's/\(--mode=compile $(CC)\)/\1 -all-static/'
-                -e 's/\(--mode=link $(CCLD)\)/\1 -all-static/'
-                -i util/Makefile.in
+              - sed -e 's/\(--mode=compile $(CC)\)/\1 -all-static/' -e 's/\(--mode=link
+                $(CCLD)\)/\1 -all-static/' -i util/Makefile.in
         cleanup:
           - '*'
         modules:
@@ -872,7 +877,8 @@ modules:
     build-options: *musl-shared-build-options
     buildsystem: simple
     build-commands:
-      - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST wheel --no-build-isolation
+      - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST
+        wheel --no-build-isolation
     sources:
       - type: file
         url: https://files.pythonhosted.org/packages/c0/6c/9f840c2e55b67b90745af06a540964b73589256cb10cc10057c87ac78fc2/wheel-0.37.1.tar.gz
@@ -888,7 +894,8 @@ modules:
     build-commands:
       - install -dm755 ${FLATPAK_DEST}/share/pyenv
       - cp -a libexec plugins pyenv.d ${FLATPAK_DEST}/share/pyenv/
-      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*} -t ${FLATPAK_DEST}/bin/
+      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*}
+        -t ${FLATPAK_DEST}/bin/
       - install -Dm644 completions/pyenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/pyenv
       - install -Dm644 completions/pyenv.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
       - install -Dm644 completions/pyenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_pyenv
@@ -901,7 +908,8 @@ modules:
           type: json
           url: https://api.github.com/repos/pyenv/pyenv/releases/latest
           version-query: .tag_name | sub("^v"; "")
-          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-" + $version + ".tar.gz"'
+          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-"
+            + $version + ".tar.gz"'
     cleanup:
       - /share/pyenv/pyenv.d/install
       - /share/pyenv/plugins/python-build/scripts
@@ -953,7 +961,8 @@ modules:
   - name: altgraph
     buildsystem: simple
     build-commands:
-      - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST altgraph --no-build-isolation
+      - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST
+        altgraph --no-build-isolation
     sources:
       - type: file
         url: https://files.pythonhosted.org/packages/84/3f/1a5c9bef54cac9bf41edd6f4aaf61cd52ed578e10ccc607e0278012cb4a5/altgraph-0.17.2-py2.py3-none-any.whl
@@ -961,6 +970,7 @@ modules:
         x-checker-data:
           type: pypi
           name: altgraph
+          packagetype: bdist_wheel
     cleanup:
       - '*'
 
@@ -1058,8 +1068,8 @@ modules:
       - -DTPUTS_USES_INT_ARG=1
     sources:
       - type: archive
-        url: https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz
-        sha256: 291e4ec7c6c3fea54dc1aed057ce3d42b356fa6f70865627b2c7dfcecaefd210
+        url: https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz
+        sha256: a6d45b3dc5a45dd31772e7f8dfdfecabc063986e8f67d60bd7ca60cc81db6928
         x-checker-data:
           type: anitya
           project-id: 815
@@ -1067,7 +1077,8 @@ modules:
           url-template: https://github.com/fish-shell/fish-shell/releases/download/$version/fish-$version.tar.xz
       - type: shell
         commands:
-          - sed -i '/Fish does not support static linking/ s/FATAL_ERROR/WARNING/' CMakeLists.txt
+          - sed -i '/Fish does not support static linking/ s/FATAL_ERROR/WARNING/'
+            CMakeLists.txt
     cleanup:
       - /etc
       - /share/applications
@@ -1124,8 +1135,8 @@ modules:
           - lib=lib
         sources:
           - type: archive
-            url: https://kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.64.tar.xz
-            sha256: c8465e1f0b068d5fc06199231135ccac7adb56d662b1de93589252e8cd071e13
+            url: https://kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.65.tar.xz
+            sha256: 73e350020cc31fe15360879d19384ffa3395a825f065fcf6bda3a5cdf965bebd
             x-checker-data:
               type: anitya
               project-id: 1569
@@ -1147,7 +1158,8 @@ modules:
           url: https://api.github.com/repos/powerline/fonts/commits?sha=master&path=NotoMono&per_page=1
           version-query: .[].sha
           timestamp-query: .[].commit.committer.date
-          url-query: '"https://github.com/powerline/fonts/archive/" + $version + "/powerline-" + $version + ".tar.gz"'
+          url-query: '"https://github.com/powerline/fonts/archive/" + $version + "/powerline-"
+            + $version + ".tar.gz"'
 
   - name: powerline-go
     buildsystem: simple
@@ -1269,10 +1281,8 @@ modules:
               url-template: https://releases.pagure.org/newt/newt-$version.tar.gz
           - type: shell
             commands:
-              - sed -e '/^whiptail:/ s/LIBNEWTSH/LIBNEWT/'
-                -e '/^all:/ s/_snack.$(SOEXT)//'
-                -e '/^install:/ s/install-sh//'
-                -i Makefile.in
+              - sed -e '/^whiptail:/ s/LIBNEWTSH/LIBNEWT/' -e '/^all:/ s/_snack.$(SOEXT)//'
+                -e '/^install:/ s/install-sh//' -i Makefile.in
         cleanup:
           - /share/locale
         modules:
@@ -1311,15 +1321,14 @@ modules:
                   url: https://api.github.com/repos/telmich/gpm/commits?sha=master&per_page=1
                   version-query: .[].sha
                   timestamp-query: .[].commit.committer.date
-                  url-query: '"https://github.com/telmich/gpm/archive/" + $version + "/gpm-" + $version + ".tar.gz"'
+                  url-query: '"https://github.com/telmich/gpm/archive/" + $version
+                    + "/gpm-" + $version + ".tar.gz"'
               - type: shell
                 commands:
-                  - sed -e '\|prog/gpm-root| s/libgpm.so.@abi_lev@/libgpm.a/'
-                    -e '\|$(PROG)| s/libgpm.so.@abi_lev@/libgpm.a/'
-                    -e '\|$(LIBS) lib/libgpm.so.@abi_lev@| s/libgpm.so.@abi_lev@/libgpm.a/'
-                    -e '\|^all:| s/libgpm.so//'
-                    -e '\|$(CC) @LDFLAGS@| s/\($(CC)\)/\1 @CFLAGS@ $(CFLAGS)/'
-                    -i src/Makefile.in
+                  - sed -e '\|prog/gpm-root| s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|$(PROG)|
+                    s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|$(LIBS) lib/libgpm.so.@abi_lev@|
+                    s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|^all:| s/libgpm.so//' -e
+                    '\|$(CC) @LDFLAGS@| s/\($(CC)\)/\1 @CFLAGS@ $(CFLAGS)/' -i src/Makefile.in
             cleanup:
               - /share/info
           - name: slang-static
@@ -1379,12 +1388,9 @@ modules:
               url-template: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-$version.tar.gz
           - type: shell
             commands:
-              - sed -e '/^TARGETS/ s/$(SHAREDLIB)//'
-                -e '/$(INSTALL).*$(SHAREDLIB)/d'
-                -e '/ln -s.*$(SHAREDLIB)/d'
-                -e '/$(LINK.c)/ s/COMPILE_PIE/COMPILE_PIC/'
-                -e '/$(LINK.c)/ s/LINK_PIE/LINK_PIC/'
-                -i Makefile
+              - sed -e '/^TARGETS/ s/$(SHAREDLIB)//' -e '/$(INSTALL).*$(SHAREDLIB)/d'
+                -e '/ln -s.*$(SHAREDLIB)/d' -e '/$(LINK.c)/ s/COMPILE_PIE/COMPILE_PIC/'
+                -e '/$(LINK.c)/ s/LINK_PIE/LINK_PIC/' -i Makefile
 
 
   ############################
@@ -1426,8 +1432,8 @@ modules:
     sources:
       - type: file
         dest-filename: yq
-        url: https://github.com/mikefarah/yq/releases/download/v4.25.3/yq_linux_amd64
-        sha256: cb66f4382a65d0443824f0a0fcda9c5c5f7b6bd4e4346539b2f0abc647ecf0ea
+        url: https://github.com/mikefarah/yq/releases/download/v4.26.1/yq_linux_amd64
+        sha256: 9e35b817e7cdc358c1fcd8498f3872db169c3303b61645cc1faf972990f37582
         x-checker-data:
           type: json
           url: https://api.github.com/repos/mikefarah/yq/releases/latest
@@ -1469,7 +1475,8 @@ modules:
       - type: shell
         commands:
           # detection of runtime libs adds -I/usr/include before toolchain headers
-          - sed -i '/^include_directories.*config/i include_directories("/usr/lib/sdk/musl/x86_64-linux-musl/include")' CMakeLists.txt
+          - sed -i '/^include_directories.*config/i include_directories("/usr/lib/sdk/musl/x86_64-linux-musl/include")'
+            CMakeLists.txt
     modules:
       - name: libluv-static
         build-options: *musl-static-build-options
@@ -1480,8 +1487,8 @@ modules:
           - -DLUA_BUILD_TYPE=System
         sources:
           - type: archive
-            url: https://github.com/luvit/luv/releases/download/1.43.0-0/luv-1.43.0-0.tar.gz
-            sha256: 567a6f3dcdcf8a9b54ddc57ffef89d1e950d72832b85ee81c8c83a9d4e0e9de2
+            url: https://github.com/luvit/luv/releases/download/1.44.2-0/luv-1.44.2-0.tar.gz
+            sha256: 30639f8e0fac7fb0c3a04b94a00f73c6d218c15765347ceb0998a6b72464b6cf
             x-checker-data:
               type: anitya
               project-id: 21510
@@ -1544,8 +1551,7 @@ modules:
               url-template: http://www.leonerd.org.uk/code/libtermkey/libtermkey-$version.tar.gz
           - type: shell
             commands:
-              - sed -e '/$(LIBTOOL)/ s/\($(CC)\)/\1 $(CFLAGS)/'
-                -e '/^all:/ s/$(DEMOS)//'
+              - sed -e '/$(LIBTOOL)/ s/\($(CC)\)/\1 $(CFLAGS)/' -e '/^all:/ s/$(DEMOS)//'
                 -i Makefile
         modules:
           - name: unibilium-static
@@ -1569,15 +1575,16 @@ modules:
         buildsystem: simple
         build-commands:
           - |
-           #x86_64-linux-musl-ld --help
-           #exit 1
-            files=(lpcap lpcode lpprint lptree lpvm)
-            for f in ${files[@]};do
-              ${CC} -c -fPIC -I${FLATPAK_DEST}/include/luajit-2.1/ ${f}.c -o ${f}.o
-             #${CC} -c -I${FLATPAK_DEST}/include/luajit-2.1/ ${f}.c -o ${f}.o -Wl,-Bstatic,-nostartfiles,-L${FLATPAK_DEST}/lib,-L/usr/lib/sdk/musl/x86_64-linux-musl/lib -lluajit-5.1 -Wl,-Bdynamic
-            done
+            #x86_64-linux-musl-ld --help
+            #exit 1
+             files=(lpcap lpcode lpprint lptree lpvm)
+             for f in ${files[@]};do
+               ${CC} -c -fPIC -I${FLATPAK_DEST}/include/luajit-2.1/ ${f}.c -o ${f}.o
+              #${CC} -c -I${FLATPAK_DEST}/include/luajit-2.1/ ${f}.c -o ${f}.o -Wl,-Bstatic,-nostartfiles,-L${FLATPAK_DEST}/lib,-L/usr/lib/sdk/musl/x86_64-linux-musl/lib -lluajit-5.1 -Wl,-Bdynamic
+             done
           - x86_64-linux-musl-ar -crs lpeg.a lpcap.o lpcode.o lpprint.o lptree.o lpvm.o
-          - ${CC} -shared -o lpeg.so -Wl,--whole-archive lpeg.a -L${FLATPAK_DEST}/lib/libluajit-5.1.so -Wl,--no-whole-archive
+          - ${CC} -shared -o lpeg.so -Wl,--whole-archive lpeg.a -L${FLATPAK_DEST}/lib/libluajit-5.1.so
+            -Wl,--no-whole-archive
           - install -Dm755 lpeg.so -t ${FLATPAK_DEST}/lib/lua/5.1/
           - install -Dm644 re.lua -t ${FLATPAK_DEST}/share/lua/5.1/
          #- ${CC} -shared -o test.so -Wl,--whole-archive lpeg.a -L${FLATPAK_DEST}/lib/libluajit-5.1.so -Wl,--no-whole-archive
@@ -1637,7 +1644,8 @@ modules:
           - '*'
         modules:
           - name: mpack-static
-            build-options: *musl-static-fpic-build-options # NOTE: lua-mpack needs -fPIC
+            # NOTE: lua-mpack needs -fPIC
+            build-options: *musl-static-fpic-build-options
             no-autogen: true
             make-install-args:
               - PREFIX=${FLATPAK_DEST}
@@ -1720,7 +1728,8 @@ modules:
           type: json
           url: https://api.github.com/repos/neovide/neovide/releases/latest
           version-query: .tag_name
-          url-query: '"https://github.com/neovide/neovide/releases/download/" + $version + "/neovide.tar.gz"'
+          url-query: '"https://github.com/neovide/neovide/releases/download/" + $version
+            + "/neovide.tar.gz"'
 
   - name: kakoune-static
     build-options: *musl-static-build-options
@@ -1796,7 +1805,8 @@ modules:
       env:
         - CC=x86_64-linux-musl-gcc
         - CXX=x86_64-linux-musl-g++
-        - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu -lXmuu -lXt -lSM -lICE
+        - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu
+          -lXmuu -lXt -lSM -lICE
     sources:
       - type: archive
         url: https://github.com/astrand/xclip/archive/0.13/xclip-0.13.tar.gz
@@ -1938,8 +1948,8 @@ modules:
     build-options: *musl-static-build-options
     sources:
       - type: archive
-        url: https://github.com/NixOS/patchelf/archive/0.13.tar.gz
-        sha256: 60c6aeadb673de9cc1838b630c81f61e31c501de324ef7f1e8094a2431197d09
+        url: https://github.com/NixOS/patchelf/archive/0.15.0.tar.gz
+        sha256: 5d1eda9bad4439bb9c0a87fcba198d7c0d372f361e77de41d68d6308062e5000
         x-checker-data:
           type: anitya
           project-id: 2598
@@ -1961,16 +1971,16 @@ modules:
     sources:
       - type: archive
         strip-components: 0
-        url: https://github.com/junegunn/fzf/releases/download/0.30.0/fzf-0.30.0-linux_amd64.tar.gz
-        sha256: 53b136e0566a1b3ab57c28dffadb3d0392ad0968a714e65862cf4497152674e5
+        url: https://github.com/junegunn/fzf/releases/download/0.31.0/fzf-0.31.0-linux_amd64.tar.gz
+        sha256: c13d0370b4166136bd91cdcb03ef0580d26911859aba3e7077c2cba61bd93e45
         x-checker-data:
           type: anitya
           project-id: 15856
           stable-only: true
           url-template: https://github.com/junegunn/fzf/releases/download/$version/fzf-$version-linux_amd64.tar.gz
       - type: archive
-        url: https://github.com/junegunn/fzf/archive/0.30.0/fzf-0.30.0.tar.gz
-        sha256: a3428f510b7136e39104a002f19b2e563090496cb5205fa2e4c5967d34a20124
+        url: https://github.com/junegunn/fzf/archive/0.31.0/fzf-0.31.0.tar.gz
+        sha256: df4edee32cb214018ed40160ced968d4cc3b63bba5b0571487011ee7099faa76
         x-checker-data:
           type: anitya
           project-id: 15856
@@ -2165,8 +2175,8 @@ modules:
     sources:
       - type: file
         dest-filename: release-cli
-        url: https://gitlab.com/gitlab-org/release-cli/-/releases/v0.11.0/downloads/bin/release-cli-linux-amd64
-        sha256: c3bc1c23c3c91267c550e8ab8b53f6b699ec914046434dff3857b4d317f179e1
+        url: https://gitlab.com/gitlab-org/release-cli/-/releases/v0.13.0/downloads/bin/release-cli-linux-amd64
+        sha256: 5afa1cd8d6713e15a3627d0fb53cbc5f084912c6b404507b60c175832eb9b386
         x-checker-data:
           type: anitya
           project-id: 267525
@@ -2188,7 +2198,8 @@ modules:
           type: json
           url: https://gitea.com/api/v1/repos/gitea/tea/releases
           version-query: first(.[].tag_name | sub("^v"; ""))
-          url-query: '"https://gitea.com/gitea/tea/releases/download/v" + $version + "/tea-" + $version + "-linux-amd64"'
+          url-query: '"https://gitea.com/gitea/tea/releases/download/v" + $version
+            + "/tea-" + $version + "-linux-amd64"'
       - type: archive
         url: https://gitea.com/gitea/tea/archive/v0.8.0.tar.gz
         sha256: 6c73c0a7b66cdfd1e5a302257d54df06a3a41eb9bdbfeb547966db431ae23b23
@@ -2245,8 +2256,8 @@ modules:
     sources:
       - type: file
         dest-filename: host-spawn
-        url: https://github.com/1player/host-spawn/releases/download/1.0.1/host-spawn-x86_64
-        sha256: 8458a0e200f99d535b778147a4c1b665ac14c1940b363d18e0d620631b29d312
+        url: https://github.com/1player/host-spawn/releases/download/1.0.2/host-spawn-x86_64
+        sha256: feeda9c20684481e522b2dafa3308b442c21577eaa2b4a9f49f643103b6ffe94
         x-checker-data:
           type: json
           url: https://api.github.com/repos/1player/host-spawn/releases/latest
@@ -2285,7 +2296,8 @@ modules:
 #           - CXX=x86_64-linux-musl-g++
         buildsystem: simple
         build-commands:
-          - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST trash-cli --no-build-isolation
+          - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST
+            trash-cli --no-build-isolation
           - |
             for app in trash{,-empty,-list,-put,-restore,-rm}; do
               mv ${FLATPAK_DEST}/bin/${app}{,-org}
@@ -2389,8 +2401,8 @@ modules:
       - install -Dm644 lsd.1 -t ${FLATPAK_DEST}/share/man/man1/
     sources:
       - type: archive
-        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-musl.tar.gz
-        sha256: 0adadefe27ea59cee0de226849d21dee4009064c431eca125b93995289f9ffbc
+        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 1d5ad5b09c8f5b974f96439725b150fb87e4587e27d57a1d8c4486a73629890c
         x-checker-data:
           type: anitya
           project-id: 20242
@@ -2459,8 +2471,9 @@ modules:
         # get ranger-sixel working without imagemagick
         dest-filename: convert
         commands:
-          - # infile -geometry wxh sixel:-
-          - exec sic --input "${1%\[0\]}" --resize "${3%x*}" "${3#*x}" --output-format BMP 2>/dev/null | img2sixel -
+          # infile -geometry wxh sixel:-
+          - exec sic --input "${1%\[0\]}" --resize "${3%x*}" "${3#*x}" --output-format
+            BMP 2>/dev/null | img2sixel -
 
 
   ############################
