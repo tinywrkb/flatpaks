@@ -508,7 +508,7 @@ modules:
         sha256: 74b1081d21fff13ae4bd7c16e5d6e504a4c26f7cde1dca0d963a484174bbcacd
         x-checker-data:
           type: anitya
-          project-id: 13254
+          project-id: 882
           stable-only: true
           url-template: https://ftp.gnu.org/gnu/gdbm/gdbm-$version.tar.gz
     cleanup:
@@ -2416,7 +2416,7 @@ modules:
         sha256: 2456a0b6c1150e25b64cd6a92810d59bed3f061f8b86f91aba5a77bc7cc76cfa
         x-checker-data:
           type: anitya
-          project-id: 268144
+          project-id: 17542
           stable-only: true
           url-template: https://github.com/hpjansson/chafa/releases/download/$version/chafa-$version.tar.xz
       - type: archive
@@ -2425,7 +2425,7 @@ modules:
         sha256: dba44781ff83bffb0eaaaf4a72381d956f52137d11e108b438da3a6ed7c9c668
         x-checker-data:
           type: anitya
-          project-id: 268144
+          project-id: 17542
           stable-only: true
           url-template: https://hpjansson.org/chafa/releases/static/chafa-$version-1-x86_64-linux-gnu.tar.gz
 
