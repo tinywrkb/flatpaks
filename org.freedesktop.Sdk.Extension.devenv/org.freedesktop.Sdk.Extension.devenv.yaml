@@ -119,9 +119,9 @@ x-musl-static-fpic-build-options: &musl-static-fpic-build-options
     - CC=x86_64-linux-musl-gcc
     - CXX=x86_64-linux-musl-g++
 x-musl-shared-build-options: &musl-shared-build-options
-  cflags: -fPIC -Bstatic -Wl,--dynamic-linker=ld-musl-x86_64.so.1
-  cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=ld-musl-x86_64.so.1
-  ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=ld-musl-x86_64.so.1
+  cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+  cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+  ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
   env:
     - CC=x86_64-linux-musl-gcc
     - CXX=x86_64-linux-musl-g++
