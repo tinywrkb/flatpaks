@@ -146,22 +146,6 @@ modules:
   ####     Libraries      ####
   ############################
 
-# - name: musl
-#   config-opts:
-#     - --libdir=$(prefix)/lib/musl
-#     - --includedir=$(prefix)/lib/musl/include
-#     - --syslibdir=$(prefix)/lib
-#     - --enable-wrapper=all
-#     - --disable-shared
-#   sources:
-#     - type: archive
-#       url: https://musl.libc.org/releases/musl-1.2.3.tar.gz
-#       sha256: 7d5b0b6062521e4627e099e4c9dc8248d32a30285e959b7eecaa780cf8cfd4a4
-#       x-checker-data:
-#         type: html
-#         url: https://musl.libc.org/
-#         version-pattern: musl-([\d\.]+).tar.gz
-#         url-template: https://musl.libc.org/releases/musl-$version.tar.gz
 
   - name: musl-libc-shared
     # TODO: unique loader and lib names, no loader path in shared libs
