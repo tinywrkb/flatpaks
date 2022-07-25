@@ -255,32 +255,6 @@ modules:
     cleanup:
       - '*'
 
-  - name: libsixel-static
-    build-options: *musl-static-build-options
-    buildsystem: meson
-    config-opts:
-      - --default-library=static
-      - -Dimg2sixel=enabled
-      - -Dsixel2png=disabled
-      - -Dgdk-pixbuf2=disabled
-      - -Dgd=disabled
-      - -Dlibcurl=disabled
-      - -Djpeg=disabled
-      - -Dpng=disabled
-    sources:
-      - type: archive
-        url: https://github.com/libsixel/libsixel/archive/2855eea71effe4d09890f4633f7dd568dbdfae3f/lixsixel-2855eea71effe4d09890f4633f7dd568dbdfae3f.zip
-        sha256: 717be779849010e0a9d0d8e1057c4838978857113ce1487086c8204a79edccfa
-        x-checker-data:
-          type: anitya
-          project-id: 243242
-          stable-only: true
-          versions:
-            '>': 1.10.3
-          url-template: https://github.com/libsixel/libsixel/archive/v$version/lixsixel-$version.zip
-    cleanup:
-      - '*'
-
   - name: lz4-static
     build-options: *musl-static-build-options
     no-autogen: true
@@ -2426,6 +2400,32 @@ modules:
           project-id: 17542
           stable-only: true
           url-template: https://hpjansson.org/chafa/releases/static/chafa-$version-1-x86_64-linux-gnu.tar.gz
+
+  - name: libsixel-static
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - --default-library=static
+      - -Dimg2sixel=enabled
+      - -Dsixel2png=disabled
+      - -Dgdk-pixbuf2=disabled
+      - -Dgd=disabled
+      - -Dlibcurl=disabled
+      - -Djpeg=disabled
+      - -Dpng=disabled
+    sources:
+      - type: archive
+        url: https://github.com/libsixel/libsixel/archive/2855eea71effe4d09890f4633f7dd568dbdfae3f/lixsixel-2855eea71effe4d09890f4633f7dd568dbdfae3f.zip
+        sha256: 717be779849010e0a9d0d8e1057c4838978857113ce1487086c8204a79edccfa
+        x-checker-data:
+          type: anitya
+          project-id: 243242
+          stable-only: true
+          versions:
+            '>': 1.10.3
+          url-template: https://github.com/libsixel/libsixel/archive/v$version/lixsixel-$version.zip
+    cleanup:
+      - /bin/libsixel-config
 
   - name: sic
     buildsystem: simple
