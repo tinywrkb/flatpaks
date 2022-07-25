@@ -7,8 +7,6 @@
 # TODO: add more patched fonts: nerd-fonts
 # TODO: investigate broken host tmux sessions
 # TODO: still dynamic: chafa, hub, neovide, python app, luajit bindings
-# TODO: maybe set dynamic loader to libc.musl-x86_64.so.1 (alpine) when dynamically linking
-#       LDSO_PATHNAME=$(syslibdir)/ld-musl-$(ARCH)$(SUBARCH).so.1
 # TODO: add tarball generation script
 # TODO: test portability, needs to work when switching to /var/lib
 # TODO: investigate the possiblity to keep extension accessible after update, maybe bindfs mount
@@ -119,9 +117,9 @@ x-musl-static-fpic-build-options: &musl-static-fpic-build-options
     - CC=x86_64-linux-musl-gcc
     - CXX=x86_64-linux-musl-g++
 x-musl-shared-build-options: &musl-shared-build-options
-  cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-  cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-  ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+  cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
+  cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
+  ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
   env:
     - CC=x86_64-linux-musl-gcc
     - CXX=x86_64-linux-musl-g++
@@ -163,7 +161,7 @@ modules:
     # TODO: unique loader and lib names, no loader path in shared libs
     buildsystem: simple
     build-commands:
-      - install -Dm755 /usr/lib/sdk/musl/x86_64-linux-musl/lib/libc.so ${FLATPAK_DEST}/lib/ld-musl-x86_64.so.1
+      - install -Dm755 /usr/lib/sdk/musl/x86_64-linux-musl/lib/libc.so ${FLATPAK_DEST}/lib/libc.musl-x86_64.so.1
 
   - name: acl-static
     build-options: *musl-static-build-options
@@ -831,9 +829,9 @@ modules:
    #build-options: *musl-shared-build-options
     build-options:
       cppflags: -I/usr/lib/sdk/devenv/include -I/usr/lib/sdk/devenv/include/ncursesw
-      cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-      cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-      ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
+      cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
+      cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
+      ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
       env:
         - CC=x86_64-linux-musl-gcc
         - CXX=x86_64-linux-musl-g++
@@ -918,7 +916,7 @@ modules:
     build-options: *musl-shared-build-options
     buildsystem: simple
     build-commands:
-      - ln -s ${FLATPAK_DEST}/lib/ld-musl-x86_64.so.1 ${FLATPAK_DEST}/bin/ldd
+      - ln -s ${FLATPAK_DEST}/lib/libc.musl-x86_64.so.1 ${FLATPAK_DEST}/bin/ldd
      #- |
      #  cd bootloader
      #  ./waf all
