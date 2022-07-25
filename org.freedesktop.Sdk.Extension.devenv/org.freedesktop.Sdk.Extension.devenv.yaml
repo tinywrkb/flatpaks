@@ -1441,8 +1441,6 @@ modules:
   ####      Editors       ####
   ############################
 
-  # TODO: add imhex
-  # TODO: add tui hex editor, bbe?
   # TODO: add micro? amp?
   - name: neovim-static
     build-options: *musl-static-build-options
@@ -1937,18 +1935,6 @@ modules:
           project-id: 267539
           stable-only: true
           url-template: https://github.com/jhawthorn/fzy/archive/$version/fzy-$version.tar.gz
-
-  - name: patchelf-static
-    build-options: *musl-static-build-options
-    sources:
-      - type: archive
-        url: https://github.com/NixOS/patchelf/archive/0.15.0.tar.gz
-        sha256: 5d1eda9bad4439bb9c0a87fcba198d7c0d372f361e77de41d68d6308062e5000
-        x-checker-data:
-          type: anitya
-          project-id: 2598
-          stable-only: true
-          url-template: https://github.com/NixOS/patchelf/archive/$version.tar.gz
 
   - name: fzf
     buildsystem: simple
@@ -2500,6 +2486,25 @@ modules:
           project-id: 4217
           stable-only: true
           url-template: https://github.com/WayneD/rsync/archive/v$version/-rsync-$version.tar.gz
+
+
+  ############################
+  ####       Binary       ####
+  ############################
+
+  # TODO: add imhex
+  # TODO: add tui hex editor, bbe?
+  - name: patchelf-static
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://github.com/NixOS/patchelf/archive/0.15.0.tar.gz
+        sha256: 5d1eda9bad4439bb9c0a87fcba198d7c0d372f361e77de41d68d6308062e5000
+        x-checker-data:
+          type: anitya
+          project-id: 2598
+          stable-only: true
+          url-template: https://github.com/NixOS/patchelf/archive/$version.tar.gz
 
 
   ############################
