@@ -146,6 +146,12 @@ modules:
   ####     Libraries      ####
   ############################
 
+  - name: prepare
+    buildsystem: simple
+    build-commands:
+      - install -dm755 ${FLATPAK_DEST}/bin
+      - ln -s /usr/bin/ccache ${FLATPAK_DEST}/bin/x86_64-linux-musl-gcc
+      - ln -s /usr/bin/ccache ${FLATPAK_DEST}/bin/x86_64-linux-musl-g++
 
   - name: musl-libc-shared
     # TODO: unique loader and lib names, no loader path in shared libs
