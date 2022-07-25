@@ -163,8 +163,7 @@ modules:
     # TODO: unique loader and lib names, no loader path in shared libs
     buildsystem: simple
     build-commands:
-      - install -Dm755 /usr/lib/sdk/musl/x86_64-linux-musl/lib/libc.so -t ${FLATPAK_DEST}/lib/musl
-      - ln -s ${FLATPAK_DEST}/lib/musl/libc.so ${FLATPAK_DEST}/lib/ld-musl-x86_64.so.1
+      - install -Dm755 /usr/lib/sdk/musl/x86_64-linux-musl/lib/libc.so ${FLATPAK_DEST}/lib/ld-musl-x86_64.so.1
 
   - name: acl-static
     build-options: *musl-static-build-options
@@ -919,7 +918,7 @@ modules:
     build-options: *musl-shared-build-options
     buildsystem: simple
     build-commands:
-      - ln -s ${FLATPAK_DEST}/lib/musl/libc.so ${FLATPAK_DEST}/bin/ldd
+      - ln -s ${FLATPAK_DEST}/lib/ld-musl-x86_64.so.1 ${FLATPAK_DEST}/bin/ldd
      #- |
      #  cd bootloader
      #  ./waf all
