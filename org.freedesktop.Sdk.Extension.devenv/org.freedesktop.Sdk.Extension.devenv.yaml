@@ -8,11 +8,11 @@
 # TODO: investigate broken host tmux sessions
 # TODO: still dynamic: chafa, hub, neovide, python app, luajit bindings
 # TODO: maybe set dynamic loader to libc.musl-x86_64.so.1 (alpine) when dynamically linking
+#       LDSO_PATHNAME=$(syslibdir)/ld-musl-$(ARCH)$(SUBARCH).so.1
 # TODO: add tarball generation script
 # TODO: test portability, needs to work when switching to /var/lib
 # TODO: investigate the possiblity to keep extension accessible after update, maybe bindfs mount
 # TODO: see other useful tools @ https://github.com/agarrharr/awesome-cli-apps
-# TODO: trashcli: set environment variable for trash bin location?
 
 # documentation
 #
@@ -1715,11 +1715,10 @@ modules:
         url: https://github.com/neovide/neovide/releases/download/0.9.0/neovide.tar.gz
         sha256: 684cbcaeb2e67f1d95822ef80e03e1475395d537f2032f47b8202fe48c428b08
         x-checker-data:
-          type: json
-          url: https://api.github.com/repos/neovide/neovide/releases/latest
-          version-query: .tag_name
-          url-query: '"https://github.com/neovide/neovide/releases/download/" + $version
-            + "/neovide.tar.gz"'
+          type: anitya
+          project-id: 270207
+          stable-only: true
+          url-template: https://github.com/neovide/neovide/releases/download/$version/neovide.tar.gz
 
   - name: kakoune-static
     build-options: *musl-static-build-options
@@ -2246,14 +2245,28 @@ modules:
     sources:
       - type: file
         dest-filename: host-spawn
-        url: https://github.com/1player/host-spawn/releases/download/1.0.2/host-spawn-x86_64
-        sha256: feeda9c20684481e522b2dafa3308b442c21577eaa2b4a9f49f643103b6ffe94
+        url: https://github.com/1player/host-spawn/releases/download/1.1.0/host-spawn-x86_64
+        sha256: 8405328f0b1f38afeb3631f50f010ed2d51956c55a499694ef9ccf791a4af9bf
         x-checker-data:
-          type: json
-          url: https://api.github.com/repos/1player/host-spawn/releases/latest
-          version-query: .tag_name
-          url-query: '"https://github.com/1player/host-spawn/releases/download/" +
-            $version + "/host-spawn-x86_64"'
+          type: anitya
+          project-id: 270202
+          stable-only: true
+          url-template: https://github.com/1player/host-spawn/releases/download/$version/host-spawn-x86_64
+
+  - name: podman-remote
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 podman-remote-static ${FLATPAK_DEST}/bin/podman-remote
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/containers/podman/releases/download/v4.1.1/podman-remote-static.tar.gz
+        sha256: 045f9627ae255b0bb70732e31550a02a2f8d81a945ae49b7bfc590335172ad00
+        x-checker-data:
+          type: anitya
+          project-id: 93284
+          stable-only: true
+          url-template: https://github.com/containers/podman/releases/download/v$version/podman-remote-static.tar.gz
 
 
   ############################
@@ -2276,14 +2289,8 @@ modules:
           url-template: https://github.com/PhrozenByte/rmtrash/archive/v$version/rmtrash-$version.tar.gz
     modules:
       - name: trash-cli
+        # TODO: patch to ignore XDG_DATA_HOME, might also need a workaround for not checking same fs in home
         build-options: *musl-shared-build-options
-#       build-options:
-#         cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-#         cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-#         ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/ld-musl-x86_64.so.1
-#         env:
-#           - CC=x86_64-linux-musl-gcc
-#           - CXX=x86_64-linux-musl-g++
         buildsystem: simple
         build-commands:
           - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST
