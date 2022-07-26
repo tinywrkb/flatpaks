@@ -2506,6 +2506,26 @@ modules:
 
 
   ############################
+  ####       Debug        ####
+  ############################
+
+  - name: lurk
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 lurk -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/JakWai01/lurk/releases/download/v0.0.7/lurk-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 55aeb69f3c45a2f8c151765d18f6cd093316237a2a959e7b10bdef7d0f8377c4
+        x-checker-data:
+          type: anitya
+          project-id: 270853
+          stable-only: true
+          url-template: https://github.com/JakWai01/lurk/releases/download/v$version/lurk-x86_64-unknown-linux-gnu.tar.gz
+
+
+  ############################
   ####       Polish       ####
   ############################
 
