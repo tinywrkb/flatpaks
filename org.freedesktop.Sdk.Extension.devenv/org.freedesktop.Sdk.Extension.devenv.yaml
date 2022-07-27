@@ -1944,36 +1944,6 @@ modules:
   ####    File manager    ####
   ############################
 
-  - name: nnn
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 nnn-musl-static ${FLATPAK_DEST}/bin/nnn
-      - install -Dm644 nnn.1 -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 misc/auto-completion/bash/nnn-completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/nnn
-      - install -Dm644 misc/auto-completion/fish/nnn.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/nnn.fish
-      - install -Dm644 misc/auto-completion/zsh/_nnn ${FLATPAK_DEST}/share/zsh/site-functions/_nnn
-      - install -Dm644 misc/quitcd/quitcd.{bash_zsh,fish} -t ${FLATPAK_DEST}/share/nnn/quitcd/
-      - install -dm755 ${FLATPAK_DEST}/share/nnn
-      - cp -r plugins ${FLATPAK_DEST}/share/nnn/
-    sources:
-      - type: archive
-        url: https://github.com/jarun/nnn/releases/download/v4.5/nnn-v4.5.tar.gz
-        sha256: fadc15bd6d4400c06e5ccc47845b42e60774f368570e475bd882767ee18749aa
-        x-checker-data:
-          type: anitya
-          project-id: 17080
-          stable-only: true
-          url-template: https://github.com/jarun/nnn/releases/download/v$version/nnn-v$version.tar.gz
-      - type: archive
-        strip-components: 0
-        url: https://github.com/jarun/nnn/releases/download/v4.5/nnn-musl-static-4.5.x86_64.tar.gz
-        sha256: 471273a7a1a56e2c3e50353658b5679d4a5c47d423f4eaaf010caa0f6dcaf981
-        x-checker-data:
-          type: anitya
-          project-id: 17080
-          stable-only: true
-          url-template: https://github.com/jarun/nnn/releases/download/v$version/nnn-musl-static-$version.x86_64.tar.gz
-
   - name: ranger
     buildsystem: simple
     build-commands:
