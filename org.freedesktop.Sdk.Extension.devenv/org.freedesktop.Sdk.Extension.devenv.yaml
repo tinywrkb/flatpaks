@@ -1944,39 +1944,6 @@ modules:
   ####    File manager    ####
   ############################
 
-  - name: lf
-    # TODO: possible modules lfp, ez, lfutils, pistol, stpv
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 lf -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 lf.1 -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 etc/lf.bash ${FLATPAK_DEST}/share/bash-completion/completions/lf
-      - install -Dm644 etc/lf.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/lf.fish
-      - install -Dm644 etc/lf.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_lf
-      - install -Dm644 etc/lfcd.fish ${FLATPAK_DEST}/share/fish/vendor_functions.d/lfcd.fish
-      - install -Dm644 etc/lfcd.sh -t ${FLATPAK_DEST}/share/lf/
-      - install -Dm644 etc/lfrc.example -t ${FLATPAK_DEST}/share/lf/
-      - install -Dm644 etc/lf.vim -t ${FLATPAK_DEST}/share/vim/vimfiles/syntax/
-      - install -Dm644 etc/lf.vim -t ${FLATPAK_DEST}/share/vim/vimfiles/ftdetect/
-    sources:
-      - type: archive
-        url: https://github.com/gokcehan/lf/archive/r27/lf-27.tar.gz
-        sha256: cdd132e33387423ef9f9448e21d3f1e5c9a5319b34fdfb53cb5f49351ebac005
-        x-checker-data:
-          type: anitya
-          project-id: 269016
-          stable-only: true
-          url-template: https://github.com/gokcehan/lf/archive/r$version/lf-$version.tar.gz
-      - type: archive
-        strip-components: 0
-        url: https://github.com/gokcehan/lf/releases/download/r27/lf-linux-amd64.tar.gz
-        sha256: b8f9431dc63f7b2cff8e4306cff4c075adbe9f0900b563f91a6b742a41290d7f
-        x-checker-data:
-          type: anitya
-          project-id: 269016
-          stable-only: true
-          url-template: https://github.com/gokcehan/lf/releases/download/r$version/lf-linux-amd64.tar.gz
-
   - name: nnn
     buildsystem: simple
     build-commands:
