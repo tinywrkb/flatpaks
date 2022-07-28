@@ -2500,6 +2500,12 @@ modules:
                   export TERMINFO_DIRS+="${SDKPATH}/share/terminfo:"
                 fi
               fi
+              if [ -n "$FLATPAK_ID" ] &&
+                [ -e "/.flatpak-info" ] &&
+                [ -d "$HOME/.var/app/${FLATPAK_ID}" ] &&
+                [ ! -e "$HOME/.var/app/${FLATPAK_ID}/.user" ]; then
+                ln -s ../../../.user "$HOME/.var/app/${FLATPAK_ID}/.user"
+              fi
             fi
       - type: script
         dest-filename: enable-development-environment
