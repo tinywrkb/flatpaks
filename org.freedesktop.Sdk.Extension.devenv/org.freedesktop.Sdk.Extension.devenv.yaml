@@ -2052,6 +2052,16 @@ modules:
   ####     Containers     ####
   ############################
 
+  - name: flatpak
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 flatpak -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: script
+        dest-filename: flatpak
+        commands:
+          - flatpak-spawn --host flatpak "$@"
+
   - name: host-spawn
     buildsystem: simple
     build-commands:
