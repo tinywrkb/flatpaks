@@ -9,11 +9,13 @@ finish-args:
   - --device=dri
   - --filesystem=home
   - --filesystem=host
+  - --filesystem=~/.user/dots:ro
   - --filesystem=xdg-cache/ccache
   - --filesystem=xdg-cache/broot:ro
   - --filesystem=xdg-config/git:ro
   - --filesystem=xdg-config/nvim:ro
   - --filesystem=xdg-config/ssh:ro
+  - --filesystem=xdg-config/ranger
   - --filesystem=xdg-data/nvim:ro
   - --persist=.ssh
   - --share=ipc
