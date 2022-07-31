@@ -2,16 +2,16 @@
 
 This is a little experiement of packaging a user-defined shell environment with CLI tools as a Flatpak SDK extension.  
 Naming is not very imaginative, and might change.  
-I didn't like the alterntives, connecting a shell from Flatpak sandbox with a host shell or a Podman container shell.
+I didn't like the alterntives, connecting a shell from a Flatpak sandbox to a host shell or a Podman container shell.
 Both sound self-defeating. There should be a good reason to break out of the Flatpak sandbox.  
-Shorty after I start playing with this, I figured that there's no reason why I shouldn't re-use this for other
+Shorty after I started playing with this, I figured that there's no reason why I shouldn't re-use this for other
 containers, making use of Flatpak's packaging tools to build and keep this updated, so for the most part, the packaged
 binaries are statically linked.  
 This is very opiniated and user-specific, so you probably don't want to use this as it is, but it will give you a good
 idea how to package your own custom environment.  
-It should be noted that a [running Flatpak instance will lose a mounted extension when the latter is updated](https://github.com/flatpak/flatpak/issues/4356).  
-For that reason, and to support re-using this with other containers, I'm trying to make sure the alternative root path
-`/var/lib/devenv` will also work correctly.
+It should be noted that [a running Flatpak instance will lose a mounted extension when the latter is updated](https://github.com/flatpak/flatpak/issues/4356).  
+For that reason, and to support re-use of this with other containers, an alternative root path `/var/lib/devenv` will
+also be supported.
 
 An example application, `org.freedesktop.DevEnv`, is used to create a Flatpak instance, with this SDK extension enabled,
 but the extension is mainly intended to be used with Flatpak packaged IDEs.
@@ -25,7 +25,7 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
           PATH+=:xdg-data/npm-packages/bin
 * add more patched fonts: nerd-fonts
 * investigate broken host tmux sessions
-* still dynamic: chafa, hub, neovide, python app, luajit bindings
+* still dynamic: chafa, hub, neovide, pyflow, python apps (ranger, trash-cli), luajit bindings
 * add tarball generation script
 * test portability, needs to work when switching to /var/lib
 * investigate the possiblity to keep extension accessible after update, maybe bindfs mount
