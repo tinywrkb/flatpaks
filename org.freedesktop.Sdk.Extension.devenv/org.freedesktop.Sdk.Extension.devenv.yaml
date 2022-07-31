@@ -709,7 +709,7 @@ modules:
 
 
   ############################
-  ####      Python        ####
+  ####  Python packaging  ####
   ############################
 
   - name: python
@@ -769,36 +769,6 @@ modules:
           name: wheel
     cleanup:
       - '*'
-
-  - name: pyenv
-    buildsystem: simple
-    build-commands:
-      - install -dm755 ${FLATPAK_DEST}/share/pyenv
-      - cp -a libexec plugins pyenv.d ${FLATPAK_DEST}/share/pyenv/
-      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*}
-        -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 completions/pyenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/pyenv
-      - install -Dm644 completions/pyenv.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
-      - install -Dm644 completions/pyenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_pyenv
-      - install -Dm644 man/man1/pyenv.1 -t ${FLATPAK_DEST}/share/man/man1/
-    sources:
-      - type: archive
-        url: https://github.com/pyenv/pyenv/archive/v2.3.2/pyenv-2.3.2.tar.gz
-        sha256: 150ac8f7161c00e8e613bf5e273306f674b60037e3dace9c6bb7611dceb17144
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/pyenv/pyenv/releases/latest
-          version-query: .tag_name | sub("^v"; "")
-          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-"
-            + $version + ".tar.gz"'
-    cleanup:
-      - /share/pyenv/pyenv.d/install
-      - /share/pyenv/plugins/python-build/scripts
-      - /share/pyenv/plugins/python-build/test
-      - .gitignore
-      - LICENSE
-      - README.md
-      - install.sh
 
   - name: pyinstaller
     build-options: *musl-shared-build-options
@@ -868,6 +838,89 @@ modules:
 #         project-id: 198997
 #         stable-only: true
 #         url-template: https://github.com/indygreg/PyOxidizer/releases/download/pyoxidizer%2F0.22.0/pyoxidizer-${version}-x86_64-unknown-linux-musl.tar.gz
+
+
+  ############################
+  ####      Python        ####
+  ############################
+
+# - name: miniconda
+#   buildsystem: simple
+#   build-commands:
+#     - bash ./miniconda-installer.sh -b -p ${FLATPAK_DEST}/lib/miniconda -f
+#     - ln -s ../lib/miniconda/conda ${FLATPAK_DEST}/bin/conda
+#   sources:
+#     - type: file
+#       dest-filename: miniconda-installer.sh
+#       url: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh
+#       sha256: 78f39f9bae971ec1ae7969f0516017f2413f17796670f7040725dd83fcff5689
+#       x-checker-data:
+#         type: html
+#         url: https://repo.anaconda.com/miniconda/
+#         version-pattern: Miniconda3-py([\d\._]+)-Linux-x86_64.sh
+#         url-template: https://repo.anaconda.com/miniconda/Miniconda3-py$version-Linux-x86_64.sh
+
+  - name: pyenv
+    # TODO: consider adding more plugins https://github.com/pyenv/pyenv/wiki/Plugins
+    buildsystem: simple
+    build-commands:
+      - install -dm755 ${FLATPAK_DEST}/share/pyenv
+      - cp -a libexec plugins pyenv.d ${FLATPAK_DEST}/share/pyenv/
+      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*}
+        -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 completions/pyenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/pyenv
+      - install -Dm644 completions/pyenv.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
+      - install -Dm644 completions/pyenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_pyenv
+      - install -Dm644 man/man1/pyenv.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/pyenv/pyenv/archive/v2.3.2/pyenv-2.3.2.tar.gz
+        sha256: 150ac8f7161c00e8e613bf5e273306f674b60037e3dace9c6bb7611dceb17144
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/pyenv/pyenv/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-"
+            + $version + ".tar.gz"'
+    cleanup:
+      - /share/pyenv/pyenv.d/install
+      - /share/pyenv/plugins/python-build/scripts
+      - /share/pyenv/plugins/python-build/test
+      - .gitignore
+      - LICENSE
+      - README.md
+      - install.sh
+
+  - name: pyenv-virtualenv
+    buildsystem: simple
+    build-commands:
+      - PREFIX=${FLATPAK_DEST}/share/pyenv/plugins/pyenv-virtualenv ./install.sh
+    sources:
+      - type: archive
+        url: https://github.com/pyenv/pyenv-virtualenv/archive/c6ff093344a3823d8b07c90a6478942d44d0392e/pyenv-virtualenv-c6ff093344a3823d8b07c90a6478942d44d0392e.tar.gz
+        sha256: 7973aa557072a437415cd4151eafaba1587d505725d185892b6a7db7103b561c
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/pyenv/pyenv-virtualenv/commits?sha=master&per_page=1
+          version-query: .[].sha
+          timestamp-query: .[].commit.committer.date
+          url-query: '"https://github.com/pyenv/pyenv-virtualenv/archive/" + $version + "/pyenv-virtualenv-"
+            + $version + ".tar.gz"'
+
+  - name: pyflow
+    buildsystem: simple
+    build-commands:
+      - install pyflow -Dm755 -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        url: https://github.com/David-OConnor/pyflow/releases/download/0.3.1/pyflow
+        sha256: 0f1bc273af07fb7a3c46ca84302403b41b8ea6787e62c79adb04a4674b87edf5
+        x-checker-data:
+          type: anitya
+          project-id: 47970
+          stable-only: true
+          url-template: https://github.com/David-OConnor/pyflow/releases/download/$version/pyflow
+
 
   ############################
   ####       Shell        ####
