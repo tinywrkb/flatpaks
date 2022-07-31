@@ -123,23 +123,27 @@ function _cdw_pyenv_root_update() {
         if [ "$PWD/.pyenv" == "$GLOBAL_PYENV_ROOT" ]; then
           unset PROJECT_PYENV_ROOT
           export PYENV_ROOT="$GLOBAL_PYENV_ROOT"
+          eval "$(pyenv init --path)"
           _pyenv_virtualenv_hook
         # switching to a different project
         elif [ "$PYENV_ROOT" == "$PROJECT_PYENV_ROOT" ] ||
           [ -z "$PYENV_ROOT" ]; then
           export PROJECT_PYENV_ROOT="$PWD/.pyenv"
           export PYENV_ROOT="$PROJECT_PYENV_ROOT"
+          eval "$(pyenv init --path)"
           _pyenv_virtualenv_hook
         # PYENV_ROOT is already set, so save it as global
         elif [ -n "$PYENV_ROOT" ]; then
           export GLOBAL_PYENV_ROOT="$PYENV_ROOT"
           export PROJECT_PYENV_ROOT="$PWD/.pyenv"
           export PYENV_ROOT="$PROJECT_PYENV_ROOT"
+          eval "$(pyenv init --path)"
           _pyenv_virtualenv_hook
         # project pyenv_root without global one
         else
           export PROJECT_PYENV_ROOT="$PWD/.pyenv"
           export PYENV_ROOT="$PROJECT_PYENV_ROOT"
+          eval "$(pyenv init --path)"
           _pyenv_virtualenv_hook
         fi
       fi
@@ -151,9 +155,11 @@ function _cdw_pyenv_root_update() {
         unset PROJECT_PYENV_ROOT
         if [ -n "$GLOBAL_PYENV_ROOT" ]; then
           export PYENV_ROOT="$GLOBAL_PYENV_ROOT"
+          eval "$(pyenv init --path)"
           _pyenv_virtualenv_hook
         else
           unset PYENV_ROOT
+          eval "$(pyenv init --path)"
           _pyenv_virtualenv_hook
         fi
       fi
