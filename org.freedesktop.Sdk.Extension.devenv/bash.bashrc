@@ -108,7 +108,7 @@ if which pyenv &>/dev/null; then
 fi
 
 _pyenv_init() {
-  # pyenv init creates background jobs
+  # pyenv init creates background jobs as it forks the shell instead of using subshell, see pyenv-init: print_path()
   export _PYENV_INIT=1
   eval "$(pyenv init -)"
   local _pyenv_exec=$(realpath $(which pyenv 2>/dev/null))
