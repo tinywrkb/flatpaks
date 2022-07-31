@@ -69,8 +69,8 @@ if [ -z "$BASH_EXTRA_PATHS" ]; then
   export BASH_EXTRA_PATHS=1
 
   extra_paths=(
-    "$HOME/projects/flatpak-dotuser/app"
-    "$HOME/projects/flatpak-dotuser/bin"
+    "$HOME/.local/bin"
+    "$XDG_DATA_HOME/flatpak-run-cli/exports/bin"
   )
 
   for extra_path in ${extra_paths[@]}; do
@@ -248,6 +248,19 @@ alias color='echo -e "\n                 40m     41m     42m     43m     44m    
 ################################################################################
 ##############################  Extra functions  ###############################
 ################################################################################
+
+################################################################################
+##############################      Python       ###############################
+################################################################################
+
+if [ -n "$PYENV_ROOT" ] && which pyenv &>/dev/null; then
+  eval "$(pyenv init -)"
+  _pyenv_exec=$(realpath $(which pyenv))
+  if [ -r "$PYENV_ROOT"/plugins/pyenv-virtualenv/pyenv-virtualenv ] ||
+    [ -r ${_pyenv_exec%/*/*}/plugins/pyenv-virtualenv/pyenv-virtualenv ]; then
+    eval "$(pyenv virtualenv-init -)"
+  fi
+fi
 
 ################################################################################
 ##############################     SSH-Agent     ###############################
