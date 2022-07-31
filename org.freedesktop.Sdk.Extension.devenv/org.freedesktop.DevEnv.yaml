@@ -7,6 +7,7 @@ finish-args:
   - --allow=devel
   - --device=all
   - --device=dri
+  - --env=AUTO_PYENV_ROOT=1
   - --filesystem=home
   - --filesystem=host
   - --filesystem=~/.local/bin:ro
