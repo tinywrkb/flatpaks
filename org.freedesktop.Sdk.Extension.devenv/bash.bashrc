@@ -120,7 +120,20 @@ _pyenv_init() {
 
 _pyenv_update() {
   [ -n "$_PYENV_INIT" ] || _pyenv_init
-  eval "$(pyenv init --path)"
+  #eval "$(pyenv init --path)"
+  # more aggresive PATH update
+  IFS=:
+  paths=($PATH)
+  for i in ${!paths[@]}; do
+    if [[ ${paths[i]} == "${PYENV_ROOT}/shims" ]] ||
+      [[ ${paths[i]} == *"pyenv/shims" ]]; then
+      unset 'paths[i]'
+    fi
+  done
+  PATH="${paths[*]}"
+  unset IFS
+  export PATH="${PYENV_ROOT}/shims:${PATH}"
+
   _pyenv_virtualenv_hook
 }
 
