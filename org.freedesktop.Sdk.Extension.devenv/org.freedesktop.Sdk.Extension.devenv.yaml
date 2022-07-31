@@ -782,8 +782,8 @@ modules:
       - python3 setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
     sources:
       - type: archive
-        url: https://github.com/pyinstaller/pyinstaller/archive/v5.2/pyinstaller-5.2.tar.gz
-        sha256: f48a29ef9b12a5b4bb1b8f37a33f38cdc034869c946425d5b4217d97a42beaa7
+        url: https://github.com/pyinstaller/pyinstaller/archive/v5.3/pyinstaller-5.3.tar.gz
+        sha256: 5e137cf1f46fc009dc1d31037722f56552754264b2a93b7d5de192c8b0a3731a
         x-checker-data:
           type: anitya
           project-id: 122995
@@ -904,8 +904,8 @@ modules:
           url: https://api.github.com/repos/pyenv/pyenv-virtualenv/commits?sha=master&per_page=1
           version-query: .[].sha
           timestamp-query: .[].commit.committer.date
-          url-query: '"https://github.com/pyenv/pyenv-virtualenv/archive/" + $version + "/pyenv-virtualenv-"
-            + $version + ".tar.gz"'
+          url-query: '"https://github.com/pyenv/pyenv-virtualenv/archive/" + $version
+            + "/pyenv-virtualenv-" + $version + ".tar.gz"'
 
   - name: pyflow
     buildsystem: simple
@@ -1977,8 +1977,8 @@ modules:
       - bin/gh completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_gh
     sources:
       - type: archive
-        url: https://github.com/cli/cli/releases/download/v2.14.2/gh_2.14.2_linux_amd64.tar.gz
-        sha256: 3d4be4bf3446622c51192529f963d8719a2c78cc545aeab6fefff1c9ecf5b346
+        url: https://github.com/cli/cli/releases/download/v2.14.3/gh_2.14.3_linux_amd64.tar.gz
+        sha256: 95fe2e93bbd7a9f02d5b22cee01a53ab6d581fda8fa170364b668d142840ef58
         x-checker-data:
           type: anitya
           project-id: 135615
@@ -2122,8 +2122,8 @@ modules:
     sources:
       - type: file
         dest-filename: host-spawn
-        url: https://github.com/1player/host-spawn/releases/download/1.1.0/host-spawn-x86_64
-        sha256: 8405328f0b1f38afeb3631f50f010ed2d51956c55a499694ef9ccf791a4af9bf
+        url: https://github.com/1player/host-spawn/releases/download/1.2.0/host-spawn-x86_64
+        sha256: ab31ad0d980194e4c29d1e82715b37e7a02201504612d08521b413d1a7f74651
         x-checker-data:
           type: anitya
           project-id: 270202
@@ -2430,8 +2430,8 @@ modules:
     sources:
       - type: archive
         strip-components: 0
-        url: https://github.com/JakWai01/lurk/releases/download/v0.0.7/lurk-x86_64-unknown-linux-gnu.tar.gz
-        sha256: 55aeb69f3c45a2f8c151765d18f6cd093316237a2a959e7b10bdef7d0f8377c4
+        url: https://github.com/JakWai01/lurk/releases/download/v0.2.7/lurk-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 46fc12b1a3cfdfa95e53849ff7ab5c78787ad8dada6c6b47d0e6745e71e3dbf1
         x-checker-data:
           type: anitya
           project-id: 270853
