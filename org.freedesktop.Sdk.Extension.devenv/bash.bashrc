@@ -95,25 +95,37 @@ try_source /usr/share/git/completion/git-prompt.sh &&
 
 # powerline-go
 function _update_ps1() {
+  # save return value as a workaround to it being swallowed by pyenv init
+  ret=$?
   _cdw_pyenv_root_update
-  PS1="$(powerline-go -error $? -jobs $(jobs -p | wc -l) -shell-var FLATPAK_ID -numeric-exit-codes -modules venv,user,shell-var,ssh,cwd,perms,git,jobs,exit,root)"
+  PS1="$($(exit $ret); powerline-go -error $? -jobs $(jobs -p | wc -l) -shell-var FLATPAK_ID -numeric-exit-codes -modules venv,user,shell-var,ssh,cwd,perms,git,jobs,exit,root)"
 }
 
 # pyenv shell integration
-if $(which pyenv &>/dev/null); then
+if which pyenv &>/dev/null; then
   export _PYENV_FOUND=1
   export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+fi
+
+_pyenv_init() {
+  # pyenv init creates background jobs
+  export _PYENV_INIT=1
   eval "$(pyenv init -)"
-  _pyenv_exec=$(realpath $(which pyenv 2>/dev/null))
+  local _pyenv_exec=$(realpath $(which pyenv 2>/dev/null))
   if [ -r "$PYENV_ROOT"/plugins/pyenv-virtualenv/bin/pyenv-virtualenv ] ||
     [ -r ${_pyenv_exec%/*/*}/plugins/pyenv-virtualenv/bin/pyenv-virtualenv ]; then
     eval "$(pyenv virtualenv-init -)"
   fi
-fi
+}
+
+_pyenv_update() {
+  [ -n "$_PYENV_INIT" ] || _pyenv_init
+  eval "$(pyenv init --path)"
+  _pyenv_virtualenv_hook
+}
 
 # pyenv auto PYENV_ROOT update
 function _cdw_pyenv_root_update() {
-  # TODO: inject this before pyenv
   # dynamic PYENV_ROOT updater is opt-in
   if [ -n "$AUTO_PYENV_ROOT" ] && [ -n "$_PYENV_FOUND" ]; then
     if [ -d "$PWD/.pyenv" ]; then
@@ -123,28 +135,24 @@ function _cdw_pyenv_root_update() {
         if [ "$PWD/.pyenv" == "$GLOBAL_PYENV_ROOT" ]; then
           unset PROJECT_PYENV_ROOT
           export PYENV_ROOT="$GLOBAL_PYENV_ROOT"
-          eval "$(pyenv init --path)"
-          _pyenv_virtualenv_hook
+          _pyenv_update
         # switching to a different project
         elif [ "$PYENV_ROOT" == "$PROJECT_PYENV_ROOT" ] ||
           [ -z "$PYENV_ROOT" ]; then
           export PROJECT_PYENV_ROOT="$PWD/.pyenv"
           export PYENV_ROOT="$PROJECT_PYENV_ROOT"
-          eval "$(pyenv init --path)"
-          _pyenv_virtualenv_hook
+          _pyenv_update
         # PYENV_ROOT is already set, so save it as global
         elif [ -n "$PYENV_ROOT" ]; then
           export GLOBAL_PYENV_ROOT="$PYENV_ROOT"
           export PROJECT_PYENV_ROOT="$PWD/.pyenv"
           export PYENV_ROOT="$PROJECT_PYENV_ROOT"
-          eval "$(pyenv init --path)"
-          _pyenv_virtualenv_hook
+          _pyenv_update
         # project pyenv_root without global one
         else
           export PROJECT_PYENV_ROOT="$PWD/.pyenv"
           export PYENV_ROOT="$PROJECT_PYENV_ROOT"
-          eval "$(pyenv init --path)"
-          _pyenv_virtualenv_hook
+          _pyenv_update
         fi
       fi
     # no .pyenv, need to decide to reset back to global or unset
@@ -155,12 +163,10 @@ function _cdw_pyenv_root_update() {
         unset PROJECT_PYENV_ROOT
         if [ -n "$GLOBAL_PYENV_ROOT" ]; then
           export PYENV_ROOT="$GLOBAL_PYENV_ROOT"
-          eval "$(pyenv init --path)"
-          _pyenv_virtualenv_hook
+          _pyenv_update
         else
           unset PYENV_ROOT
-          eval "$(pyenv init --path)"
-          _pyenv_virtualenv_hook
+          _pyenv_update
         fi
       fi
     fi
