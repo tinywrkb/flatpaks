@@ -95,7 +95,70 @@ try_source /usr/share/git/completion/git-prompt.sh &&
 
 # powerline-go
 function _update_ps1() {
+  _cdw_pyenv_root_update
   PS1="$(powerline-go -error $? -jobs $(jobs -p | wc -l) -shell-var FLATPAK_ID -numeric-exit-codes -modules venv,user,shell-var,ssh,cwd,perms,git,jobs,exit,root)"
+}
+
+# pyenv shell integration
+if $(which pyenv &>/dev/null); then
+  export _PYENV_FOUND=1
+  export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+  eval "$(pyenv init -)"
+  _pyenv_exec=$(realpath $(which pyenv 2>/dev/null))
+  if [ -r "$PYENV_ROOT"/plugins/pyenv-virtualenv/bin/pyenv-virtualenv ] ||
+    [ -r ${_pyenv_exec%/*/*}/plugins/pyenv-virtualenv/bin/pyenv-virtualenv ]; then
+    eval "$(pyenv virtualenv-init -)"
+  fi
+fi
+
+# pyenv auto PYENV_ROOT update
+function _cdw_pyenv_root_update() {
+  # TODO: inject this before pyenv
+  # dynamic PYENV_ROOT updater is opt-in
+  if [ -n "$AUTO_PYENV_ROOT" ] && [ -n "$_PYENV_FOUND" ]; then
+    if [ -d "$PWD/.pyenv" ]; then
+      # only update PYENV_ROOT when different from $PWD/.pyenv
+      if [ "$PWD/.pyenv" != "$PYENV_ROOT" ]; then
+        # switching back to global pyenv_root
+        if [ "$PWD/.pyenv" == "$GLOBAL_PYENV_ROOT" ]; then
+          unset PROJECT_PYENV_ROOT
+          export PYENV_ROOT="$GLOBAL_PYENV_ROOT"
+          _pyenv_virtualenv_hook
+        # switching to a different project
+        elif [ "$PYENV_ROOT" == "$PROJECT_PYENV_ROOT" ] ||
+          [ -z "$PYENV_ROOT" ]; then
+          export PROJECT_PYENV_ROOT="$PWD/.pyenv"
+          export PYENV_ROOT="$PROJECT_PYENV_ROOT"
+          _pyenv_virtualenv_hook
+        # PYENV_ROOT is already set, so save it as global
+        elif [ -n "$PYENV_ROOT" ]; then
+          export GLOBAL_PYENV_ROOT="$PYENV_ROOT"
+          export PROJECT_PYENV_ROOT="$PWD/.pyenv"
+          export PYENV_ROOT="$PROJECT_PYENV_ROOT"
+          _pyenv_virtualenv_hook
+        # project pyenv_root without global one
+        else
+          export PROJECT_PYENV_ROOT="$PWD/.pyenv"
+          export PYENV_ROOT="$PROJECT_PYENV_ROOT"
+          _pyenv_virtualenv_hook
+        fi
+      fi
+    # no .pyenv, need to decide to reset back to global or unset
+    else
+      # if cwd is not a subfolder of project with .pyenv, then reset PYENV_ROOT
+      if [ -n "$PROJECT_PYENV_ROOT" ] &&
+        [[ "$PWD" != "${PROJECT_PYENV_ROOT%.pyenv}"* ]]; then
+        unset PROJECT_PYENV_ROOT
+        if [ -n "$GLOBAL_PYENV_ROOT" ]; then
+          export PYENV_ROOT="$GLOBAL_PYENV_ROOT"
+          _pyenv_virtualenv_hook
+        else
+          unset PYENV_ROOT
+          _pyenv_virtualenv_hook
+        fi
+      fi
+    fi
+  fi
 }
 
 if [ "$TERM" != "linux" ] && (which powerline-go &>/dev/null); then
@@ -248,19 +311,6 @@ alias color='echo -e "\n                 40m     41m     42m     43m     44m    
 ################################################################################
 ##############################  Extra functions  ###############################
 ################################################################################
-
-################################################################################
-##############################      Python       ###############################
-################################################################################
-
-if [ -n "$PYENV_ROOT" ] && which pyenv &>/dev/null; then
-  eval "$(pyenv init -)"
-  _pyenv_exec=$(realpath $(which pyenv))
-  if [ -r "$PYENV_ROOT"/plugins/pyenv-virtualenv/pyenv-virtualenv ] ||
-    [ -r ${_pyenv_exec%/*/*}/plugins/pyenv-virtualenv/pyenv-virtualenv ]; then
-    eval "$(pyenv virtualenv-init -)"
-  fi
-fi
 
 ################################################################################
 ##############################     SSH-Agent     ###############################
