@@ -9,7 +9,31 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-DEVELOPMENT_ENVIRONMENT_SDK=/usr/lib/sdk/devenv
+set_devenv_path(){
+  # BASH_SOURCE is actually an array
+  local bash_source_path="$(realpath "$BASH_SOURCE")"
+  #local bash_source_basedir="$(dirname "$bash_source_path")"
+  local process_path="$(realpath "$0")"
+  #local process_basedir="$(dirname "$process_path")"
+  local devenv_libsdk=/usr/lib/sdk/devenv
+  local devenv_varlib=/var/lib/devenv
+
+  # ${DEVELOPMENT_ENVIRONMENT_SDK}/etc/bash.bashrc
+  if [ -r "$bash_source_path" ] &&
+    [ -d "${bash_source_path%/*/*}/etc/bash.bashrc" ]; then
+    DEVELOPMENT_ENVIRONMENT_SDK="${bash_source_path%/*/*}"
+  # ${DEVELOPMENT_ENVIRONMENT_SDK}/bin/bash
+  elif [ -r "$process_path" ] &&
+    [ -d "${process_path%/*/*}/bin/bash" ]; then
+    DEVELOPMENT_ENVIRONMENT_SDK="${process_path%/*/*}"
+  # TODO: test who's newer? should be moved then to top
+  elif [ -r "${devenv_varlib}/etc/bash.bashrc" ]; then
+    DEVELOPMENT_ENVIRONMENT_SDK="$devenv_varlib"
+  else
+    DEVELOPMENT_ENVIRONMENT_SDK="$devenv_libsdk"
+  fi
+}
+set_devenv_path
 
 shopt -s nullglob extglob
 
