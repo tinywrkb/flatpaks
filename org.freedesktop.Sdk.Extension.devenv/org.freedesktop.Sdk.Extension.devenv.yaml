@@ -2448,7 +2448,7 @@ modules:
     build-commands:
       - install -Dm755 enable{,-sdks}.sh -t ${FLATPAK_DEST}/
       - install -Dm755 enable-development-environment ssh -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 bash.bashrc -t ${FLATPAK_DEST}/etc/
+      - install -Dm644 bash.bashrc python.startup -t ${FLATPAK_DEST}/etc/
       - ln -s nvim ${FLATPAK_DEST}/bin/vim
     sources:
       - type: script
@@ -2506,3 +2506,5 @@ modules:
         path: bash.bashrc
       - type: file
         path: inputrc
+      - type: file
+        path: python.startup

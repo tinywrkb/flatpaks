@@ -1,0 +1,28 @@
+#!/usr/bin/python
+
+import atexit
+import os
+import readline
+
+try:
+    readline.parse_and_bind('set show-mode-in-prompt on')
+    readline.parse_and_bind("set editing-mode vi")
+    readline.parse_and_bind('set vi-ins-mode-string "\1\e[97m\e[48;5;2m\2+\1\e[0m\2"')
+    readline.parse_and_bind('set vi-cmd-mode-string "\1\e[97m\e[48;5;1m\2:\1\e[0m\2"')
+except:
+    print("Failed setting readline mode")
+
+histfile = os.path.join(os.path.expandvars("${XDG_CACHE_HOME}"), "python_history")
+
+try:
+    readline.read_history_file(histfile)
+    h_len = readline.get_current_history_length()
+except FileNotFoundError:
+    open(histfile, 'wb').close()
+    h_len = 0
+
+def save(prev_h_len, histfile):
+    new_h_len = readline.get_current_history_length()
+    readline.set_history_length(1000)
+    readline.append_history_file(new_h_len - prev_h_len, histfile)
+atexit.register(save, h_len, histfile)
