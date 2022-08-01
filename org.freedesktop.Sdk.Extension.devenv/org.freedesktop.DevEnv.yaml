@@ -15,7 +15,7 @@ finish-args:
   - --filesystem=~/.user/hiddendots:ro
   - --filesystem=xdg-cache/broot:ro
   - --filesystem=xdg-cache/ccache
-  - --filesystem=xdg-config/bash:ro
+# - --filesystem=xdg-config/bash:ro
   - --filesystem=xdg-config/git:ro
   - --filesystem=xdg-config/nvim:ro
   - --filesystem=xdg-config/ranger
