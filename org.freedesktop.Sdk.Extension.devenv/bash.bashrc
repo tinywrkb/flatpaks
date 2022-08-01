@@ -83,7 +83,7 @@ try_complete_alias() {
 try_source "$XDG_CONFIG_HOME"/bash/bash.functions ||
   try_catch_source ~/.bash.functions
 
-try_source $DEVELOPMENT_ENVIRONMENT_SDK/enable.sh
+try_source "$DEVELOPMENT_ENVIRONMENT_SDK/enable.sh"
 
 ################################################################################
 ##############################    Extra PATHs    ###############################
@@ -289,7 +289,7 @@ which rmtrash &>/dev/null && {
 }
 
 ################################################################################
-###########################   XDG dirs workaround   ############################
+###########################   XDG dirs workarounds  ############################
 ################################################################################
 
 # bash
@@ -301,19 +301,38 @@ export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 # openssl
 export RANDFILE="$XDG_CACHE_HOME/rnd"
 
-# readline
-if [ -f "$XDG_CONFIG_HOME/readline/inputrc" ]; then
-  export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
-elif [ -f "$HOME/.config/readline/inputrc" ]; then
-  export INPUTRC="$HOME/.config/readline/inputrc"
+# python-startup
+if [ -r "$XDG_CONFIG_HOME/python/python.startup" ]; then
+  export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/python.startup"
+elif [ -r "$HOME/.config/python/python.startup" ]; then
+  export PYTHONSTARTUP="$HOME/.config/python/python.startup"
+elif [ -r "$DEVELOPMENT_ENVIRONMENT_SDK/etc/python.startup" ]; then
+  export PYTHONSTARTUP="$DEVELOPMENT_ENVIRONMENT_SDK/etc/python.startup"
 else
+  unset PYTHONSTARTUP
+fi
+
+# readline
+if [ -r "$XDG_CONFIG_HOME/readline/inputrc" ]; then
+  export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+elif [ -r "$HOME/.config/readline/inputrc" ]; then
+  export INPUTRC="$HOME/.config/readline/inputrc"
+elif [ -r "$DEVELOPMENT_ENVIRONMENT_SDK/etc/inputrc" ]; then
   export INPUTRC="$DEVELOPMENT_ENVIRONMENT_SDK/etc/inputrc"
+else
+  unset INPUTRC
 fi
 
 # less
 # flatpak workround as less doesn't check .config if XDG_CONFIG_HOME is set
-if [ -f "$HOME/.config/lesskey" ]; then
+if [ -r "$LESSKEYIN" ]; then
+  :
+elif [ -r "$XDG_CONFIG_HOME/lesskey" ]; then
+  unset LESSKEYIN
+elif [ -r "$HOME/.config/lesskey" ]; then
   export LESSKEYIN="$HOME/.config/less"
+else
+  unset LESSKEYIN
 fi
 
 # svn
