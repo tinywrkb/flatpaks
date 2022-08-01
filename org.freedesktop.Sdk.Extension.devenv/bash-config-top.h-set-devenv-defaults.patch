@@ -32,7 +32,7 @@ index 735f75e..c97168f 100644
  
  /* Default interactive shell startup file. */
 -#define DEFAULT_BASHRC "~/.bashrc"
-+#define DEFAULT_BASHRC "~/.config/bash/bash.bashrc"
++#define DEFAULT_BASHRC "~/.config/bash/bashrc"
  
  /* System-wide .bashrc file for interactive shells. */
 -/* #define SYS_BASHRC "/etc/bash.bashrc" */
