@@ -2460,16 +2460,16 @@ modules:
               SDKPATH=/usr/lib/sdk/devenv
               export PATH=${SDKPATH}/bin:$PATH
               export XDG_DATA_DIRS=$XDG_DATA_DIRS:${SDKPATH}/share
-              if [ -z "$LD_LIBRARY_PATH" ]; then
-                export LD_LIBRARY_PATH=${SDKPATH}/lib
-              else
-                export LD_LIBRARY_PATH+=:${SDKPATH}/lib
-              fi
-              if [ -z "$PYTHONPATH" ]; then
-                export PYTHONPATH=${SDKPATH}/lib/python/site-packages
-              else
-                export PYTHONPATH+=:${SDKPATH}/lib/python/site-packages
-              fi
+              #if [ -z "$LD_LIBRARY_PATH" ]; then
+              #  export LD_LIBRARY_PATH=${SDKPATH}/lib
+              #else
+              #  export LD_LIBRARY_PATH+=:${SDKPATH}/lib
+              #fi
+              #if [ -z "$PYTHONPATH" ]; then
+              #  export PYTHONPATH=${SDKPATH}/lib/python/site-packages
+              #else
+              #  export PYTHONPATH+=:${SDKPATH}/lib/python/site-packages
+              #fi
               if [[ ":$TERMINFO_DIRS:" != *":${SDKPATH}/share/terminfo:"* ]]; then
                 if [[ "$TERMINFO_DIRS" != *":" ]] && [ -n "$TERMINFO_DIRS" ]; then
                   export TERMINFO_DIRS+=":${SDKPATH}/share/terminfo:"
