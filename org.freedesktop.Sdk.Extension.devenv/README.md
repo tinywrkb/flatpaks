@@ -31,6 +31,7 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * investigate the possiblity to keep extension accessible after update, maybe bindfs mount
 * see other useful tools @ https://github.com/agarrharr/awesome-cli-apps
 * drop musl shared lib, move next to users
+* bashrc should be more generic, and user bashrc shouldn't break it
 
 ### possible failure mapping of sdk path
 * stow: hardcoded perl `use dir`, can be patched
