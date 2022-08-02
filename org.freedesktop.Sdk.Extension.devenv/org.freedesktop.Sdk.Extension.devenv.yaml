@@ -2484,6 +2484,10 @@ modules:
                 ln -s ../../../.user "$HOME/.var/app/${FLATPAK_ID}/.user"
               fi
             fi
+            # workaround for badly implemented /etc/shells creation in vscode app
+            if [ ! -f '/etc/shells' ]; then
+              touch '/etc/shells'
+            fi
       - type: script
         dest-filename: enable-development-environment
         commands:
