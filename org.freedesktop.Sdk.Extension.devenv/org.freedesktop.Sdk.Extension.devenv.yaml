@@ -55,6 +55,34 @@ cleanup:
 modules:
 
   ############################
+  ####     Categories     ####
+  ############################
+  #
+  #   Libraries
+  #   Packaging helpers
+  #   Archive
+  #   Binary
+  #   Clipboard
+  #   Containers
+  #   Data formats
+  #   Debug
+  #   Dotfiles
+  #   Editors
+  #   Files: Folder listing
+  #   Files: Managers
+  #   Files: Search
+  #   Files: Sync
+  #   Files: Trashcan
+  #   Images
+  #   Python
+  #   Shells
+  #   Shells: Multiplexers
+  #   Terminal emulators
+  #   VCS
+  #   Polish
+
+
+  ############################
   ####     Libraries      ####
   ############################
 
@@ -709,7 +737,7 @@ modules:
 
 
   ############################
-  ####  Python packaging  ####
+  #### Packaging helpers  ####
   ############################
 
   - name: python
@@ -841,495 +869,189 @@ modules:
 
 
   ############################
-  ####      Python        ####
+  ####       Archive      ####
   ############################
 
-# - name: miniconda
-#   buildsystem: simple
-#   build-commands:
-#     - bash ./miniconda-installer.sh -b -p ${FLATPAK_DEST}/lib/miniconda -f
-#     - ln -s ../lib/miniconda/conda ${FLATPAK_DEST}/bin/conda
-#   sources:
-#     - type: file
-#       dest-filename: miniconda-installer.sh
-#       url: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh
-#       sha256: 78f39f9bae971ec1ae7969f0516017f2413f17796670f7040725dd83fcff5689
-#       x-checker-data:
-#         type: html
-#         url: https://repo.anaconda.com/miniconda/
-#         version-pattern: Miniconda3-py([\d\._]+)-Linux-x86_64.sh
-#         url-template: https://repo.anaconda.com/miniconda/Miniconda3-py$version-Linux-x86_64.sh
-
-  - name: pyenv
-    # TODO: consider adding more plugins https://github.com/pyenv/pyenv/wiki/Plugins
-    buildsystem: simple
-    build-commands:
-      - install -dm755 ${FLATPAK_DEST}/share/pyenv
-      - cp -a libexec plugins pyenv.d ${FLATPAK_DEST}/share/pyenv/
-      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*}
-        -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 completions/pyenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/pyenv
-      - install -Dm644 completions/pyenv.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
-      - install -Dm644 completions/pyenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_pyenv
-      - install -Dm644 man/man1/pyenv.1 -t ${FLATPAK_DEST}/share/man/man1/
-    sources:
-      - type: archive
-        url: https://github.com/pyenv/pyenv/archive/v2.3.2/pyenv-2.3.2.tar.gz
-        sha256: 150ac8f7161c00e8e613bf5e273306f674b60037e3dace9c6bb7611dceb17144
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/pyenv/pyenv/releases/latest
-          version-query: .tag_name | sub("^v"; "")
-          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-"
-            + $version + ".tar.gz"'
-    cleanup:
-      - /share/pyenv/pyenv.d/install
-      - /share/pyenv/plugins/python-build/scripts
-      - /share/pyenv/plugins/python-build/test
-      - .gitignore
-      - LICENSE
-      - README.md
-      - install.sh
-
-  - name: pyenv-virtualenv
-    buildsystem: simple
-    build-commands:
-      - PREFIX=${FLATPAK_DEST}/share/pyenv/plugins/pyenv-virtualenv ./install.sh
-    sources:
-      - type: archive
-        url: https://github.com/pyenv/pyenv-virtualenv/archive/c6ff093344a3823d8b07c90a6478942d44d0392e/pyenv-virtualenv-c6ff093344a3823d8b07c90a6478942d44d0392e.tar.gz
-        sha256: 7973aa557072a437415cd4151eafaba1587d505725d185892b6a7db7103b561c
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/pyenv/pyenv-virtualenv/commits?sha=master&per_page=1
-          version-query: .[].sha
-          timestamp-query: .[].commit.committer.date
-          url-query: '"https://github.com/pyenv/pyenv-virtualenv/archive/" + $version
-            + "/pyenv-virtualenv-" + $version + ".tar.gz"'
-
-  - name: pyflow
-    buildsystem: simple
-    build-commands:
-      - install pyflow -Dm755 -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: file
-        url: https://github.com/David-OConnor/pyflow/releases/download/0.3.1/pyflow
-        sha256: 0f1bc273af07fb7a3c46ca84302403b41b8ea6787e62c79adb04a4674b87edf5
-        x-checker-data:
-          type: anitya
-          project-id: 47970
-          stable-only: true
-          url-template: https://github.com/David-OConnor/pyflow/releases/download/$version/pyflow
-
-
-  ############################
-  ####       Shell        ####
-  ############################
-
-  - name: bash-static
+  - name: p7zip-static
     build-options: *musl-static-build-options
-    config-opts:
-      - --enable-static-link
-      - --enable-readline
-      - --disable-nls
-      - --with-curses
-      - --with-installed-readline
-      - --without-bash-malloc
+    no-autogen: true
     make-args:
-      - TERMCAP_LIB=-lncursesw
-    sources:
-      - type: archive
-        url: https://ftp.gnu.org/gnu/bash/bash-5.1.16.tar.gz
-        sha256: 5bac17218d3911834520dad13cd1f85ab944e1c09ae1aba55906be1f8192f558
-        x-checker-data:
-          type: anitya
-          project-id: 166
-          stable-only: true
-          url-template: https://ftp.gnu.org/gnu/bash/bash-$version.tar.gz
-      - type: patch
-        path: bash-config-top.h-set-devenv-defaults.patch
-      - type: patch
-        path: bash-add-localstatedir-bashrc-support.patch
-      - type: shell
-        commands:
-          # never build these libs
-          - rm -r lib/{readline,termcap}/*.c
-    cleanup:
-      - /share/info
-
-  - name: bash-completion
-    sources:
-      - type: archive
-        url: https://github.com/scop/bash-completion/releases/download/2.11/bash-completion-2.11.tar.xz
-        sha256: 73a8894bad94dee83ab468fa09f628daffd567e8bef1a24277f1e9a0daf911ac
-        x-checker-data:
-          type: anitya
-          project-id: 5667
-          stable-only: true
-          url-template: https://github.com/scop/bash-completion/releases/download/$version/bash-completion-$version.tar.xz
-      - type: shell
-        commands:
-          - sed -i '/^pkgconfigdir.*=/ s/datadir/libdir/' Makefile.in
-
-  - name: bash-complete-alias
-    buildsystem: simple
-    build-commands:
-      - install -Dm644 complete_alias -t ${FLATPAK_DEST}/share/bash-complete-alias/
-    sources:
-      - type: archive
-        url: https://github.com/cykerway/complete-alias/archive/1.18.0/complete-alias-1.18.0.tar.gz
-        sha256: c34b85c2729650415d97280afeeed6aa29a9e318a8a39061722493cacb927445
-        x-checker-data:
-          type: anitya
-          project-id: 267535
-          stable-only: true
-          url-template: https://github.com/cykerway/complete-alias/archive/$version/complete-alias-$version.tar.gz
-
-  - name: fish
-    build-options: *musl-static-build-options
-    buildsystem: cmake
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-      - -Wno-dev
-      - -DWITH_GETTEXT=OFF
-      - -DSYS_PCRE2_INCLUDE_DIR=/usr/lib/sdk/devenv/include
-      - -DSYS_PCRE2_LIB=/usr/lib/sdk/devenv/lib/libpcre2-32.a
-      - -DNCURSES_INCLUDE_DIRS=/usr/lib/sdk/devenv/include/ncursesw
-      - -DTPARM_INCLUDES=/usr/lib/sdk/devenv/include/ncursesw/term.h
-      - -DNCURSES_LIBRARY=/usr/lib/sdk/devenv/lib/libncursesw.a
-      - -DCURSES_TINFO=/usr/lib/sdk/devenv/lib/libncursesw.a
-      - -DCMAKE_CXX_FLAGS=-DHAVE_NCURSES_H -DHAVE_TERM_H
-      - -DTPUTS_USES_INT_ARG=1
-    sources:
-      - type: archive
-        url: https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz
-        sha256: a6d45b3dc5a45dd31772e7f8dfdfecabc063986e8f67d60bd7ca60cc81db6928
-        x-checker-data:
-          type: anitya
-          project-id: 815
-          stable-only: true
-          url-template: https://github.com/fish-shell/fish-shell/releases/download/$version/fish-$version.tar.xz
-      - type: shell
-        commands:
-          - sed -i '/Fish does not support static linking/ s/FATAL_ERROR/WARNING/'
-            CMakeLists.txt
-    cleanup:
-      - /etc
-      - /share/applications
-      - /share/pixmaps
-
-  - name: zsh-static
-    build-options: *musl-static-build-options
-    config-opts:
-      # TODO: edit config.modules to compile modules
-      # sed_i 's/link=no/link=static/' config.modules
-      - --enable-libc-musl
-      - --disable-dynamic
-      - --docdir=${FLATPAK_DEST}/share/doc/zsh
-      - --htmldir=${FLATPAK_DEST}/share/doc/zsh/html
-      - --enable-etcdir=${FLATPAK_DEST}/etc/zsh
-      - --enable-zshenv=${FLATPAK_DEST}/etc/zsh/zshenv
-      - --enable-zlogin=${FLATPAK_DEST}/etc/zsh/zlogin
-      - --enable-zlogout=${FLATPAK_DEST}/etc/zsh/zlogout
-      - --enable-zprofile=${FLATPAK_DEST}/etc/zsh/zprofile
-      - --enable-zshrc=${FLATPAK_DEST}/etc/zsh/zshrc
-      - --enable-maildir-support
-      - --enable-multibyte
-      - --enable-function-subdirs
-      - --enable-fndir=${FLATPAK_DEST}/share/zsh/functions
-      - --enable-scriptdir=${FLATPAK_DEST}/share/zsh/scripts
-      - --with-tcsetpgrp
-#     - --enable-pcre
-#     - --enable-cap
-#     - --enable-zsh-secure-free
-    post-install:
-     # unneeded filesystem (mv) operations on ${FLATPAK_DEST}/bin/zsh breaks rofiles, overwriting the file fix this
-      - install -Dm755 ${FLATPAK_DEST}/bin/zsh{-*,}
-    sources:
-      - type: archive
-        url: https://www.zsh.org/pub/zsh-5.9.tar.xz
-        sha256: 9b8d1ecedd5b5e81fbf1918e876752a7dd948e05c1a0dba10ab863842d45acd5
-        x-checker-data:
-          type: anitya
-          project-id: 5307
-          stable-only: true
-          url-template: https://www.zsh.org/pub/zsh-$version.tar.xz
-    modules:
-      - name: libcap-static
-        build-options: *musl-static-build-options
-        no-autogen: true
-        subdir: libcap
-        make-args:
-          - SHARED=no
-          - prefix=${FLATPAK_DEST}
-          - lib=lib
-        make-install-args:
-          - SHARED=no
-          - prefix=${FLATPAK_DEST}
-          - lib=lib
-        sources:
-          - type: archive
-            url: https://kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.65.tar.xz
-            sha256: 73e350020cc31fe15360879d19384ffa3395a825f065fcf6bda3a5cdf965bebd
-            x-checker-data:
-              type: anitya
-              project-id: 1569
-              stable-only: true
-              url-template: https://kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-$version.tar.xz
-
-  - name: powerline-fonts
-    # TODO: generate updated patched fonts with https://github.com/powerline/fontpatcher
-    buildsystem: simple
-    build-commands:
-      # fc-match: Noto Mono for Powerline
-      - install -Dm644 NotoMono/Noto\ Mono\ for\ Powerline.ttf ${FLATPAK_DEST}/share/fonts/powerline/NotoSansMonoPowerline.ttf
-    sources:
-      - type: archive
-        url: https://github.com/powerline/fonts/archive/4622ed562eb077e502524c8a1add6d5454a057b7/powerline-4622ed562eb077e502524c8a1add6d5454a057b7.tar.gz
-        sha256: 7f98d7e313d44f49c7637ce43469918cf6ba1fae1398ff5603392f7d2bc916c0
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/powerline/fonts/commits?sha=master&path=NotoMono&per_page=1
-          version-query: .[].sha
-          timestamp-query: .[].commit.committer.date
-          url-query: '"https://github.com/powerline/fonts/archive/" + $version + "/powerline-"
-            + $version + ".tar.gz"'
-
-  - name: powerline-go
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 powerline-go -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: file
-        dest-filename: powerline-go
-        url: https://github.com/justjanne/powerline-go/releases/download/v1.22.1/powerline-go-linux-amd64
-        sha256: 1cdd4fdb5dea23fc25d59e4cc845960c60bf8ead0e9b004351ee3479d805ecb4
-        x-checker-data:
-          type: anitya
-          project-id: 16076
-          stable-only: true
-          url-template: https://github.com/justjanne/powerline-go/releases/download/v$version/powerline-go-linux-amd64
-
-  ############################
-  ####      Terminal      ####
-  ############################
-
-  - name: terminfo-db
-    config-opts:
-      - --bindir=/var/bin
-      - --includedir=/var/include
-      - --libdir=/var/lib
-      - --enable-db-install
-      - --without-ada
-      - --without-curses-h
-      - --without-cxx
-      - --without-cxx-binding
-      - --without-debug
-      - --without-manpages
-      - --without-normal
-      - --without-progs
-      - --without-tests
+     # TODO: build 7z with shared musl libc
+     #- 7z
+      - 7zr
+      - 7za
+      - OPTFLAGS:=${CFLAGS}
     make-install-args:
-      - tabsetdir=/var/share/tabset
+      - DEST_DIR=/
+      - DEST_HOME=${FLATPAK_DEST}
+      - DEST_MAN=${FLATPAK_DEST}/share/man
     sources:
       - type: archive
-        url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz
-        sha256: 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
+        url: https://github.com/jinfeihan57/p7zip/archive/eb1bbb0d0327a103850fec519015986e72a1ebf0.tar.gz
+        sha256: cecdaa7e2738ad4594ddddb0c568db1750b7a7ff8433961be8595033d444e3a7
         x-checker-data:
           type: anitya
-          project-id: 234776
+          project-id: 2583
           stable-only: true
-          url-template: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz
+          versions:
+            '>': '17.04'
+          url-template: https://github.com/jinfeihan57/p7zip/archive/v$version/p7zip-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/^CC/d;/^CXX/d;/^CC_SHARED/d;/^LINK_SHARED/d' makefile.machine
+    cleanup:
+      - /share/doc
 
-# - name: foot
-#   buildsystem: meson
+
+  ############################
+  ####       Binary       ####
+  ############################
+
+  # TODO: add imhex
+  # TODO: add tui hex editor, bbe?
+  - name: patchelf-static
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://github.com/NixOS/patchelf/archive/0.15.0.tar.gz
+        sha256: 5d1eda9bad4439bb9c0a87fcba198d7c0d372f361e77de41d68d6308062e5000
+        x-checker-data:
+          type: anitya
+          project-id: 2598
+          stable-only: true
+          url-template: https://github.com/NixOS/patchelf/archive/$version.tar.gz
+
+
+  ############################
+  ####     Clipboard      ####
+  ############################
+
+  - name: wl-clipboard-static
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - -Dfishcompletiondir=no
+      - -Dzshcompletiondir=no
+    cleanup:
+      - /share/bash-completion
+      - /share/zsh
+    sources:
+      - type: archive
+        url: https://github.com/bugaevc/wl-clipboard/archive/v2.1.0/wl-clipboard-2.1.0.tar.gz
+        sha256: 72dab9a7d3835c76d6ff2089f15ffec9e064a321e5f3cbbe961a8fa81aff5573
+        x-checker-data:
+          type: anitya
+          project-id: 49082
+          stable-only: true
+          url-template: https://github.com/bugaevc/wl-clipboard/archive/v$version/wl-clipboard-$version.tar.gz
+
+  - name: xclip-static
+   #build-options: *musl-static-build-options
+    build-options:
+      cflags: -static
+      cxxflags: -static
+      ldflags: -static
+      env:
+        - CC=x86_64-linux-musl-gcc
+        - CXX=x86_64-linux-musl-g++
+        - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu
+          -lXmuu -lXt -lSM -lICE
+    sources:
+      - type: archive
+        url: https://github.com/astrand/xclip/archive/0.13/xclip-0.13.tar.gz
+        sha256: ca5b8804e3c910a66423a882d79bf3c9450b875ac8528791fb60ec9de667f758
+        x-checker-data:
+          type: anitya
+          project-id: 14150
+          stable-only: true
+          url-template: https://github.com/astrand/xclip/archive/$version/xclip-$version.tar.gz
+    cleanup:
+      - /bin/xclip-*file
+# - name: xsel-static
+#  #build-options: *musl-static-build-options
+#   build-options:
+#     cflags: -static
+#     cxxflags: -static
+#     ldflags: -static
+#     env:
+#       - CC=x86_64-linux-musl-gcc
+#       - CXX=x86_64-linux-musl-g++
+#       - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu -lXmuu -lXt
 #   sources:
 #     - type: archive
-#       url: https://codeberg.org/dnkl/foot/archive/1.12.1.tar.gz
-#       sha256: 14e307ac89454b682bb9f1bc644043779f4462df656034fcc4c1e72b18fbffdd
-#       x-checker-data:
-#         type: anitya
-#         project-id: 141611
-#         stable-only: true
-#         url-template: https://codeberg.org/dnkl/foot/archive/$version.tar.gz
-#   modules:
-#     - name: tllist
-#       buildsystem: meson
-#       sources:
-#         - type: archive
-#           url: https://codeberg.org/dnkl/tllist/archive/1.0.5.tar.gz
-#           sha256: b0f32c9b2c2015c8d8dd068fd4e8b586aa91ca1670badc274ec962559ee0aadd
-#           x-checker-data:
-#             type: anitya
-#             project-id: 141661
-#             stable-only: true
-#             url-template: https://codeberg.org/dnkl/tllist/archive/$version.tar.gz
-#       cleanup:
-#         - '*'
-#     - name: fcft
-#       buildsystem: meson
-#       sources:
-#         - type: archive
-#           url: https://codeberg.org/dnkl/fcft/archive/3.1.2.tar.gz
-#           sha256: f571afe693d3fa11fe36e97c7a2ecbbf9313755ee31c1ec3dcc648796b8e6db0
-#           x-checker-data:
-#             type: anitya
-#             project-id: 143240
-#             stable-only: true
-#             url-template: https://codeberg.org/dnkl/fcft/archive/$version.tar.gz
+#       url: https://github.com/kfish/xsel/archive/9fc4e3e4e3f1231cabfdc2e1438155f9390bc517/xsel-9fc4e3e4e3f1231cabfdc2e1438155f9390bc517.tar.gz
+#       sha256: 6269fa7b58f157bd5796b1ce82797922fe62495a61b95f565c48708a12030443
+#      #x-checker-data:
+#      #  type: anitya
+#      #  project-id:
+#      #  stable-only: true
+#      #  url-template:
 
 
   ############################
-  ####    Multiplexer     ####
+  ####     Containers     ####
   ############################
 
-  # TODO: add mosh, tmate, screen
-  - name: byobu
+  - name: flatpak
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 flatpak -t ${FLATPAK_DEST}/bin/
     sources:
-      - type: archive
-        url: https://launchpad.net/byobu/trunk/5.133/+download/byobu_5.133.orig.tar.gz
-        sha256: 4d8ea48f8c059e56f7174df89b04a08c32286bae5a21562c5c6f61be6dab7563
-        x-checker-data:
-          type: anitya
-          project-id: 236
-          stable-only: true
-          url-template: https://launchpad.net/byobu/trunk/$version/+download/byobu_$version.orig.tar.gz
-      - type: shell
+      - type: script
+        dest-filename: flatpak
         commands:
-          - sed -i 's#^\(SOCKETDIR\)=.*#\1=/tmp/screens#' etc/byobu/socketdir
-    cleanup:
-      - /share/byobu/desktop
-      - /share/byobu/pixmaps
-      - /share/dbus-1
-    modules:
-      - name: libnewt-static
-        build-options: *musl-static-build-options
-        sources:
-          - type: archive
-            url: https://releases.pagure.org/newt/newt-0.52.21.tar.gz
-            sha256: 265eb46b55d7eaeb887fca7a1d51fe115658882dfe148164b6c49fccac5abb31
-            x-checker-data:
-              type: anitya
-              project-id: 15129
-              stable-only: true
-              url-template: https://releases.pagure.org/newt/newt-$version.tar.gz
-          - type: shell
-            commands:
-              - sed -e '/^whiptail:/ s/LIBNEWTSH/LIBNEWT/' -e '/^all:/ s/_snack.$(SOEXT)//'
-                -e '/^install:/ s/install-sh//' -i Makefile.in
-        cleanup:
-          - /share/locale
-        modules:
-          - name: libxcrypt-static
-            build-options: *musl-static-build-options
-            config-opts:
-              - --disable-shared
-              - --disable-failure-tokens
-              - --enable-hashes=strong,glibc
-              - --enable-obsolete-api=no
-            sources:
-              - type: archive
-                url: https://github.com/besser82/libxcrypt/archive/v4.4.28.tar.gz
-                sha256: db7e37901969cb1d1e8020cb73a991ef81e48e31ea5b76a101862c806426b457
-                x-checker-data:
-                  type: anitya
-                  project-id: 16436
-                  stable-only: true
-                  url-template: https://github.com/besser82/libxcrypt/archive/v$version.tar.gz
-            cleanup:
-              - '*'
-          - name: gpm-static
-            build-options: *musl-static-build-options
-            config-opts:
-              - --enable-static
-              - --sbindir=${prefix}/bin
-              - --sysconfdir=${prefix}/etc
-            post-install:
-              - rm ${FLATPAK_DEST}/lib/libgpm.so*
-            sources:
-              - type: archive
-                url: https://github.com/telmich/gpm/archive/e82d1a653ca94aa4ed12441424da6ce780b1e530/gpm-e82d1a653ca94aa4ed12441424da6ce780b1e530.tar.gz
-                sha256: 570e6fcf0d9312f76aad7edfa8fc8bf90ae714ebe5ee444faece7ed7bf270939
-                x-checker-data:
-                  type: json
-                  url: https://api.github.com/repos/telmich/gpm/commits?sha=master&per_page=1
-                  version-query: .[].sha
-                  timestamp-query: .[].commit.committer.date
-                  url-query: '"https://github.com/telmich/gpm/archive/" + $version
-                    + "/gpm-" + $version + ".tar.gz"'
-              - type: shell
-                commands:
-                  - sed -e '\|prog/gpm-root| s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|$(PROG)|
-                    s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|$(LIBS) lib/libgpm.so.@abi_lev@|
-                    s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|^all:| s/libgpm.so//' -e
-                    '\|$(CC) @LDFLAGS@| s/\($(CC)\)/\1 @CFLAGS@ $(CFLAGS)/' -i src/Makefile.in
-            cleanup:
-              - /share/info
-          - name: slang-static
-            build-options: *musl-static-build-options
-            no-parallel-make: true
-            no-make-install: true
-            config-opts:
-              - --with-pcreinc=/usr/include
-              - --with-pcrelib=/usr/lib/x86_64-linux-gnu
-            make-args:
-              - static
-            build-commands:
-              - make install-static
-            sources:
-              - type: archive
-                url: https://www.jedsoft.org/releases/slang/slang-2.3.2.tar.bz2
-                sha256: fc9e3b0fc4f67c3c1f6d43c90c16a5c42d117b8e28457c5b46831b8b5d3ae31a
-                x-checker-data:
-                  type: anitya
-                  project-id: 4829
-                  stable-only: true
-                  url-template: https://www.jedsoft.org/releases/slang/slang-$version.tar.bz2
-            cleanup:
-              - '*'
+          - flatpak-spawn --host flatpak "$@"
 
-  - name: tmux-static
-    build-options: *musl-static-build-options
-    config-opts:
-      - --enable-static
-      - --enable-utempter
+  - name: host-spawn
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 host-spawn -t ${FLATPAK_DEST}/bin/
     sources:
-      - type: archive
-        url: https://github.com/tmux/tmux/releases/download/3.3a/tmux-3.3a.tar.gz
-        sha256: e4fd347843bd0772c4f48d6dde625b0b109b7a380ff15db21e97c11a4dcdf93f
+      - type: file
+        dest-filename: host-spawn
+        url: https://github.com/1player/host-spawn/releases/download/1.2.0/host-spawn-x86_64
+        sha256: ab31ad0d980194e4c29d1e82715b37e7a02201504612d08521b413d1a7f74651
         x-checker-data:
           type: anitya
-          project-id: 4980
+          project-id: 270202
           stable-only: true
-          url-template: https://github.com/tmux/tmux/releases/download/$version/tmux-$version.tar.gz
-    modules:
-      - name: libutempter-static
-        build-options: *musl-static-build-options
-        no-autogen: true
-        make-install-args:
-          - libdir=${FLATPAK_DEST}/lib
-          - libexecdir=${FLATPAK_DEST}/lib
-          - includedir=${FLATPAK_DEST}/include
-          - mandir=${FLATPAK_DEST}/share/man
-        sources:
-          - type: archive
-            url: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-1.2.1.tar.gz
-            sha256: 967fef372f391de501843ad87570c6cf5dabd9651f00f1783090fbc12b2a34cb
-            x-checker-data:
-              type: anitya
-              project-id: 1751
-              stable-only: true
-              url-template: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-$version.tar.gz
-          - type: shell
-            commands:
-              - sed -e '/^TARGETS/ s/$(SHAREDLIB)//' -e '/$(INSTALL).*$(SHAREDLIB)/d'
-                -e '/ln -s.*$(SHAREDLIB)/d' -e '/$(LINK.c)/ s/COMPILE_PIE/COMPILE_PIC/'
-                -e '/$(LINK.c)/ s/LINK_PIE/LINK_PIC/' -i Makefile
+          url-template: https://github.com/1player/host-spawn/releases/download/$version/host-spawn-x86_64
+
+  - name: podman-remote
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 podman-remote-static ${FLATPAK_DEST}/bin/podman-remote
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/containers/podman/releases/download/v4.1.1/podman-remote-static.tar.gz
+        sha256: 045f9627ae255b0bb70732e31550a02a2f8d81a945ae49b7bfc590335172ad00
+        x-checker-data:
+          type: anitya
+          project-id: 93284
+          stable-only: true
+          url-template: https://github.com/containers/podman/releases/download/v$version/podman-remote-static.tar.gz
 
 
   ############################
-  ####     Data format    ####
+  ####    Data formats    ####
   ############################
+
+  - name: go-yq
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 yq -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: yq
+        url: https://github.com/mikefarah/yq/releases/download/v4.26.1/yq_linux_amd64
+        sha256: 9e35b817e7cdc358c1fcd8498f3872db169c3303b61645cc1faf972990f37582
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/mikefarah/yq/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version
+            + "/yq_linux_amd64"'
 
   - name: jq-static
     build-options: *musl-static-build-options
@@ -1359,21 +1081,46 @@ modules:
               stable-only: true
               url-template: https://github.com/kkos/oniguruma/releases/download/v$version/onig-$version.tar.gz
 
-  - name: go-yq
+
+  ############################
+  ####       Debug        ####
+  ############################
+
+  - name: lurk
     buildsystem: simple
     build-commands:
-      - install -Dm755 yq -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 lurk -t ${FLATPAK_DEST}/bin/
     sources:
-      - type: file
-        dest-filename: yq
-        url: https://github.com/mikefarah/yq/releases/download/v4.26.1/yq_linux_amd64
-        sha256: 9e35b817e7cdc358c1fcd8498f3872db169c3303b61645cc1faf972990f37582
+      - type: archive
+        strip-components: 0
+        url: https://github.com/JakWai01/lurk/releases/download/v0.2.7/lurk-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 46fc12b1a3cfdfa95e53849ff7ab5c78787ad8dada6c6b47d0e6745e71e3dbf1
         x-checker-data:
-          type: json
-          url: https://api.github.com/repos/mikefarah/yq/releases/latest
-          version-query: .tag_name | sub("^v"; "")
-          url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version
-            + "/yq_linux_amd64"'
+          type: anitya
+          project-id: 270853
+          stable-only: true
+          url-template: https://github.com/JakWai01/lurk/releases/download/v$version/lurk-x86_64-unknown-linux-gnu.tar.gz
+
+
+  ############################
+  ####     Dotfiles       ####
+  ############################
+
+  - name: stow
+    # TODO: replace this with binary alternative
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/stow/stow-2.3.1.tar.gz
+        sha256: 09d5d99671b78537fd9b2c0b39a5e9761a7a0e979f6fdb7eabfa58ee45f03d4b
+        x-checker-data:
+          type: anitya
+          project-id: 4900
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/stow/stow-$version.tar.gz
+    cleanup:
+      - /share/doc
+      - /share/info
 
 
   ############################
@@ -1381,6 +1128,62 @@ modules:
   ############################
 
   # TODO: add micro? amp?
+  - name: kakoune-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-install-args:
+      - PREFIX=${FLATPAK_DEST}
+      - libexecdir=${FLATPAK_DEST}/lib/kak
+    sources:
+      - type: archive
+        url: https://github.com/mawww/kakoune/releases/download/v2021.11.08/kakoune-2021.11.08.tar.bz2
+        sha256: aa30889d9da11331a243a8f40fe4f6a8619321b19217debac8f565e06eddb5f4
+        x-checker-data:
+          type: anitya
+          project-id: 17726
+          stable-only: true
+          url-template: https://github.com/mawww/kakoune/releases/download/v$version/kakoune-$version.tar.bz2
+    modules:
+      - name: kak-lsp
+        buildsystem: simple
+        build-commands:
+          - install -Dm755 kak-lsp -t ${FLATPAK_DEST}/bin/
+          - install -Dm644 kak-lsp.toml -t ${FLATPAK_DEST}/share/kak-lsp/examples/
+          - install -Dm644 rc/lsp.kak -t ${FLATPAK_DEST}/share/kak-lsp/rc/
+        sources:
+          - type: archive
+            url: https://github.com/kak-lsp/kak-lsp/archive/v12.2.1/kak-lsp-12.2.1.tar.gz
+            sha256: 3769883060ff837a6eb8220943290e32fcafa9fe86a9c2231b1cdb391d35be66
+            x-checker-data:
+              type: anitya
+              project-id: 267541
+              stable-only: true
+              url-template: https://github.com/kak-lsp/kak-lsp/archive/v$version/kak-lsp-$version.tar.gz
+          - type: archive
+            strip-components: 0
+            url: https://github.com/kak-lsp/kak-lsp/releases/download/v12.2.1/kak-lsp-v12.2.1-x86_64-unknown-linux-musl.tar.gz
+            sha256: 967ebf39a4942765c6a36dc4ca411603a173d70b4d69be80db91eab306e9a0ac
+            x-checker-data:
+              type: anitya
+              project-id: 267541
+              stable-only: true
+              url-template: https://github.com/kak-lsp/kak-lsp/releases/download/v$version/kak-lsp-v$version-x86_64-unknown-linux-musl.tar.gz
+
+  - name: neovide
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 neovide -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        strip-components: 3
+        url: https://github.com/neovide/neovide/releases/download/0.9.0/neovide.tar.gz
+        sha256: 684cbcaeb2e67f1d95822ef80e03e1475395d537f2032f47b8202fe48c428b08
+        x-checker-data:
+          type: anitya
+          project-id: 270207
+          stable-only: true
+          url-template: https://github.com/neovide/neovide/releases/download/$version/neovide.tar.gz
+
   - name: neovim-static
     build-options: *musl-static-build-options
     config-opts:
@@ -1647,286 +1450,52 @@ modules:
               stable-only: true
               url-template: https://github.com/tree-sitter/tree-sitter/archive/v$version/tree-sitter-$version.tar.gz
 
-  - name: neovide
+
+  ############################
+  ## Files: Folder listing  ##
+  ############################
+
+  - name: exa
     buildsystem: simple
     build-commands:
-      - install -Dm755 neovide -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: archive
-        strip-components: 3
-        url: https://github.com/neovide/neovide/releases/download/0.9.0/neovide.tar.gz
-        sha256: 684cbcaeb2e67f1d95822ef80e03e1475395d537f2032f47b8202fe48c428b08
-        x-checker-data:
-          type: anitya
-          project-id: 270207
-          stable-only: true
-          url-template: https://github.com/neovide/neovide/releases/download/$version/neovide.tar.gz
-
-  - name: kakoune-static
-    build-options: *musl-static-build-options
-    no-autogen: true
-    make-install-args:
-      - PREFIX=${FLATPAK_DEST}
-      - libexecdir=${FLATPAK_DEST}/lib/kak
-    sources:
-      - type: archive
-        url: https://github.com/mawww/kakoune/releases/download/v2021.11.08/kakoune-2021.11.08.tar.bz2
-        sha256: aa30889d9da11331a243a8f40fe4f6a8619321b19217debac8f565e06eddb5f4
-        x-checker-data:
-          type: anitya
-          project-id: 17726
-          stable-only: true
-          url-template: https://github.com/mawww/kakoune/releases/download/v$version/kakoune-$version.tar.bz2
-    modules:
-      - name: kak-lsp
-        buildsystem: simple
-        build-commands:
-          - install -Dm755 kak-lsp -t ${FLATPAK_DEST}/bin/
-          - install -Dm644 kak-lsp.toml -t ${FLATPAK_DEST}/share/kak-lsp/examples/
-          - install -Dm644 rc/lsp.kak -t ${FLATPAK_DEST}/share/kak-lsp/rc/
-        sources:
-          - type: archive
-            url: https://github.com/kak-lsp/kak-lsp/archive/v12.2.1/kak-lsp-12.2.1.tar.gz
-            sha256: 3769883060ff837a6eb8220943290e32fcafa9fe86a9c2231b1cdb391d35be66
-            x-checker-data:
-              type: anitya
-              project-id: 267541
-              stable-only: true
-              url-template: https://github.com/kak-lsp/kak-lsp/archive/v$version/kak-lsp-$version.tar.gz
-          - type: archive
-            strip-components: 0
-            url: https://github.com/kak-lsp/kak-lsp/releases/download/v12.2.1/kak-lsp-v12.2.1-x86_64-unknown-linux-musl.tar.gz
-            sha256: 967ebf39a4942765c6a36dc4ca411603a173d70b4d69be80db91eab306e9a0ac
-            x-checker-data:
-              type: anitya
-              project-id: 267541
-              stable-only: true
-              url-template: https://github.com/kak-lsp/kak-lsp/releases/download/v$version/kak-lsp-v$version-x86_64-unknown-linux-musl.tar.gz
-
-
-  ############################
-  ####     Clipboard      ####
-  ############################
-
-  - name: wl-clipboard-static
-    build-options: *musl-static-build-options
-    buildsystem: meson
-    config-opts:
-      - -Dfishcompletiondir=no
-      - -Dzshcompletiondir=no
-    cleanup:
-      - /share/bash-completion
-      - /share/zsh
-    sources:
-      - type: archive
-        url: https://github.com/bugaevc/wl-clipboard/archive/v2.1.0/wl-clipboard-2.1.0.tar.gz
-        sha256: 72dab9a7d3835c76d6ff2089f15ffec9e064a321e5f3cbbe961a8fa81aff5573
-        x-checker-data:
-          type: anitya
-          project-id: 49082
-          stable-only: true
-          url-template: https://github.com/bugaevc/wl-clipboard/archive/v$version/wl-clipboard-$version.tar.gz
-
-  - name: xclip-static
-   #build-options: *musl-static-build-options
-    build-options:
-      cflags: -static
-      cxxflags: -static
-      ldflags: -static
-      env:
-        - CC=x86_64-linux-musl-gcc
-        - CXX=x86_64-linux-musl-g++
-        - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu
-          -lXmuu -lXt -lSM -lICE
-    sources:
-      - type: archive
-        url: https://github.com/astrand/xclip/archive/0.13/xclip-0.13.tar.gz
-        sha256: ca5b8804e3c910a66423a882d79bf3c9450b875ac8528791fb60ec9de667f758
-        x-checker-data:
-          type: anitya
-          project-id: 14150
-          stable-only: true
-          url-template: https://github.com/astrand/xclip/archive/$version/xclip-$version.tar.gz
-    cleanup:
-      - /bin/xclip-*file
-# - name: xsel-static
-#  #build-options: *musl-static-build-options
-#   build-options:
-#     cflags: -static
-#     cxxflags: -static
-#     ldflags: -static
-#     env:
-#       - CC=x86_64-linux-musl-gcc
-#       - CXX=x86_64-linux-musl-g++
-#       - LIBS=-lX11 -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu -lXmuu -lXt
-#   sources:
-#     - type: archive
-#       url: https://github.com/kfish/xsel/archive/9fc4e3e4e3f1231cabfdc2e1438155f9390bc517/xsel-9fc4e3e4e3f1231cabfdc2e1438155f9390bc517.tar.gz
-#       sha256: 6269fa7b58f157bd5796b1ce82797922fe62495a61b95f565c48708a12030443
-#      #x-checker-data:
-#      #  type: anitya
-#      #  project-id:
-#      #  stable-only: true
-#      #  url-template:
-
-
-  ############################
-  ####    File search     ####
-  ############################
-
-  - name: broot
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 x86_64-unknown-linux-musl/broot -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 broot.1 -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 completion/broot.bash ${FLATPAK_DEST}/share/bash-completion/completions/broot
-      - install -Dm644 completion/broot.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/broot.fish
-      - install -Dm644 completion/_broot ${FLATPAK_DEST}/share/zsh/site-functions/_broot
-      - install -Dm644 resources/vscode.ttf -t ${FLATPAK_DEST}/share/fonts/vscode/
+      - install -Dm755 bin/exa -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 completions/exa.bash ${FLATPAK_DEST}/share/bash-completion/completions/exa
+      - install -Dm644 completions/exa.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/exa.fish
+      - install -Dm644 completions/exa.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_exa
+      - install -Dm644 man/exa.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 man/exa_colors.5 -t ${FLATPAK_DEST}/share/man/man5/
     sources:
       - type: archive
         strip-components: 0
-        url: https://github.com/Canop/broot/releases/download/v1.14.2/broot_1.14.2.zip
-        sha256: 4e9bc7d5bc793deec387700c2258339b51e2dd499b41c010f8e0027e6a5d854c
+        url: https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-musl-v0.10.1.zip
+        sha256: 790311d6167c2b439dee253d548c8fcb67809aa6704bc2c4f2b8dd25cf6fdd31
         x-checker-data:
           type: anitya
-          project-id: 141357
+          project-id: 16575
           stable-only: true
-          url-template: https://github.com/Canop/broot/releases/download/v$version/broot_$version.zip
+          url-template: https://github.com/ogham/exa/releases/download/v$version/exa-linux-x86_64-musl-v$version.zip
 
-  - name: fd
+  - name: lsd
     buildsystem: simple
     build-commands:
-      - install -Dm755 fd -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 fd.1 -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 autocomplete/fd.bash ${FLATPAK_DEST}/share/bash-completion/completions/fd
-      - install -Dm644 autocomplete/fd.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/fd.fish
-      - install -Dm644 autocomplete/_fd ${FLATPAK_DEST}/share/zsh/site-functions/_fd
+      - install -Dm755 lsd -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 autocomplete/lsd.bash-completion ${FLATPAK_DEST}/share/bash-completion/completions/lsd
+      - install -Dm644 autocomplete/lsd.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
+      - install -Dm644 autocomplete/_lsd -t ${FLATPAK_DEST}/share/zsh/site-functions/
+      - install -Dm644 lsd.1 -t ${FLATPAK_DEST}/share/man/man1/
     sources:
       - type: archive
-        url: https://github.com/sharkdp/fd/releases/download/v8.4.0/fd-v8.4.0-x86_64-unknown-linux-musl.tar.gz
-        sha256: c27a193f8a7ad18c385bcea13e2a8764c8716a1d7fd89cbbdbd65212596fe5f8
+        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: 0adadefe27ea59cee0de226849d21dee4009064c431eca125b93995289f9ffbc
         x-checker-data:
           type: anitya
-          project-id: 16524
+          project-id: 20242
           stable-only: true
-          url-template: https://github.com/sharkdp/fd/releases/download/v$version/fd-v$version-x86_64-unknown-linux-musl.tar.gz
-
-  - name: skim
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 sk bin/sk-tmux -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 shell/completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/sk
-      - install -Dm644 shell/completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_sk
-      - install -Dm644 shell/key-bindings.{bash,zsh} -t ${FLATPAK_DEST}/share/skim/
-      - install -Dm644 shell/key-bindings.fish ${FLATPAK_DEST}/share/fish/vendor_functions.d/skim_key_bindings.fish
-      - install -Dm644 plugin/skim.vim -t ${FLATPAK_DEST}/share/vim/vimfiles/plugin/
-    sources:
-      - type: archive
-        url: https://github.com/lotabout/skim/archive/v0.9.4/skim-0.9.4.tar.gz
-        sha256: 5ec639c34c7657be4f7f990e9ad0d8d0a7a979eba68daa7c100126ce06702a1b
-        x-checker-data:
-          type: anitya
-          project-id: 16131
-          stable-only: true
-          url-template: https://github.com/lotabout/skim/archive/v$version/skim-$version.tar.gz
-      - type: archive
-        strip-components: 0
-        url: https://github.com/lotabout/skim/releases/download/v0.9.4/skim-v0.9.4-x86_64-unknown-linux-musl.tar.gz
-        sha256: a73c94622d9aaab18f9a03a9bf7af0ca2f7059280ea3df24c09c1e7e0b359c32
-        x-checker-data:
-          type: anitya
-          project-id: 16131
-          stable-only: true
-          url-template: https://github.com/lotabout/skim/releases/download/v$version/skim-v$version-x86_64-unknown-linux-musl.tar.gz
-
-  - name: ugrep-static
-    build-options: *musl-static-build-options
-    config-opts:
-      - --with-bzlib=/usr/lib/sdk/devenv
-      - --with-lz4=/usr/lib/sdk/devenv
-      - --with-lzma=/usr/lib/sdk/devenv
-      - --with-pcre2=/usr/lib/sdk/devenv
-      - --with-zlib=/usr/lib/sdk/devenv
-      - --with-zstd=/usr/lib/sdk/devenv
-    sources:
-      - type: archive
-        url: https://github.com/Genivia/ugrep/archive/v3.8.3/ugrep-3.8.3.tar.gz
-        sha256: deb7e143ee07019fdaa98a4529596d965185542a195855c1bfb6779fb8dd5e55
-        x-checker-data:
-          type: anitya
-          project-id: 187554
-          stable-only: true
-          url-template: https://github.com/Genivia/ugrep/archive/v$version/ugrep-$version.tar.gz
-
-  - name: ripgrep
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 rg -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 doc/rg.1 -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 complete/rg.bash ${FLATPAK_DEST}/share/bash-completion/completions/rg
-      - install -Dm644 complete/rg.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/rg.fish
-      - install -Dm644 complete/_rg ${FLATPAK_DEST}/share/zsh/site-functions/_rg
-    sources:
-      - type: archive
-        url: https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
-        sha256: ee4e0751ab108b6da4f47c52da187d5177dc371f0f512a7caaec5434e711c091
-        x-checker-data:
-          type: anitya
-          project-id: 15461
-          stable-only: true
-          url-template: https://github.com/BurntSushi/ripgrep/releases/download/$version/ripgrep-$version-x86_64-unknown-linux-musl.tar.gz
-
-  - name: fzy-static
-    build-options: *musl-static-build-options
-    no-autogen: true
-    make-install-args:
-      - PREFIX=${FLATPAK_DEST}
-    sources:
-      - type: archive
-        url: https://github.com/jhawthorn/fzy/archive/1.0/fzy-1.0.tar.gz
-        sha256: 80257fd74579e13438b05edf50dcdc8cf0cdb1870b4a2bc5967bd1fdbed1facf
-        x-checker-data:
-          type: anitya
-          project-id: 267539
-          stable-only: true
-          url-template: https://github.com/jhawthorn/fzy/archive/$version/fzy-$version.tar.gz
-
-  - name: fzf
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 fzf bin/fzf-tmux -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 shell/completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/fzf
-     #- install -Dm644 shell/completion.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/fzf.fish
-      - install -Dm644 shell/completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_fzf
-      - install -Dm644 shell/key-bindings.{bash,zsh} -t ${FLATPAK_DEST}/share/fzf/
-      - install -Dm644 shell/key-bindings.fish ${FLATPAK_DEST}/share/fish/vendor_functions.d/fzf_key_bindings.fish
-      - install -Dm644 doc/fzf.txt -t ${FLATPAK_DEST}/share/vim/vimfiles/doc/
-      - install -Dm644 plugin/fzf.vim -t ${FLATPAK_DEST}/share/vim/vimfiles/plugin/
-    sources:
-      - type: archive
-        strip-components: 0
-        url: https://github.com/junegunn/fzf/releases/download/0.31.0/fzf-0.31.0-linux_amd64.tar.gz
-        sha256: c13d0370b4166136bd91cdcb03ef0580d26911859aba3e7077c2cba61bd93e45
-        x-checker-data:
-          type: anitya
-          project-id: 15856
-          stable-only: true
-          url-template: https://github.com/junegunn/fzf/releases/download/$version/fzf-$version-linux_amd64.tar.gz
-      - type: archive
-        url: https://github.com/junegunn/fzf/archive/0.31.0/fzf-0.31.0.tar.gz
-        sha256: df4edee32cb214018ed40160ced968d4cc3b63bba5b0571487011ee7099faa76
-        x-checker-data:
-          type: anitya
-          project-id: 15856
-          stable-only: true
-          url-template: https://github.com/junegunn/fzf/archive/$version/fzf-$version.tar.gz
+          url-template: https://github.com/Peltoche/lsd/releases/download/$version/lsd-$version-x86_64-unknown-linux-musl.tar.gz
 
 
   ############################
-  ####    File manager    ####
+  ####  Files: Managers   ####
   ############################
 
   - name: ranger
@@ -1979,6 +1548,841 @@ modules:
     cleanup:
       - /share/applications
       - /share/pixmaps
+
+
+  ############################
+  ####   Files: Search    ####
+  ############################
+
+  - name: broot
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 x86_64-unknown-linux-musl/broot -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 broot.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 completion/broot.bash ${FLATPAK_DEST}/share/bash-completion/completions/broot
+      - install -Dm644 completion/broot.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/broot.fish
+      - install -Dm644 completion/_broot ${FLATPAK_DEST}/share/zsh/site-functions/_broot
+      - install -Dm644 resources/vscode.ttf -t ${FLATPAK_DEST}/share/fonts/vscode/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/Canop/broot/releases/download/v1.14.2/broot_1.14.2.zip
+        sha256: 4e9bc7d5bc793deec387700c2258339b51e2dd499b41c010f8e0027e6a5d854c
+        x-checker-data:
+          type: anitya
+          project-id: 141357
+          stable-only: true
+          url-template: https://github.com/Canop/broot/releases/download/v$version/broot_$version.zip
+
+  - name: fd
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 fd -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 fd.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 autocomplete/fd.bash ${FLATPAK_DEST}/share/bash-completion/completions/fd
+      - install -Dm644 autocomplete/fd.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/fd.fish
+      - install -Dm644 autocomplete/_fd ${FLATPAK_DEST}/share/zsh/site-functions/_fd
+    sources:
+      - type: archive
+        url: https://github.com/sharkdp/fd/releases/download/v8.4.0/fd-v8.4.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: c27a193f8a7ad18c385bcea13e2a8764c8716a1d7fd89cbbdbd65212596fe5f8
+        x-checker-data:
+          type: anitya
+          project-id: 16524
+          stable-only: true
+          url-template: https://github.com/sharkdp/fd/releases/download/v$version/fd-v$version-x86_64-unknown-linux-musl.tar.gz
+
+  - name: fzf
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 fzf bin/fzf-tmux -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 shell/completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/fzf
+     #- install -Dm644 shell/completion.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/fzf.fish
+      - install -Dm644 shell/completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_fzf
+      - install -Dm644 shell/key-bindings.{bash,zsh} -t ${FLATPAK_DEST}/share/fzf/
+      - install -Dm644 shell/key-bindings.fish ${FLATPAK_DEST}/share/fish/vendor_functions.d/fzf_key_bindings.fish
+      - install -Dm644 doc/fzf.txt -t ${FLATPAK_DEST}/share/vim/vimfiles/doc/
+      - install -Dm644 plugin/fzf.vim -t ${FLATPAK_DEST}/share/vim/vimfiles/plugin/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/junegunn/fzf/releases/download/0.31.0/fzf-0.31.0-linux_amd64.tar.gz
+        sha256: c13d0370b4166136bd91cdcb03ef0580d26911859aba3e7077c2cba61bd93e45
+        x-checker-data:
+          type: anitya
+          project-id: 15856
+          stable-only: true
+          url-template: https://github.com/junegunn/fzf/releases/download/$version/fzf-$version-linux_amd64.tar.gz
+      - type: archive
+        url: https://github.com/junegunn/fzf/archive/0.31.0/fzf-0.31.0.tar.gz
+        sha256: df4edee32cb214018ed40160ced968d4cc3b63bba5b0571487011ee7099faa76
+        x-checker-data:
+          type: anitya
+          project-id: 15856
+          stable-only: true
+          url-template: https://github.com/junegunn/fzf/archive/$version/fzf-$version.tar.gz
+
+  - name: fzy-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-install-args:
+      - PREFIX=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/jhawthorn/fzy/archive/1.0/fzy-1.0.tar.gz
+        sha256: 80257fd74579e13438b05edf50dcdc8cf0cdb1870b4a2bc5967bd1fdbed1facf
+        x-checker-data:
+          type: anitya
+          project-id: 267539
+          stable-only: true
+          url-template: https://github.com/jhawthorn/fzy/archive/$version/fzy-$version.tar.gz
+
+  - name: ripgrep
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 rg -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 doc/rg.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 complete/rg.bash ${FLATPAK_DEST}/share/bash-completion/completions/rg
+      - install -Dm644 complete/rg.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/rg.fish
+      - install -Dm644 complete/_rg ${FLATPAK_DEST}/share/zsh/site-functions/_rg
+    sources:
+      - type: archive
+        url: https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: ee4e0751ab108b6da4f47c52da187d5177dc371f0f512a7caaec5434e711c091
+        x-checker-data:
+          type: anitya
+          project-id: 15461
+          stable-only: true
+          url-template: https://github.com/BurntSushi/ripgrep/releases/download/$version/ripgrep-$version-x86_64-unknown-linux-musl.tar.gz
+
+  - name: skim
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 sk bin/sk-tmux -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 shell/completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/sk
+      - install -Dm644 shell/completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_sk
+      - install -Dm644 shell/key-bindings.{bash,zsh} -t ${FLATPAK_DEST}/share/skim/
+      - install -Dm644 shell/key-bindings.fish ${FLATPAK_DEST}/share/fish/vendor_functions.d/skim_key_bindings.fish
+      - install -Dm644 plugin/skim.vim -t ${FLATPAK_DEST}/share/vim/vimfiles/plugin/
+    sources:
+      - type: archive
+        url: https://github.com/lotabout/skim/archive/v0.9.4/skim-0.9.4.tar.gz
+        sha256: 5ec639c34c7657be4f7f990e9ad0d8d0a7a979eba68daa7c100126ce06702a1b
+        x-checker-data:
+          type: anitya
+          project-id: 16131
+          stable-only: true
+          url-template: https://github.com/lotabout/skim/archive/v$version/skim-$version.tar.gz
+      - type: archive
+        strip-components: 0
+        url: https://github.com/lotabout/skim/releases/download/v0.9.4/skim-v0.9.4-x86_64-unknown-linux-musl.tar.gz
+        sha256: a73c94622d9aaab18f9a03a9bf7af0ca2f7059280ea3df24c09c1e7e0b359c32
+        x-checker-data:
+          type: anitya
+          project-id: 16131
+          stable-only: true
+          url-template: https://github.com/lotabout/skim/releases/download/v$version/skim-v$version-x86_64-unknown-linux-musl.tar.gz
+
+  - name: ugrep-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --with-bzlib=/usr/lib/sdk/devenv
+      - --with-lz4=/usr/lib/sdk/devenv
+      - --with-lzma=/usr/lib/sdk/devenv
+      - --with-pcre2=/usr/lib/sdk/devenv
+      - --with-zlib=/usr/lib/sdk/devenv
+      - --with-zstd=/usr/lib/sdk/devenv
+    sources:
+      - type: archive
+        url: https://github.com/Genivia/ugrep/archive/v3.8.3/ugrep-3.8.3.tar.gz
+        sha256: deb7e143ee07019fdaa98a4529596d965185542a195855c1bfb6779fb8dd5e55
+        x-checker-data:
+          type: anitya
+          project-id: 187554
+          stable-only: true
+          url-template: https://github.com/Genivia/ugrep/archive/v$version/ugrep-$version.tar.gz
+
+
+  ############################
+  ####    Files: Sync     ####
+  ############################
+
+  - name: rsync-static
+    build-options: *musl-static-build-options
+    config-opts:
+     #- --help
+      # TODO: enable man pages
+      - --disable-md2man
+      - --with-included-popt=no
+      - --with-included-zlib=no
+      - --disable-locale
+    sources:
+      - type: archive
+        url: https://github.com/WayneD/rsync/archive/v3.2.4/-rsync-3.2.4.tar.gz
+        sha256: 4d8543cf5da694169e1d51bd9f757a80a1fa9c3d6cb1100e9816a7e85ed57aec
+        x-checker-data:
+          type: anitya
+          project-id: 4217
+          stable-only: true
+          url-template: https://github.com/WayneD/rsync/archive/v$version/-rsync-$version.tar.gz
+
+
+  ############################
+  ####  Files: Trashcan   ####
+  ############################
+
+  # TODO: evaluate garbage @ https://git.sr.ht/~mzhang/garbage
+  - name: rmtrash
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 rmtrash rmdirtrash -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        url: https://github.com/PhrozenByte/rmtrash/archive/v1.14/rmtrash-1.14.tar.gz
+        sha256: 119cf1a5e9c5ecadb95cfcc46999a5db6d55e0bb822f411c9a1b9c7d0cdf76b7
+        x-checker-data:
+          type: anitya
+          project-id: 267500
+          stable-only: true
+          url-template: https://github.com/PhrozenByte/rmtrash/archive/v$version/rmtrash-$version.tar.gz
+    modules:
+      - name: trash-cli
+        # TODO: patch to ignore XDG_DATA_HOME, might also need a workaround for not checking same fs in home
+        build-options: *musl-shared-build-options
+        buildsystem: simple
+        build-commands:
+          - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST
+            trash-cli --no-build-isolation
+          - |
+            for app in trash{,-empty,-list,-put,-restore,-rm}; do
+              mv ${FLATPAK_DEST}/bin/${app}{,-org}
+            done
+        sources:
+          - type: file
+            url: https://files.pythonhosted.org/packages/36/d2/6415cda6cdd81ee0eb07b357e96a03c96a78af324d7eb2c52ff51d080210/trash-cli-0.22.4.16.tar.gz
+            sha256: ec60ff1a038402f4b1e7360b32707bc36dc275fa32e512bb81274c0375d20003
+            x-checker-data:
+              type: pypi
+              name: trash-cli
+          - type: file
+            url: https://files.pythonhosted.org/packages/d6/de/0999ea2562b96d7165812606b18f7169307b60cd378bc29cf3673322c7e9/psutil-5.9.1.tar.gz
+            sha256: 57f1819b5d9e95cdfb0c881a8a5b7d542ed0b7c522d575706a80bedc848c8954
+            x-checker-data:
+              type: pypi
+              name: psutil
+        cleanup:
+          - '*'
+
+  - name: trash-cli-portable
+    build-options: *musl-shared-build-options
+    buildsystem: simple
+    build-commands:
+      - |
+        for app in trash{,-empty,-list,-put,-restore,-rm}; do
+          ln -s ${FLATPAK_DEST}/bin/${app}-org ${app}
+        done
+     #- |
+     #  for app in trash{,-empty,-list,-put,-restore,-rm}; do
+     #    pyi-makespec ${app}
+     #  done
+      - pyinstaller trashcli.spec
+      - install -dm755 ${FLATPAK_DEST}/lib/trash-cli-portable
+      - |
+        for app in trash{,-empty,-list,-put,-restore,-rm}; do
+          cp -r dist/${app}/* ${FLATPAK_DEST}/lib/trash-cli-portable/
+        done
+      - |
+        for app in trash{,-empty,-list,-put,-restore,-rm}; do
+          ln -s ../lib/trash-cli-portable/${app} ${FLATPAK_DEST}/bin/${app}
+        done
+    sources:
+      - type: file
+        path: trashcli.spec
+    cleanup:
+      - /lib/python*
+
+
+  ############################
+  ####      Images        ####
+  ############################
+
+  - name: chafa
+    buildsystem: simple
+    no-make-install: true
+    make-args:
+      - chafa.1
+    build-commands:
+      - install -Dm755 bin/chafa -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 docs/chafa.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/hpjansson/chafa/releases/download/1.12.3/chafa-1.12.3.tar.xz
+        sha256: 2456a0b6c1150e25b64cd6a92810d59bed3f061f8b86f91aba5a77bc7cc76cfa
+        x-checker-data:
+          type: anitya
+          project-id: 17542
+          stable-only: true
+          url-template: https://github.com/hpjansson/chafa/releases/download/$version/chafa-$version.tar.xz
+      - type: archive
+        dest: bin
+        url: https://hpjansson.org/chafa/releases/static/chafa-1.12.3-1-x86_64-linux-gnu.tar.gz
+        sha256: dba44781ff83bffb0eaaaf4a72381d956f52137d11e108b438da3a6ed7c9c668
+        x-checker-data:
+          type: anitya
+          project-id: 17542
+          stable-only: true
+          url-template: https://hpjansson.org/chafa/releases/static/chafa-$version-1-x86_64-linux-gnu.tar.gz
+
+  - name: libsixel-static
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - --default-library=static
+      - -Dimg2sixel=enabled
+      - -Dsixel2png=disabled
+      - -Dgdk-pixbuf2=disabled
+      - -Dgd=disabled
+      - -Dlibcurl=disabled
+      - -Djpeg=disabled
+      - -Dpng=disabled
+    sources:
+      - type: archive
+        url: https://github.com/libsixel/libsixel/archive/2855eea71effe4d09890f4633f7dd568dbdfae3f/lixsixel-2855eea71effe4d09890f4633f7dd568dbdfae3f.zip
+        sha256: 717be779849010e0a9d0d8e1057c4838978857113ce1487086c8204a79edccfa
+        x-checker-data:
+          type: anitya
+          project-id: 243242
+          stable-only: true
+          versions:
+            '>': 1.10.3
+          url-template: https://github.com/libsixel/libsixel/archive/v$version/lixsixel-$version.zip
+    cleanup:
+      - /bin/libsixel-config
+
+  - name: sic
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 convert sic -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 sic.bash ${FLATPAK_DEST}/share/bash-completion/completions/sic
+      - install -Dm644 sic.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/sic.fish
+      - install -Dm644 _sic ${FLATPAK_DEST}/share/zsh/site-functions/_sic
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/foresterre/sic/releases/download/v0.20.0/shell_completions.zip
+        sha256: 45dbbc2af3eb18ae05d8aeeff748a15a052fb2fc3b4ca703c193df8aa0b0ee0b
+        x-checker-data:
+          type: anitya
+          project-id: 268144
+          stable-only: true
+          url-template: https://github.com/foresterre/sic/releases/download/v$version/shell_completions.zip
+      - type: archive
+        strip-components: 0
+        url: https://github.com/foresterre/sic/releases/download/v0.20.0/sic-0.20.0-x86_64-unknown-linux-gnu.zip
+        sha256: dd75ef69e5495939ac81af93a29aea9228eb09f7f0c7757c1cf501ec0eb92f30
+        x-checker-data:
+          type: anitya
+          project-id: 268144
+          stable-only: true
+          url-template: https://github.com/foresterre/sic/releases/download/v$version/sic-$version-x86_64-unknown-linux-gnu.zip
+      - type: script
+        # get ranger-sixel working without imagemagick
+        dest-filename: convert
+        commands:
+          # infile -geometry wxh sixel:-
+          - exec sic --input "${1%\[0\]}" --resize "${3%x*}" "${3#*x}" --output-format
+            BMP 2>/dev/null | img2sixel -
+
+
+  ############################
+  ####      Python        ####
+  ############################
+
+# - name: miniconda
+#   buildsystem: simple
+#   build-commands:
+#     - bash ./miniconda-installer.sh -b -p ${FLATPAK_DEST}/lib/miniconda -f
+#     - ln -s ../lib/miniconda/conda ${FLATPAK_DEST}/bin/conda
+#   sources:
+#     - type: file
+#       dest-filename: miniconda-installer.sh
+#       url: https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh
+#       sha256: 78f39f9bae971ec1ae7969f0516017f2413f17796670f7040725dd83fcff5689
+#       x-checker-data:
+#         type: html
+#         url: https://repo.anaconda.com/miniconda/
+#         version-pattern: Miniconda3-py([\d\._]+)-Linux-x86_64.sh
+#         url-template: https://repo.anaconda.com/miniconda/Miniconda3-py$version-Linux-x86_64.sh
+
+  - name: pyenv
+    # TODO: consider adding more plugins https://github.com/pyenv/pyenv/wiki/Plugins
+    buildsystem: simple
+    build-commands:
+      - install -dm755 ${FLATPAK_DEST}/share/pyenv
+      - cp -a libexec plugins pyenv.d ${FLATPAK_DEST}/share/pyenv/
+      - ln -sr ${FLATPAK_DEST}/share/pyenv/{libexec/pyenv,plugins/python-build/bin/*}
+        -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 completions/pyenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/pyenv
+      - install -Dm644 completions/pyenv.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
+      - install -Dm644 completions/pyenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_pyenv
+      - install -Dm644 man/man1/pyenv.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/pyenv/pyenv/archive/v2.3.2/pyenv-2.3.2.tar.gz
+        sha256: 150ac8f7161c00e8e613bf5e273306f674b60037e3dace9c6bb7611dceb17144
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/pyenv/pyenv/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/pyenv/pyenv/archive/v" + $version + "/pyenv-"
+            + $version + ".tar.gz"'
+    cleanup:
+      - /share/pyenv/pyenv.d/install
+      - /share/pyenv/plugins/python-build/scripts
+      - /share/pyenv/plugins/python-build/test
+      - .gitignore
+      - LICENSE
+      - README.md
+      - install.sh
+
+  - name: pyenv-virtualenv
+    buildsystem: simple
+    build-commands:
+      - PREFIX=${FLATPAK_DEST}/share/pyenv/plugins/pyenv-virtualenv ./install.sh
+    sources:
+      - type: archive
+        url: https://github.com/pyenv/pyenv-virtualenv/archive/c6ff093344a3823d8b07c90a6478942d44d0392e/pyenv-virtualenv-c6ff093344a3823d8b07c90a6478942d44d0392e.tar.gz
+        sha256: 7973aa557072a437415cd4151eafaba1587d505725d185892b6a7db7103b561c
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/pyenv/pyenv-virtualenv/commits?sha=master&per_page=1
+          version-query: .[].sha
+          timestamp-query: .[].commit.committer.date
+          url-query: '"https://github.com/pyenv/pyenv-virtualenv/archive/" + $version
+            + "/pyenv-virtualenv-" + $version + ".tar.gz"'
+
+  - name: pyflow
+    buildsystem: simple
+    build-commands:
+      - install pyflow -Dm755 -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        url: https://github.com/David-OConnor/pyflow/releases/download/0.3.1/pyflow
+        sha256: 0f1bc273af07fb7a3c46ca84302403b41b8ea6787e62c79adb04a4674b87edf5
+        x-checker-data:
+          type: anitya
+          project-id: 47970
+          stable-only: true
+          url-template: https://github.com/David-OConnor/pyflow/releases/download/$version/pyflow
+
+
+  ############################
+  ####       Shells       ####
+  ############################
+
+  - name: bash-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --enable-static-link
+      - --enable-readline
+      - --disable-nls
+      - --with-curses
+      - --with-installed-readline
+      - --without-bash-malloc
+    make-args:
+      - TERMCAP_LIB=-lncursesw
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/bash/bash-5.1.16.tar.gz
+        sha256: 5bac17218d3911834520dad13cd1f85ab944e1c09ae1aba55906be1f8192f558
+        x-checker-data:
+          type: anitya
+          project-id: 166
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/bash/bash-$version.tar.gz
+      - type: patch
+        path: bash-config-top.h-set-devenv-defaults.patch
+      - type: patch
+        path: bash-add-localstatedir-bashrc-support.patch
+      - type: shell
+        commands:
+          # never build these libs
+          - rm -r lib/{readline,termcap}/*.c
+    cleanup:
+      - /share/info
+
+  - name: bash-completion
+    sources:
+      - type: archive
+        url: https://github.com/scop/bash-completion/releases/download/2.11/bash-completion-2.11.tar.xz
+        sha256: 73a8894bad94dee83ab468fa09f628daffd567e8bef1a24277f1e9a0daf911ac
+        x-checker-data:
+          type: anitya
+          project-id: 5667
+          stable-only: true
+          url-template: https://github.com/scop/bash-completion/releases/download/$version/bash-completion-$version.tar.xz
+      - type: shell
+        commands:
+          - sed -i '/^pkgconfigdir.*=/ s/datadir/libdir/' Makefile.in
+
+  - name: bash-complete-alias
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 complete_alias -t ${FLATPAK_DEST}/share/bash-complete-alias/
+    sources:
+      - type: archive
+        url: https://github.com/cykerway/complete-alias/archive/1.18.0/complete-alias-1.18.0.tar.gz
+        sha256: c34b85c2729650415d97280afeeed6aa29a9e318a8a39061722493cacb927445
+        x-checker-data:
+          type: anitya
+          project-id: 267535
+          stable-only: true
+          url-template: https://github.com/cykerway/complete-alias/archive/$version/complete-alias-$version.tar.gz
+
+  - name: fish
+    build-options: *musl-static-build-options
+    buildsystem: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -Wno-dev
+      - -DWITH_GETTEXT=OFF
+      - -DSYS_PCRE2_INCLUDE_DIR=/usr/lib/sdk/devenv/include
+      - -DSYS_PCRE2_LIB=/usr/lib/sdk/devenv/lib/libpcre2-32.a
+      - -DNCURSES_INCLUDE_DIRS=/usr/lib/sdk/devenv/include/ncursesw
+      - -DTPARM_INCLUDES=/usr/lib/sdk/devenv/include/ncursesw/term.h
+      - -DNCURSES_LIBRARY=/usr/lib/sdk/devenv/lib/libncursesw.a
+      - -DCURSES_TINFO=/usr/lib/sdk/devenv/lib/libncursesw.a
+      - -DCMAKE_CXX_FLAGS=-DHAVE_NCURSES_H -DHAVE_TERM_H
+      - -DTPUTS_USES_INT_ARG=1
+    sources:
+      - type: archive
+        url: https://github.com/fish-shell/fish-shell/releases/download/3.5.1/fish-3.5.1.tar.xz
+        sha256: a6d45b3dc5a45dd31772e7f8dfdfecabc063986e8f67d60bd7ca60cc81db6928
+        x-checker-data:
+          type: anitya
+          project-id: 815
+          stable-only: true
+          url-template: https://github.com/fish-shell/fish-shell/releases/download/$version/fish-$version.tar.xz
+      - type: shell
+        commands:
+          - sed -i '/Fish does not support static linking/ s/FATAL_ERROR/WARNING/'
+            CMakeLists.txt
+    cleanup:
+      - /etc
+      - /share/applications
+      - /share/pixmaps
+
+  - name: zsh-static
+    build-options: *musl-static-build-options
+    config-opts:
+      # TODO: edit config.modules to compile modules
+      # sed_i 's/link=no/link=static/' config.modules
+      - --enable-libc-musl
+      - --disable-dynamic
+      - --docdir=${FLATPAK_DEST}/share/doc/zsh
+      - --htmldir=${FLATPAK_DEST}/share/doc/zsh/html
+      - --enable-etcdir=${FLATPAK_DEST}/etc/zsh
+      - --enable-zshenv=${FLATPAK_DEST}/etc/zsh/zshenv
+      - --enable-zlogin=${FLATPAK_DEST}/etc/zsh/zlogin
+      - --enable-zlogout=${FLATPAK_DEST}/etc/zsh/zlogout
+      - --enable-zprofile=${FLATPAK_DEST}/etc/zsh/zprofile
+      - --enable-zshrc=${FLATPAK_DEST}/etc/zsh/zshrc
+      - --enable-maildir-support
+      - --enable-multibyte
+      - --enable-function-subdirs
+      - --enable-fndir=${FLATPAK_DEST}/share/zsh/functions
+      - --enable-scriptdir=${FLATPAK_DEST}/share/zsh/scripts
+      - --with-tcsetpgrp
+#     - --enable-pcre
+#     - --enable-cap
+#     - --enable-zsh-secure-free
+    post-install:
+     # unneeded filesystem (mv) operations on ${FLATPAK_DEST}/bin/zsh breaks rofiles, overwriting the file fix this
+      - install -Dm755 ${FLATPAK_DEST}/bin/zsh{-*,}
+    sources:
+      - type: archive
+        url: https://www.zsh.org/pub/zsh-5.9.tar.xz
+        sha256: 9b8d1ecedd5b5e81fbf1918e876752a7dd948e05c1a0dba10ab863842d45acd5
+        x-checker-data:
+          type: anitya
+          project-id: 5307
+          stable-only: true
+          url-template: https://www.zsh.org/pub/zsh-$version.tar.xz
+    modules:
+      - name: libcap-static
+        build-options: *musl-static-build-options
+        no-autogen: true
+        subdir: libcap
+        make-args:
+          - SHARED=no
+          - prefix=${FLATPAK_DEST}
+          - lib=lib
+        make-install-args:
+          - SHARED=no
+          - prefix=${FLATPAK_DEST}
+          - lib=lib
+        sources:
+          - type: archive
+            url: https://kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.65.tar.xz
+            sha256: 73e350020cc31fe15360879d19384ffa3395a825f065fcf6bda3a5cdf965bebd
+            x-checker-data:
+              type: anitya
+              project-id: 1569
+              stable-only: true
+              url-template: https://kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-$version.tar.xz
+
+  - name: powerline-fonts
+    # TODO: generate updated patched fonts with https://github.com/powerline/fontpatcher
+    buildsystem: simple
+    build-commands:
+      # fc-match: Noto Mono for Powerline
+      - install -Dm644 NotoMono/Noto\ Mono\ for\ Powerline.ttf ${FLATPAK_DEST}/share/fonts/powerline/NotoSansMonoPowerline.ttf
+    sources:
+      - type: archive
+        url: https://github.com/powerline/fonts/archive/4622ed562eb077e502524c8a1add6d5454a057b7/powerline-4622ed562eb077e502524c8a1add6d5454a057b7.tar.gz
+        sha256: 7f98d7e313d44f49c7637ce43469918cf6ba1fae1398ff5603392f7d2bc916c0
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/powerline/fonts/commits?sha=master&path=NotoMono&per_page=1
+          version-query: .[].sha
+          timestamp-query: .[].commit.committer.date
+          url-query: '"https://github.com/powerline/fonts/archive/" + $version + "/powerline-"
+            + $version + ".tar.gz"'
+
+  - name: powerline-go
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 powerline-go -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: powerline-go
+        url: https://github.com/justjanne/powerline-go/releases/download/v1.22.1/powerline-go-linux-amd64
+        sha256: 1cdd4fdb5dea23fc25d59e4cc845960c60bf8ead0e9b004351ee3479d805ecb4
+        x-checker-data:
+          type: anitya
+          project-id: 16076
+          stable-only: true
+          url-template: https://github.com/justjanne/powerline-go/releases/download/v$version/powerline-go-linux-amd64
+
+
+  ############################
+  ### Shells: Multiplexers ###
+  ############################
+
+  # TODO: add mosh, tmate, screen
+  - name: byobu
+    sources:
+      - type: archive
+        url: https://launchpad.net/byobu/trunk/5.133/+download/byobu_5.133.orig.tar.gz
+        sha256: 4d8ea48f8c059e56f7174df89b04a08c32286bae5a21562c5c6f61be6dab7563
+        x-checker-data:
+          type: anitya
+          project-id: 236
+          stable-only: true
+          url-template: https://launchpad.net/byobu/trunk/$version/+download/byobu_$version.orig.tar.gz
+      - type: shell
+        commands:
+          - sed -i 's#^\(SOCKETDIR\)=.*#\1=/tmp/screens#' etc/byobu/socketdir
+    cleanup:
+      - /share/byobu/desktop
+      - /share/byobu/pixmaps
+      - /share/dbus-1
+    modules:
+      - name: libnewt-static
+        build-options: *musl-static-build-options
+        sources:
+          - type: archive
+            url: https://releases.pagure.org/newt/newt-0.52.21.tar.gz
+            sha256: 265eb46b55d7eaeb887fca7a1d51fe115658882dfe148164b6c49fccac5abb31
+            x-checker-data:
+              type: anitya
+              project-id: 15129
+              stable-only: true
+              url-template: https://releases.pagure.org/newt/newt-$version.tar.gz
+          - type: shell
+            commands:
+              - sed -e '/^whiptail:/ s/LIBNEWTSH/LIBNEWT/' -e '/^all:/ s/_snack.$(SOEXT)//'
+                -e '/^install:/ s/install-sh//' -i Makefile.in
+        cleanup:
+          - /share/locale
+        modules:
+          - name: libxcrypt-static
+            build-options: *musl-static-build-options
+            config-opts:
+              - --disable-shared
+              - --disable-failure-tokens
+              - --enable-hashes=strong,glibc
+              - --enable-obsolete-api=no
+            sources:
+              - type: archive
+                url: https://github.com/besser82/libxcrypt/archive/v4.4.28.tar.gz
+                sha256: db7e37901969cb1d1e8020cb73a991ef81e48e31ea5b76a101862c806426b457
+                x-checker-data:
+                  type: anitya
+                  project-id: 16436
+                  stable-only: true
+                  url-template: https://github.com/besser82/libxcrypt/archive/v$version.tar.gz
+            cleanup:
+              - '*'
+          - name: gpm-static
+            build-options: *musl-static-build-options
+            config-opts:
+              - --enable-static
+              - --sbindir=${prefix}/bin
+              - --sysconfdir=${prefix}/etc
+            post-install:
+              - rm ${FLATPAK_DEST}/lib/libgpm.so*
+            sources:
+              - type: archive
+                url: https://github.com/telmich/gpm/archive/e82d1a653ca94aa4ed12441424da6ce780b1e530/gpm-e82d1a653ca94aa4ed12441424da6ce780b1e530.tar.gz
+                sha256: 570e6fcf0d9312f76aad7edfa8fc8bf90ae714ebe5ee444faece7ed7bf270939
+                x-checker-data:
+                  type: json
+                  url: https://api.github.com/repos/telmich/gpm/commits?sha=master&per_page=1
+                  version-query: .[].sha
+                  timestamp-query: .[].commit.committer.date
+                  url-query: '"https://github.com/telmich/gpm/archive/" + $version
+                    + "/gpm-" + $version + ".tar.gz"'
+              - type: shell
+                commands:
+                  - sed -e '\|prog/gpm-root| s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|$(PROG)|
+                    s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|$(LIBS) lib/libgpm.so.@abi_lev@|
+                    s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|^all:| s/libgpm.so//' -e
+                    '\|$(CC) @LDFLAGS@| s/\($(CC)\)/\1 @CFLAGS@ $(CFLAGS)/' -i src/Makefile.in
+            cleanup:
+              - /share/info
+          - name: slang-static
+            build-options: *musl-static-build-options
+            no-parallel-make: true
+            no-make-install: true
+            config-opts:
+              - --with-pcreinc=/usr/include
+              - --with-pcrelib=/usr/lib/x86_64-linux-gnu
+            make-args:
+              - static
+            build-commands:
+              - make install-static
+            sources:
+              - type: archive
+                url: https://www.jedsoft.org/releases/slang/slang-2.3.2.tar.bz2
+                sha256: fc9e3b0fc4f67c3c1f6d43c90c16a5c42d117b8e28457c5b46831b8b5d3ae31a
+                x-checker-data:
+                  type: anitya
+                  project-id: 4829
+                  stable-only: true
+                  url-template: https://www.jedsoft.org/releases/slang/slang-$version.tar.bz2
+            cleanup:
+              - '*'
+
+  - name: tmux-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --enable-static
+      - --enable-utempter
+    sources:
+      - type: archive
+        url: https://github.com/tmux/tmux/releases/download/3.3a/tmux-3.3a.tar.gz
+        sha256: e4fd347843bd0772c4f48d6dde625b0b109b7a380ff15db21e97c11a4dcdf93f
+        x-checker-data:
+          type: anitya
+          project-id: 4980
+          stable-only: true
+          url-template: https://github.com/tmux/tmux/releases/download/$version/tmux-$version.tar.gz
+    modules:
+      - name: libutempter-static
+        build-options: *musl-static-build-options
+        no-autogen: true
+        make-install-args:
+          - libdir=${FLATPAK_DEST}/lib
+          - libexecdir=${FLATPAK_DEST}/lib
+          - includedir=${FLATPAK_DEST}/include
+          - mandir=${FLATPAK_DEST}/share/man
+        sources:
+          - type: archive
+            url: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-1.2.1.tar.gz
+            sha256: 967fef372f391de501843ad87570c6cf5dabd9651f00f1783090fbc12b2a34cb
+            x-checker-data:
+              type: anitya
+              project-id: 1751
+              stable-only: true
+              url-template: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-$version.tar.gz
+          - type: shell
+            commands:
+              - sed -e '/^TARGETS/ s/$(SHAREDLIB)//' -e '/$(INSTALL).*$(SHAREDLIB)/d'
+                -e '/ln -s.*$(SHAREDLIB)/d' -e '/$(LINK.c)/ s/COMPILE_PIE/COMPILE_PIC/'
+                -e '/$(LINK.c)/ s/LINK_PIE/LINK_PIC/' -i Makefile
+
+
+  ############################
+  #### Terminal emulators ####
+  ############################
+
+  - name: terminfo-db
+    config-opts:
+      - --bindir=/var/bin
+      - --includedir=/var/include
+      - --libdir=/var/lib
+      - --enable-db-install
+      - --without-ada
+      - --without-curses-h
+      - --without-cxx
+      - --without-cxx-binding
+      - --without-debug
+      - --without-manpages
+      - --without-normal
+      - --without-progs
+      - --without-tests
+    make-install-args:
+      - tabsetdir=/var/share/tabset
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz
+        sha256: 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
+        x-checker-data:
+          type: anitya
+          project-id: 234776
+          stable-only: true
+          url-template: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz
+
+# TODO: static foot
+# - name: foot
+#   buildsystem: meson
+#   sources:
+#     - type: archive
+#       url: https://codeberg.org/dnkl/foot/archive/1.12.1.tar.gz
+#       sha256: 14e307ac89454b682bb9f1bc644043779f4462df656034fcc4c1e72b18fbffdd
+#       x-checker-data:
+#         type: anitya
+#         project-id: 141611
+#         stable-only: true
+#         url-template: https://codeberg.org/dnkl/foot/archive/$version.tar.gz
+#   modules:
+#     - name: tllist
+#       buildsystem: meson
+#       sources:
+#         - type: archive
+#           url: https://codeberg.org/dnkl/tllist/archive/1.0.5.tar.gz
+#           sha256: b0f32c9b2c2015c8d8dd068fd4e8b586aa91ca1670badc274ec962559ee0aadd
+#           x-checker-data:
+#             type: anitya
+#             project-id: 141661
+#             stable-only: true
+#             url-template: https://codeberg.org/dnkl/tllist/archive/$version.tar.gz
+#       cleanup:
+#         - '*'
+#     - name: fcft
+#       buildsystem: meson
+#       sources:
+#         - type: archive
+#           url: https://codeberg.org/dnkl/fcft/archive/3.1.2.tar.gz
+#           sha256: f571afe693d3fa11fe36e97c7a2ecbbf9313755ee31c1ec3dcc648796b8e6db0
+#           x-checker-data:
+#             type: anitya
+#             project-id: 143240
+#             stable-only: true
+#             url-template: https://codeberg.org/dnkl/fcft/archive/$version.tar.gz
 
 
   ############################
@@ -2082,379 +2486,6 @@ modules:
           url: https://gitea.com/api/v1/repos/gitea/tea/releases
           version-query: first(.[].tag_name | sub("^v"; ""))
           url-query: '"https://gitea.com/gitea/tea/archive/v" + $version + ".tar.gz"'
-
-
-  ############################
-  ####    File archive    ####
-  ############################
-
-  - name: p7zip-static
-    build-options: *musl-static-build-options
-    no-autogen: true
-    make-args:
-     # TODO: build 7z with shared musl libc
-     #- 7z
-      - 7zr
-      - 7za
-      - OPTFLAGS:=${CFLAGS}
-    make-install-args:
-      - DEST_DIR=/
-      - DEST_HOME=${FLATPAK_DEST}
-      - DEST_MAN=${FLATPAK_DEST}/share/man
-    sources:
-      - type: archive
-        url: https://github.com/jinfeihan57/p7zip/archive/eb1bbb0d0327a103850fec519015986e72a1ebf0.tar.gz
-        sha256: cecdaa7e2738ad4594ddddb0c568db1750b7a7ff8433961be8595033d444e3a7
-        x-checker-data:
-          type: anitya
-          project-id: 2583
-          stable-only: true
-          versions:
-            '>': '17.04'
-          url-template: https://github.com/jinfeihan57/p7zip/archive/v$version/p7zip-$version.tar.gz
-      - type: shell
-        commands:
-          - sed -i '/^CC/d;/^CXX/d;/^CC_SHARED/d;/^LINK_SHARED/d' makefile.machine
-    cleanup:
-      - /share/doc
-
-
-  ############################
-  ####     Containers     ####
-  ############################
-
-  - name: flatpak
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 flatpak -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: script
-        dest-filename: flatpak
-        commands:
-          - flatpak-spawn --host flatpak "$@"
-
-  - name: host-spawn
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 host-spawn -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: file
-        dest-filename: host-spawn
-        url: https://github.com/1player/host-spawn/releases/download/1.2.0/host-spawn-x86_64
-        sha256: ab31ad0d980194e4c29d1e82715b37e7a02201504612d08521b413d1a7f74651
-        x-checker-data:
-          type: anitya
-          project-id: 270202
-          stable-only: true
-          url-template: https://github.com/1player/host-spawn/releases/download/$version/host-spawn-x86_64
-
-  - name: podman-remote
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 podman-remote-static ${FLATPAK_DEST}/bin/podman-remote
-    sources:
-      - type: archive
-        strip-components: 0
-        url: https://github.com/containers/podman/releases/download/v4.1.1/podman-remote-static.tar.gz
-        sha256: 045f9627ae255b0bb70732e31550a02a2f8d81a945ae49b7bfc590335172ad00
-        x-checker-data:
-          type: anitya
-          project-id: 93284
-          stable-only: true
-          url-template: https://github.com/containers/podman/releases/download/v$version/podman-remote-static.tar.gz
-
-
-  ############################
-  ####     Trash can      ####
-  ############################
-
-  # TODO: evaluate garbage @ https://git.sr.ht/~mzhang/garbage
-  - name: rmtrash
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 rmtrash rmdirtrash -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: archive
-        url: https://github.com/PhrozenByte/rmtrash/archive/v1.14/rmtrash-1.14.tar.gz
-        sha256: 119cf1a5e9c5ecadb95cfcc46999a5db6d55e0bb822f411c9a1b9c7d0cdf76b7
-        x-checker-data:
-          type: anitya
-          project-id: 267500
-          stable-only: true
-          url-template: https://github.com/PhrozenByte/rmtrash/archive/v$version/rmtrash-$version.tar.gz
-    modules:
-      - name: trash-cli
-        # TODO: patch to ignore XDG_DATA_HOME, might also need a workaround for not checking same fs in home
-        build-options: *musl-shared-build-options
-        buildsystem: simple
-        build-commands:
-          - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST
-            trash-cli --no-build-isolation
-          - |
-            for app in trash{,-empty,-list,-put,-restore,-rm}; do
-              mv ${FLATPAK_DEST}/bin/${app}{,-org}
-            done
-        sources:
-          - type: file
-            url: https://files.pythonhosted.org/packages/36/d2/6415cda6cdd81ee0eb07b357e96a03c96a78af324d7eb2c52ff51d080210/trash-cli-0.22.4.16.tar.gz
-            sha256: ec60ff1a038402f4b1e7360b32707bc36dc275fa32e512bb81274c0375d20003
-            x-checker-data:
-              type: pypi
-              name: trash-cli
-          - type: file
-            url: https://files.pythonhosted.org/packages/d6/de/0999ea2562b96d7165812606b18f7169307b60cd378bc29cf3673322c7e9/psutil-5.9.1.tar.gz
-            sha256: 57f1819b5d9e95cdfb0c881a8a5b7d542ed0b7c522d575706a80bedc848c8954
-            x-checker-data:
-              type: pypi
-              name: psutil
-        cleanup:
-          - '*'
-
-  - name: trash-cli-portable
-    build-options: *musl-shared-build-options
-    buildsystem: simple
-    build-commands:
-      - |
-        for app in trash{,-empty,-list,-put,-restore,-rm}; do
-          ln -s ${FLATPAK_DEST}/bin/${app}-org ${app}
-        done
-     #- |
-     #  for app in trash{,-empty,-list,-put,-restore,-rm}; do
-     #    pyi-makespec ${app}
-     #  done
-      - pyinstaller trashcli.spec
-      - install -dm755 ${FLATPAK_DEST}/lib/trash-cli-portable
-      - |
-        for app in trash{,-empty,-list,-put,-restore,-rm}; do
-          cp -r dist/${app}/* ${FLATPAK_DEST}/lib/trash-cli-portable/
-        done
-      - |
-        for app in trash{,-empty,-list,-put,-restore,-rm}; do
-          ln -s ../lib/trash-cli-portable/${app} ${FLATPAK_DEST}/bin/${app}
-        done
-    sources:
-      - type: file
-        path: trashcli.spec
-    cleanup:
-      - /lib/python*
-
-  ############################
-  ####     Dotfiles       ####
-  ############################
-
-  - name: stow
-    # TODO: replace this with binary alternative
-    build-options: *musl-static-build-options
-    sources:
-      - type: archive
-        url: https://ftp.gnu.org/gnu/stow/stow-2.3.1.tar.gz
-        sha256: 09d5d99671b78537fd9b2c0b39a5e9761a7a0e979f6fdb7eabfa58ee45f03d4b
-        x-checker-data:
-          type: anitya
-          project-id: 4900
-          stable-only: true
-          url-template: https://ftp.gnu.org/gnu/stow/stow-$version.tar.gz
-    cleanup:
-      - /share/doc
-      - /share/info
-
-
-  ############################
-  ####    Folder view    #####
-  ############################
-
-  - name: exa
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 bin/exa -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 completions/exa.bash ${FLATPAK_DEST}/share/bash-completion/completions/exa
-      - install -Dm644 completions/exa.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/exa.fish
-      - install -Dm644 completions/exa.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_exa
-      - install -Dm644 man/exa.1 -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 man/exa_colors.5 -t ${FLATPAK_DEST}/share/man/man5/
-    sources:
-      - type: archive
-        strip-components: 0
-        url: https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-musl-v0.10.1.zip
-        sha256: 790311d6167c2b439dee253d548c8fcb67809aa6704bc2c4f2b8dd25cf6fdd31
-        x-checker-data:
-          type: anitya
-          project-id: 16575
-          stable-only: true
-          url-template: https://github.com/ogham/exa/releases/download/v$version/exa-linux-x86_64-musl-v$version.zip
-
-  - name: lsd
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 lsd -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 autocomplete/lsd.bash-completion ${FLATPAK_DEST}/share/bash-completion/completions/lsd
-      - install -Dm644 autocomplete/lsd.fish -t ${FLATPAK_DEST}/share/fish/vendor_completions.d/
-      - install -Dm644 autocomplete/_lsd -t ${FLATPAK_DEST}/share/zsh/site-functions/
-      - install -Dm644 lsd.1 -t ${FLATPAK_DEST}/share/man/man1/
-    sources:
-      - type: archive
-        url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd-0.22.0-x86_64-unknown-linux-musl.tar.gz
-        sha256: 0adadefe27ea59cee0de226849d21dee4009064c431eca125b93995289f9ffbc
-        x-checker-data:
-          type: anitya
-          project-id: 20242
-          stable-only: true
-          url-template: https://github.com/Peltoche/lsd/releases/download/$version/lsd-$version-x86_64-unknown-linux-musl.tar.gz
-
-
-  ############################
-  ####      Images        ####
-  ############################
-
-  - name: chafa
-    buildsystem: simple
-    no-make-install: true
-    make-args:
-      - chafa.1
-    build-commands:
-      - install -Dm755 bin/chafa -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 docs/chafa.1 -t ${FLATPAK_DEST}/share/man/man1/
-    sources:
-      - type: archive
-        url: https://github.com/hpjansson/chafa/releases/download/1.12.3/chafa-1.12.3.tar.xz
-        sha256: 2456a0b6c1150e25b64cd6a92810d59bed3f061f8b86f91aba5a77bc7cc76cfa
-        x-checker-data:
-          type: anitya
-          project-id: 17542
-          stable-only: true
-          url-template: https://github.com/hpjansson/chafa/releases/download/$version/chafa-$version.tar.xz
-      - type: archive
-        dest: bin
-        url: https://hpjansson.org/chafa/releases/static/chafa-1.12.3-1-x86_64-linux-gnu.tar.gz
-        sha256: dba44781ff83bffb0eaaaf4a72381d956f52137d11e108b438da3a6ed7c9c668
-        x-checker-data:
-          type: anitya
-          project-id: 17542
-          stable-only: true
-          url-template: https://hpjansson.org/chafa/releases/static/chafa-$version-1-x86_64-linux-gnu.tar.gz
-
-  - name: libsixel-static
-    build-options: *musl-static-build-options
-    buildsystem: meson
-    config-opts:
-      - --default-library=static
-      - -Dimg2sixel=enabled
-      - -Dsixel2png=disabled
-      - -Dgdk-pixbuf2=disabled
-      - -Dgd=disabled
-      - -Dlibcurl=disabled
-      - -Djpeg=disabled
-      - -Dpng=disabled
-    sources:
-      - type: archive
-        url: https://github.com/libsixel/libsixel/archive/2855eea71effe4d09890f4633f7dd568dbdfae3f/lixsixel-2855eea71effe4d09890f4633f7dd568dbdfae3f.zip
-        sha256: 717be779849010e0a9d0d8e1057c4838978857113ce1487086c8204a79edccfa
-        x-checker-data:
-          type: anitya
-          project-id: 243242
-          stable-only: true
-          versions:
-            '>': 1.10.3
-          url-template: https://github.com/libsixel/libsixel/archive/v$version/lixsixel-$version.zip
-    cleanup:
-      - /bin/libsixel-config
-
-  - name: sic
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 convert sic -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 sic.bash ${FLATPAK_DEST}/share/bash-completion/completions/sic
-      - install -Dm644 sic.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/sic.fish
-      - install -Dm644 _sic ${FLATPAK_DEST}/share/zsh/site-functions/_sic
-    sources:
-      - type: archive
-        strip-components: 0
-        url: https://github.com/foresterre/sic/releases/download/v0.20.0/shell_completions.zip
-        sha256: 45dbbc2af3eb18ae05d8aeeff748a15a052fb2fc3b4ca703c193df8aa0b0ee0b
-        x-checker-data:
-          type: anitya
-          project-id: 268144
-          stable-only: true
-          url-template: https://github.com/foresterre/sic/releases/download/v$version/shell_completions.zip
-      - type: archive
-        strip-components: 0
-        url: https://github.com/foresterre/sic/releases/download/v0.20.0/sic-0.20.0-x86_64-unknown-linux-gnu.zip
-        sha256: dd75ef69e5495939ac81af93a29aea9228eb09f7f0c7757c1cf501ec0eb92f30
-        x-checker-data:
-          type: anitya
-          project-id: 268144
-          stable-only: true
-          url-template: https://github.com/foresterre/sic/releases/download/v$version/sic-$version-x86_64-unknown-linux-gnu.zip
-      - type: script
-        # get ranger-sixel working without imagemagick
-        dest-filename: convert
-        commands:
-          # infile -geometry wxh sixel:-
-          - exec sic --input "${1%\[0\]}" --resize "${3%x*}" "${3#*x}" --output-format
-            BMP 2>/dev/null | img2sixel -
-
-
-  ############################
-  ####     File sync      ####
-  ############################
-
-  - name: rsync-static
-    build-options: *musl-static-build-options
-    config-opts:
-     #- --help
-      # TODO: enable man pages
-      - --disable-md2man
-      - --with-included-popt=no
-      - --with-included-zlib=no
-      - --disable-locale
-    sources:
-      - type: archive
-        url: https://github.com/WayneD/rsync/archive/v3.2.4/-rsync-3.2.4.tar.gz
-        sha256: 4d8543cf5da694169e1d51bd9f757a80a1fa9c3d6cb1100e9816a7e85ed57aec
-        x-checker-data:
-          type: anitya
-          project-id: 4217
-          stable-only: true
-          url-template: https://github.com/WayneD/rsync/archive/v$version/-rsync-$version.tar.gz
-
-
-  ############################
-  ####       Binary       ####
-  ############################
-
-  # TODO: add imhex
-  # TODO: add tui hex editor, bbe?
-  - name: patchelf-static
-    build-options: *musl-static-build-options
-    sources:
-      - type: archive
-        url: https://github.com/NixOS/patchelf/archive/0.15.0.tar.gz
-        sha256: 5d1eda9bad4439bb9c0a87fcba198d7c0d372f361e77de41d68d6308062e5000
-        x-checker-data:
-          type: anitya
-          project-id: 2598
-          stable-only: true
-          url-template: https://github.com/NixOS/patchelf/archive/$version.tar.gz
-
-
-  ############################
-  ####       Debug        ####
-  ############################
-
-  - name: lurk
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 lurk -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: archive
-        strip-components: 0
-        url: https://github.com/JakWai01/lurk/releases/download/v0.2.7/lurk-x86_64-unknown-linux-gnu.tar.gz
-        sha256: 46fc12b1a3cfdfa95e53849ff7ab5c78787ad8dada6c6b47d0e6745e71e3dbf1
-        x-checker-data:
-          type: anitya
-          project-id: 270853
-          stable-only: true
-          url-template: https://github.com/JakWai01/lurk/releases/download/v$version/lurk-x86_64-unknown-linux-gnu.tar.gz
 
 
   ############################
