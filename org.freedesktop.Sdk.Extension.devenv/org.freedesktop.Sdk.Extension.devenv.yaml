@@ -1794,6 +1794,24 @@ modules:
           stable-only: true
           url-template: https://github.com/Canop/broot/releases/download/v$version/broot_$version.zip
 
+  - name: fd
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 fd -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 fd.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 autocomplete/fd.bash ${FLATPAK_DEST}/share/bash-completion/completions/fd
+      - install -Dm644 autocomplete/fd.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/fd.fish
+      - install -Dm644 autocomplete/_fd ${FLATPAK_DEST}/share/zsh/site-functions/_fd
+    sources:
+      - type: archive
+        url: https://github.com/sharkdp/fd/releases/download/v8.4.0/fd-v8.4.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: c27a193f8a7ad18c385bcea13e2a8764c8716a1d7fd89cbbdbd65212596fe5f8
+        x-checker-data:
+          type: anitya
+          project-id: 16524
+          stable-only: true
+          url-template: https://github.com/sharkdp/fd/releases/download/v$version/fd-v$version-x86_64-unknown-linux-musl.tar.gz
+
   - name: skim
     buildsystem: simple
     build-commands:
