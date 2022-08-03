@@ -1044,8 +1044,8 @@ modules:
     sources:
       - type: file
         dest-filename: yq
-        url: https://github.com/mikefarah/yq/releases/download/v4.26.1/yq_linux_amd64
-        sha256: 9e35b817e7cdc358c1fcd8498f3872db169c3303b61645cc1faf972990f37582
+        url: https://github.com/mikefarah/yq/releases/download/v4.27.2/yq_linux_amd64
+        sha256: 19a50ad8c7e173d40ae34310164adf19e2eef278db7cb6c4b7efcd097c030600
         x-checker-data:
           type: json
           url: https://api.github.com/repos/mikefarah/yq/releases/latest
@@ -1093,8 +1093,8 @@ modules:
     sources:
       - type: archive
         strip-components: 0
-        url: https://github.com/JakWai01/lurk/releases/download/v0.2.7/lurk-x86_64-unknown-linux-gnu.tar.gz
-        sha256: 46fc12b1a3cfdfa95e53849ff7ab5c78787ad8dada6c6b47d0e6745e71e3dbf1
+        url: https://github.com/JakWai01/lurk/releases/download/v0.2.9/lurk-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 78ce184f6c6ebbfe7a07271adbf2e28e5aeeff730844d148933a1836f744ba69
         x-checker-data:
           type: anitya
           project-id: 270853
@@ -1607,16 +1607,16 @@ modules:
     sources:
       - type: archive
         strip-components: 0
-        url: https://github.com/junegunn/fzf/releases/download/0.31.0/fzf-0.31.0-linux_amd64.tar.gz
-        sha256: c13d0370b4166136bd91cdcb03ef0580d26911859aba3e7077c2cba61bd93e45
+        url: https://github.com/junegunn/fzf/releases/download/0.32.0/fzf-0.32.0-linux_amd64.tar.gz
+        sha256: 45e91379a37793cae891fdd5bd7742e2523afa8d7297122badd571afe27ca5c0
         x-checker-data:
           type: anitya
           project-id: 15856
           stable-only: true
           url-template: https://github.com/junegunn/fzf/releases/download/$version/fzf-$version-linux_amd64.tar.gz
       - type: archive
-        url: https://github.com/junegunn/fzf/archive/0.31.0/fzf-0.31.0.tar.gz
-        sha256: df4edee32cb214018ed40160ced968d4cc3b63bba5b0571487011ee7099faa76
+        url: https://github.com/junegunn/fzf/archive/0.32.0/fzf-0.32.0.tar.gz
+        sha256: 3502c15faeb0a6d553c68ab1a7f472af08afed94a1d016427a8ab053ef149a8f
         x-checker-data:
           type: anitya
           project-id: 15856
@@ -1930,8 +1930,8 @@ modules:
       - install -Dm644 man/man1/pyenv.1 -t ${FLATPAK_DEST}/share/man/man1/
     sources:
       - type: archive
-        url: https://github.com/pyenv/pyenv/archive/v2.3.2/pyenv-2.3.2.tar.gz
-        sha256: 150ac8f7161c00e8e613bf5e273306f674b60037e3dace9c6bb7611dceb17144
+        url: https://github.com/pyenv/pyenv/archive/v2.3.3/pyenv-2.3.3.tar.gz
+        sha256: 2a6093c922d2a420b5ae45143ab973b0a85ee486c408cb487188b64edadfab35
         x-checker-data:
           type: json
           url: https://api.github.com/repos/pyenv/pyenv/releases/latest
