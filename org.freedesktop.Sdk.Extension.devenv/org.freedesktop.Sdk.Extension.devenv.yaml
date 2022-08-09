@@ -2549,6 +2549,8 @@ modules:
       - install -Dm755 enable-development-environment ssh -t ${FLATPAK_DEST}/bin/
       - install -Dm644 bash.bashrc python.startup -t ${FLATPAK_DEST}/etc/
       - ln -s nvim ${FLATPAK_DEST}/bin/vim
+      - install -Dm755 fusermount3 -t ${FLATPAK_DEST}/bin/
+      - ln -s fusermount3 ${FLATPAK_DEST}/bin/fusermount
     sources:
       - type: script
         dest-filename: enable.sh
@@ -2603,6 +2605,20 @@ modules:
             -F /home/${USER}/.config/ssh/config \
             -o "UserKnownHostsFile /home/${USER}/.config/ssh/known_hosts" \
             "$@"
+      - type: script
+        dest-filename: fusermount3
+        commands:
+          - |
+            # source: https://github.com/flathub/org.flatpak.Builder/blob/master/fusermount-wrapper.sh
+            # workaround for gocryptfs unsetting environment variables
+            export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/flatpak/bus"
+            if [ -z "$_FUSE_COMMFD" ]; then
+                FD_ARGS=
+            else
+                FD_ARGS="--env=_FUSE_COMMFD=${_FUSE_COMMFD}"
+                [ "$_FUSE_COMMFD" -gt 2 ] && FD_ARGS+=" --forward-fd=${_FUSE_COMMFD}"
+            fi
+            exec flatpak-spawn --host $FD_ARGS fusermount3 "$@"
       - type: file
         path: enable-sdks.sh
       - type: file
