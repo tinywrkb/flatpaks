@@ -766,8 +766,8 @@ modules:
      #- --with-system-libmpdec
     sources:
       - type: archive
-        url: https://www.python.org/ftp/python/3.10.5/Python-3.10.5.tar.xz
-        sha256: 8437efd5b106ef0a75aabfbf23d880625120a73a86a22ade4d2e2e68d7b74486
+        url: https://www.python.org/ftp/python/3.10.6/Python-3.10.6.tar.xz
+        sha256: f795ff87d11d4b0c7c33bc8851b0c28648d8a4583aa2100a98c22b4326b6d3f3
         x-checker-data:
           type: anitya
           project-id: 13254
@@ -1660,16 +1660,16 @@ modules:
     sources:
       - type: archive
         strip-components: 0
-        url: https://github.com/junegunn/fzf/releases/download/0.32.0/fzf-0.32.0-linux_amd64.tar.gz
-        sha256: 45e91379a37793cae891fdd5bd7742e2523afa8d7297122badd571afe27ca5c0
+        url: https://github.com/junegunn/fzf/releases/download/0.32.1/fzf-0.32.1-linux_amd64.tar.gz
+        sha256: 6a622f46e458d9b4be9a98173245ca029a9f7077a50a73a96184af3747539c1e
         x-checker-data:
           type: anitya
           project-id: 15856
           stable-only: true
           url-template: https://github.com/junegunn/fzf/releases/download/$version/fzf-$version-linux_amd64.tar.gz
       - type: archive
-        url: https://github.com/junegunn/fzf/archive/0.32.0/fzf-0.32.0.tar.gz
-        sha256: 3502c15faeb0a6d553c68ab1a7f472af08afed94a1d016427a8ab053ef149a8f
+        url: https://github.com/junegunn/fzf/archive/0.32.1/fzf-0.32.1.tar.gz
+        sha256: c7afef61553b3b3e4e02819c5d560fa4acf33ecb39829aeba392c2e05457ca6a
         x-checker-data:
           type: anitya
           project-id: 15856
@@ -2316,8 +2316,8 @@ modules:
               - make install-static
             sources:
               - type: archive
-                url: https://www.jedsoft.org/releases/slang/slang-2.3.2.tar.bz2
-                sha256: fc9e3b0fc4f67c3c1f6d43c90c16a5c42d117b8e28457c5b46831b8b5d3ae31a
+                url: https://www.jedsoft.org/releases/slang/slang-2.3.3.tar.bz2
+                sha256: f9145054ae131973c61208ea82486d5dd10e3c5cdad23b7c4a0617743c8f5a18
                 x-checker-data:
                   type: anitya
                   project-id: 4829
