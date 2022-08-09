@@ -2548,9 +2548,12 @@ modules:
       - install -Dm755 enable{,-sdks}.sh -t ${FLATPAK_DEST}/
       - |
         install -Dm755 -t ${FLATPAK_DEST}/bin/ \
-        enable-development-environment fusermount3 lxc pacman ssh sudo
+        enable-development-environment ssh
       - ln -s nvim ${FLATPAK_DEST}/bin/vim
-      - ln -s fusermount3 ${FLATPAK_DEST}/bin/fusermount
+      - |
+        install -Dm755 -t ${FLATPAK_DEST}/bin/fsw/ \
+        fusermount3 lxc pacman sudo
+      - ln -s fusermount3 ${FLATPAK_DEST}/bin/fsw/fusermount
       - install -Dm644 bash.bashrc python.startup -t ${FLATPAK_DEST}/etc/
     sources:
       - type: script
@@ -2561,6 +2564,9 @@ modules:
               export FLATPAK_DEVELOPMENT_ENVIRONMENT=1
               SDKPATH=/usr/lib/sdk/devenv
               export PATH=${SDKPATH}/bin:$PATH
+              if [ -f "/.flatpak-info" ]; then
+                export PATH=${SDKPATH}/bin/fsw:$PATH
+              fi
               export XDG_DATA_DIRS=$XDG_DATA_DIRS:${SDKPATH}/share
               #if [ -z "$LD_LIBRARY_PATH" ]; then
               #  export LD_LIBRARY_PATH=${SDKPATH}/lib
