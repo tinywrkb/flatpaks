@@ -2546,11 +2546,12 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 enable{,-sdks}.sh -t ${FLATPAK_DEST}/
-      - install -Dm755 enable-development-environment ssh -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 bash.bashrc python.startup -t ${FLATPAK_DEST}/etc/
+      - |
+        install -Dm755 -t ${FLATPAK_DEST}/bin/ \
+        enable-development-environment fusermount3 lxc pacman ssh sudo
       - ln -s nvim ${FLATPAK_DEST}/bin/vim
-      - install -Dm755 fusermount3 -t ${FLATPAK_DEST}/bin/
       - ln -s fusermount3 ${FLATPAK_DEST}/bin/fusermount
+      - install -Dm644 bash.bashrc python.startup -t ${FLATPAK_DEST}/etc/
     sources:
       - type: script
         dest-filename: enable.sh
@@ -2598,14 +2599,6 @@ modules:
               exec bash -i
             fi
       - type: script
-        dest-filename: ssh
-        commands:
-          - |
-            /usr/bin/ssh \
-            -F /home/${USER}/.config/ssh/config \
-            -o "UserKnownHostsFile /home/${USER}/.config/ssh/known_hosts" \
-            "$@"
-      - type: script
         dest-filename: fusermount3
         commands:
           - |
@@ -2619,6 +2612,28 @@ modules:
                 [ "$_FUSE_COMMFD" -gt 2 ] && FD_ARGS+=" --forward-fd=${_FUSE_COMMFD}"
             fi
             exec flatpak-spawn --host $FD_ARGS fusermount3 "$@"
+      - type: script
+        dest-filename: pacman
+        commands:
+          - exec flatpak-spawn --host pacman "$@"
+      - type: script
+        dest-filename: lxc
+        commands:
+          - exec host-spawn lxc "$@"
+      - type: script
+        dest-filename: sudo
+        commands:
+          - exec host-spawn sudo "$@"
+      - type: script
+        dest-filename: ssh
+        commands:
+          - |
+            # using /home as this needs to work even if HOME is being overridden, for example for caching and state in
+            # project folder
+            /usr/bin/ssh \
+            -F /home/${USER}/.config/ssh/config \
+            -o "UserKnownHostsFile /home/${USER}/.config/ssh/known_hosts" \
+            "$@"
       - type: file
         path: enable-sdks.sh
       - type: file
