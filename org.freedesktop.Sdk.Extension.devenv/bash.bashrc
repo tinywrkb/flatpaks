@@ -89,8 +89,8 @@ try_source "$DEVELOPMENT_ENVIRONMENT_SDK/enable.sh"
 ##############################    Extra PATHs    ###############################
 ################################################################################
 
-if [ -z "$BASH_EXTRA_PATHS" ]; then
-  export BASH_EXTRA_PATHS=1
+if [ -z "$DEVENV_BASH_EXTRA_PATHS" ]; then
+  export DEVENV_BASH_EXTRA_PATHS=1
 
   extra_paths=(
     "$HOME/.local/bin"
