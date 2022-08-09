@@ -68,13 +68,14 @@ modules:
   #   Debug
   #   Dotfiles
   #   Editors
+  #   Files: Backup and sync
   #   Files: Folder listing
   #   Files: Managers
   #   Files: Search
-  #   Files: Sync
   #   Files: Trashcan
   #   Images
   #   Python
+  #   Security
   #   Shells
   #   Shells: Multiplexers
   #   Terminal emulators
@@ -1452,6 +1453,58 @@ modules:
 
 
   ############################
+  ## Files: Backup and sync ##
+  ############################
+
+  - name: restic
+    buildsystem: simple
+    build-commands:
+      - bunzip2 restic.bz2
+      - install -Dm755 restic -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 doc/man/*.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 doc/bash-completion.sh ${FLATPAK_DEST}/share/bash-completion/completions/restic
+      - install -Dm644 doc/fish-completion.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/restic.fish
+      - install -Dm644 doc/zsh-completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_restic
+    sources:
+      - type: file
+        dest-filename: restic.bz2
+        url: https://github.com/restic/restic/releases/download/v0.13.1/restic_0.13.1_linux_amd64.bz2
+        sha256: a7a82eca050224c9cd070fea1d4208fe92358c5942321d6e01eff84a77839fb8
+        x-checker-data:
+          type: anitya
+          project-id: 16643
+          stable-only: true
+          url-template: https://github.com/restic/restic/releases/download/v$version/restic_${version}_linux_amd64.bz2
+      - type: archive
+        url: https://github.com/restic/restic/releases/download/v0.13.1/restic-0.13.1.tar.gz
+        sha256: 8430f80dc17b98fd78aca6f7d635bf12a486687677e15989a891ff4f6d8490a9
+        x-checker-data:
+          type: anitya
+          project-id: 16643
+          stable-only: true
+          url-template: https://github.com/restic/restic/releases/download/v$version/restic-$version.tar.gz
+
+  - name: rsync-static
+    build-options: *musl-static-build-options
+    config-opts:
+     #- --help
+      # TODO: enable man pages
+      - --disable-md2man
+      - --with-included-popt=no
+      - --with-included-zlib=no
+      - --disable-locale
+    sources:
+      - type: archive
+        url: https://github.com/WayneD/rsync/archive/v3.2.4/-rsync-3.2.4.tar.gz
+        sha256: 4d8543cf5da694169e1d51bd9f757a80a1fa9c3d6cb1100e9816a7e85ed57aec
+        x-checker-data:
+          type: anitya
+          project-id: 4217
+          stable-only: true
+          url-template: https://github.com/WayneD/rsync/archive/v$version/-rsync-$version.tar.gz
+
+
+  ############################
   ## Files: Folder listing  ##
   ############################
 
@@ -1706,30 +1759,6 @@ modules:
 
 
   ############################
-  ####    Files: Sync     ####
-  ############################
-
-  - name: rsync-static
-    build-options: *musl-static-build-options
-    config-opts:
-     #- --help
-      # TODO: enable man pages
-      - --disable-md2man
-      - --with-included-popt=no
-      - --with-included-zlib=no
-      - --disable-locale
-    sources:
-      - type: archive
-        url: https://github.com/WayneD/rsync/archive/v3.2.4/-rsync-3.2.4.tar.gz
-        sha256: 4d8543cf5da694169e1d51bd9f757a80a1fa9c3d6cb1100e9816a7e85ed57aec
-        x-checker-data:
-          type: anitya
-          project-id: 4217
-          stable-only: true
-          url-template: https://github.com/WayneD/rsync/archive/v$version/-rsync-$version.tar.gz
-
-
-  ############################
   ####  Files: Trashcan   ####
   ############################
 
@@ -1976,6 +2005,27 @@ modules:
           project-id: 47970
           stable-only: true
           url-template: https://github.com/David-OConnor/pyflow/releases/download/$version/pyflow
+
+
+  ############################
+  ####      Security      ####
+  ############################
+
+  - name: gocryptfs
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 gocryptfs{,-xray} -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 gocryptfs{,-xray}.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/rfjakob/gocryptfs/releases/download/v2.2.1/gocryptfs_v2.2.1_linux-static_amd64.tar.gz
+        sha256: 7fd6342cf4aecab883264108cbb1f5d1565600c4c4c179384ec2a8f0e53a345b
+        x-checker-data:
+          type: anitya
+          project-id: 21085
+          stable-only: true
+          url-template: https://github.com/rfjakob/gocryptfs/releases/download/v$version/gocryptfs_v${version}_linux-static_amd64.tar.gz
 
 
   ############################
