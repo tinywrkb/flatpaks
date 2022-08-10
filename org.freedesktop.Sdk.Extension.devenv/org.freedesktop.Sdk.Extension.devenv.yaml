@@ -80,6 +80,7 @@ modules:
   #   Shells: Multiplexers
   #   Terminal emulators
   #   VCS
+  #   FSW
   #   Polish
 
 
@@ -992,16 +993,6 @@ modules:
   ############################
   ####     Containers     ####
   ############################
-
-  - name: flatpak
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 flatpak -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: script
-        dest-filename: flatpak
-        commands:
-          - flatpak-spawn --host flatpak "$@"
 
   - name: host-spawn
     buildsystem: simple
@@ -2539,6 +2530,50 @@ modules:
 
 
   ############################
+  ####        FSW         ####
+  ############################
+
+  - name: flatpak-spawn-wrappers
+    buildsystem: simple
+    build-commands:
+      - |
+        install -Dm755 -t ${FLATPAK_DEST}/bin/fsw/ \
+        flatpak fusermount3 lxc pacman sudo
+      - ln -s fusermount3 ${FLATPAK_DEST}/bin/fsw/fusermount
+    sources:
+      - type: script
+        dest-filename: flatpak
+        commands:
+          - flatpak-spawn --host flatpak "$@"
+      - type: script
+        dest-filename: fusermount3
+        commands:
+          - |
+            # source: https://github.com/flathub/org.flatpak.Builder/blob/master/fusermount-wrapper.sh
+            # workaround for gocryptfs unsetting environment variables
+            export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/flatpak/bus"
+            if [ -z "$_FUSE_COMMFD" ]; then
+                FD_ARGS=
+            else
+                FD_ARGS="--env=_FUSE_COMMFD=${_FUSE_COMMFD}"
+                [ "$_FUSE_COMMFD" -gt 2 ] && FD_ARGS+=" --forward-fd=${_FUSE_COMMFD}"
+            fi
+            exec flatpak-spawn --host $FD_ARGS fusermount3 "$@"
+      - type: script
+        dest-filename: pacman
+        commands:
+          - exec flatpak-spawn --host pacman "$@"
+      - type: script
+        dest-filename: lxc
+        commands:
+          - exec host-spawn lxc "$@"
+      - type: script
+        dest-filename: sudo
+        commands:
+          - exec host-spawn sudo "$@"
+
+
+  ############################
   ####       Polish       ####
   ############################
 
@@ -2550,10 +2585,6 @@ modules:
         install -Dm755 -t ${FLATPAK_DEST}/bin/ \
         enable-development-environment ssh
       - ln -s nvim ${FLATPAK_DEST}/bin/vim
-      - |
-        install -Dm755 -t ${FLATPAK_DEST}/bin/fsw/ \
-        fusermount3 lxc pacman sudo
-      - ln -s fusermount3 ${FLATPAK_DEST}/bin/fsw/fusermount
       - install -Dm644 bash.bashrc python.startup -t ${FLATPAK_DEST}/etc/
     sources:
       - type: script
@@ -2604,32 +2635,6 @@ modules:
               source /usr/lib/sdk/devenv/enable.sh
               exec bash -i
             fi
-      - type: script
-        dest-filename: fusermount3
-        commands:
-          - |
-            # source: https://github.com/flathub/org.flatpak.Builder/blob/master/fusermount-wrapper.sh
-            # workaround for gocryptfs unsetting environment variables
-            export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/flatpak/bus"
-            if [ -z "$_FUSE_COMMFD" ]; then
-                FD_ARGS=
-            else
-                FD_ARGS="--env=_FUSE_COMMFD=${_FUSE_COMMFD}"
-                [ "$_FUSE_COMMFD" -gt 2 ] && FD_ARGS+=" --forward-fd=${_FUSE_COMMFD}"
-            fi
-            exec flatpak-spawn --host $FD_ARGS fusermount3 "$@"
-      - type: script
-        dest-filename: pacman
-        commands:
-          - exec flatpak-spawn --host pacman "$@"
-      - type: script
-        dest-filename: lxc
-        commands:
-          - exec host-spawn lxc "$@"
-      - type: script
-        dest-filename: sudo
-        commands:
-          - exec host-spawn sudo "$@"
       - type: script
         dest-filename: ssh
         commands:
