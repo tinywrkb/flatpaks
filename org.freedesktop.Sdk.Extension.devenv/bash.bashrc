@@ -85,6 +85,14 @@ try_source "$XDG_CONFIG_HOME"/bash/bash.functions ||
 
 try_source "$DEVELOPMENT_ENVIRONMENT_SDK/enable.sh"
 
+is_flatpak() {
+  if [ -f /.flatpak-info ]; then
+    echo "Yes! Running ${FLATPAK_ID}"
+  else
+    echo 'No!'
+  fi
+}
+
 ################################################################################
 ##############################    Extra PATHs    ###############################
 ################################################################################
