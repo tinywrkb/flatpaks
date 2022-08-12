@@ -2538,7 +2538,7 @@ modules:
     build-commands:
       - install -dm755 ${FLATPAK_DEST}/bin/fsw
       - |
-        for cmd in flatpak lxc pacman sudo; do
+        for cmd in flatpak lxc pacman podman sudo; do
           ln -s ../host-spawn ${FLATPAK_DEST}/bin/fsw/${cmd}
         done
       - install -Dm755 fusermount3 -t ${FLATPAK_DEST}/bin/fsw/
