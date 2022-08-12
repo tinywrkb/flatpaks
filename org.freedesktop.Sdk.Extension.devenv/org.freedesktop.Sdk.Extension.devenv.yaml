@@ -2536,6 +2536,7 @@ modules:
   - name: flatpak-spawn-wrappers
     buildsystem: simple
     build-commands:
+      - install -dm755 ${FLATPAK_DEST}/bin/fsw
       - |
         for cmd in flatpak lxc pacman sudo; do
           ln -s ../host-spawn ${FLATPAK_DEST}/bin/fsw/${cmd}
