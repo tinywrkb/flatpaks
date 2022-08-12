@@ -878,7 +878,7 @@ modules:
     build-options: *musl-static-build-options
     no-autogen: true
     make-args:
-     # TODO: build 7z with shared musl libc
+     # TODO: build 7z with shared musl libc, missing 7z also breaks auto-loading fish completion
      #- 7z
       - 7zr
       - 7za

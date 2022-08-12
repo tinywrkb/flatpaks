@@ -32,6 +32,7 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * see other useful tools @ https://github.com/agarrharr/awesome-cli-apps
 * drop musl shared lib, move next to users
 * bashrc should be more generic, and user bashrc shouldn't break it
+* deal better with overriden HOME and XDG user dirs variables
 
 ### possible failure mapping of sdk path
 * stow: hardcoded perl `use dir`, can be patched
@@ -49,6 +50,20 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * vimfm: default colors in /etc
 * wtf put group, machineid, passwd, resolv.conf in etc?
 * share: byobu, fish, fzf, kak, kak-lsp, luajit, nnn, nvim, pyenv, ugrep, vifm, vim, zsh
+  * fish: possible workarounds
+    * `fish_complete_path`
+    * `fish_function_path`
+    * `__fish_datadir`
+    ```
+    export fish_function_path=$DEVENV_PATH/share/fish/functions
+    export fish_complete_path=$DEVENV_PATH/share/fish/completions
+    export PATH=$DEVENV_PATH/bin:$PATH
+    export __fish_datadir=$DEVENV_PATH/share
+    export __fish_data_dir=$DEVENV_PATH/share
+    export XDG_DATA_DIRS=$DEVENV_PATH/share:$XDG_DATA_DIRS
+    ```
+    * --filesystem=xdg-config/fish:ro
+    * --filesystem=xdg-data/fish:ro
 
 ## How to
 
