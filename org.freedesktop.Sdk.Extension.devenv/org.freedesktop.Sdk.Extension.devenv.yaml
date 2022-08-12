@@ -530,8 +530,8 @@ modules:
           - mv ${FLATPAK_DEST}/share/pkgconfig/* ${FLATPAK_DEST}/lib/pkgconfig/
         sources:
           - type: archive
-            url: https://xorg.freedesktop.org/archive/individual/proto/xorgproto-2022.1.tar.gz
-            sha256: 2a399e77d98fe53e9056726a1934b62cbaa6c41d7b1f41a354911b0925363343
+            url: https://xorg.freedesktop.org/archive/individual/proto/xorgproto-2022.2.tar.gz
+            sha256: da351a403d07a7006d7bdc8dcfc14ddc1b588b38fb81adab9989a8eef605757b
             x-checker-data:
               type: anitya
               project-id: 17190
@@ -1016,8 +1016,8 @@ modules:
     sources:
       - type: archive
         strip-components: 0
-        url: https://github.com/containers/podman/releases/download/v4.1.1/podman-remote-static.tar.gz
-        sha256: 045f9627ae255b0bb70732e31550a02a2f8d81a945ae49b7bfc590335172ad00
+        url: https://github.com/containers/podman/releases/download/v4.2.0/podman-remote-static.tar.gz
+        sha256: 8e11b5111caa4e8d1e69e99a86644ce32b68793b78b371094b4a4632ec671047
         x-checker-data:
           type: anitya
           project-id: 93284
@@ -1144,8 +1144,8 @@ modules:
           - install -Dm644 rc/lsp.kak -t ${FLATPAK_DEST}/share/kak-lsp/rc/
         sources:
           - type: archive
-            url: https://github.com/kak-lsp/kak-lsp/archive/v12.2.1/kak-lsp-12.2.1.tar.gz
-            sha256: 3769883060ff837a6eb8220943290e32fcafa9fe86a9c2231b1cdb391d35be66
+            url: https://github.com/kak-lsp/kak-lsp/archive/v13.0.0/kak-lsp-13.0.0.tar.gz
+            sha256: 4e56232d999de3d914ebb8e44c499ebfcdca5e3f0bebeb3a213d46086ba7e141
             x-checker-data:
               type: anitya
               project-id: 267541
@@ -1153,8 +1153,8 @@ modules:
               url-template: https://github.com/kak-lsp/kak-lsp/archive/v$version/kak-lsp-$version.tar.gz
           - type: archive
             strip-components: 0
-            url: https://github.com/kak-lsp/kak-lsp/releases/download/v12.2.1/kak-lsp-v12.2.1-x86_64-unknown-linux-musl.tar.gz
-            sha256: 967ebf39a4942765c6a36dc4ca411603a173d70b4d69be80db91eab306e9a0ac
+            url: https://github.com/kak-lsp/kak-lsp/releases/download/v13.0.0/kak-lsp-v13.0.0-x86_64-unknown-linux-musl.tar.gz
+            sha256: 6996dbdee5dce72e1ce9fd21caf6abea276652a9bd0a7da758d4dc8e302f6632
             x-checker-data:
               type: anitya
               project-id: 267541
@@ -2440,8 +2440,8 @@ modules:
       - bin/gh completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_gh
     sources:
       - type: archive
-        url: https://github.com/cli/cli/releases/download/v2.14.3/gh_2.14.3_linux_amd64.tar.gz
-        sha256: 95fe2e93bbd7a9f02d5b22cee01a53ab6d581fda8fa170364b668d142840ef58
+        url: https://github.com/cli/cli/releases/download/v2.14.4/gh_2.14.4_linux_amd64.tar.gz
+        sha256: 673a3adff9a847298e39c4593877194198229c12a9a4f4333765e58de230ccb0
         x-checker-data:
           type: anitya
           project-id: 135615
