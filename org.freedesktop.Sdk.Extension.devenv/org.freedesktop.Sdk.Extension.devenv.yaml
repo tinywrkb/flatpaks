@@ -2603,11 +2603,25 @@ modules:
                   export TERMINFO_DIRS+="${SDKPATH}/share/terminfo:"
                 fi
               fi
+              # symlinks adjustments for xdg user dirs locations
               if [ -n "$FLATPAK_ID" ] &&
-                [ -e "/.flatpak-info" ] &&
-                [ -d "$HOME/.var/app/${FLATPAK_ID}" ] &&
-                [ ! -e "$HOME/.var/app/${FLATPAK_ID}/.user" ]; then
-                ln -s ../../../.user "$HOME/.var/app/${FLATPAK_ID}/.user"
+                [ -e "/.flatpak-info" ]; then
+                  # single level xdg-dir
+                  # target: .user/dots
+                  # source: xdg-config/symlink
+                  # test from sandbox: $ readlink -m $XDG_CONFIG_HOME/symlink
+                  if [ -d "$HOME/.var/app/${FLATPAK_ID}" ] &&
+                    [ ! -e "$HOME/.var/app/${FLATPAK_ID}/.user" ]; then
+                    ln -s ../../../.user "$HOME/.var/app/${FLATPAK_ID}/.user"
+                  fi
+                  # two levels xdg-dir (just xdg-data)
+                  # target: .user/bin/flatpak-run-cli
+                  # symlink: xdg-data/flatpak-run-cli/exports/bin/symlink
+                  # test from sandbox: $ readlink -m $XDG_DATA_HOME/flatpak-run-cli/exports/bin/symlink
+                  if [ -d "$HOME/.var/app" ] &&
+                    [ ! -e "$HOME/.var/app/.user" ]; then
+                    ln -s ../../.user "$HOME/.var/app/.user"
+                  fi
               fi
             fi
             # workaround for badly implemented /etc/shells creation in vscode app
