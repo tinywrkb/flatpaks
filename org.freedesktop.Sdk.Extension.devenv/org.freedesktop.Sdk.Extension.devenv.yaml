@@ -2537,14 +2537,12 @@ modules:
     buildsystem: simple
     build-commands:
       - |
-        install -Dm755 -t ${FLATPAK_DEST}/bin/fsw/ \
-        flatpak fusermount3 lxc pacman sudo
+        for cmd in flatpak lxc pacman sudo; do
+          ln -s ../host-spawn ${FLATPAK_DEST}/bin/fsw/${cmd}
+        done
+      - install -Dm755 fusermount3 -t ${FLATPAK_DEST}/bin/fsw/
       - ln -s fusermount3 ${FLATPAK_DEST}/bin/fsw/fusermount
     sources:
-      - type: script
-        dest-filename: flatpak
-        commands:
-          - flatpak-spawn --host flatpak "$@"
       - type: script
         dest-filename: fusermount3
         commands:
@@ -2559,18 +2557,6 @@ modules:
                 [ "$_FUSE_COMMFD" -gt 2 ] && FD_ARGS+=" --forward-fd=${_FUSE_COMMFD}"
             fi
             exec flatpak-spawn --host $FD_ARGS fusermount3 "$@"
-      - type: script
-        dest-filename: pacman
-        commands:
-          - exec flatpak-spawn --host pacman "$@"
-      - type: script
-        dest-filename: lxc
-        commands:
-          - exec host-spawn lxc "$@"
-      - type: script
-        dest-filename: sudo
-        commands:
-          - exec host-spawn sudo "$@"
 
 
   ############################
