@@ -1357,36 +1357,14 @@ modules:
                   stable-only: true
                   url-template: https://github.com/neovim/unibilium/archive/v$version/unibilium-$version.tar.gz
       - name: lua-lpeg
-        # TODO: clean this
-        build-options: *musl-static-build-options
-       #build-options: *musl-shared-build-options
-        buildsystem: simple
-        build-commands:
-          - |
-            #x86_64-linux-musl-ld --help
-            #exit 1
-             files=(lpcap lpcode lpprint lptree lpvm)
-             for f in ${files[@]};do
-               ${CC} -c -fPIC -I${FLATPAK_DEST}/include/luajit-2.1/ ${f}.c -o ${f}.o
-              #${CC} -c -I${FLATPAK_DEST}/include/luajit-2.1/ ${f}.c -o ${f}.o -Wl,-Bstatic,-nostartfiles,-L${FLATPAK_DEST}/lib,-L/usr/lib/sdk/musl/x86_64-linux-musl/lib -lluajit-5.1 -Wl,-Bdynamic
-             done
-          - x86_64-linux-musl-ar -crs lpeg.a lpcap.o lpcode.o lpprint.o lptree.o lpvm.o
-          - ${CC} -shared -o lpeg.so -Wl,--whole-archive lpeg.a -L${FLATPAK_DEST}/lib/libluajit-5.1.so
-            -Wl,--no-whole-archive
+        build-options: *musl-shared-build-options
+        no-autogen: true
+        no-make-install: true
+        make-args:
+          - LUADIR=${FLATPAK_DEST}/include/luajit-2.1/
+        post-install:
           - install -Dm755 lpeg.so -t ${FLATPAK_DEST}/lib/lua/5.1/
           - install -Dm644 re.lua -t ${FLATPAK_DEST}/share/lua/5.1/
-         #- ${CC} -shared -o test.so -Wl,--whole-archive lpeg.a -L${FLATPAK_DEST}/lib/libluajit-5.1.so -Wl,--no-whole-archive
-         #- x86_64-inux-musl-ar -crs lpeg.a lpcap.o lpcode.o lpprint.o lptree.o lpvm.o
-         #- ${CC} -shared -o test.so -Wl,--whole-archive lpeg.a -L${FLATPAK_DEST}/lib/libluajit-5.1.so -Wl,--no-whole-archive
-       #no-autogen: true
-       #no-make-install: true
-       #make-args:
-       #  - LUADIR=${FLATPAK_DEST}/include/luajit-2.1/
-       #  - lpeg.so
-       #post-install:
-       #  - exit 1
-       #  - install -Dm755 -t ${FLATPAK_DEST}/lib/lua/5.1/ lpeg.so
-       #  - install -Dm644 -t ${FLATPAK_DEST}/share/lua/5.1/ re.lua
         sources:
           - type: archive
             url: http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.0.2.tar.gz
@@ -1396,14 +1374,9 @@ modules:
               project-id: 1852
               stable-only: true
               url-template: http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-$version.tar.gz
-         #- type: shell
-         #  commands:
-         #    - sed -e '/^CC/d' -i makefile
-         #    - sed -i 's|-shared|-static|' makefile
-         #    - sed -i 's|-o lpeg.so| -Wl,-nostartfiles -L/usr/lib/sdk/devenv/lib/libluajit-5.1.so -o lpeg.so|' makefile
-         #    - sed -i 's|env ||' makefile
-         #    - sed -i 's|$(CC) $(DLLFLAGS)|$(CC) $(CFLAGS) $(DLLFLAGS)|' makefile
-         #    - sed -i 's|^CFLAGS.*|CFLAGS:=$(CFLAGS) -fPIC -I$(LUADIR)|' makefile
+          - type: shell
+            commands:
+              - sed -i '/^CC/d' makefile
         cleanup:
           - '*'
       - name: lua-mpack
