@@ -909,8 +909,55 @@ modules:
   ####       Binary       ####
   ############################
 
-  # TODO: add imhex
-  # TODO: add tui hex editor, bbe?
+  - name: bbe
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: http://downloads.sourceforge.net/bbe-/bbe-0.2.2.tar.gz
+        sha256: baaeaf5775a6d9bceb594ea100c8f45a677a0a7d07529fa573ba0842226edddb
+        x-checker-data:
+          type: anitya
+          project-id: 14915
+          stable-only: true
+          url-template: http://downloads.sourceforge.net/bbe-/bbe-$version.tar.gz
+
+  - name: hexer
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-args:
+      - LTERMCAP=-lncurses
+      - myc
+    sources:
+      - type: archive
+        url: https://gitlab.com/hexer/hexer/-/archive/release/1.0.6/hexer-release-1.0.6.tar.gz
+        sha256: 989d04fa7eab489dc91880f64e1b9691b5e19429dc42151106b4f6969343df5d
+        x-checker-data:
+          type: anitya
+          project-id: 10932
+          stable-only: true
+          url-template: https://gitlab.com/hexer/hexer/-/archive/release/$version/hexer-release-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -e '/^CPPFLAGS / s#$# -I${PREFIX}/include/ncursesw#'
+            -e '/^PREFIX / s#/.*#${FLATPAK_DEST}#'
+            -e '/^MANDIR / s#/man/#/share/man/#'
+            -i Makefile
+
+  - name: hexyl
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 hexyl -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 hexyl.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/sharkdp/hexyl/releases/download/v0.10.0/hexyl-v0.10.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: cd932438e955b6ce721b984c948a1d7d61462714f5f01f97d2df93317b63f1a8
+        x-checker-data:
+          type: anitya
+          project-id: 18593
+          stable-only: true
+          url-template: https://github.com/sharkdp/hexyl/releases/download/v$version/hexyl-v$version-x86_64-unknown-linux-musl.tar.gz
+
   - name: patchelf-static
     build-options: *musl-static-build-options
     sources:
@@ -1119,7 +1166,6 @@ modules:
   ####      Editors       ####
   ############################
 
-  # TODO: add micro? amp?
   - name: kakoune-static
     build-options: *musl-static-build-options
     no-autogen: true
@@ -1160,6 +1206,21 @@ modules:
               project-id: 267541
               stable-only: true
               url-template: https://github.com/kak-lsp/kak-lsp/releases/download/v$version/kak-lsp-v$version-x86_64-unknown-linux-musl.tar.gz
+
+  - name: micro
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 micro -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 micro.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/zyedidia/micro/releases/download/v2.0.11/micro-2.0.11-linux64-static.tar.gz
+        sha256: e599c447289b1a44a20e8b5666b8fc58aeed8680f096bded27603a387267d55f
+        x-checker-data:
+          type: anitya
+          project-id: 19017
+          stable-only: true
+          url-template: https://github.com/zyedidia/micro/releases/download/v$version/micro-$version-linux64-static.tar.gz
 
   - name: neovide
     buildsystem: simple
