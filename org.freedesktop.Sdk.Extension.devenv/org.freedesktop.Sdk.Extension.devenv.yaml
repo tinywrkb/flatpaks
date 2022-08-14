@@ -1788,74 +1788,76 @@ modules:
   ############################
 
   # TODO: evaluate garbage @ https://git.sr.ht/~mzhang/garbage
-  - name: rmtrash
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 rmtrash rmdirtrash -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: archive
-        url: https://github.com/PhrozenByte/rmtrash/archive/v1.14/rmtrash-1.14.tar.gz
-        sha256: 119cf1a5e9c5ecadb95cfcc46999a5db6d55e0bb822f411c9a1b9c7d0cdf76b7
-        x-checker-data:
-          type: anitya
-          project-id: 267500
-          stable-only: true
-          url-template: https://github.com/PhrozenByte/rmtrash/archive/v$version/rmtrash-$version.tar.gz
-    modules:
-      - name: trash-cli
-        # TODO: patch to ignore XDG_DATA_HOME, might also need a workaround for not checking same fs in home
-        build-options: *musl-shared-build-options
-        buildsystem: simple
-        build-commands:
-          - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST
-            trash-cli --no-build-isolation
-          - |
-            for app in trash{,-empty,-list,-put,-restore,-rm}; do
-              mv ${FLATPAK_DEST}/bin/${app}{,-org}
-            done
-        sources:
-          - type: file
-            url: https://files.pythonhosted.org/packages/36/d2/6415cda6cdd81ee0eb07b357e96a03c96a78af324d7eb2c52ff51d080210/trash-cli-0.22.4.16.tar.gz
-            sha256: ec60ff1a038402f4b1e7360b32707bc36dc275fa32e512bb81274c0375d20003
-            x-checker-data:
-              type: pypi
-              name: trash-cli
-          - type: file
-            url: https://files.pythonhosted.org/packages/d6/de/0999ea2562b96d7165812606b18f7169307b60cd378bc29cf3673322c7e9/psutil-5.9.1.tar.gz
-            sha256: 57f1819b5d9e95cdfb0c881a8a5b7d542ed0b7c522d575706a80bedc848c8954
-            x-checker-data:
-              type: pypi
-              name: psutil
-        cleanup:
-          - '*'
+  # NOTE: trash-cli is disabled as it's paritally broken
+  # TODO: implement something better than trash-cli
+# - name: rmtrash
+#   buildsystem: simple
+#   build-commands:
+#     - install -Dm755 rmtrash rmdirtrash -t ${FLATPAK_DEST}/bin/
+#   sources:
+#     - type: archive
+#       url: https://github.com/PhrozenByte/rmtrash/archive/v1.14/rmtrash-1.14.tar.gz
+#       sha256: 119cf1a5e9c5ecadb95cfcc46999a5db6d55e0bb822f411c9a1b9c7d0cdf76b7
+#       x-checker-data:
+#         type: anitya
+#         project-id: 267500
+#         stable-only: true
+#         url-template: https://github.com/PhrozenByte/rmtrash/archive/v$version/rmtrash-$version.tar.gz
+#   modules:
+#     - name: trash-cli
+#       # TODO: patch to ignore XDG_DATA_HOME, might also need a workaround for not checking same fs in home
+#       build-options: *musl-shared-build-options
+#       buildsystem: simple
+#       build-commands:
+#         - pip3 install --exists-action=i --no-index --find-links=file://$PWD --prefix=$FLATPAK_DEST
+#           trash-cli --no-build-isolation
+#         - |
+#           for app in trash{,-empty,-list,-put,-restore,-rm}; do
+#             mv ${FLATPAK_DEST}/bin/${app}{,-org}
+#           done
+#       sources:
+#         - type: file
+#           url: https://files.pythonhosted.org/packages/36/d2/6415cda6cdd81ee0eb07b357e96a03c96a78af324d7eb2c52ff51d080210/trash-cli-0.22.4.16.tar.gz
+#           sha256: ec60ff1a038402f4b1e7360b32707bc36dc275fa32e512bb81274c0375d20003
+#           x-checker-data:
+#             type: pypi
+#             name: trash-cli
+#         - type: file
+#           url: https://files.pythonhosted.org/packages/d6/de/0999ea2562b96d7165812606b18f7169307b60cd378bc29cf3673322c7e9/psutil-5.9.1.tar.gz
+#           sha256: 57f1819b5d9e95cdfb0c881a8a5b7d542ed0b7c522d575706a80bedc848c8954
+#           x-checker-data:
+#             type: pypi
+#             name: psutil
+#       cleanup:
+#         - '*'
 
-  - name: trash-cli-portable
-    build-options: *musl-shared-build-options
-    buildsystem: simple
-    build-commands:
-      - |
-        for app in trash{,-empty,-list,-put,-restore,-rm}; do
-          ln -s ${FLATPAK_DEST}/bin/${app}-org ${app}
-        done
-     #- |
-     #  for app in trash{,-empty,-list,-put,-restore,-rm}; do
-     #    pyi-makespec ${app}
-     #  done
-      - pyinstaller trashcli.spec
-      - install -dm755 ${FLATPAK_DEST}/lib/trash-cli-portable
-      - |
-        for app in trash{,-empty,-list,-put,-restore,-rm}; do
-          cp -r dist/${app}/* ${FLATPAK_DEST}/lib/trash-cli-portable/
-        done
-      - |
-        for app in trash{,-empty,-list,-put,-restore,-rm}; do
-          ln -s ../lib/trash-cli-portable/${app} ${FLATPAK_DEST}/bin/${app}
-        done
-    sources:
-      - type: file
-        path: trashcli.spec
-    cleanup:
-      - /lib/python*
+# - name: trash-cli-portable
+#   build-options: *musl-shared-build-options
+#   buildsystem: simple
+#   build-commands:
+#     - |
+#       for app in trash{,-empty,-list,-put,-restore,-rm}; do
+#         ln -s ${FLATPAK_DEST}/bin/${app}-org ${app}
+#       done
+#    #- |
+#    #  for app in trash{,-empty,-list,-put,-restore,-rm}; do
+#    #    pyi-makespec ${app}
+#    #  done
+#     - pyinstaller trashcli.spec
+#     - install -dm755 ${FLATPAK_DEST}/lib/trash-cli-portable
+#     - |
+#       for app in trash{,-empty,-list,-put,-restore,-rm}; do
+#         cp -r dist/${app}/* ${FLATPAK_DEST}/lib/trash-cli-portable/
+#       done
+#     - |
+#       for app in trash{,-empty,-list,-put,-restore,-rm}; do
+#         ln -s ../lib/trash-cli-portable/${app} ${FLATPAK_DEST}/bin/${app}
+#       done
+#   sources:
+#     - type: file
+#       path: trashcli.spec
+#   cleanup:
+#     - /lib/python*
 
 
   ############################
@@ -3105,7 +3107,8 @@ modules:
     build-commands:
       - install -dm755 ${FLATPAK_DEST}/bin/fsw
       - |
-        for cmd in flatpak lxc pacman podman sudo; do
+        for cmd in flatpak lxc pacman podman sudo \
+          rm{,dir}trash trash{,-{empty,list,put,restore,rm}}; do
           ln -s ../host-spawn ${FLATPAK_DEST}/bin/fsw/${cmd}
         done
       - install -Dm755 fusermount3 -t ${FLATPAK_DEST}/bin/fsw/
