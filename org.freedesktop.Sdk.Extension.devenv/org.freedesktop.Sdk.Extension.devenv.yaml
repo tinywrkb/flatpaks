@@ -526,6 +526,8 @@ modules:
         cleanup:
           - '*'
       - name: xorgproto
+        # needed for correct detection of fds_bits
+        build-options: *musl-static-build-options
         post-install:
           - mv ${FLATPAK_DEST}/share/pkgconfig/* ${FLATPAK_DEST}/lib/pkgconfig/
         sources:
