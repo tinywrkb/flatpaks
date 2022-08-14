@@ -2244,7 +2244,48 @@ modules:
   ### Shells: Multiplexers ###
   ############################
 
-  # TODO: add mosh, tmate, screen
+  - name: libutempter-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-install-args:
+      - libdir=${FLATPAK_DEST}/lib
+      - libexecdir=${FLATPAK_DEST}/lib
+      - includedir=${FLATPAK_DEST}/include
+      - mandir=${FLATPAK_DEST}/share/man
+    sources:
+      - type: archive
+        url: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-1.2.1.tar.gz
+        sha256: 967fef372f391de501843ad87570c6cf5dabd9651f00f1783090fbc12b2a34cb
+        x-checker-data:
+          type: anitya
+          project-id: 1751
+          stable-only: true
+          url-template: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -e '/^TARGETS/ s/$(SHAREDLIB)//' -e '/$(INSTALL).*$(SHAREDLIB)/d'
+            -e '/ln -s.*$(SHAREDLIB)/d' -e '/$(LINK.c)/ s/COMPILE_PIE/COMPILE_PIC/'
+            -e '/$(LINK.c)/ s/LINK_PIE/LINK_PIC/' -i Makefile
+
+  - name: libxcrypt-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+      - --disable-failure-tokens
+      - --enable-hashes=strong,glibc
+      - --enable-obsolete-api=no
+    sources:
+      - type: archive
+        url: https://github.com/besser82/libxcrypt/archive/v4.4.28.tar.gz
+        sha256: db7e37901969cb1d1e8020cb73a991ef81e48e31ea5b76a101862c806426b457
+        x-checker-data:
+          type: anitya
+          project-id: 16436
+          stable-only: true
+          url-template: https://github.com/besser82/libxcrypt/archive/v$version.tar.gz
+    cleanup:
+      - '*'
+
   - name: byobu
     sources:
       - type: archive
@@ -2281,24 +2322,6 @@ modules:
         cleanup:
           - /share/locale
         modules:
-          - name: libxcrypt-static
-            build-options: *musl-static-build-options
-            config-opts:
-              - --disable-shared
-              - --disable-failure-tokens
-              - --enable-hashes=strong,glibc
-              - --enable-obsolete-api=no
-            sources:
-              - type: archive
-                url: https://github.com/besser82/libxcrypt/archive/v4.4.28.tar.gz
-                sha256: db7e37901969cb1d1e8020cb73a991ef81e48e31ea5b76a101862c806426b457
-                x-checker-data:
-                  type: anitya
-                  project-id: 16436
-                  stable-only: true
-                  url-template: https://github.com/besser82/libxcrypt/archive/v$version.tar.gz
-            cleanup:
-              - '*'
           - name: gpm-static
             build-options: *musl-static-build-options
             config-opts:
@@ -2349,6 +2372,134 @@ modules:
             cleanup:
               - '*'
 
+  - name: mosh-static
+    # TODO: test if client is working without perl module
+    build-options: *musl-static-build-options
+    config-opts:
+      - --enable-static
+      - --enable-completion
+      - --with-ncurses
+    sources:
+      - type: archive
+        url: https://github.com/mobile-shell/mosh/releases/download/mosh-1.3.2/mosh-1.3.2.tar.gz
+        sha256: da600573dfa827d88ce114e0fed30210689381bbdcff543c931e4d6a2e851216
+        x-checker-data:
+          type: anitya
+          project-id: 7269
+          stable-only: true
+          url-template: https://github.com/mobile-shell/mosh/releases/download/mosh-$version/mosh-$version.tar.gz
+    modules:
+#     - name: perl-io-tty-shared
+#       # only needed for mosh-client
+#       # can't be built with musl without building perl
+#       build-options: *musl-shared-build-options
+#       buildsystem: simple
+#       build-commands:
+#         - perl Makefile.PL INSTALL_BASE=${FLATPAK_DEST}
+#         - make install
+#       post-install:
+#         # workaround for cpanm acting silly and install files without write permission
+#         - find /app -type f ! -perm -0200 -exec chmod u+w '{}' \;
+#       sources:
+#         - type: archive
+#           url: https://search.cpan.org/CPAN/authors/id/T/TO/TODDR/IO-Tty-1.16.tar.gz
+#           sha256: 8f1a09c070738adc695df903f2e7f74308dd8d991b914c0bc390a0e6021294dd
+#           x-checker-data:
+#             type: anitya
+#             project-id: 7281
+#             stable-only: true
+#             url-template: https://search.cpan.org/CPAN/authors/id/T/TO/TODDR/IO-Tty-$version.tar.gz
+#       cleanup:
+#         - .packlist
+#         - '*.pod'
+      - name: protobuf-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --enable-static
+        make-args:
+          # debug output for libtool
+          - AM_LIBTOOLFLAGS=--verbose
+          - V=1
+        sources:
+          - type: archive
+            url: https://github.com/protocolbuffers/protobuf/releases/download/v21.5/protobuf-all-21.5.tar.gz
+            sha256: 7ba0cb2ecfd9e5d44a6fa9ce05f254b7e5cd70ec89fafba0b07448f3e258310c
+            x-checker-data:
+              type: anitya
+              project-id: 3715
+              stable-only: true
+              url-template: https://github.com/protocolbuffers/protobuf/releases/download/v$version/protobuf-all-$version.tar.gz
+          - type: shell
+            commands:
+              # libtool workaround to generate statically linked protoc
+              - sed -e 's/$(CXXLD)/$(CXXLD) -all-static/' -i src/Makefile.in
+        cleanup:
+          - '*'
+
+  - name: screen-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --enable-static
+      - --enable-use-locale
+      - --enable-telnet
+      - --enable-colors256
+      - --enable-rxvt_osc
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/screen/screen-4.9.0.tar.gz
+        sha256: f9335281bb4d1538ed078df78a20c2f39d3af9a4e91c57d084271e0289c730f4
+        x-checker-data:
+          type: anitya
+          project-id: 4772
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/screen/screen-$version.tar.gz
+
+  - name: tmate-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --enable-static
+    make-args:
+      - V=1
+      # workaround for tmate not using pkgconfig
+      - LIBNCURSES_CFLAGS=-I/usr/lib/sdk/devenv/include/ncursesw
+      - LIBNCURSES_LIBS=-lncursesw
+    sources:
+      - type: archive
+        url: https://github.com/tmate-io/tmate/archive/2.4.0/tmate-2.4.0.tar.gz
+        sha256: 62b61eb12ab394012c861f6b48ba0bc04ac8765abca13bdde5a4d9105cb16138
+        x-checker-data:
+          type: anitya
+          project-id: 10245
+          stable-only: true
+          url-template: https://github.com/tmate-io/tmate/archive/$version/tmate-$version.tar.gz
+      - type: shell
+        commands:
+          # workaround for tmate not using pkgconfig
+          - sed -i '/^#if defined(HAVE_CURSES_H)/i \#define HAVE_NCURSES_H' tty-term.c
+    modules:
+      - name: libssh-static # depends on openssl zlib
+        build-options: *musl-static-build-options
+        buildsystem: cmake
+        builddir: true
+        config-opts:
+          # wrong detection of zlib includedir prepend /usr/include before musl includedir
+          - -DZLIB_INCLUDE_DIR=/usr/lib/sdk/devenv/include
+          - -DWITH_GSSAPI=OFF
+          - -DBUILD_SHARED_LIBS=OFF
+          - -DUNIT_TESTING=OFF
+          - -DWITH_EXAMPLES=OFF
+        sources:
+          - type: archive
+            url: https://www.libssh.org/files/0.9/libssh-0.9.6.tar.xz
+            sha256: 86bcf885bd9b80466fe0e05453c58b877df61afa8ba947a58c356d7f0fab829b
+            x-checker-data:
+              type: anitya
+              project-id: 1729
+              stable-only: true
+              url-template: https://www.libssh.org/files/$version0.$version1/libssh-$version.tar.xz
+        cleanup:
+          - '*'
+
   - name: tmux-static
     build-options: *musl-static-build-options
     config-opts:
@@ -2363,29 +2514,6 @@ modules:
           project-id: 4980
           stable-only: true
           url-template: https://github.com/tmux/tmux/releases/download/$version/tmux-$version.tar.gz
-    modules:
-      - name: libutempter-static
-        build-options: *musl-static-build-options
-        no-autogen: true
-        make-install-args:
-          - libdir=${FLATPAK_DEST}/lib
-          - libexecdir=${FLATPAK_DEST}/lib
-          - includedir=${FLATPAK_DEST}/include
-          - mandir=${FLATPAK_DEST}/share/man
-        sources:
-          - type: archive
-            url: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-1.2.1.tar.gz
-            sha256: 967fef372f391de501843ad87570c6cf5dabd9651f00f1783090fbc12b2a34cb
-            x-checker-data:
-              type: anitya
-              project-id: 1751
-              stable-only: true
-              url-template: http://ftp.altlinux.org/pub/people/ldv/utempter/libutempter-$version.tar.gz
-          - type: shell
-            commands:
-              - sed -e '/^TARGETS/ s/$(SHAREDLIB)//' -e '/$(INSTALL).*$(SHAREDLIB)/d'
-                -e '/ln -s.*$(SHAREDLIB)/d' -e '/$(LINK.c)/ s/COMPILE_PIE/COMPILE_PIC/'
-                -e '/$(LINK.c)/ s/LINK_PIE/LINK_PIC/' -i Makefile
 
 
   ############################
