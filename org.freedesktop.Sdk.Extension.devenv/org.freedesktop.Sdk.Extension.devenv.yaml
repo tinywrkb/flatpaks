@@ -2838,6 +2838,137 @@ modules:
         cleanup:
           - '*'
 
+# - name: xterm-static
+#   # TODO: fix xterm, it fails with EIO (Input/output error) on open(/dev/pts/..)
+#   # TODO: fix detection of XftDrawCharSpec XftDrawSetClip XftDrawSetClipRectangles
+#   #       broken due to static libs not included automatically, see config.log
+#   build-options: *musl-static-build-options
+#   config-opts:
+#     - --enable-static
+#    #- --libdir=${prefix}/etc # set in the arch linux package, is it a workaround
+#    #- --with-app-defaults=${prefix}/share/X11/app-defaults/ # maybe create Xdefaults instead
+#     # TODO: fix pcre detection
+#     - --disable-full-tgetent
+#     - --disable-imake
+#     # TODO: add luit
+#     - --disable-luit
+#     - --disable-openpty # force using posix_openpt
+#     # TODO: fix pcre detection
+#     - --disable-regex
+#     - --without-tty-group
+#     - --without-xinerama # multi-monitor, not worth troubling with building xinerama
+#     - --enable-256-color
+#     - --enable-88-color
+#     - --enable-ansi-color
+#     - --enable-broken-osc
+#     - --enable-broken-st
+#     - --enable-dabbrev
+#     - --enable-doublechars
+#     - --enable-exec-xterm
+#     - --enable-freetype
+#     - --enable-i18n
+#     - --enable-load-vt-fonts
+#     - --enable-logging
+#     - --enable-mini-luit
+#     - --enable-narrowproto
+#     - --enable-regis-graphics
+#     - --enable-sixel-graphics
+#     - --enable-tcap-query
+#     - --enable-warnings
+#     - --enable-wide-chars
+#     # TODO: fix utempter libexec detection, currently uses /usr/lib/utempter
+#     - --with-utempter
+#     - --with-x
+#   post-install:
+#     - rm ${FLATPAK_DEST}/include/ncurses
+#   sources:
+#     - type: archive
+#       url: https://invisible-mirror.net/archives/xterm/xterm-372.tgz
+#       sha256: c6d08127cb2409c3a04bcae559b7025196ed770bb7bf26630abcb45d95f60ab1
+#       x-checker-data:
+#         type: anitya
+#         project-id: 5272
+#         stable-only: true
+#         url-template: https://invisible-mirror.net/archives/xterm/xterm-$version.tgz
+#     - type: shell
+#       commands:
+#         # workaround for for ncursesw detection
+#         - sed -i '/cf_TERMLIB=/ s/=.*/=ncursesw/' configure
+#         - ln -s ncursesw ${FLATPAK_DEST}/include/ncurses
+#         # workarounds for plink.sh not able to handle static libs
+#         - |
+#           sed -i 's#@ECHO_LD@\$(SHELL) \$(srcdir)/plink.sh ##' Makefile.in
+#         # workarounds for missing static libs when linking
+#         - sed -i '/@LIBS@/a LIBS += -lxcb -lX11-xcb -lXau -lxcb-xinput -lxcb-xkb -lXdmcp -lXext -lXmu -lXmuu -lXpm -lXt -lX11 -lSM -lICE' Makefile.in
+#         - sed -i '/cf_cv_x_freetype_libs.*FREETYPE_CONFIG/a \	\	cf_cv_x_freetype_libs="$cf_cv_x_freetype_libs -lXft -lXrender -lfontconfig -lfreetype -lexpat -lharfbuzz -lpng -lz -lbz2"' configure
+#         # TODO: fix pts open()
+#        #- sed -i '/posix_openpt/ s/O_RDWR/O_RDWR|O_NOCTTY/' main.c
+#   modules:
+#     - name: libxaw-static
+#       build-options: *musl-static-build-options
+#       config-opts:
+#         - --disable-shared
+#       post-install:
+#         - rm ${FLATPAK_DEST}/lib/libXaw.so*
+#       sources:
+#         - type: archive
+#           url: https://xorg.freedesktop.org/releases/individual/lib/libXaw-1.0.14.tar.gz
+#           sha256: 59cfed2712cc80bbfe62dd1aacf24f58d74a76dd08329a922077b134a8d8048f
+#           x-checker-data:
+#             type: anitya
+#             project-id: 1785
+#             stable-only: true
+#             url-template: https://xorg.freedesktop.org/releases/individual/lib/libXaw-$version.tar.gz
+#       cleanup:
+#         - '*'
+#       modules:
+#         - name: libxpm-static
+#           build-options: *musl-static-build-options
+#           config-opts:
+#             - --disable-shared
+#           sources:
+#             - type: archive
+#               url: https://xorg.freedesktop.org/releases/individual/lib/libXpm-3.5.13.tar.gz
+#               sha256: e3dfb0fb8c1f127432f2a498c7856b37ce78a61e8da73f1aab165a73dd97ad00
+#               x-checker-data:
+#                 type: anitya
+#                 project-id: 1787
+#                 stable-only: true
+#                 url-template: https://xorg.freedesktop.org/releases/individual/lib/libXpm-$version.tar.gz
+#           cleanup:
+#             - '*'
+#     - name: libxft-static
+#       build-options: *musl-static-build-options
+#       config-opts:
+#         - --disable-shared
+#       sources:
+#         - type: archive
+#           url: https://xorg.freedesktop.org/releases/individual/lib/libXft-2.3.4.tar.gz
+#           sha256: 1eca71bec9cb483165ce1ab94f5cd3036269f5268651df6a2d99c4a7ab644d79
+#           x-checker-data:
+#             type: anitya
+#             project-id: 1777
+#             stable-only: true
+#             url-template: https://xorg.freedesktop.org/releases/individual/lib/libXft-$version.tar.gz
+#       cleanup:
+#         - '*'
+#       modules:
+#         - name: libxrender-static
+#           build-options: *musl-static-build-options
+#           config-opts:
+#             - --disable-shared
+#           sources:
+#             - type: archive
+#               url: https://xorg.freedesktop.org/releases/individual/lib/libXrender-0.9.10.tar.gz
+#               sha256: 770527cce42500790433df84ec3521e8bf095dfe5079454a92236494ab296adf
+#               x-checker-data:
+#                 type: anitya
+#                 project-id: 1789
+#                 stable-only: true
+#                 url-template: https://xorg.freedesktop.org/releases/individual/lib/libXrender-$version.tar.gz
+#           cleanup:
+#             - '*'
+
 
   ############################
   ####        VCS         ####
