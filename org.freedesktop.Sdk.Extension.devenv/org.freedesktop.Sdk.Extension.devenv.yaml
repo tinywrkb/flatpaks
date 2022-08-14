@@ -2522,6 +2522,7 @@ modules:
   #### Terminal emulators ####
   ############################
 
+  # TODO: patch minicom to use flock, and add it here
   - name: terminfo-db
     config-opts:
       - --bindir=/var/bin
@@ -2790,7 +2791,7 @@ modules:
         cleanup:
           - '*'
         modules:
-          - name: libxml2
+          - name: libxml2-static
             build-options: *musl-static-build-options
             config-opts:
               - --enable-static
@@ -2837,6 +2838,28 @@ modules:
               url-template: https://git.sr.ht/~sircmpwn/scdoc/archive/$version.tar.gz
         cleanup:
           - '*'
+
+  - name: picocom-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    no-make-install: true
+    build-commands:
+      - install -Dm755 picocom pc{asc,xm,ym,zm} -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 picocom.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 -t ${FLATPAK_DEST}/share/doc/picocom/
+        lowerrts.md picocom.1.{md,pdf} README.md termios2.txt
+      - install -Dm644 bash_completion/picocom -t ${FLATPAK_DEST}/share/bash-completion/
+    sources:
+      - type: archive
+        url: https://github.com/npat-efault/picocom/archive/1acf1ddabaf3576b4023c4f6f09c5a3e4b086fb8/picocom-1acf1ddabaf3576b4023c4f6f09c5a3e4b086fb8.tar.gz
+        sha256: 4ce6bd7ff0307166e7e06d570df854ff6eab3718728cc3c4612716c9aa01477a
+        x-checker-data:
+          type: anitya
+          project-id: 3634
+          stable-only: true
+          versions:
+            '>': '3.1'
+          url-template: https://github.com/npat-efault/picocom/archive/$version/picocom-$version.tar.gz
 
 # - name: xterm-static
 #   # TODO: fix xterm, it fails with EIO (Input/output error) on open(/dev/pts/..)
