@@ -2547,43 +2547,294 @@ modules:
           stable-only: true
           url-template: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz
 
-# TODO: static foot
-# - name: foot
-#   buildsystem: meson
-#   sources:
-#     - type: archive
-#       url: https://codeberg.org/dnkl/foot/archive/1.12.1.tar.gz
-#       sha256: 14e307ac89454b682bb9f1bc644043779f4462df656034fcc4c1e72b18fbffdd
-#       x-checker-data:
-#         type: anitya
-#         project-id: 141611
-#         stable-only: true
-#         url-template: https://codeberg.org/dnkl/foot/archive/$version.tar.gz
-#   modules:
-#     - name: tllist
-#       buildsystem: meson
-#       sources:
-#         - type: archive
-#           url: https://codeberg.org/dnkl/tllist/archive/1.0.5.tar.gz
-#           sha256: b0f32c9b2c2015c8d8dd068fd4e8b586aa91ca1670badc274ec962559ee0aadd
-#           x-checker-data:
-#             type: anitya
-#             project-id: 141661
-#             stable-only: true
-#             url-template: https://codeberg.org/dnkl/tllist/archive/$version.tar.gz
-#       cleanup:
-#         - '*'
-#     - name: fcft
-#       buildsystem: meson
-#       sources:
-#         - type: archive
-#           url: https://codeberg.org/dnkl/fcft/archive/3.1.2.tar.gz
-#           sha256: f571afe693d3fa11fe36e97c7a2ecbbf9313755ee31c1ec3dcc648796b8e6db0
-#           x-checker-data:
-#             type: anitya
-#             project-id: 143240
-#             stable-only: true
-#             url-template: https://codeberg.org/dnkl/fcft/archive/$version.tar.gz
+  - name: foot-static
+    # TODO: add notify-send
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - --default-library=static
+      - -Ddocs=enabled
+      - -Dthemes=true
+      - -Dime=true
+      - -Dgrapheme-clustering=enabled
+      - -Dtests=false
+    sources:
+      - type: archive
+        url: https://codeberg.org/dnkl/foot/archive/1.12.1.tar.gz
+        sha256: 14e307ac89454b682bb9f1bc644043779f4462df656034fcc4c1e72b18fbffdd
+        x-checker-data:
+          type: anitya
+          project-id: 141611
+          stable-only: true
+          url-template: https://codeberg.org/dnkl/foot/archive/$version.tar.gz
+    modules:
+      - name: libpng-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --enable-static
+        make-args:
+          - CPPFLAGS=-I${FLATPAK_DEST}/include
+        sources:
+          - type: archive
+            url: http://downloads.sourceforge.net/libpng/libpng-1.6.37.tar.gz
+            sha256: daeb2620d829575513e35fecc83f0d3791a620b9b93d800b763542ece9390fb4
+            x-checker-data:
+              type: anitya
+              project-id: 1705
+              stable-only: true
+              url-template: http://downloads.sourceforge.net/libpng/libpng-$version.tar.gz
+        cleanup:
+          - '*'
+      - name: fcft-static
+        build-options: *musl-static-build-options
+        buildsystem: meson
+        config-opts:
+          - --default-library=static
+        sources:
+          - type: archive
+            url: https://codeberg.org/dnkl/fcft/archive/3.1.2.tar.gz
+            sha256: f571afe693d3fa11fe36e97c7a2ecbbf9313755ee31c1ec3dcc648796b8e6db0
+            x-checker-data:
+              type: anitya
+              project-id: 143240
+              stable-only: true
+              url-template: https://codeberg.org/dnkl/fcft/archive/$version.tar.gz
+        cleanup:
+          - '*'
+        modules:
+          - name: fontconfig-static
+            # TODO: import flatpak runtime cache patches
+            buildsystem: meson
+            build-options: *musl-static-build-options
+            config-opts:
+              - --default-library=static
+              - -Ddoc=disabled
+              - -Dnls=disabled
+              - -Dtests=disabled
+              - -Dtools=disabled
+              - -Dcache-build=disabled
+            sources:
+              - type: archive
+                url: https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/2.14.0/fontconfig-2.14.0.tar.gz
+                sha256: 48f5ea2e5038f038adcb8b2bc9e6dd30987ccc962665092657b95f9f6d21a49a
+                x-checker-data:
+                  type: anitya
+                  project-id: 827
+                  stable-only: true
+                  url-template: https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/$version/fontconfig-$version.tar.gz
+            cleanup:
+              - '*'
+            modules:
+              - name: freetype2-static
+                build-options: *musl-static-build-options
+                buildsystem: meson
+                config-opts:
+                  - --default-library=static
+                  - -Dbrotli=disabled
+                  - -Dbzip2=enabled
+                  - -Dharfbuzz=enabled
+                  - -Dpng=enabled
+                  - -Dtests=disabled
+                  - -Dzlib=enabled
+                sources:
+                  - type: archive
+                    url: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-2.12.1.tar.xz
+                    sha256: 4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f
+                    x-checker-data:
+                      type: anitya
+                      project-id: 854
+                      stable-only: true
+                      url-template: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-$version.tar.xz
+                cleanup:
+                  - '*'
+                modules:
+                  - name: harfbuzz-static
+                   #build-options: *musl-static-build-options
+                    build-options:
+                      cflags: -static -fno-exceptions -fno-rtti
+                      cxxflags: -static -fno-exceptions -fno-rtti
+                      ldflags: -static
+                      env:
+                        - CC=x86_64-linux-musl-gcc
+                        - CXX=x86_64-linux-musl-g++
+                    buildsystem: meson
+                    # TODO: add graphite2
+                    config-opts:
+                      - --default-library=static
+                      - -Dglib=disabled
+                      - -Dgobject=disabled
+                      - -Dcairo=disabled
+                      - -Dchafa=disabled
+                      - -Dicu=disabled
+                      - -Dgraphite=disabled
+                      - -Dgraphite2=disabled
+                      - -Dfreetype=enabled
+                      - -Dtests=disabled
+                      - -Dintrospection=disabled
+                      - -Ddocs=disabled
+                      - -Dbenchmark=disabled
+                      - -Dicu_builtin=true
+                    sources:
+                      - type: archive
+                        url: https://github.com/harfbuzz/harfbuzz/releases/download/5.1.0/harfbuzz-5.1.0.tar.xz
+                        sha256: 2edb95db668781aaa8d60959d21be2ff80085f31b12053cdd660d9a50ce84f05
+                        x-checker-data:
+                          type: anitya
+                          project-id: 1299
+                          stable-only: true
+                          url-template: https://github.com/harfbuzz/harfbuzz/releases/download/$version/harfbuzz-$version.tar.xz
+                    cleanup:
+                      - '*'
+                    modules:
+                      - name: freetype2-noharfbuzz-static
+                        build-options: *musl-static-build-options
+                        buildsystem: meson
+                        config-opts:
+                          - --default-library=static
+                          - -Dbrotli=disabled
+                          - -Dbzip2=enabled
+                          - -Dharfbuzz=disabled
+                          - -Dpng=enabled
+                          - -Dtests=disabled
+                          - -Dzlib=enabled
+                        sources:
+                          - type: archive
+                            url: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-2.12.1.tar.xz
+                            sha256: 4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f
+                            x-checker-data:
+                              type: anitya
+                              project-id: 854
+                              stable-only: true
+                              url-template: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-$version.tar.xz
+                        cleanup:
+                          - '*'
+          - name: pixman-static
+            build-options: *musl-static-build-options
+            buildsystem: meson
+            config-opts:
+              - --default-library=static
+              - -Dloongson-mmi=disabled
+              - -Dvmx=disabled
+              - -Darm-simd=disabled
+              - -Dneon=disabled
+              - -Diwmmxt=disabled
+              - -Diwmmxt2=false
+              - -Dmips-dspr2=disabled
+              - -Dgnu-inline-asm=disabled
+              - -Dopenmp=disabled
+              - -Dgtk=disabled
+              - -Dlibpng=enabled
+            sources:
+              - type: archive
+                url: https://xorg.freedesktop.org/releases/individual/lib/pixman-0.40.0.tar.gz
+                sha256: 6d200dec3740d9ec4ec8d1180e25779c00bc749f94278c8b9021f5534db223fc
+                x-checker-data:
+                  type: anitya
+                  project-id: 3648
+                  stable-only: true
+                  url-template: https://xorg.freedesktop.org/releases/individual/lib/pixman-$version.tar.gz
+            cleanup:
+              - '*'
+          - name: tllist
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: https://codeberg.org/dnkl/tllist/archive/1.0.5.tar.gz
+                sha256: b0f32c9b2c2015c8d8dd068fd4e8b586aa91ca1670badc274ec962559ee0aadd
+                x-checker-data:
+                  type: anitya
+                  project-id: 141661
+                  stable-only: true
+                  url-template: https://codeberg.org/dnkl/tllist/archive/$version.tar.gz
+            cleanup:
+              - '*'
+      - name: libutf8proc-static
+        build-options: *musl-static-build-options
+        buildsystem: cmake
+        builddir: true
+        sources:
+          - type: archive
+            url: https://github.com/JuliaStrings/utf8proc/archive/v2.7.0/utf8proc-2.7.0.tar.gz
+            sha256: 4bb121e297293c0fd55f08f83afab6d35d48f0af4ecc07523ad8ec99aa2b12a1
+            x-checker-data:
+              type: anitya
+              project-id: 7455
+              stable-only: true
+              url-template: https://github.com/JuliaStrings/utf8proc/archive/v$version/utf8proc-$version.tar.gz
+        cleanup:
+          - '*'
+      - name: libxkbcommon-static
+        build-options: *musl-static-build-options
+        buildsystem: meson
+        config-opts:
+          - --default-library=static
+          - -Dxkb-config-root=/usr/share/X11/xkb
+          - -Dxkb-config-extra-path=/etc/xkb
+          - -Dx-locale-root=/usr/share/X11/locale
+          - -Denable-tools=false
+          - -Denable-x11=false
+          - -Denable-docs=false
+          - -Denable-wayland=true
+          - -Denable-xkbregistry=false
+        sources:
+          - type: archive
+            url: https://xkbcommon.org/download/libxkbcommon-1.4.0.tar.xz
+            sha256: 106cec5263f9100a7e79b5f7220f889bc78e7d7ffc55d2b6fdb1efefb8024031
+            x-checker-data:
+              type: anitya
+              project-id: 1780
+              stable-only: true
+              url-template: https://xkbcommon.org/download/libxkbcommon-$version.tar.xz
+        cleanup:
+          - '*'
+        modules:
+          - name: libxml2
+            build-options: *musl-static-build-options
+            config-opts:
+              - --enable-static
+              - --without-python
+            sources:
+              - type: archive
+                url: https://download.gnome.org/sources/libxml2/2.9/libxml2-2.9.14.tar.xz
+                sha256: 60d74a257d1ccec0475e749cba2f21559e48139efba6ff28224357c7c798dfee
+                x-checker-data:
+                  type: anitya
+                  project-id: 1783
+                  stable-only: true
+                  url-template: https://download.gnome.org/sources/libxml2/$version0.$version1/libxml2-$version.tar.xz
+            cleanup:
+              - '*'
+          - name: wayland-protocols
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: https://wayland.freedesktop.org/releases/wayland-protocols-1.26.tar.xz
+                sha256: c553384c1c68afd762fa537a2569cc9074fe7600da12d3472761e77a2ba56f13
+                x-checker-data:
+                  type: anitya
+                  project-id: 13997
+                  stable-only: true
+                  url-template: https://wayland.freedesktop.org/releases/wayland-protocols-$version.tar.xz
+            cleanup:
+              - '*'
+      - name: scdoc
+        no-autogen: true
+        make-args:
+          - PREFIX=${FLATPAK_DEST}
+        make-install-args:
+          - PREFIX=${FLATPAK_DEST}
+          - PCDIR=${PREFIX}/lib/pkgconfig
+        sources:
+          - type: archive
+            url: https://git.sr.ht/~sircmpwn/scdoc/archive/1.11.2.tar.gz
+            sha256: e9ff9981b5854301789a6778ee64ef1f6d1e5f4829a9dd3e58a9a63eacc2e6f0
+            x-checker-data:
+              type: anitya
+              project-id: 68662
+              stable-only: true
+              url-template: https://git.sr.ht/~sircmpwn/scdoc/archive/$version.tar.gz
+        cleanup:
+          - '*'
 
 
   ############################
