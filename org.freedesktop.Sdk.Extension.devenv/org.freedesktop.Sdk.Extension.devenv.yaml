@@ -1168,6 +1168,25 @@ modules:
   ####      Editors       ####
   ############################
 
+  - name: helix
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 hx -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 contrib/completion/hx.bash ${FLATPAK_DEST}/share/bash-completion/completions/hx
+      - install -Dm644 contrib/completion/hx.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/hx.fish
+      - install -Dm644 contrib/completion/hx.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_hex
+      - install -dm755 ${FLATPAK_DEST}/share/helix
+      - cp -r runtime ${FLATPAK_DEST}/share/helix/
+    sources:
+      - type: archive
+        url: https://github.com/helix-editor/helix/releases/download/22.05/helix-22.05-x86_64-linux.tar.xz
+        sha256: 73eb3fa54858d81dc7f393166044f30a0c04eeb9f88f49971146ef9ddfc043f9
+        x-checker-data:
+          type: anitya
+          project-id: 219661
+          stable-only: true
+          url-template: https://github.com/helix-editor/helix/releases/download/$version/helix-$version-x86_64-linux.tar.xz
+
   - name: kakoune-static
     build-options: *musl-static-build-options
     no-autogen: true

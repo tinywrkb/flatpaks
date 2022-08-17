@@ -306,6 +306,10 @@ export HISTFILE="$XDG_DATA_HOME/bash_history"
 # gnupg
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
+# helix
+# TODO: actually handle xdg dir, related: https://github.com/helix-editor/helix/issues/584
+export HELIX_RUNTIME="$DEVELOPMENT_ENVIRONMENT_SDK/share/helix/runtime"
+
 # openssl
 export RANDFILE="$XDG_CACHE_HOME/rnd"
 
