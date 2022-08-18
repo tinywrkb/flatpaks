@@ -207,8 +207,8 @@ modules:
       - PREFIX=${FLATPAK_DEST}
     sources:
       - type: archive
-        url: https://github.com/lz4/lz4/archive/fb46a7fe8cd99bb9b8d9fc95d8fa6c238593a740/lz4-fb46a7fe8cd99bb9b8d9fc95d8fa6c238593a740.tar.gz
-        sha256: e6d99a8f522f42e1e960d9035c662e009ac09c7857a3eff23e145a2930a1511e
+        url: https://github.com/lz4/lz4/archive/v1.9.4/lz4-1.9.4.tar.gz
+        sha256: 0b0e3aa07c8c063ddf40b082bdf7e37a1562bda40a0ff5272957f3e987e0e54b
         x-checker-data:
           type: anitya
           project-id: 1865
@@ -940,10 +940,8 @@ modules:
           url-template: https://gitlab.com/hexer/hexer/-/archive/release/$version/hexer-release-$version.tar.gz
       - type: shell
         commands:
-          - sed -e '/^CPPFLAGS / s#$# -I${PREFIX}/include/ncursesw#'
-            -e '/^PREFIX / s#/.*#${FLATPAK_DEST}#'
-            -e '/^MANDIR / s#/man/#/share/man/#'
-            -i Makefile
+          - sed -e '/^CPPFLAGS / s#$# -I${PREFIX}/include/ncursesw#' -e '/^PREFIX
+            / s#/.*#${FLATPAK_DEST}#' -e '/^MANDIR / s#/man/#/share/man/#' -i Makefile
 
   - name: hexyl
     buildsystem: simple
@@ -1250,8 +1248,8 @@ modules:
     sources:
       - type: archive
         strip-components: 3
-        url: https://github.com/neovide/neovide/releases/download/0.9.0/neovide.tar.gz
-        sha256: 684cbcaeb2e67f1d95822ef80e03e1475395d537f2032f47b8202fe48c428b08
+        url: https://github.com/neovide/neovide/releases/download/0.10.1/neovide.tar.gz
+        sha256: 5c61630272bff0980c778613344fad5c50aa2c628c1cfb8a899df07fb4e6df7c
         x-checker-data:
           type: anitya
           project-id: 270207
@@ -1539,8 +1537,8 @@ modules:
       - --disable-locale
     sources:
       - type: archive
-        url: https://download.samba.org/pub/rsync/src/rsync-3.2.4.tar.gz
-        sha256: 6f761838d08052b0b6579cf7f6737d93e47f01f4da04c5d24d3447b7f2a5fad1
+        url: https://download.samba.org/pub/rsync/src/rsync-3.2.5.tar.gz
+        sha256: 2ac4d21635cdf791867bc377c35ca6dda7f50d919a58be45057fd51600c69aba
         x-checker-data:
           type: anitya
           project-id: 4217
@@ -1793,8 +1791,8 @@ modules:
       - --with-zstd=/usr/lib/sdk/devenv
     sources:
       - type: archive
-        url: https://github.com/Genivia/ugrep/archive/v3.8.3/ugrep-3.8.3.tar.gz
-        sha256: deb7e143ee07019fdaa98a4529596d965185542a195855c1bfb6779fb8dd5e55
+        url: https://github.com/Genivia/ugrep/archive/v3.9.1/ugrep-3.9.1.tar.gz
+        sha256: 7e016a3fddb2f17534ca4b2a5119120f7791f0dee96f9f320b7ea37ecc4f1956
         x-checker-data:
           type: anitya
           project-id: 187554
@@ -2603,8 +2601,8 @@ modules:
       - -Dtests=false
     sources:
       - type: archive
-        url: https://codeberg.org/dnkl/foot/archive/1.12.1.tar.gz
-        sha256: 14e307ac89454b682bb9f1bc644043779f4462df656034fcc4c1e72b18fbffdd
+        url: https://codeberg.org/dnkl/foot/archive/1.13.0.tar.gz
+        sha256: 9fd10584d40f6aac6b87c11a94e1fdfc4bac43aef9144f4aa84213257672da8c
         x-checker-data:
           type: anitya
           project-id: 141611
@@ -2782,8 +2780,8 @@ modules:
             buildsystem: meson
             sources:
               - type: archive
-                url: https://codeberg.org/dnkl/tllist/archive/1.0.5.tar.gz
-                sha256: b0f32c9b2c2015c8d8dd068fd4e8b586aa91ca1670badc274ec962559ee0aadd
+                url: https://codeberg.org/dnkl/tllist/archive/1.1.0.tar.gz
+                sha256: 0e7b7094a02550dd80b7243bcffc3671550b0f1d8ba625e4dff52517827d5d23
                 x-checker-data:
                   type: anitya
                   project-id: 141661
@@ -2821,8 +2819,8 @@ modules:
           - -Denable-xkbregistry=false
         sources:
           - type: archive
-            url: https://xkbcommon.org/download/libxkbcommon-1.4.0.tar.xz
-            sha256: 106cec5263f9100a7e79b5f7220f889bc78e7d7ffc55d2b6fdb1efefb8024031
+            url: https://xkbcommon.org/download/libxkbcommon-1.4.1.tar.xz
+            sha256: 943c07a1e2198026d8102b17270a1f406e4d3d6bbc4ae105b9e1b82d7d136b39
             x-checker-data:
               type: anitya
               project-id: 1780
@@ -2838,8 +2836,8 @@ modules:
               - --without-python
             sources:
               - type: archive
-                url: https://download.gnome.org/sources/libxml2/2.9/libxml2-2.9.14.tar.xz
-                sha256: 60d74a257d1ccec0475e749cba2f21559e48139efba6ff28224357c7c798dfee
+                url: https://download.gnome.org/sources/libxml2/2.10/libxml2-2.10.0.tar.xz
+                sha256: 2dd33110ea778676de14bea4999ee1173c4ca55d5ff1452bca224e06f0152595
                 x-checker-data:
                   type: anitya
                   project-id: 1783
@@ -2886,8 +2884,8 @@ modules:
     build-commands:
       - install -Dm755 picocom pc{asc,xm,ym,zm} -t ${FLATPAK_DEST}/bin/
       - install -Dm644 picocom.1 -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 -t ${FLATPAK_DEST}/share/doc/picocom/
-        lowerrts.md picocom.1.{md,pdf} README.md termios2.txt
+      - install -Dm644 -t ${FLATPAK_DEST}/share/doc/picocom/ lowerrts.md picocom.1.{md,pdf}
+        README.md termios2.txt
       - install -Dm644 bash_completion/picocom -t ${FLATPAK_DEST}/share/bash-completion/
     sources:
       - type: archive
