@@ -1247,7 +1247,7 @@ modules:
       - install -Dm755 neovide -t ${FLATPAK_DEST}/bin/
     sources:
       - type: archive
-        strip-components: 3
+        strip-components: 0
         url: https://github.com/neovide/neovide/releases/download/0.10.1/neovide.tar.gz
         sha256: 5c61630272bff0980c778613344fad5c50aa2c628c1cfb8a899df07fb4e6df7c
         x-checker-data:
