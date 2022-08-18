@@ -25,7 +25,7 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
           PATH+=:xdg-data/npm-packages/bin
 * add more patched fonts: nerd-fonts
 * investigate broken host tmux sessions
-* still dynamic: chafa, helix (grammars are share libs), hub, neovide, pyflow, python apps (ranger, trash-cli), luajit bindings
+* still dynamic: chafa, gpg-tui, helix (grammars are share libs), hub, neovide, pyflow, python apps (ranger, trash-cli), luajit bindings
 * add tarball generation script
 * test portability, needs to work when switching to /var/lib
 * investigate the possiblity to keep extension accessible after update, maybe bindfs mount
@@ -37,6 +37,7 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * add perl env tools
   * [plenv](https://github.com/tokuhirom/plenv)
   * [perlbrew](https://github.com/gugod/App-perlbrew)
+* set build cache for rust and golang, and build from source
 
 ### possible failure mapping of sdk path
 * stow: hardcoded perl `use dir`, can be patched

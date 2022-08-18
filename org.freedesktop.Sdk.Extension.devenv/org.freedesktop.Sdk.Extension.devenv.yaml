@@ -2073,6 +2073,25 @@ modules:
           stable-only: true
           url-template: https://github.com/rfjakob/gocryptfs/releases/download/v$version/gocryptfs_v${version}_linux-static_amd64.tar.gz
 
+  - name: gpg-tui
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 gpg-tui -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 man/*.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 man/*.5 -t ${FLATPAK_DEST}/share/man/man5/
+      - install -Dm644 completions/gpg-tui.bash ${FLATPAK_DEST}/share/bash-completion/completions/gpg-tui
+      - install -Dm644 completions/gpg-tui.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/gpg-tui.fish
+      - install -Dm644 completions/_gpg-tui ${FLATPAK_DEST}/share/zsh/site-functions/_gpg-tui
+    sources:
+      - type: archive
+        url: https://github.com/orhun/gpg-tui/releases/download/v0.9.1/gpg-tui-0.9.1-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 6a2dec4cc19a374d8d0742af709cf92153766383778a1e207d139427ae29e96c
+        x-checker-data:
+          type: anitya
+          project-id: 236270
+          stable-only: true
+          url-template: https://github.com/orhun/gpg-tui/releases/download/v$version/gpg-tui-$version-x86_64-unknown-linux-gnu.tar.gz
+
 
   ############################
   ####       Shells       ####
