@@ -20,10 +20,13 @@ cleanup:
   - '*.la'
 modules:
   - name: flatpak-builder
+    post-install:
+      # TODO: remove after https://github.com/flatpak/flatpak-builder/issues/486
+      - ln -s fusermount3 ${FLATPAK_DEST}/bin/fusermount
     sources:
       - type: archive
-        url: https://github.com/flatpak/flatpak-builder/releases/download/1.2.0/flatpak-builder-1.2.0.tar.xz
-        sha256: dfcb6a3ca38d61e0775b70a469ab505285e129361462df09004e6d4251c246a8
+        url: https://github.com/flatpak/flatpak-builder/releases/download/1.2.2/flatpak-builder-1.2.2.tar.xz
+        sha256: 89fda68e537c1e9de02352690bd89c3217a729164558d35f35b08f79ad84e03e
         x-checker-data:
           type: anitya
           project-id: 16046
@@ -39,8 +42,8 @@ modules:
           - --libexec=/app/lib
         sources:
           - type: archive
-            url: https://github.com/ostreedev/ostree/releases/download/v2021.5/libostree-2021.5.tar.xz
-            sha256: b45a32ded72c9fb6d2ab508adeae0306e4e2bb348db152f3d1b3708375829e1f
+            url: https://github.com/ostreedev/ostree/releases/download/v2022.5/libostree-2022.5.tar.xz
+            sha256: 914c4d993bc111d7dd30ae9721b6ffe8ab56eb1fd6e81b097b09f400cc1b053f
             x-checker-data:
               type: anitya
               project-id: 10899
@@ -55,7 +58,7 @@ modules:
           - /lib/tmpfiles.d
           - /share
         modules:
-          - ../shared-modules/fuse/fuse2.json
+          - ../shared-modules/fuse/fuse3.json
           - ../shared-modules/breezy/breezy.json
           - ../shared-modules/subversion/subversion.json
       - ../shared-modules/flatpak-spawn-wrappers/flatpak.json
