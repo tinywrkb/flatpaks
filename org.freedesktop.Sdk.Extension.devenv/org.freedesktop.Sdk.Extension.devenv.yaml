@@ -1067,6 +1067,21 @@ modules:
           stable-only: true
           url-template: http://downloads.sourceforge.net/bbe-/bbe-$version.tar.gz
 
+  - name: fq-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 fq -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/wader/fq/releases/download/v0.0.8/fq_0.0.8_linux_amd64.tar.gz
+        sha256: ecfcde8f1b0f0d41c2b0237c4d3cd81c64fdac71cf16a299ad83d6aeb447cd15
+        x-checker-data:
+          type: anitya
+          project-id: 279636
+          stable-only: true
+          url-template: https://github.com/wader/fq/releases/download/v0.0.8/fq_${version}_linux_amd64.tar.gz
+
   - name: hexer-static
     build-options: *musl-static-build-options
     no-autogen: true
@@ -1113,6 +1128,45 @@ modules:
           project-id: 2598
           stable-only: true
           url-template: https://github.com/NixOS/patchelf/archive/$version.tar.gz
+
+  - name: xdelta3-static
+    build-options: *musl-static-build-options
+    subdir: xdelta3
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: archive
+        url: https://github.com/jmacd/xdelta/archive/v3.1.0/xdelta-3.1.0.tar.gz
+        sha256: 7515cf5378fca287a57f4e2fee1094aabc79569cfe60d91e06021a8fd7bae29d
+        x-checker-data:
+          type: anitya
+          project-id: 5177
+          stable-only: true
+          url-template: https://github.com/jmacd/xdelta/archive/v$version/xdelta-$version.tar.gz
+      - type: script
+        dest: xdelta3
+        dest-filename: autogen.sh
+        commands:
+          - autoreconf -fiv
+          - sed -i 's/\(\$(CCLD)\)/\1 -all-static/' Makefile.in
+    modules:
+      - name: ncompress-static
+        build-options: *musl-static-build-options
+        no-autogen: true
+        no-make-install: true
+        build-commands:
+          - install -Dm755 compress -t ${FLATPAK_DEST}/bin/
+          - ln -s compress ${FLATPAK_DEST}/bin/uncompress.real
+          - install -Dm644 {,un}compress.1 -t ${FLATPAK_DEST}/share/man/man1/
+        sources:
+          - type: archive
+            url: https://github.com/vapier/ncompress/archive/v5.0/ncompress-5.0.tar.gz
+            sha256: 96ec931d06ab827fccad377839bfb91955274568392ddecf809e443443aead46
+            x-checker-data:
+              type: anitya
+              project-id: 2056
+              stable-only: true
+              url-template: https://github.com/vapier/ncompress/archive/v$version/ncompress-$version.tar.gz
 
 
   ############################
