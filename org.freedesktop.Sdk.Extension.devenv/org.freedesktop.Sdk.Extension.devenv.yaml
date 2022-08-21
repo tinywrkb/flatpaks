@@ -63,11 +63,12 @@ modules:
   #   Archive
   #   Binary
   #   Clipboard
+  #   Code: Debug
+  #   Code: Editors
+  #   Code: VCS
   #   Containers
   #   Data formats
-  #   Debug
   #   Dotfiles
-  #   Editors
   #   Files: Backup and sync
   #   Files: Folder listing
   #   Files: Managers
@@ -79,7 +80,6 @@ modules:
   #   Shells
   #   Shells: Multiplexers
   #   Terminal emulators
-  #   VCS
   #   FSW
   #   Polish
 
@@ -1038,91 +1038,7 @@ modules:
 
 
   ############################
-  ####     Containers     ####
-  ############################
-
-  - name: host-spawn
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 host-spawn -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: file
-        dest-filename: host-spawn
-        url: https://github.com/1player/host-spawn/releases/download/1.2.1/host-spawn-x86_64
-        sha256: 49c7c1902030f7a027c94791399fe9951f3675d1c81be9c987a9f975c570255e
-        x-checker-data:
-          type: anitya
-          project-id: 270202
-          stable-only: true
-          url-template: https://github.com/1player/host-spawn/releases/download/$version/host-spawn-x86_64
-
-  - name: podman-remote
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 podman-remote-static ${FLATPAK_DEST}/bin/podman-remote
-    sources:
-      - type: archive
-        strip-components: 0
-        url: https://github.com/containers/podman/releases/download/v4.2.0/podman-remote-static.tar.gz
-        sha256: 8e11b5111caa4e8d1e69e99a86644ce32b68793b78b371094b4a4632ec671047
-        x-checker-data:
-          type: anitya
-          project-id: 93284
-          stable-only: true
-          url-template: https://github.com/containers/podman/releases/download/v$version/podman-remote-static.tar.gz
-
-
-  ############################
-  ####    Data formats    ####
-  ############################
-
-  - name: go-yq
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 yq -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: file
-        dest-filename: yq
-        url: https://github.com/mikefarah/yq/releases/download/v4.27.2/yq_linux_amd64
-        sha256: 19a50ad8c7e173d40ae34310164adf19e2eef278db7cb6c4b7efcd097c030600
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/mikefarah/yq/releases/latest
-          version-query: .tag_name | sub("^v"; "")
-          url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version
-            + "/yq_linux_amd64"'
-
-  - name: jq-static
-    build-options: *musl-static-build-options
-    config-opts:
-      - --enable-all-static
-    sources:
-      - type: archive
-        url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-1.6.tar.gz
-        sha256: 5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
-        x-checker-data:
-          type: anitya
-          project-id: 13252
-          stable-only: true
-          url-template: https://github.com/stedolan/jq/releases/download/jq-$version/jq-$version.tar.gz
-    modules:
-      - name: oniguruma-static
-        build-options: *musl-static-build-options
-        config-opts:
-          - --enable-posix-api
-        sources:
-          - type: archive
-            url: https://github.com/kkos/oniguruma/releases/download/v6.9.8/onig-6.9.8.tar.gz
-            sha256: 28cd62c1464623c7910565fb1ccaaa0104b2fe8b12bcd646e81f73b47535213e
-            x-checker-data:
-              type: anitya
-              project-id: 11184
-              stable-only: true
-              url-template: https://github.com/kkos/oniguruma/releases/download/v$version/onig-$version.tar.gz
-
-
-  ############################
-  ####       Debug        ####
+  ####    Code: Debug     ####
   ############################
 
   - name: lurk
@@ -1142,28 +1058,7 @@ modules:
 
 
   ############################
-  ####     Dotfiles       ####
-  ############################
-
-  - name: stow
-    # TODO: replace this with binary alternative
-    build-options: *musl-static-build-options
-    sources:
-      - type: archive
-        url: https://ftp.gnu.org/gnu/stow/stow-2.3.1.tar.gz
-        sha256: 09d5d99671b78537fd9b2c0b39a5e9761a7a0e979f6fdb7eabfa58ee45f03d4b
-        x-checker-data:
-          type: anitya
-          project-id: 4900
-          stable-only: true
-          url-template: https://ftp.gnu.org/gnu/stow/stow-$version.tar.gz
-    cleanup:
-      - /share/doc
-      - /share/info
-
-
-  ############################
-  ####      Editors       ####
+  ####   Code: Editors    ####
   ############################
 
   - name: helix
@@ -1494,6 +1389,214 @@ modules:
               project-id: 142464
               stable-only: true
               url-template: https://github.com/tree-sitter/tree-sitter/archive/v$version/tree-sitter-$version.tar.gz
+
+
+  ############################
+  ####     Code: VCS      ####
+  ############################
+
+  - name: github-cli
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 bin/gh -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - bin/gh completion -s bash | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/bash-completion/completions/gh
+      - bin/gh completion -s fish | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/fish/vendor_completions.d/gh.fish
+      - bin/gh completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_gh
+    sources:
+      - type: archive
+        url: https://github.com/cli/cli/releases/download/v2.14.4/gh_2.14.4_linux_amd64.tar.gz
+        sha256: 673a3adff9a847298e39c4593877194198229c12a9a4f4333765e58de230ccb0
+        x-checker-data:
+          type: anitya
+          project-id: 135615
+          stable-only: true
+          url-template: https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz
+
+  - name: github-hub
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 bin/hub -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 etc/hub.bash_completion.sh ${FLATPAK_DEST}/share/bash-completion/completions/hub
+      - install -Dm644 etc/hub.fish_completion ${FLATPAK_DEST}/share/fish/vendor_completions.d/hub.fish
+      - install -Dm644 etc/hub.zsh_completion ${FLATPAK_DEST}/share/zsh/site-functions/_hub
+      - cp -a share/vim ${FLATPAK_DEST}/share/
+    sources:
+      - type: archive
+        url: https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz
+        sha256: 74d95fdfb3c78c8af4e2025b04b916ad905ab99a361778500d58269847c7922d
+        x-checker-data:
+          type: anitya
+          project-id: 5368
+          stable-only: true
+          url-template: https://github.com/github/hub/releases/download/v$version/hub-linux-amd64-$version.tgz
+
+  - name: gitlab-cli
+    buildsystem: simple
+    build-commands:
+      - bsdtar -Oxf glab.deb 'data.tar*' | bsdtar -xf - --strip-components=2
+      - install -Dm755 bin/glab -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - bin/glab completion -s bash | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/bash-completion/completions/glab
+      - bin/glab completion -s fish | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/fish/vendor_completions.d/glab.fish
+      - bin/glab completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_glab
+    sources:
+      - type: file
+        dest-filename: glab.deb
+        url: https://github.com/profclems/glab/releases/download/v1.22.0/glab_1.22.0_Linux_x86_64.deb
+        sha256: 5761f235ee5ef358dabcb8a5d86013572eb504cc43237b84c258114ab3fd7c27
+        x-checker-data:
+          type: anitya
+          project-id: 127208
+          stable-only: true
+          url-template: https://github.com/profclems/glab/releases/download/v$version/glab_${version}_Linux_x86_64.deb
+
+  - name: gitlab-release-cli
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 release-cli -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: release-cli
+        url: https://gitlab.com/gitlab-org/release-cli/-/releases/v0.13.0/downloads/bin/release-cli-linux-amd64
+        sha256: 5afa1cd8d6713e15a3627d0fb53cbc5f084912c6b404507b60c175832eb9b386
+        x-checker-data:
+          type: anitya
+          project-id: 267525
+          stable-only: true
+          url-template: https://gitlab.com/gitlab-org/release-cli/-/releases/v$version/downloads/bin/release-cli-linux-amd64
+
+  - name: gitea-tea
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 tea -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 contrib/autocomplete.sh ${FLATPAK_DEST}/share/bash-completion/completions/tea
+      - install -Dm644 contrib/autocomplete.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_tea
+    sources:
+      - type: file
+        dest-filename: tea
+        url: https://gitea.com/gitea/tea/releases/download/v0.8.0/tea-0.8.0-linux-amd64
+        sha256: 8bc99e0532548365f3d86a5ec319772121a844d54a01cb51cddb030d05f27a0c
+        x-checker-data:
+          type: json
+          url: https://gitea.com/api/v1/repos/gitea/tea/releases
+          version-query: first(.[].tag_name | sub("^v"; ""))
+          url-query: '"https://gitea.com/gitea/tea/releases/download/v" + $version
+            + "/tea-" + $version + "-linux-amd64"'
+      - type: archive
+        url: https://gitea.com/gitea/tea/archive/v0.8.0.tar.gz
+        sha256: 6c73c0a7b66cdfd1e5a302257d54df06a3a41eb9bdbfeb547966db431ae23b23
+        x-checker-data:
+          type: json
+          url: https://gitea.com/api/v1/repos/gitea/tea/releases
+          version-query: first(.[].tag_name | sub("^v"; ""))
+          url-query: '"https://gitea.com/gitea/tea/archive/v" + $version + ".tar.gz"'
+
+
+  ############################
+  ####     Containers     ####
+  ############################
+
+  - name: host-spawn
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 host-spawn -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: host-spawn
+        url: https://github.com/1player/host-spawn/releases/download/1.2.1/host-spawn-x86_64
+        sha256: 49c7c1902030f7a027c94791399fe9951f3675d1c81be9c987a9f975c570255e
+        x-checker-data:
+          type: anitya
+          project-id: 270202
+          stable-only: true
+          url-template: https://github.com/1player/host-spawn/releases/download/$version/host-spawn-x86_64
+
+  - name: podman-remote
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 podman-remote-static ${FLATPAK_DEST}/bin/podman-remote
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/containers/podman/releases/download/v4.2.0/podman-remote-static.tar.gz
+        sha256: 8e11b5111caa4e8d1e69e99a86644ce32b68793b78b371094b4a4632ec671047
+        x-checker-data:
+          type: anitya
+          project-id: 93284
+          stable-only: true
+          url-template: https://github.com/containers/podman/releases/download/v$version/podman-remote-static.tar.gz
+
+
+  ############################
+  ####    Data formats    ####
+  ############################
+
+  - name: go-yq
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 yq -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: yq
+        url: https://github.com/mikefarah/yq/releases/download/v4.27.2/yq_linux_amd64
+        sha256: 19a50ad8c7e173d40ae34310164adf19e2eef278db7cb6c4b7efcd097c030600
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/mikefarah/yq/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version
+            + "/yq_linux_amd64"'
+
+  - name: jq-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --enable-all-static
+    sources:
+      - type: archive
+        url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-1.6.tar.gz
+        sha256: 5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
+        x-checker-data:
+          type: anitya
+          project-id: 13252
+          stable-only: true
+          url-template: https://github.com/stedolan/jq/releases/download/jq-$version/jq-$version.tar.gz
+    modules:
+      - name: oniguruma-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --enable-posix-api
+        sources:
+          - type: archive
+            url: https://github.com/kkos/oniguruma/releases/download/v6.9.8/onig-6.9.8.tar.gz
+            sha256: 28cd62c1464623c7910565fb1ccaaa0104b2fe8b12bcd646e81f73b47535213e
+            x-checker-data:
+              type: anitya
+              project-id: 11184
+              stable-only: true
+              url-template: https://github.com/kkos/oniguruma/releases/download/v$version/onig-$version.tar.gz
+
+
+  ############################
+  ####     Dotfiles       ####
+  ############################
+
+  - name: stow
+    # TODO: replace this with binary alternative
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/stow/stow-2.3.1.tar.gz
+        sha256: 09d5d99671b78537fd9b2c0b39a5e9761a7a0e979f6fdb7eabfa58ee45f03d4b
+        x-checker-data:
+          type: anitya
+          project-id: 4900
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/stow/stow-$version.tar.gz
+    cleanup:
+      - /share/doc
+      - /share/info
 
 
   ############################
@@ -2898,109 +3001,6 @@ modules:
           versions:
             '>': '3.1'
           url-template: https://github.com/npat-efault/picocom/archive/$version/picocom-$version.tar.gz
-
-
-  ############################
-  ####        VCS         ####
-  ############################
-
-  - name: github-cli
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 bin/gh -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
-      - bin/gh completion -s bash | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/bash-completion/completions/gh
-      - bin/gh completion -s fish | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/fish/vendor_completions.d/gh.fish
-      - bin/gh completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_gh
-    sources:
-      - type: archive
-        url: https://github.com/cli/cli/releases/download/v2.14.4/gh_2.14.4_linux_amd64.tar.gz
-        sha256: 673a3adff9a847298e39c4593877194198229c12a9a4f4333765e58de230ccb0
-        x-checker-data:
-          type: anitya
-          project-id: 135615
-          stable-only: true
-          url-template: https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz
-
-  - name: github-hub
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 bin/hub -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
-      - install -Dm644 etc/hub.bash_completion.sh ${FLATPAK_DEST}/share/bash-completion/completions/hub
-      - install -Dm644 etc/hub.fish_completion ${FLATPAK_DEST}/share/fish/vendor_completions.d/hub.fish
-      - install -Dm644 etc/hub.zsh_completion ${FLATPAK_DEST}/share/zsh/site-functions/_hub
-      - cp -a share/vim ${FLATPAK_DEST}/share/
-    sources:
-      - type: archive
-        url: https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz
-        sha256: 74d95fdfb3c78c8af4e2025b04b916ad905ab99a361778500d58269847c7922d
-        x-checker-data:
-          type: anitya
-          project-id: 5368
-          stable-only: true
-          url-template: https://github.com/github/hub/releases/download/v$version/hub-linux-amd64-$version.tgz
-
-  - name: gitlab-cli
-    buildsystem: simple
-    build-commands:
-      - bsdtar -Oxf glab.deb 'data.tar*' | bsdtar -xf - --strip-components=2
-      - install -Dm755 bin/glab -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
-      - bin/glab completion -s bash | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/bash-completion/completions/glab
-      - bin/glab completion -s fish | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/fish/vendor_completions.d/glab.fish
-      - bin/glab completion -s zsh | install -Dm644 /dev/stdin ${FLATPAK_DEST}/share/zsh/site-functions/_glab
-    sources:
-      - type: file
-        dest-filename: glab.deb
-        url: https://github.com/profclems/glab/releases/download/v1.22.0/glab_1.22.0_Linux_x86_64.deb
-        sha256: 5761f235ee5ef358dabcb8a5d86013572eb504cc43237b84c258114ab3fd7c27
-        x-checker-data:
-          type: anitya
-          project-id: 127208
-          stable-only: true
-          url-template: https://github.com/profclems/glab/releases/download/v$version/glab_${version}_Linux_x86_64.deb
-
-  - name: gitlab-release-cli
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 release-cli -t ${FLATPAK_DEST}/bin/
-    sources:
-      - type: file
-        dest-filename: release-cli
-        url: https://gitlab.com/gitlab-org/release-cli/-/releases/v0.13.0/downloads/bin/release-cli-linux-amd64
-        sha256: 5afa1cd8d6713e15a3627d0fb53cbc5f084912c6b404507b60c175832eb9b386
-        x-checker-data:
-          type: anitya
-          project-id: 267525
-          stable-only: true
-          url-template: https://gitlab.com/gitlab-org/release-cli/-/releases/v$version/downloads/bin/release-cli-linux-amd64
-
-  - name: gitea-tea
-    buildsystem: simple
-    build-commands:
-      - install -Dm755 tea -t ${FLATPAK_DEST}/bin/
-      - install -Dm644 contrib/autocomplete.sh ${FLATPAK_DEST}/share/bash-completion/completions/tea
-      - install -Dm644 contrib/autocomplete.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_tea
-    sources:
-      - type: file
-        dest-filename: tea
-        url: https://gitea.com/gitea/tea/releases/download/v0.8.0/tea-0.8.0-linux-amd64
-        sha256: 8bc99e0532548365f3d86a5ec319772121a844d54a01cb51cddb030d05f27a0c
-        x-checker-data:
-          type: json
-          url: https://gitea.com/api/v1/repos/gitea/tea/releases
-          version-query: first(.[].tag_name | sub("^v"; ""))
-          url-query: '"https://gitea.com/gitea/tea/releases/download/v" + $version
-            + "/tea-" + $version + "-linux-amd64"'
-      - type: archive
-        url: https://gitea.com/gitea/tea/archive/v0.8.0.tar.gz
-        sha256: 6c73c0a7b66cdfd1e5a302257d54df06a3a41eb9bdbfeb547966db431ae23b23
-        x-checker-data:
-          type: json
-          url: https://gitea.com/api/v1/repos/gitea/tea/releases
-          version-query: first(.[].tag_name | sub("^v"; ""))
-          url-query: '"https://gitea.com/gitea/tea/archive/v" + $version + ".tar.gz"'
 
 
   ############################
