@@ -88,7 +88,7 @@ modules:
   ####     Libraries      ####
   ############################
 
-  - name: prepare
+  - name: prepare-ccache
     buildsystem: simple
     build-commands:
       - |
@@ -912,7 +912,7 @@ modules:
   ####       Binary       ####
   ############################
 
-  - name: bbe
+  - name: bbe-static
     build-options: *musl-static-build-options
     sources:
       - type: archive
@@ -924,7 +924,7 @@ modules:
           stable-only: true
           url-template: http://downloads.sourceforge.net/bbe-/bbe-$version.tar.gz
 
-  - name: hexer
+  - name: hexer-static
     build-options: *musl-static-build-options
     no-autogen: true
     make-args:
@@ -944,7 +944,7 @@ modules:
           - sed -e '/^CPPFLAGS / s#$# -I${PREFIX}/include/ncursesw#' -e '/^PREFIX
             / s#/.*#${FLATPAK_DEST}#' -e '/^MANDIR / s#/man/#/share/man/#' -i Makefile
 
-  - name: hexyl
+  - name: hexyl-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 hexyl -t ${FLATPAK_DEST}/bin/
@@ -1042,7 +1042,7 @@ modules:
   ####    Code: Debug     ####
   ############################
 
-  - name: lurk
+  - name: lurk-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 lurk -t ${FLATPAK_DEST}/bin/
@@ -1062,7 +1062,7 @@ modules:
   ####   Code: Editors    ####
   ############################
 
-  - name: helix
+  - name: helix-shared-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 hx -t ${FLATPAK_DEST}/bin/
@@ -1097,7 +1097,7 @@ modules:
           stable-only: true
           url-template: https://github.com/mawww/kakoune/releases/download/v$version/kakoune-$version.tar.bz2
     modules:
-      - name: kak-lsp
+      - name: kak-lsp-static-bin
         buildsystem: simple
         build-commands:
           - install -Dm755 kak-lsp -t ${FLATPAK_DEST}/bin/
@@ -1122,7 +1122,7 @@ modules:
               stable-only: true
               url-template: https://github.com/kak-lsp/kak-lsp/releases/download/v$version/kak-lsp-v$version-x86_64-unknown-linux-musl.tar.gz
 
-  - name: micro
+  - name: micro-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 micro -t ${FLATPAK_DEST}/bin/
@@ -1137,7 +1137,7 @@ modules:
           stable-only: true
           url-template: https://github.com/zyedidia/micro/releases/download/v$version/micro-$version-linux64-static.tar.gz
 
-  - name: neovide
+  - name: neovide-shared-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 neovide -t ${FLATPAK_DEST}/bin/
@@ -1396,7 +1396,7 @@ modules:
   ####     Code: VCS      ####
   ############################
 
-  - name: github-cli
+  - name: github-cli-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 bin/gh -t ${FLATPAK_DEST}/bin/
@@ -1414,7 +1414,7 @@ modules:
           stable-only: true
           url-template: https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz
 
-  - name: github-hub
+  - name: github-hub-shared-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 bin/hub -t ${FLATPAK_DEST}/bin/
@@ -1433,7 +1433,7 @@ modules:
           stable-only: true
           url-template: https://github.com/github/hub/releases/download/v$version/hub-linux-amd64-$version.tgz
 
-  - name: gitlab-cli
+  - name: gitlab-cli-static-bin
     buildsystem: simple
     build-commands:
       - bsdtar -Oxf glab.deb 'data.tar*' | bsdtar -xf - --strip-components=2
@@ -1453,7 +1453,7 @@ modules:
           stable-only: true
           url-template: https://github.com/profclems/glab/releases/download/v$version/glab_${version}_Linux_x86_64.deb
 
-  - name: gitlab-release-cli
+  - name: gitlab-release-cli-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 release-cli -t ${FLATPAK_DEST}/bin/
@@ -1468,7 +1468,7 @@ modules:
           stable-only: true
           url-template: https://gitlab.com/gitlab-org/release-cli/-/releases/v$version/downloads/bin/release-cli-linux-amd64
 
-  - name: gitea-tea
+  - name: gitea-tea-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 tea -t ${FLATPAK_DEST}/bin/
@@ -1499,7 +1499,7 @@ modules:
   ####     Containers     ####
   ############################
 
-  - name: host-spawn
+  - name: host-spawn-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 host-spawn -t ${FLATPAK_DEST}/bin/
@@ -1514,7 +1514,7 @@ modules:
           stable-only: true
           url-template: https://github.com/1player/host-spawn/releases/download/$version/host-spawn-x86_64
 
-  - name: podman-remote
+  - name: podman-remote-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 podman-remote-static ${FLATPAK_DEST}/bin/podman-remote
@@ -1534,7 +1534,7 @@ modules:
   ####    Data formats    ####
   ############################
 
-  - name: go-yq
+  - name: go-yq-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 yq -t ${FLATPAK_DEST}/bin/
@@ -1604,7 +1604,7 @@ modules:
   ## Files: Backup and sync ##
   ############################
 
-  - name: restic
+  - name: restic-static-bin
     buildsystem: simple
     build-commands:
       - bunzip2 restic.bz2
@@ -1654,7 +1654,7 @@ modules:
   ## Files: Folder listing  ##
   ############################
 
-  - name: exa
+  - name: exa-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 bin/exa -t ${FLATPAK_DEST}/bin/
@@ -1674,7 +1674,7 @@ modules:
           stable-only: true
           url-template: https://github.com/ogham/exa/releases/download/v$version/exa-linux-x86_64-musl-v$version.zip
 
-  - name: lsd
+  - name: lsd-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 lsd -t ${FLATPAK_DEST}/bin/
@@ -1753,7 +1753,7 @@ modules:
   ####   Files: Search    ####
   ############################
 
-  - name: broot
+  - name: broot-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 x86_64-unknown-linux-musl/broot -t ${FLATPAK_DEST}/bin/
@@ -1773,7 +1773,7 @@ modules:
           stable-only: true
           url-template: https://github.com/Canop/broot/releases/download/v$version/broot_$version.zip
 
-  - name: fd
+  - name: fd-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 fd -t ${FLATPAK_DEST}/bin/
@@ -1791,7 +1791,7 @@ modules:
           stable-only: true
           url-template: https://github.com/sharkdp/fd/releases/download/v$version/fd-v$version-x86_64-unknown-linux-musl.tar.gz
 
-  - name: fzf
+  - name: fzf-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 fzf bin/fzf-tmux -t ${FLATPAK_DEST}/bin/
@@ -1837,7 +1837,7 @@ modules:
           stable-only: true
           url-template: https://github.com/jhawthorn/fzy/archive/$version/fzy-$version.tar.gz
 
-  - name: ripgrep
+  - name: ripgrep-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 rg -t ${FLATPAK_DEST}/bin/
@@ -1855,7 +1855,7 @@ modules:
           stable-only: true
           url-template: https://github.com/BurntSushi/ripgrep/releases/download/$version/ripgrep-$version-x86_64-unknown-linux-musl.tar.gz
 
-  - name: skim
+  - name: skim-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 sk bin/sk-tmux -t ${FLATPAK_DEST}/bin/
@@ -1985,7 +1985,7 @@ modules:
   ####      Images        ####
   ############################
 
-  - name: chafa
+  - name: chafa-shared-bin
     buildsystem: simple
     no-make-install: true
     make-args:
@@ -2038,7 +2038,7 @@ modules:
     cleanup:
       - /bin/libsixel-config
 
-  - name: sic
+  - name: sic-shared-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 convert sic -t ${FLATPAK_DEST}/bin/
@@ -2140,7 +2140,7 @@ modules:
           url-query: '"https://github.com/pyenv/pyenv-virtualenv/archive/" + $version
             + "/pyenv-virtualenv-" + $version + ".tar.gz"'
 
-  - name: pyflow
+  - name: pyflow-shared-bin
     buildsystem: simple
     build-commands:
       - install pyflow -Dm755 -t ${FLATPAK_DEST}/bin/
@@ -2159,7 +2159,7 @@ modules:
   ####      Security      ####
   ############################
 
-  - name: gocryptfs
+  - name: gocryptfs-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 gocryptfs{,-xray} -t ${FLATPAK_DEST}/bin/
@@ -2175,7 +2175,7 @@ modules:
           stable-only: true
           url-template: https://github.com/rfjakob/gocryptfs/releases/download/v$version/gocryptfs_v${version}_linux-static_amd64.tar.gz
 
-  - name: gpg-tui
+  - name: gpg-tui-shared-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 gpg-tui -t ${FLATPAK_DEST}/bin/
@@ -2258,7 +2258,7 @@ modules:
           stable-only: true
           url-template: https://github.com/cykerway/complete-alias/archive/$version/complete-alias-$version.tar.gz
 
-  - name: fish
+  - name: fish-static
     build-options: *musl-static-build-options
     buildsystem: cmake
     config-opts:
@@ -2368,7 +2368,7 @@ modules:
           url-query: '"https://github.com/powerline/fonts/archive/" + $version + "/powerline-"
             + $version + ".tar.gz"'
 
-  - name: powerline-go
+  - name: powerline-go-static-bin
     buildsystem: simple
     build-commands:
       - install -Dm755 powerline-go -t ${FLATPAK_DEST}/bin/
