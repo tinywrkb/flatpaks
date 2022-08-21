@@ -1648,9 +1648,7 @@ modules:
               url-template: https://www.lua.org/ftp/lua-$version.tar.gz
           - type: shell
             commands:
-              - sed -e "s|/usr/local/|${FLATPAK_DEST}/|"
-                -e "s|LUA_IDSIZE	60|LUA_IDSIZE	512|"
-                -i src/luaconf.h
+              - sed -e "s|/usr/local/|${FLATPAK_DEST}/|" -e '/^#define LUA_IDSIZE/ s/60/512/' -i src/luaconf.h
               - sed -e "/^PLAT.*=/ s/guess/linux/" -i Makefile src/Makefile
               - sed -e "/^CC.*=/d;/^CFLAGS.*=/d" -i src/Makefile
         cleanup:
