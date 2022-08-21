@@ -46,10 +46,9 @@ cleanup:
   - /share/aclocal
   - /share/cmake
   - /share/doc
+  - /share/info
   - /share/man/man3
-  - /share/man/man5
-  - /share/man/man7
-  - /share/man/man8
+  - /share/pkgconfig
   - '*.la'
 
 modules:
@@ -982,8 +981,6 @@ modules:
       - type: shell
         commands:
           - sed -i '/^CC/d;/^CXX/d;/^CC_SHARED/d;/^LINK_SHARED/d' makefile.machine
-    cleanup:
-      - /share/doc
 
   - name: unrar-static
     build-options: *musl-static-build-options
@@ -1979,9 +1976,6 @@ modules:
           project-id: 4900
           stable-only: true
           url-template: https://ftp.gnu.org/gnu/stow/stow-$version.tar.gz
-    cleanup:
-      - /share/doc
-      - /share/info
 
 
   ############################
@@ -2764,8 +2758,6 @@ modules:
         commands:
           # never build these libs
           - rm -r lib/{readline,termcap}/*.c
-    cleanup:
-      - /share/info
 
   - name: bash-completion
     sources:
@@ -3028,8 +3020,6 @@ modules:
                     s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|$(LIBS) lib/libgpm.so.@abi_lev@|
                     s/libgpm.so.@abi_lev@/libgpm.a/' -e '\|^all:| s/libgpm.so//' -e
                     '\|$(CC) @LDFLAGS@| s/\($(CC)\)/\1 @CFLAGS@ $(CFLAGS)/' -i src/Makefile.in
-            cleanup:
-              - /share/info
           - name: slang-static
             build-options: *musl-static-build-options
             no-parallel-make: true
