@@ -432,6 +432,42 @@ modules:
     cleanup:
       - '*'
 
+  - name: libevent-static  # depends on openssl
+    # TODO: try again to build static lib with cmake
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+      - --enable-openssl
+    sources:
+      - type: archive
+        url: https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+        sha256: 92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb
+        x-checker-data:
+          type: anitya
+          project-id: 1606
+          stable-only: true
+          url-template: https://github.com/libevent/libevent/releases/download/release-$version-stable/libevent-$version-stable.tar.gz
+    cleanup:
+      - '*'
+
+  - name: libpng-static # depends on zlib
+    build-options: *musl-static-build-options
+    config-opts:
+      - --enable-static
+    make-args:
+      - CPPFLAGS=-I${FLATPAK_DEST}/include
+    sources:
+      - type: archive
+        url: http://downloads.sourceforge.net/libpng/libpng-1.6.37.tar.gz
+        sha256: daeb2620d829575513e35fecc83f0d3791a620b9b93d800b763542ece9390fb4
+        x-checker-data:
+          type: anitya
+          project-id: 1705
+          stable-only: true
+          url-template: http://downloads.sourceforge.net/libpng/libpng-$version.tar.gz
+    cleanup:
+      - '*'
+
   - name: pcre2-static # depends on bzip2 readline zlib
     build-options: *musl-static-build-options
     config-opts:
@@ -453,24 +489,6 @@ modules:
     cleanup:
       - '*'
 
-  - name: libevent-static  # depends on openssl
-    # TODO: try again to build static lib with cmake
-    build-options: *musl-static-build-options
-    config-opts:
-      - --disable-shared
-      - --enable-openssl
-    sources:
-      - type: archive
-        url: https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
-        sha256: 92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb
-        x-checker-data:
-          type: anitya
-          project-id: 1606
-          stable-only: true
-          url-template: https://github.com/libevent/libevent/releases/download/release-$version-stable/libevent-$version-stable.tar.gz
-    cleanup:
-      - '*'
-
   - name: wayland-static # depends on expat liffi
     build-options: *musl-static-build-options
     buildsystem: meson
@@ -488,6 +506,20 @@ modules:
           project-id: 10061
           stable-only: true
           url-template: https://gitlab.freedesktop.org/wayland/wayland/-/releases/$version/downloads/wayland-$version.tar.xz
+    cleanup:
+      - '*'
+
+  - name: wayland-protocols
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://wayland.freedesktop.org/releases/wayland-protocols-1.26.tar.xz
+        sha256: c553384c1c68afd762fa537a2569cc9074fe7600da12d3472761e77a2ba56f13
+        x-checker-data:
+          type: anitya
+          project-id: 13997
+          stable-only: true
+          url-template: https://wayland.freedesktop.org/releases/wayland-protocols-$version.tar.xz
     cleanup:
       - '*'
 
@@ -2713,23 +2745,6 @@ modules:
 #         stable-only: true
 #         url-template: https://codeberg.org/dnkl/foot/archive/$version.tar.gz
 #   modules:
-#     - name: libpng-static
-#       build-options: *musl-static-build-options
-#       config-opts:
-#         - --enable-static
-#       make-args:
-#         - CPPFLAGS=-I${FLATPAK_DEST}/include
-#       sources:
-#         - type: archive
-#           url: http://downloads.sourceforge.net/libpng/libpng-1.6.37.tar.gz
-#           sha256: daeb2620d829575513e35fecc83f0d3791a620b9b93d800b763542ece9390fb4
-#           x-checker-data:
-#             type: anitya
-#             project-id: 1705
-#             stable-only: true
-#             url-template: http://downloads.sourceforge.net/libpng/libpng-$version.tar.gz
-#       cleanup:
-#         - '*'
 #     - name: fcft-static
 #       build-options: *musl-static-build-options
 #       buildsystem: meson
@@ -2947,19 +2962,6 @@ modules:
 #                 project-id: 1783
 #                 stable-only: true
 #                 url-template: https://download.gnome.org/sources/libxml2/$version0.$version1/libxml2-$version.tar.xz
-#           cleanup:
-#             - '*'
-#         - name: wayland-protocols
-#           buildsystem: meson
-#           sources:
-#             - type: archive
-#               url: https://wayland.freedesktop.org/releases/wayland-protocols-1.26.tar.xz
-#               sha256: c553384c1c68afd762fa537a2569cc9074fe7600da12d3472761e77a2ba56f13
-#               x-checker-data:
-#                 type: anitya
-#                 project-id: 13997
-#                 stable-only: true
-#                 url-template: https://wayland.freedesktop.org/releases/wayland-protocols-$version.tar.xz
 #           cleanup:
 #             - '*'
 #     - name: scdoc
