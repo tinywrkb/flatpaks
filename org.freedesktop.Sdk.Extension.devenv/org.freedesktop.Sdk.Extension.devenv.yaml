@@ -264,16 +264,18 @@ modules:
       - '*'
 
   - name: openssl-static
-    # TODO: certs dir target
     build-options: *musl-static-build-options
+    no-make-install: true
     config-opts:
       - --libdir=lib
-      - --openssldir=${FLATPAK_DEST}/ssl
+      - --openssldir=/etc/ssl
       - -static
       - no-ssl3-method
       - enable-ec_nistp_64_gcc_128
       - linux-x86_64
       - -Wa,--noexecstack
+    build-commands:
+      - make install_sw
     sources:
       - type: archive
         url: https://www.openssl.org/source/openssl-1.1.1q.tar.gz
@@ -786,8 +788,8 @@ modules:
       - python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
     sources:
       - type: archive
-        url: https://github.com/mesonbuild/meson/releases/download/0.61.1/meson-0.61.1.tar.gz
-        sha256: feb2cefb325b437dbf36146df7c6b87688ddff0b0205caa31dc64055c6da410c
+        url: https://github.com/mesonbuild/meson/releases/download/0.63.1/meson-0.63.1.tar.gz
+        sha256: 06fe13297213d6ff0121c5d5aab25a56ef938ffec57414ed6086fda272cb65e9
         x-checker-data:
           type: anitya
           project-id: 6472
@@ -1615,11 +1617,12 @@ modules:
         buildsystem: simple
         build-commands:
           - ./bootstrap.sh
-          - ./b2 --with-headers variant=release link=static runtime-link=static debug-symbols=off --prefix=${FLATPAK_DEST} install
+          - ./b2 --with-headers variant=release link=static runtime-link=static debug-symbols=off
+            --prefix=${FLATPAK_DEST} install
         sources:
           - type: archive
-            url: https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.bz2
-            sha256: 475d589d51a7f8b3ba2ba4eda022b170e562ca3b760ee922c146b6c65856ef39
+            url: https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2
+            sha256: 1e19565d82e43bc59209a168f5ac899d3ba471d55c7610c677d4ccf2c9c500c0
             x-checker-data:
               type: anitya
               project-id: 6845
@@ -1645,7 +1648,8 @@ modules:
               url-template: https://www.lua.org/ftp/lua-$version.tar.gz
           - type: shell
             commands:
-              - sed -e "s|/usr/local/|${FLATPAK_DEST}/|" -e '/^#define LUA_IDSIZE/ s/60/512/' -i src/luaconf.h
+              - sed -e "s|/usr/local/|${FLATPAK_DEST}/|" -e '/^#define LUA_IDSIZE/
+                s/60/512/' -i src/luaconf.h
               - sed -e "/^PLAT.*=/ s/guess/linux/" -i Makefile src/Makefile
               - sed -e "/^CC.*=/d;/^CFLAGS.*=/d" -i src/Makefile
         cleanup:
@@ -1914,6 +1918,7 @@ modules:
       - type: shell
         commands:
           - sed -i '/^LDFLAGS .*=/d;s/\(^prefix .*=\).*/\1 ${FLATPAK_DEST}/' Makefile
+          - sed -i '/^ENABLE_NLS.*=/d' Makefile
 
   - name: go-yq-static-bin
     buildsystem: simple
@@ -2037,6 +2042,7 @@ modules:
     buildsystem: meson
     config-opts:
       - --default-library=static
+      - --sbindir=bin
     sources:
       - type: archive
         url: https://github.com/libfuse/sshfs/releases/download/sshfs-3.7.3/sshfs-3.7.3.tar.xz
@@ -2046,6 +2052,8 @@ modules:
           project-id: 11058
           stable-only: true
           url-template: https://github.com/libfuse/sshfs/releases/download/sshfs-$version/sshfs-$version.tar.xz
+    cleanup:
+      - /bin/mount.*
     modules:
       - name: glib2-static
         build-options: *musl-static-build-options
@@ -2063,8 +2071,8 @@ modules:
           - -Dlibelf=disabled
         sources:
           - type: archive
-            url: https://download.gnome.org/sources/glib/2.70/glib-2.70.5.tar.xz
-            sha256: f70bf76ebcc84e0705722f038be8e2f9a58d17e1a700810c635fcc18b8974b7e
+            url: https://download.gnome.org/sources/glib/2.72/glib-2.72.3.tar.xz
+            sha256: 4a39a2f624b8512d500d5840173eda7fa85f51c109052eae806acece85d345f0
             x-checker-data:
               type: gnome
               name: glib
@@ -2099,8 +2107,8 @@ modules:
           - -Dtests=false
         sources:
           - type: archive
-            url: https://github.com/libfuse/libfuse/releases/download/fuse-3.10.5/fuse-3.10.5.tar.xz
-            sha256: b2e283485d47404ac896dd0bb7f7ba81e1470838e677e45f659804c3a3b69666
+            url: https://github.com/libfuse/libfuse/releases/download/fuse-3.11.0/fuse-3.11.0.tar.xz
+            sha256: 8982c4c521daf3974dda8a5d55d575c988da13a571970f00aea149eb54fdf14c
             x-checker-data:
               type: anitya
               project-id: 861
@@ -2157,6 +2165,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 ncdu -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 ncdu.1 -t ${FLATPAK_DEST}/share/man/man1/
     sources:
       - type: archive
         strip-components: 0
@@ -2167,6 +2176,14 @@ modules:
           project-id: 6045
           stable-only: true
           url-template: https://dev.yorhel.nl/download/ncdu-$version-linux-x86_64.tar.gz
+      - type: archive
+        url: https://dev.yorhel.nl/download/ncdu-2.1.2.tar.gz
+        sha256: 9e0d6ef03618a3c316726bf49217b7efe45cec758b2c917ce892ded74332c6dc
+        x-checker-data:
+          type: anitya
+          project-id: 6045
+          stable-only: true
+          url-template: https://dev.yorhel.nl/download/ncdu-$version.tar.gz
 
   - name: tree-static
     build-options: *musl-static-build-options
