@@ -65,11 +65,13 @@ modules:
   #   Clipboard
   #   Code: Debug
   #   Code: Editors
+  #   Code: Tools
   #   Code: VCS
   #   Containers
   #   Data formats
   #   Dotfiles
   #   Files: Backup and sync
+  #   Files: Filesystems
   #   Files: Folder listing
   #   Files: Managers
   #   Files: Search
@@ -263,6 +265,7 @@ modules:
       - '*'
 
   - name: openssl-static
+    # TODO: certs dir target
     build-options: *musl-static-build-options
     config-opts:
       - --libdir=lib
@@ -777,6 +780,23 @@ modules:
   #### Packaging helpers  ####
   ############################
 
+  - name: meson
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
+    sources:
+      - type: archive
+        url: https://github.com/mesonbuild/meson/releases/download/0.61.1/meson-0.61.1.tar.gz
+        sha256: feb2cefb325b437dbf36146df7c6b87688ddff0b0205caa31dc64055c6da410c
+        x-checker-data:
+          type: anitya
+          project-id: 6472
+          stable-only: true
+          url-template: https://github.com/mesonbuild/meson/releases/download/$version/meson-$version.tar.gz
+    cleanup:
+      - '*'
+
   - name: python
     # TODO: fix gdbm symbol gdbm_version_cmp locating issue
    #build-options: *musl-shared-build-options
@@ -909,6 +929,32 @@ modules:
   ####       Archive      ####
   ############################
 
+  - name: cabextract-static
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://cabextract.org.uk/cabextract-1.9.1.tar.gz
+        sha256: afc253673c8ef316b4d5c29cc4aa8445844bee14afffbe092ee9469405851ca7
+        x-checker-data:
+          type: anitya
+          project-id: 245
+          stable-only: true
+          url-template: https://cabextract.org.uk/cabextract-$version.tar.gz
+
+  - name: rpmextract
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 rpm2cpio rpmextract.sh -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        url: https://github.com/archlinux/svntogit-packages/raw/packages/rpmextract/trunk/rpm2cpio
+        dest-filename: rpm2cpio
+        sha256: 5b9133774a969e9b2c4b18c77b340ed1e591e13ba1336fd4a4c15a96ad436dee
+      - type: file
+        url: https://github.com/archlinux/svntogit-packages/raw/packages/rpmextract/trunk/rpmextract.sh
+        dest-filename: rpmextract.sh
+        sha256: f319f14d27b909bd891adde4ccb4a8e910e15f9f4977b3e9bf78fbf7f2444866
+
   - name: p7zip-static
     build-options: *musl-static-build-options
     no-autogen: true
@@ -938,6 +984,72 @@ modules:
           - sed -i '/^CC/d;/^CXX/d;/^CC_SHARED/d;/^LINK_SHARED/d' makefile.machine
     cleanup:
       - /share/doc
+
+  - name: unrar-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-args:
+      - -j1
+    sources:
+      - type: archive
+        url: https://www.rarlab.com/rar/unrarsrc-6.1.7.tar.gz
+        sha256: de75b6136958173fdfc530d38a0145b72342cf0d3842bf7bb120d336602d88ed
+        x-checker-data:
+          type: anitya
+          project-id: 13306
+          stable-only: true
+          url-template: https://www.rarlab.com/rar/unrarsrc-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/^CXX=/d;/^CXXFLAGS=/d;/^LDFLAGS=/d' makefile
+          - sed -i 's/\($(LDFLAGS)\)/\1 -pthread/' makefile
+          - sed -i '/libunrar\.so/d' makefile
+          - sed -i 's/\(^DESTDIR\)=.*/\1=${FLATPAK_DEST}/' makefile
+
+  - name: upx-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    no-make-install: true
+    make-args:
+      - all
+      - CHECK_WHITESPACE=/usr/bin/true
+      - UPX_LZMA_VERSION=0x465
+      - UPX_LZMADIR=/run/build/upx
+      - CXXFLAGS_WERROR=-Wno-error=all
+    build-commands:
+      - install -Dm755 src/upx.out ${FLATPAK_DEST}/bin/upx
+      - install -Dm644 doc/upx.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/upx/upx/releases/download/v3.96/upx-3.96-src.tar.xz
+        sha256: 47774df5c958f2868ef550fb258b97c73272cb1f44fe776b798e393465993714
+        x-checker-data:
+          type: anitya
+          project-id: 13737
+          stable-only: true
+          url-template: https://github.com/upx/upx/releases/download/v$version/upx-$version-src.tar.xz
+    modules:
+      - name: ucl-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+        make-args:
+          - CFLAGS+=-std=gnu90
+        sources:
+          - type: archive
+            url: https://www.oberhumer.com/opensource/ucl/download/ucl-1.03.tar.gz
+            sha256: b865299ffd45d73412293369c9754b07637680e5c826915f097577cd27350348
+            x-checker-data:
+              type: anitya
+              project-id: 13446
+              stable-only: true
+              url-template: https://www.oberhumer.com/opensource/ucl/download/ucl-$version.tar.gz
+          - type: shell
+            commands:
+              - sed -i '/^ac_compile=/ s/\($CFLAGS\)/\1 -std=gnu90/' configure
+              - sed -i '/^ac_link=/ s/\($CFLAGS\)/\1 -std=gnu90/' configure
+        cleanup:
+          - '*'
 
 
   ############################
@@ -1425,8 +1537,215 @@ modules:
 
 
   ############################
+  ####    Code: Tools     ####
+  ############################
+
+  # TODO: evaluate adding colordiff (perl)
+  - name: bats-core
+    # TODO: add more bats extensions from https://github.com/bats-core
+    buildsystem: simple
+    build-commands:
+      - ./install.sh ${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/bats-core/bats-core/archive/v1.7.0/bats-core-1.7.0.tar.gz
+        sha256: ac70c2a153f108b1ac549c2eaa4154dea4a7c1cc421e3352f0ce6ea49435454e
+        x-checker-data:
+          type: anitya
+          project-id: 10587
+          stable-only: true
+          url-template: https://github.com/bats-core/bats-core/archive/v$version/bats-core-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i 's/libexec/lib/g' install.sh bin/bats
+
+  - name: bat-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 bat -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 bat.1 -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 autocomplete/bat.bash ${FLATPAK_DEST}/share/bash-completion/completions/bat
+      - install -Dm644 autocomplete/bat.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/bat.fish
+      - install -Dm644 autocomplete/bat.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_bat
+    sources:
+      - type: archive
+        url: https://github.com/sharkdp/bat/releases/download/v0.21.0/bat-v0.21.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: 5e6d199219578fed98483ad132f8207edc23bd072b36c22237edd51aed6b2af9
+        x-checker-data:
+          type: anitya
+          project-id: 17642
+          stable-only: true
+          url-template: https://github.com/sharkdp/bat/releases/download/v$version/bat-v$version-x86_64-unknown-linux-musl.tar.gz
+
+  - name: difftastic-shared-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 difft -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/Wilfred/difftastic/releases/download/0.32.0/difft-x86_64-unknown-linux-gnu.tar.gz
+        sha256: d5a84f10b9e107048c1bafeab4f7320dd57948ffbd9cd13ff6b7c68bb986371f
+        x-checker-data:
+          type: anitya
+          project-id: 279512
+          stable-only: true
+          url-template: https://github.com/Wilfred/difftastic/releases/download/$version/difft-x86_64-unknown-linux-gnu.tar.gz
+
+  - name: highlight-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-args:
+      - LUA_CFLAGS=-I${FLATPAK_DEST}/include
+      - LUA_LIBS=-L${FLATPAK_DEST}/lib -llua
+      - cli
+    make-install-args:
+      - PREFIX=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: http://www.andre-simon.de/zip/highlight-4.2.tar.bz2
+        sha256: ed3efdb9b416b236e503989f9dfebdd94bf515536cfd183aefe36cefdd0d0468
+        x-checker-data:
+          type: anitya
+          project-id: 14752
+          stable-only: true
+          url-template: http://www.andre-simon.de/zip/highlight-$version.tar.bz2
+      - type: shell
+        commands:
+          - sed -i '/^LDFLAGS.*=/d' src/makefile
+    modules:
+      - name: boost-headers
+        buildsystem: simple
+        build-commands:
+          - ./bootstrap.sh
+          - ./b2 --with-headers variant=release link=static runtime-link=static debug-symbols=off --prefix=${FLATPAK_DEST} install
+        sources:
+          - type: archive
+            url: https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.bz2
+            sha256: 475d589d51a7f8b3ba2ba4eda022b170e562ca3b760ee922c146b6c65856ef39
+            x-checker-data:
+              type: anitya
+              project-id: 6845
+              stable-only: true
+              url-template: https://boostorg.jfrog.io/artifactory/main/release/$major.$minor.$patch/source/boost_${major}_${minor}_$patch.tar.bz2
+        cleanup:
+          - '*'
+      - name: lua-static
+        build-options: *musl-static-build-options
+        #cflags: -fPIC -DLUA_USE_LINUX
+        no-autogen: true
+        make-install-args:
+          - INSTALL_TOP=${FLATPAK_DEST}
+          - INSTALL_MAN=$(INSTALL_TOP)/share/man/man1
+        sources:
+          - type: archive
+            url: https://www.lua.org/ftp/lua-5.4.4.tar.gz
+            sha256: 164c7849653b80ae67bec4b7473b884bf5cc8d2dca05653475ec2ed27b9ebf61
+            x-checker-data:
+              type: anitya
+              project-id: 1847
+              stable-only: true
+              url-template: https://www.lua.org/ftp/lua-$version.tar.gz
+          - type: shell
+            commands:
+              - sed -e "s|/usr/local/|${FLATPAK_DEST}/|"
+                -e "s|LUA_IDSIZE	60|LUA_IDSIZE	512|"
+                -i src/luaconf.h
+              - sed -e "/^PLAT.*=/ s/guess/linux/" -i Makefile src/Makefile
+              - sed -e "/^CC.*=/d;/^CFLAGS.*=/d" -i src/Makefile
+        cleanup:
+          - '*'
+
+  - name: git-delta-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 delta -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 etc/completion/completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/delta
+      # TODO: enable fish completion on release bump
+      #- install -Dm644 etc/completion/completion.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/delta.fish
+      - install -Dm644 etc/completion/completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_delta
+    sources:
+      - type: archive
+        url: https://github.com/dandavison/delta/releases/download/0.13.0/delta-0.13.0-x86_64-unknown-linux-musl.tar.gz
+        sha256: c54d1f9f17fbd9d6a2a1d3165b42a46327091eb69ca7341478b132086434c12a
+        x-checker-data:
+          type: anitya
+          project-id: 98343
+          stable-only: true
+          url-template: https://github.com/dandavison/delta/releases/download/$version/delta-$version-x86_64-unknown-linux-musl.tar.gz
+      - type: archive
+        url: https://github.com/dandavison/delta/archive/0.13.0/delta-0.13.0.tar.gz
+        sha256: 5a0ba70a094a7884beb6f1efd4d155861e4b3e3584c452cabbce1607f8eb0f30
+        x-checker-data:
+          type: anitya
+          project-id: 98343
+          stable-only: true
+          url-template: https://github.com/dandavison/delta/archive/$version/delta-$version.tar.gz
+
+  - name: patchutils-static
+    build-options: *musl-static-build-options
+    make-args:
+      - LIBS=-lpcre2-posix -lpcre2-8 -lpcre2-16 -lpcre2-32
+    sources:
+      - type: archive
+        url: http://cyberelk.net/tim/data/patchutils/stable/patchutils-0.4.2.tar.xz
+        sha256: 8875b0965fe33de62b890f6cd793be7fafe41a4e552edbf641f1fed5ebbf45ed
+        x-checker-data:
+          type: anitya
+          project-id: 2599
+          stable-only: true
+          url-template: http://cyberelk.net/tim/data/patchutils/stable/patchutils-$version.tar.xz
+
+  - name: riff-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 riff -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: riff
+        url: https://github.com/walles/riff/releases/download/2.19.0/riff-2.19.0-x86_64-linux
+        sha256: 14ab9c0f9fb90e42d15b96b5d5341a522e6c19302dbca580f6bdf2f16f98f388
+        x-checker-data:
+          type: anitya
+          project-id: 279515
+          stable-only: true
+          url-template: https://github.com/walles/riff/releases/download/$version/riff-$version-x86_64-linux
+
+  - name: tokei-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 tokei -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/XAMPPRocky/tokei/releases/download/v12.1.2/tokei-x86_64-unknown-linux-musl.tar.gz
+        sha256: 331e77046935d655dce8d97ebb943fcc7e9684586dadf3d197f3df5e760cd31b
+        x-checker-data:
+          type: anitya
+          project-id: 13727
+          stable-only: true
+          url-template: https://github.com/XAMPPRocky/tokei/releases/download/v$version/tokei-x86_64-unknown-linux-musl.tar.gz
+
+
+  ############################
   ####     Code: VCS      ####
   ############################
+
+  - name: git-lfs-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 git-lfs -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+      - install -Dm644 man/man5/* -t ${FLATPAK_DEST}/share/man/man5/
+    sources:
+      - type: archive
+        url: https://github.com/git-lfs/git-lfs/releases/download/v3.2.0/git-lfs-linux-amd64-v3.2.0.tar.gz
+        sha256: d6730b8036d9d99f872752489a331995930fec17b61c87c7af1945c65a482a50
+        x-checker-data:
+          type: anitya
+          project-id: 11551
+          stable-only: true
+          url-template: https://github.com/git-lfs/git-lfs/releases/download/v$version/git-lfs-linux-amd64-v$version.tar.gz
 
   - name: github-cli-static-bin
     buildsystem: simple
@@ -1526,6 +1845,25 @@ modules:
           version-query: first(.[].tag_name | sub("^v"; ""))
           url-query: '"https://gitea.com/gitea/tea/archive/v" + $version + ".tar.gz"'
 
+  - name: tig-static
+    build-options: *musl-static-build-options
+    make-install-args:
+      - install-doc-man
+    post-install:
+      - install -Dm755 contrib/tig-pick -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 contrib/tig-completion.bash ${FLATPAK_DEST}/share/bash-completion/completions/tig
+      - install -Dm644 contrib/tig-completion.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_tig
+      - install -Dm644 contrib/vim.tigrc -t ${FLATPAK_DEST}/share/tig/
+    sources:
+      - type: archive
+        url: https://github.com/jonas/tig/releases/download/tig-2.5.6/tig-2.5.6.tar.gz
+        sha256: 50bb5f33369b50b77748115c730c52b13e79b2de49cba7167bb634eb683d965f
+        x-checker-data:
+          type: anitya
+          project-id: 4969
+          stable-only: true
+          url-template: https://github.com/jonas/tig/releases/download/tig-$version/tig-$version.tar.gz
+
 
   ############################
   ####     Containers     ####
@@ -1565,6 +1903,22 @@ modules:
   ############################
   ####    Data formats    ####
   ############################
+
+  - name: dos2unix-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    sources:
+      - type: archive
+        url: https://waterlan.home.xs4all.nl/dos2unix/dos2unix-7.4.3.tar.gz
+        sha256: b68db41956daf933828423aa30510e00c12d29ef5916e715e8d4e694fe66ca72
+        x-checker-data:
+          type: anitya
+          project-id: 453
+          stable-only: true
+          url-template: https://waterlan.home.xs4all.nl/dos2unix/dos2unix-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/^LDFLAGS .*=/d;s/\(^prefix .*=\).*/\1 ${FLATPAK_DEST}/' Makefile
 
   - name: go-yq-static-bin
     buildsystem: simple
@@ -1683,6 +2037,88 @@ modules:
 
 
   ############################
+  ###  Files: Filesystems  ###
+  ############################
+
+  - name: sshfs-static
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - --default-library=static
+    sources:
+      - type: archive
+        url: https://github.com/libfuse/sshfs/releases/download/sshfs-3.7.3/sshfs-3.7.3.tar.xz
+        sha256: 5218ce7bdd2ce0a34137a0d7798e0f6d09f0e6d21b1e98ee730a18b0699c2e99
+        x-checker-data:
+          type: anitya
+          project-id: 11058
+          stable-only: true
+          url-template: https://github.com/libfuse/sshfs/releases/download/sshfs-$version/sshfs-$version.tar.xz
+    modules:
+      - name: glib2-static
+        build-options: *musl-static-build-options
+        buildsystem: meson
+        config-opts:
+          - --default-library=static
+          - -Dselinux=disabled
+          - -Dxattr=false
+          - -Dlibmount=disabled
+          - -Dtests=false
+          - -Dnls=disabled
+          - -Dglib_debug=disabled
+          - -Dglib_assert=false
+          - -Dglib_checks=false
+          - -Dlibelf=disabled
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/glib/2.70/glib-2.70.5.tar.xz
+            sha256: f70bf76ebcc84e0705722f038be8e2f9a58d17e1a700810c635fcc18b8974b7e
+            x-checker-data:
+              type: gnome
+              name: glib
+        cleanup:
+          - '*'
+        modules:
+          - name: pcre-static
+            build-options: *musl-static-build-options
+            config-opts:
+              - --disable-shared
+            sources:
+              - type: archive
+                url: http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.45.tar.gz
+                sha256: 4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09
+                x-checker-data:
+                  type: anitya
+                  project-id: 2610
+                  stable-only: true
+                  url-template: http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-$version.tar.gz
+            cleanup:
+              - '*'
+      - name: fuse3-static
+        build-options: *musl-static-build-options
+        buildsystem: meson
+        config-opts:
+          - --default-library=static
+          - -Ddisable-mtab=true
+          - -Dudevrulesdir=${FLATPAK_DEST}/etc/udev/rules.d
+          - -Dutils=false
+          - -Dexamples=false
+          - -Duseroot=false
+          - -Dtests=false
+        sources:
+          - type: archive
+            url: https://github.com/libfuse/libfuse/releases/download/fuse-3.10.5/fuse-3.10.5.tar.xz
+            sha256: b2e283485d47404ac896dd0bb7f7ba81e1470838e677e45f659804c3a3b69666
+            x-checker-data:
+              type: anitya
+              project-id: 861
+              stable-only: true
+              url-template: https://github.com/libfuse/libfuse/releases/download/fuse-$version/fuse-$version.tar.xz
+        cleanup:
+          - '*'
+
+
+  ############################
   ## Files: Folder listing  ##
   ############################
 
@@ -1723,6 +2159,41 @@ modules:
           project-id: 20242
           stable-only: true
           url-template: https://github.com/Peltoche/lsd/releases/download/$version/lsd-$version-x86_64-unknown-linux-musl.tar.gz
+
+  - name: ncdu-static-bin
+    # TODO: generate static build with zig
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 ncdu -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://dev.yorhel.nl/download/ncdu-2.1.2-linux-x86_64.tar.gz
+        sha256: c837b535a5b42b5c9813bc5719358d6fc84ded3c4d477e779edd0f4ca88b2b60
+        x-checker-data:
+          type: anitya
+          project-id: 6045
+          stable-only: true
+          url-template: https://dev.yorhel.nl/download/ncdu-$version-linux-x86_64.tar.gz
+
+  - name: tree-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-install-args:
+      - PREFIX=${FLATPAK_DEST}
+      - MANDIR=${PREFIX}/share/man
+    sources:
+      - type: archive
+        url: http://mama.indstate.edu/users/ice/tree/src/tree-2.0.2.tgz
+        sha256: 7d693a1d88d3c4e70a73e03b8dbbdc12c2945d482647494f2f5bd83a479eeeaf
+        x-checker-data:
+          type: anitya
+          project-id: 5006
+          stable-only: true
+          url-template: http://mama.indstate.edu/users/ice/tree/src/tree-$version.tgz
+      - type: shell
+        commands:
+          - sed -i '/^CC=/d;/^CFLAGS=/d;/^LDFLAGS=/d' Makefile
 
 
   ############################
@@ -2226,6 +2697,42 @@ modules:
           stable-only: true
           url-template: https://github.com/orhun/gpg-tui/releases/download/v$version/gpg-tui-$version-x86_64-unknown-linux-gnu.tar.gz
 
+  - name: paperkey
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://www.jabberwocky.com/software/paperkey/paperkey-1.6.tar.gz
+        sha256: a245fd13271a8d2afa03dde979af3a29eb3d4ebb1fbcad4a9b52cf67a27d05f7
+        x-checker-data:
+          type: anitya
+          project-id: 8571
+          stable-only: true
+          url-template: https://www.jabberwocky.com/software/paperkey/paperkey-$version.tar.gz
+
+  - name: pwgen-static
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: http://downloads.sourceforge.net/pwgen/pwgen-2.08.tar.gz
+        sha256: dab03dd30ad5a58e578c5581241a6e87e184a18eb2c3b2e0fffa8a9cf105c97b
+        x-checker-data:
+          type: anitya
+          project-id: 3738
+          stable-only: true
+          url-template: http://downloads.sourceforge.net/pwgen/pwgen-$version.tar.gz
+
+  - name: qrencode
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://fukuchi.org/works/qrencode/qrencode-4.1.1.tar.gz
+        sha256: da448ed4f52aba6bcb0cd48cac0dd51b8692bccc4cd127431402fca6f8171e8e
+        x-checker-data:
+          type: anitya
+          project-id: 12834
+          stable-only: true
+          url-template: https://fukuchi.org/works/qrencode/qrencode-$version.tar.gz
+
 
   ############################
   ####       Shells       ####
@@ -2613,6 +3120,7 @@ modules:
           - '*'
 
   - name: screen-static
+    # TODO: buildsystem tries to install into /usr
     build-options: *musl-static-build-options
     config-opts:
       - --enable-static
