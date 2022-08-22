@@ -76,6 +76,7 @@ modules:
   #   Files: Search
   #   Files: Trashcan
   #   Images
+  #   Network
   #   Processes
   #   Python
   #   Security
@@ -470,6 +471,24 @@ modules:
           project-id: 1705
           stable-only: true
           url-template: http://downloads.sourceforge.net/libpng/libpng-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: libxml2-static # depends on ncurses readline xz zlib
+    # TODO: test if icu should be enabled
+    build-options: *musl-static-build-options
+    config-opts:
+      - --enable-static
+      - --without-python
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/libxml2/2.10/libxml2-2.10.0.tar.xz
+        sha256: 2dd33110ea778676de14bea4999ee1173c4ca55d5ff1452bca224e06f0152595
+        x-checker-data:
+          type: anitya
+          project-id: 1783
+          stable-only: true
+          url-template: https://download.gnome.org/sources/libxml2/$version0.$version1/libxml2-$version.tar.xz
     cleanup:
       - '*'
 
@@ -2639,6 +2658,235 @@ modules:
 
 
   ############################
+  ####      Network       ####
+  ############################
+
+  - name: axel-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-nls
+    sources:
+      - type: archive
+        url: https://github.com/axel-download-accelerator/axel/releases/download/v2.17.11/axel-2.17.11.tar.gz
+        sha256: f12682f981c83f374b82b0668f25f694a2042b617b236ee6fb057e5473c54e31
+        x-checker-data:
+          type: anitya
+          project-id: 9344
+          stable-only: true
+          url-template: https://github.com/axel-download-accelerator/axel/releases/download/v$version/axel-$version.tar.gz
+
+  - name: bind-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --sbindir=${prefix}/bin
+      - --enable-static
+      - --disable-shared
+      - --enable-developer
+      - --disable-warn-error
+    # TODO: enable more features
+     #- --with-gssapi
+     #- --with-jemalloc
+     #- --with-json-c
+     #- --with-libidn2
+     #- --with-lmdb
+     #- --with-maxminddb
+      - --disable-chroot
+      - --disable-linux-caps
+      - --enable-geoip
+      - --enable-doh
+      - --enable-fixed-rrset
+      - --enable-full-report
+      - --with-libnghttp2
+      - --with-libxml2
+      - --with-openssl
+      - --with-readline
+      - --with-zlib
+      - --without-cmocka
+    make-args:
+      - CCLD=$(CC) -all-static
+    make-install-args:
+      # workaround for buildsystem making unneeded filesystem changes after install and breaking rofiles
+      - DESTDIR=${FLATPAK_BUILDER_BUILDDIR}/target
+    post-install:
+      - cp -r target/${FLATPAK_DEST}/* ${FLATPAK_DEST}/
+    sources:
+      - type: archive
+        url: https://downloads.isc.org/isc/bind9/9.18.6/bind-9.18.6.tar.xz
+        sha256: d43a0fed03c774d1685d203598218c0b7774a88fcc390a0170710d5feb7fbff1
+        x-checker-data:
+          type: anitya
+          project-id: 14923
+          stable-only: true
+          url-template: https://downloads.isc.org/isc/bind9/$version/bind-$version.tar.xz
+      - type: shell
+        commands:
+          - sed -i 's/\(^READLINE_LIBS.*=.*\)/\1 -lncursesw/' $(find . -name Makefile.in)
+    modules:
+      - name: libnghttp2-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+          - --enable-lib-only
+        sources:
+          - type: archive
+            url: https://github.com/nghttp2/nghttp2/releases/download/v1.48.0/nghttp2-1.48.0.tar.gz
+            sha256: 66d4036f9197bbe3caba9c2626c4565b92662b3375583be28ef136d62b092998
+            x-checker-data:
+              type: anitya
+              project-id: 8651
+              stable-only: true
+              url-template: https://github.com/nghttp2/nghttp2/releases/download/v$version/nghttp2-$version.tar.gz
+        cleanup:
+          - '*'
+
+  - name: openbsd-netcat-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    no-make-install: true
+    make-args:
+      - CFLAGS+=-I${FLATPAK_DEST}/include -I${FLATPAK_DEST}/include/libbsd
+      - LIBS+=-L${FLATPAK_DEST}/lib -lbsd -lmd
+    build-commands:
+      - install -Dm755 nc -t ${FLATPAK_DEST}/bin/
+      - install -Dm644 nc.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://salsa.debian.org/debian/netcat-openbsd/-/archive/debian/1.218-5/netcat-openbsd-debian-1.218-5.tar.gz
+        sha256: e966b598e8af34141e9993c0434cafc83fb707f8ace900fb7c4e758889653c08
+        x-checker-data:
+          type: anitya
+          project-id: 279972
+          stable-only: true
+          url-template: https://salsa.debian.org/debian/netcat-openbsd/-/archive/debian/$version/netcat-openbsd-debian-$version.tar.gz
+      - type: shell
+        commands:
+          - |
+            while read -r line; do
+              patch -Np1 -i "debian/patches/${line}"
+            done < debian/patches/series
+      - type: patch
+        # NOTE: missing non-standard glibc's b64_ntop in libc
+        # https://gitweb.gentoo.org/repo/gentoo.git/tree/net-analyzer/openbsd-netcat
+        path: openbsd-netcat-1.105-musl-b64_ntop.patch
+    modules:
+      - name: libbsd-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+        sources:
+          - type: archive
+            url: https://libbsd.freedesktop.org/releases/libbsd-0.11.6.tar.xz
+            sha256: 19b38f3172eaf693e6e1c68714636190c7e48851e45224d720b3b5bc0499b5df
+            x-checker-data:
+              type: anitya
+              project-id: 1567
+              stable-only: true
+              url-template: https://libbsd.freedesktop.org/releases/libbsd-$version.tar.xz
+        cleanup:
+          - '*'
+        modules:
+          - name: libmd-static
+            build-options: *musl-static-build-options
+            config-opts:
+              - --disable-shared
+            sources:
+              - type: archive
+                url: https://libbsd.freedesktop.org/releases/libmd-1.0.4.tar.xz
+                sha256: f51c921042e34beddeded4b75557656559cf5b1f2448033b4c1eec11c07e530f
+                x-checker-data:
+                  type: anitya
+                  project-id: 15525
+                  stable-only: true
+                  url-template: https://libbsd.freedesktop.org/releases/libmd-$version.tar.xz
+            cleanup:
+              - '*'
+
+  - name: socat-static
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: http://www.dest-unreach.org/socat/download/socat-1.7.4.3.tar.gz
+        sha256: d697245144731423ddbbceacabbd29447089ea223e9a439b28f9ff90d0dd216e
+        x-checker-data:
+          type: anitya
+          project-id: 4848
+          stable-only: true
+          url-template: http://www.dest-unreach.org/socat/download/socat-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/HAVE_GETPROTOBYNUMBER_R/d' config.h.in
+
+  - name: traceroute-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-install-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/traceroute/traceroute-2.1.0.tar.gz
+        sha256: 3669d22a34d3f38ed50caba18cd525ba55c5c00d5465f2d20d7472e5d81603b6
+        x-checker-data:
+          type: anitya
+          project-id: 14877
+          stable-only: true
+          url-template: https://downloads.sourceforge.net/traceroute/traceroute-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/call set, \(CC\|CFLAGS\|CPPFLAGS\|LDFLAGS\),/d' Make.rules
+
+  - name: whois-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-install-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/rfc1036/whois/archive/v5.5.13/who-is-5.5.13.tar.gz
+        sha256: a96cf60722e5c3962f8abef36184a101011447d3fe5fa053ea97f593826568fb
+        x-checker-data:
+          type: anitya
+          project-id: 5128
+          stable-only: true
+          url-template: https://github.com/rfc1036/whois/archive/v$version/who-is-$version.tar.gz
+    modules:
+      - name: libidn2-static
+        # TODO: add libunistring dependency?
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+        sources:
+          - type: archive
+            url: https://ftp.gnu.org/gnu/libidn/libidn2-2.3.3.tar.gz
+            sha256: f3ac987522c00d33d44b323cae424e2cffcb4c63c6aa6cd1376edacbf1c36eb0
+            x-checker-data:
+              type: anitya
+              project-id: 5597
+              stable-only: true
+              url-template: https://ftp.gnu.org/gnu/libidn/libidn2-$version.tar.gz
+        cleanup:
+          - '*'
+
+  - name: wol-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --infodir=${prefix}/share/info
+      - --mandir=${prefix}/share/man
+      - --disable-nls
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/ahh/wol-0.7.1.tar.gz
+        sha256: e0086c9b9811df2bdf763ec9016dfb1bcb7dba9fa6d7858725b0929069a12622
+        x-checker-data:
+          type: anitya
+          project-id: 5139
+          stable-only: true
+          url-template: https://downloads.sourceforge.net/ahh/wol-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i 's/\(# if __GLIBC__ .*\)/\1 \&\& defined __GNU_LIBRARY__/' lib/getline.h
+
+
+  ############################
   ####     Processes      ####
   ############################
 
@@ -3544,22 +3792,6 @@ modules:
 #       cleanup:
 #         - '*'
 #       modules:
-#         - name: libxml2-static
-#           build-options: *musl-static-build-options
-#           config-opts:
-#             - --enable-static
-#             - --without-python
-#           sources:
-#             - type: archive
-#               url: https://download.gnome.org/sources/libxml2/2.10/libxml2-2.10.0.tar.xz
-#               sha256: 2dd33110ea778676de14bea4999ee1173c4ca55d5ff1452bca224e06f0152595
-#               x-checker-data:
-#                 type: anitya
-#                 project-id: 1783
-#                 stable-only: true
-#                 url-template: https://download.gnome.org/sources/libxml2/$version0.$version1/libxml2-$version.tar.xz
-#           cleanup:
-#             - '*'
 #     - name: scdoc
 #       no-autogen: true
 #       make-args:
