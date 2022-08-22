@@ -76,6 +76,7 @@ modules:
   #   Files: Search
   #   Files: Trashcan
   #   Images
+  #   Processes
   #   Python
   #   Security
   #   Shells
@@ -1132,8 +1133,6 @@ modules:
   - name: xdelta3-static
     build-options: *musl-static-build-options
     subdir: xdelta3
-    config-opts:
-      - --disable-shared
     sources:
       - type: archive
         url: https://github.com/jmacd/xdelta/archive/v3.1.0/xdelta-3.1.0.tar.gz
@@ -2640,6 +2639,30 @@ modules:
 
 
   ############################
+  ####     Processes      ####
+  ############################
+
+  - name: psmisc-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-nls
+    make-args:
+      - CFLAGS+=-I${FLATPAK_DEST}/include/ncursesw
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/psmisc/psmisc-23.5.tar.xz
+        sha256: dc37ecc2f7e4a90a94956accc6e1c77adb71316b7c9cbd39b26738db0c3ae58b
+        x-checker-data:
+          type: anitya
+          project-id: 3721
+          stable-only: true
+          url-template: https://downloads.sourceforge.net/psmisc/psmisc-$version.tar.xz
+      - type: shell
+        commands:
+          - sed -i '/^install-data-am/ s/install-data-local //' man-po/Makefile.in
+
+
+  ############################
   ####      Python        ####
   ############################
 
@@ -2760,7 +2783,7 @@ modules:
           stable-only: true
           url-template: https://github.com/orhun/gpg-tui/releases/download/v$version/gpg-tui-$version-x86_64-unknown-linux-gnu.tar.gz
 
-  - name: paperkey
+  - name: paperkey-static
     build-options: *musl-static-build-options
     sources:
       - type: archive
@@ -2784,8 +2807,11 @@ modules:
           stable-only: true
           url-template: http://downloads.sourceforge.net/pwgen/pwgen-$version.tar.gz
 
-  - name: qrencode
+  - name: qrencode-static
     build-options: *musl-static-build-options
+    config-opts:
+      - --enable-static
+      - --disable-shared
     sources:
       - type: archive
         url: https://fukuchi.org/works/qrencode/qrencode-4.1.1.tar.gz
@@ -2795,6 +2821,9 @@ modules:
           project-id: 12834
           stable-only: true
           url-template: https://fukuchi.org/works/qrencode/qrencode-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i 's/\($(CCLD)\)/\1 -all-static/' Makefile.in
 
 
   ############################
