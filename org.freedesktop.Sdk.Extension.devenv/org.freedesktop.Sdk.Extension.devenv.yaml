@@ -3901,8 +3901,11 @@ modules:
     build-commands:
       - install -dm755 ${FLATPAK_DEST}/bin/fsw
       - |
-        for cmd in flatpak lxc pacman podman sudo \
-          rm{,dir}trash trash{,-{empty,list,put,restore,rm}}; do
+        cmds=(buildah flatpak lxc podman skopeo
+              rm{,dir}trash trash{,-{empty,list,put,restore,rm}}
+              pacman sudo
+              amixer aplay ncpamixer njconnect playerctl)
+        for cmd in ${cmds[@]}; do
           ln -s ../host-spawn ${FLATPAK_DEST}/bin/fsw/${cmd}
         done
       - install -Dm755 fusermount3 -t ${FLATPAK_DEST}/bin/fsw/
