@@ -82,6 +82,7 @@ modules:
   #   Security
   #   Shells
   #   Shells: Multiplexers
+  #   Shells: Tools
   #   Terminal emulators
   #   FSW
   #   Polish
@@ -2888,6 +2889,21 @@ modules:
         commands:
           - sed -i 's/\(# if __GLIBC__ .*\)/\1 \&\& defined __GNU_LIBRARY__/' lib/getline.h
 
+  - name: websocat-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 websocat -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        dest-filename: websocat
+        url: https://github.com/vi/websocat/releases/download/v1.10.0/websocat.x86_64-unknown-linux-musl
+        sha256: b3dd771cf71a74e732ff99cf397b4cc62fc000e989d46c4dfbec1b86cc051896
+        x-checker-data:
+          type: anitya
+          project-id: 280067
+          stable-only: true
+          url-template: https://github.com/vi/websocat/releases/download/v$version/websocat.x86_64-unknown-linux-musl
+
 
   ############################
   ####     Processes      ####
@@ -3537,6 +3553,45 @@ modules:
           project-id: 4980
           stable-only: true
           url-template: https://github.com/tmux/tmux/releases/download/$version/tmux-$version.tar.gz
+
+
+  ############################
+  ####  Shells: Tools    ####
+  ############################
+
+  - name: reptyr-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-install-args:
+      - PREFIX=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/nelhage/reptyr/archive/reptyr-0.9.0/reptyr-0.9.0.tar.gz
+        sha256: b442fbb80a1003b1985974c6fc9eeb8124a43a9bf014ae6af8cde0ca5e587731
+        x-checker-data:
+          type: anitya
+          project-id: 4192
+          stable-only: true
+          url-template: https://github.com/nelhage/reptyr/archive/reptyr-$version/reptyr-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/install .*reptyr\..*\.1/d;/(MANDIR)\/.*\/man/d' Makefile
+
+
+  - name: rush-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 rush -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        strip-components: 0
+        url: https://github.com/shenwei356/rush/releases/download/v0.5.0/rush_linux_amd64.tar.gz
+        sha256: 1bf305c320791c42282146ad8697d8e370d3d02b9c4c22b9d74982e0bbd8ecfa
+        x-checker-data:
+          type: anitya
+          project-id: 280055
+          stable-only: true
+          url-template: https://github.com/shenwei356/rush/releases/download/v$version/rush_linux_amd64.tar.gz
 
 
   ############################
