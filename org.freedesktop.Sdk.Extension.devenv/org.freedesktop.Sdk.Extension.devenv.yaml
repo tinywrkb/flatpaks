@@ -2676,6 +2676,7 @@ modules:
           url-template: https://github.com/axel-download-accelerator/axel/releases/download/v$version/axel-$version.tar.gz
 
   - name: bind-static
+    # TODO: fix symlink creation in /bin
     build-options: *musl-static-build-options
     config-opts:
       - --sbindir=${prefix}/bin
@@ -2721,6 +2722,8 @@ modules:
       - type: shell
         commands:
           - sed -i 's/\(^READLINE_LIBS.*=.*\)/\1 -lncursesw/' $(find . -name Makefile.in)
+    cleanup:
+      - /lib
     modules:
       - name: libnghttp2-static
         build-options: *musl-static-build-options
