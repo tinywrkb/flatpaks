@@ -2485,13 +2485,66 @@ modules:
         path: ranger-tmux-fixes.patch
     cleanup:
       - '*'
+    modules:
+      - name: python-bidi
+        buildsystem: simple
+        build-commands:
+          # TODO: maybe switch to python-installer after new release
+          - pip3 install --exists-action=i --no-index --prefix=${FLATPAK_DEST} --no-build-isolation *.whl
+        sources:
+          - type: file
+            url: https://files.pythonhosted.org/packages/33/b0/f942d146a2f457233baaafd6bdf624eba8e0f665045b4abd69d1b62d097d/python_bidi-0.4.2-py2.py3-none-any.whl
+            sha256: 50eef6f6a0bbdd685f9e8c207f3c9050f5b578d0a46e37c76a9c4baea2cc2e13
+            x-checker-data:
+              type: pypi
+              name: bidi
+              packagetype: bdist_wheel
+        cleanup:
+          - '*'
+        modules:
+          - name: python-six
+            buildsystem: simple
+            build-commands:
+              # TODO: maybe switch to python-installer after new release
+              - pip3 install --exists-action=i --no-index --prefix=${FLATPAK_DEST} --no-build-isolation *.whl
+            sources:
+              - type: file
+                url: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl
+                sha256: 8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
+                x-checker-data:
+                  type: pypi
+                  name: six
+                  packagetype: bdist_wheel
+            cleanup:
+              - '*'
+      - name: python-chardet
+        buildsystem: simple
+        build-commands:
+          # TODO: maybe switch to python-installer after new release
+          - pip3 install --exists-action=i --no-index --prefix=${FLATPAK_DEST} --no-build-isolation *.whl
+        sources:
+          - type: file
+            url: https://files.pythonhosted.org/packages/4c/d1/1b96dd69fa42f20b70701b5cd42a75dd5f0c7a24dc0abfef35cc146210dc/chardet-5.0.0-py3-none-any.whl
+            sha256: d3e64f022d254183001eccc5db4040520c0f23b1a3f33d6413e099eb7f126557
+            x-checker-data:
+              type: pypi
+              name: chardet
+              packagetype: bdist_wheel
+        cleanup:
+          - '*'
 
   - name: ranger-portable
     build-options: *musl-shared-build-options
     buildsystem: simple
     build-commands:
       - ln -s ${FLATPAK_DEST}/bin/ranger-org ranger-portable
-      - pyinstaller --onedir --collect-all ranger ranger-portable
+      - |
+        pyinstaller --onedir \
+          --collect-all ranger \
+          --collect-all bidi \
+          --collect-all chardet \
+          --collect-all six \
+          ranger-portable
       - cp -r dist/ranger-portable ${FLATPAK_DEST}/lib/
       - ln -s ../lib/ranger-portable/ranger-portable ${FLATPAK_DEST}/bin/ranger
     cleanup:
