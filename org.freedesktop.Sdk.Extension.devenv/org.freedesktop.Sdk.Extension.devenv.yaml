@@ -57,8 +57,10 @@ modules:
   ####     Categories     ####
   ############################
   #
+  #   Prepare
+  #   Packaging: Buildsystems
   #   Libraries
-  #   Packaging helpers
+  #   Packaging: Python
   #   Archive
   #   Binary
   #   Clipboard
@@ -89,7 +91,7 @@ modules:
 
 
   ############################
-  ####     Libraries      ####
+  ####      Prepare       ####
   ############################
 
   - name: prepare-ccache
@@ -111,37 +113,34 @@ modules:
     build-commands:
       - install -Dm755 /usr/lib/sdk/musl/x86_64-linux-musl/lib/libc.so ${FLATPAK_DEST}/lib/libc.musl-x86_64.so.1
 
-  - name: acl-static
-    build-options: *musl-static-build-options
-    config-opts:
-      - --disable-shared
+
+  ############################
+  # Packaging: Buildsystems #
+  ############################
+
+  - name: meson
+    buildsystem: simple
+    build-commands:
+      - python setup.py build
+      - python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
     sources:
       - type: archive
-        url: https://download.savannah.gnu.org/releases/acl/acl-2.3.1.tar.gz
-        sha256: 760c61c68901b37fdd5eefeeaf4c0c7a26bdfdd8ac747a1edff1ce0e243c11af
+        url: https://github.com/mesonbuild/meson/releases/download/0.63.1/meson-0.63.1.tar.gz
+        sha256: 06fe13297213d6ff0121c5d5aab25a56ef938ffec57414ed6086fda272cb65e9
         x-checker-data:
           type: anitya
-          project-id: 16
+          project-id: 6472
           stable-only: true
-          url-template: https://download.savannah.gnu.org/releases/acl/acl-$version.tar.gz
+          url-template: https://github.com/mesonbuild/meson/releases/download/$version/meson-$version.tar.gz
     cleanup:
       - '*'
-    modules:
-      - name: attr-static
-        build-options: *musl-static-build-options
-        config-opts:
-          - --disable-shared
-        sources:
-          - type: archive
-            url: https://download.savannah.gnu.org/releases/attr/attr-2.5.1.tar.gz
-            sha256: bae1c6949b258a0d68001367ce0c741cebdacdd3b62965d17e5eb23cd78adaf8
-            x-checker-data:
-              type: anitya
-              project-id: 137
-              stable-only: true
-              url-template: https://download.savannah.gnu.org/releases/attr/attr-$version.tar.gz
-        cleanup:
-          - '*'
+
+
+  ############################
+  ####     Libraries      ####
+  ############################
+
+  # Libraries: Data compression
 
   - name: bzip2-static
     # NOTE: python needs -fPIC
@@ -165,45 +164,6 @@ modules:
     cleanup:
       - '*'
 
-  - name: expat-static
-    # NOTE: python needs -fPIC
-    build-options: *musl-static-fpic-build-options
-    buildsystem: cmake
-    config-opts:
-      - -DEXPAT_BUILD_TOOLS=OFF
-      - -DEXPAT_BUILD_EXAMPLES=OFF
-      - -DEXPAT_BUILD_TESTS=OFF
-      - -DEXPAT_SHARED_LIBS=OFF
-      - -DEXPAT_BUILD_DOCS=OFF
-    sources:
-      - type: archive
-        url: https://github.com/libexpat/libexpat/releases/download/R_2_4_8/expat-2.4.8.tar.gz
-        sha256: 398f6d95bf808d3108e27547b372cb4ac8dc2298a3c4251eb7aa3d4c6d4bb3e2
-        x-checker-data:
-          type: anitya
-          project-id: 770
-          stable-only: true
-          url-template: https://github.com/libexpat/libexpat/releases/download/R_${version0}_${version1}_${version2}/expat-$version.tar.gz
-    cleanup:
-      - '*'
-
-  - name: libffi-static
-    # NOTE: python needs -fPIC
-    build-options: *musl-static-fpic-build-options
-    config-opts:
-      - --disable-shared
-    sources:
-      - type: archive
-        url: https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz
-        sha256: 540fb721619a6aba3bdeef7d940d8e9e0e6d2c193595bc243241b77ff9e93620
-        x-checker-data:
-          type: anitya
-          project-id: 1611
-          stable-only: true
-          url-template: https://github.com/libffi/libffi/releases/download/v$version/libffi-$version.tar.gz
-    cleanup:
-      - '*'
-
   - name: lz4-static
     build-options: *musl-static-build-options
     no-autogen: true
@@ -224,119 +184,6 @@ modules:
       - type: shell
         commands:
           - sed -i '/^BUILD_SHARED:=/ s/yes/no/' lib/Makefile
-    cleanup:
-      - '*'
-
-  - name: ncurses-static
-    # NOTE: python needs -fPIC
-    build-options: *musl-static-fpic-build-options
-    config-opts:
-      - --without-dlsym
-      - --with-terminfo-dirs=${datadir}/share/terminfo:/var/lib/devenv/share/terminfo:/usr/share/terminfo
-     #- --with-default-terminfo-dir=${datadir}/terminfo
-      - --disable-db-install
-      - --enable-widec
-      - --enable-pc-files
-      - --with-normal
-      - --with-cxx
-      - --with-cxx-binding
-      - --without-ada
-      - --without-debug
-      - --without-manpages
-      - --without-progs
-      - --without-tests
-    post-install:
-      - ln -s libncursesw.a ${FLATPAK_DEST}/lib/libcurses.a
-      - ln -s libncursesw.a ${FLATPAK_DEST}/lib/libncurses.a
-      - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/tinfo.pc
-      - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/curses.pc
-      - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/ncurses.pc
-    sources:
-      - type: archive
-        url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz
-        sha256: 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
-        x-checker-data:
-          type: anitya
-          project-id: 234776
-          stable-only: true
-          url-template: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz
-      - type: shell
-        commands:
-          - install -dm755 ${FLATPAK_DEST}/lib/pkgconfig
-    cleanup:
-      - '*'
-
-  - name: openssl-static
-    build-options: *musl-static-build-options
-    no-make-install: true
-    config-opts:
-      - --libdir=lib
-      - --openssldir=/etc/ssl
-      - -static
-      - no-ssl3-method
-      - enable-ec_nistp_64_gcc_128
-      - linux-x86_64
-      - -Wa,--noexecstack
-    build-commands:
-      - make install_sw
-    sources:
-      - type: archive
-        url: https://www.openssl.org/source/openssl-1.1.1q.tar.gz
-        sha256: d7939ce614029cdff0b6c20f0e2e5703158a489a72b2507b8bd51bf8c8fd10ca
-        x-checker-data:
-          type: anitya
-          project-id: 2566
-          stable-only: true
-          versions:
-            <: 2.0.0
-          version-scheme: semantic
-          url-template: https://www.openssl.org/source/openssl-$version.tar.gz
-      - type: patch
-        # https://github.com/openssl/openssl/issues/14574
-        path: openssl-static-threads.patch
-        options:
-          - --reverse
-      - type: shell
-        commands:
-          - ln -s {C,c}onfigure
-    cleanup:
-      - '*'
-
-  - name: popt-static
-    build-options: *musl-static-build-options
-    config-opts:
-      - --disable-shared
-    sources:
-      - type: archive
-        url: http://ftp.rpm.org/popt/releases/popt-1.x/popt-1.18.tar.gz
-        sha256: 5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1
-        x-checker-data:
-          type: anitya
-          project-id: 3689
-          stable-only: true
-          url-template: http://ftp.rpm.org/popt/releases/popt-$version0.x/popt-$version.tar.gz
-    cleanup:
-      - '*'
-
-  - name: xxhash-static
-    build-options: *musl-static-build-options
-    no-autogen: true
-    make-args:
-      - lib
-    make-install-args:
-      - prefix=${FLATPAK_DEST}
-    sources:
-      - type: archive
-        url: https://github.com/Cyan4973/xxHash/archive/v0.8.1/xxhash-0.8.1.tar.gz
-        sha256: 3bb6b7d6f30c591dd65aaaff1c8b7a5b94d81687998ca9400082c739a690436c
-        x-checker-data:
-          type: anitya
-          project-id: 17583
-          stable-only: true
-          url-template: https://github.com/Cyan4973/xxHash/archive/v$version/xxhash-$version.tar.gz
-      - type: shell
-        commands:
-          - sed -e '/$(INSTALL_PROGRAM) $(LIBXXH)/d' -e '/ln -sf $(LIBXXH)/d' -i Makefile
     cleanup:
       - '*'
 
@@ -401,7 +248,156 @@ modules:
     cleanup:
       - '*'
 
-  - name: readline-static # depends on ncurses
+
+  # Libraries: Level1
+
+  - name: acl-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: archive
+        url: https://download.savannah.gnu.org/releases/acl/acl-2.3.1.tar.gz
+        sha256: 760c61c68901b37fdd5eefeeaf4c0c7a26bdfdd8ac747a1edff1ce0e243c11af
+        x-checker-data:
+          type: anitya
+          project-id: 16
+          stable-only: true
+          url-template: https://download.savannah.gnu.org/releases/acl/acl-$version.tar.gz
+    cleanup:
+      - '*'
+    modules:
+      - name: attr-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+        sources:
+          - type: archive
+            url: https://download.savannah.gnu.org/releases/attr/attr-2.5.1.tar.gz
+            sha256: bae1c6949b258a0d68001367ce0c741cebdacdd3b62965d17e5eb23cd78adaf8
+            x-checker-data:
+              type: anitya
+              project-id: 137
+              stable-only: true
+              url-template: https://download.savannah.gnu.org/releases/attr/attr-$version.tar.gz
+        cleanup:
+          - '*'
+
+  - name: expat-static
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
+    buildsystem: cmake
+    config-opts:
+      - -DEXPAT_BUILD_TOOLS=OFF
+      - -DEXPAT_BUILD_EXAMPLES=OFF
+      - -DEXPAT_BUILD_TESTS=OFF
+      - -DEXPAT_SHARED_LIBS=OFF
+      - -DEXPAT_BUILD_DOCS=OFF
+    sources:
+      - type: archive
+        url: https://github.com/libexpat/libexpat/releases/download/R_2_4_8/expat-2.4.8.tar.gz
+        sha256: 398f6d95bf808d3108e27547b372cb4ac8dc2298a3c4251eb7aa3d4c6d4bb3e2
+        x-checker-data:
+          type: anitya
+          project-id: 770
+          stable-only: true
+          url-template: https://github.com/libexpat/libexpat/releases/download/R_${version0}_${version1}_${version2}/expat-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: fuse3-static
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - --default-library=static
+      - -Ddisable-mtab=true
+      - -Dudevrulesdir=${FLATPAK_DEST}/etc/udev/rules.d
+      - -Dutils=false
+      - -Dexamples=false
+      - -Duseroot=false
+      - -Dtests=false
+    sources:
+      - type: archive
+        url: https://github.com/libfuse/libfuse/releases/download/fuse-3.11.0/fuse-3.11.0.tar.xz
+        sha256: 8982c4c521daf3974dda8a5d55d575c988da13a571970f00aea149eb54fdf14c
+        x-checker-data:
+          type: anitya
+          project-id: 861
+          stable-only: true
+          url-template: https://github.com/libfuse/libfuse/releases/download/fuse-$version/fuse-$version.tar.xz
+    cleanup:
+      - '*'
+
+  - name: libffi-static
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: archive
+        url: https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz
+        sha256: 540fb721619a6aba3bdeef7d940d8e9e0e6d2c193595bc243241b77ff9e93620
+        x-checker-data:
+          type: anitya
+          project-id: 1611
+          stable-only: true
+          url-template: https://github.com/libffi/libffi/releases/download/v$version/libffi-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: openssl-static
+    build-options: *musl-static-build-options
+    no-make-install: true
+    config-opts:
+      - --libdir=lib
+      - --openssldir=/etc/ssl
+      - -static
+      - no-ssl3-method
+      - enable-ec_nistp_64_gcc_128
+      - linux-x86_64
+      - -Wa,--noexecstack
+    build-commands:
+      - make install_sw
+    sources:
+      - type: archive
+        url: https://www.openssl.org/source/openssl-1.1.1q.tar.gz
+        sha256: d7939ce614029cdff0b6c20f0e2e5703158a489a72b2507b8bd51bf8c8fd10ca
+        x-checker-data:
+          type: anitya
+          project-id: 2566
+          stable-only: true
+          versions:
+            <: 2.0.0
+          version-scheme: semantic
+          url-template: https://www.openssl.org/source/openssl-$version.tar.gz
+      - type: patch
+        # https://github.com/openssl/openssl/issues/14574
+        path: openssl-static-threads.patch
+        options:
+          - --reverse
+      - type: shell
+        commands:
+          - ln -s {C,c}onfigure
+    cleanup:
+      - '*'
+
+  - name: popt-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: archive
+        url: http://ftp.rpm.org/popt/releases/popt-1.x/popt-1.18.tar.gz
+        sha256: 5159bc03a20b28ce363aa96765f37df99ea4d8850b1ece17d1e6ad5c24fdc5d1
+        x-checker-data:
+          type: anitya
+          project-id: 3689
+          stable-only: true
+          url-template: http://ftp.rpm.org/popt/releases/popt-$version0.x/popt-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: readline-static
     # NOTE: python needs -fPIC
     build-options: *musl-static-fpic-build-options
     config-opts:
@@ -420,6 +416,70 @@ modules:
         path: readline-set-devenv-defaults.patch
     cleanup:
       - '*'
+    modules:
+      - name: ncurses-static
+        # NOTE: python needs -fPIC
+        build-options: *musl-static-fpic-build-options
+        config-opts:
+          - --without-dlsym
+          - --with-terminfo-dirs=${datadir}/share/terminfo:/var/lib/devenv/share/terminfo:/usr/share/terminfo
+         #- --with-default-terminfo-dir=${datadir}/terminfo
+          - --disable-db-install
+          - --enable-widec
+          - --enable-pc-files
+          - --with-normal
+          - --with-cxx
+          - --with-cxx-binding
+          - --without-ada
+          - --without-debug
+          - --without-manpages
+          - --without-progs
+          - --without-tests
+        post-install:
+          - ln -s libncursesw.a ${FLATPAK_DEST}/lib/libcurses.a
+          - ln -s libncursesw.a ${FLATPAK_DEST}/lib/libncurses.a
+          - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/tinfo.pc
+          - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/curses.pc
+          - ln -s ncursesw.pc ${FLATPAK_DEST}/lib/pkgconfig/ncurses.pc
+        sources:
+          - type: archive
+            url: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz
+            sha256: 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
+            x-checker-data:
+              type: anitya
+              project-id: 234776
+              stable-only: true
+              url-template: https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$version.tar.gz
+          - type: shell
+            commands:
+              - install -dm755 ${FLATPAK_DEST}/lib/pkgconfig
+        cleanup:
+          - '*'
+
+  - name: xxhash-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-args:
+      - lib
+    make-install-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/Cyan4973/xxHash/archive/v0.8.1/xxhash-0.8.1.tar.gz
+        sha256: 3bb6b7d6f30c591dd65aaaff1c8b7a5b94d81687998ca9400082c739a690436c
+        x-checker-data:
+          type: anitya
+          project-id: 17583
+          stable-only: true
+          url-template: https://github.com/Cyan4973/xxHash/archive/v$version/xxhash-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -e '/$(INSTALL_PROGRAM) $(LIBXXH)/d' -e '/ln -sf $(LIBXXH)/d' -i Makefile
+    cleanup:
+      - '*'
+
+
+  #  Libraries: Level2
 
   - name: gdbm-static # depends on readline
     # NOTE: python needs -fPIC
@@ -493,6 +553,22 @@ modules:
     cleanup:
       - '*'
 
+  - name: pcre-static # depends on bzip2 readline zlib
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: archive
+        url: http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.45.tar.gz
+        sha256: 4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09
+        x-checker-data:
+          type: anitya
+          project-id: 2610
+          stable-only: true
+          url-template: http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-$version.tar.gz
+    cleanup:
+      - '*'
+
   - name: pcre2-static # depends on bzip2 readline zlib
     build-options: *musl-static-build-options
     config-opts:
@@ -513,6 +589,37 @@ modules:
           url-template: https://github.com/PCRE2Project/pcre2/releases/download/pcre2-$version/pcre2-$version.tar.gz
     cleanup:
       - '*'
+
+
+  # Libraries: Level3
+
+  - name: glib2-static # depends on libffi pcre zlib
+    # NOTE: need a recent meson version
+    build-options: *musl-static-build-options
+    buildsystem: meson
+    config-opts:
+      - --default-library=static
+      - -Dselinux=disabled
+      - -Dxattr=false
+      - -Dlibmount=disabled
+      - -Dtests=false
+      - -Dnls=disabled
+      - -Dglib_debug=disabled
+      - -Dglib_assert=false
+      - -Dglib_checks=false
+      - -Dlibelf=disabled
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/glib/2.72/glib-2.72.3.tar.xz
+        sha256: 4a39a2f624b8512d500d5840173eda7fa85f51c109052eae806acece85d345f0
+        x-checker-data:
+          type: gnome
+          name: glib
+    cleanup:
+      - '*'
+
+
+  # Libraries: Display server
 
   - name: wayland-static # depends on expat liffi
     build-options: *musl-static-build-options
@@ -799,25 +906,8 @@ modules:
 
 
   ############################
-  #### Packaging helpers  ####
+  #### Packaging: Python  ####
   ############################
-
-  - name: meson
-    buildsystem: simple
-    build-commands:
-      - python setup.py build
-      - python setup.py install --skip-build --prefix=${FLATPAK_DEST} --root=/ --optimize=1
-    sources:
-      - type: archive
-        url: https://github.com/mesonbuild/meson/releases/download/0.63.1/meson-0.63.1.tar.gz
-        sha256: 06fe13297213d6ff0121c5d5aab25a56ef938ffec57414ed6086fda272cb65e9
-        x-checker-data:
-          type: anitya
-          project-id: 6472
-          stable-only: true
-          url-template: https://github.com/mesonbuild/meson/releases/download/$version/meson-$version.tar.gz
-    cleanup:
-      - '*'
 
   - name: python
     # TODO: fix gdbm symbol gdbm_version_cmp locating issue
@@ -1398,6 +1488,7 @@ modules:
             CMakeLists.txt
     modules:
       - name: libluv-static
+        # TODO: move this to libraries section, common dependency with bind
         build-options: *musl-static-build-options
         buildsystem: cmake-ninja
         config-opts:
@@ -1415,6 +1506,7 @@ modules:
               url-template: https://github.com/luvit/luv/releases/download/$version/luv-$version.tar.gz
         modules:
           - name: libuv-static
+            # TODO: evaluate adding libnsl dependency
             build-options: *musl-static-build-options
             config-opts:
               - --disable-shared
@@ -2127,68 +2219,6 @@ modules:
           url-template: https://github.com/libfuse/sshfs/releases/download/sshfs-$version/sshfs-$version.tar.xz
     cleanup:
       - /bin/mount.*
-    modules:
-      - name: glib2-static
-        build-options: *musl-static-build-options
-        buildsystem: meson
-        config-opts:
-          - --default-library=static
-          - -Dselinux=disabled
-          - -Dxattr=false
-          - -Dlibmount=disabled
-          - -Dtests=false
-          - -Dnls=disabled
-          - -Dglib_debug=disabled
-          - -Dglib_assert=false
-          - -Dglib_checks=false
-          - -Dlibelf=disabled
-        sources:
-          - type: archive
-            url: https://download.gnome.org/sources/glib/2.72/glib-2.72.3.tar.xz
-            sha256: 4a39a2f624b8512d500d5840173eda7fa85f51c109052eae806acece85d345f0
-            x-checker-data:
-              type: gnome
-              name: glib
-        cleanup:
-          - '*'
-        modules:
-          - name: pcre-static
-            build-options: *musl-static-build-options
-            config-opts:
-              - --disable-shared
-            sources:
-              - type: archive
-                url: http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.45.tar.gz
-                sha256: 4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09
-                x-checker-data:
-                  type: anitya
-                  project-id: 2610
-                  stable-only: true
-                  url-template: http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-$version.tar.gz
-            cleanup:
-              - '*'
-      - name: fuse3-static
-        build-options: *musl-static-build-options
-        buildsystem: meson
-        config-opts:
-          - --default-library=static
-          - -Ddisable-mtab=true
-          - -Dudevrulesdir=${FLATPAK_DEST}/etc/udev/rules.d
-          - -Dutils=false
-          - -Dexamples=false
-          - -Duseroot=false
-          - -Dtests=false
-        sources:
-          - type: archive
-            url: https://github.com/libfuse/libfuse/releases/download/fuse-3.11.0/fuse-3.11.0.tar.xz
-            sha256: 8982c4c521daf3974dda8a5d55d575c988da13a571970f00aea149eb54fdf14c
-            x-checker-data:
-              type: anitya
-              project-id: 861
-              stable-only: true
-              url-template: https://github.com/libfuse/libfuse/releases/download/fuse-$version/fuse-$version.tar.xz
-        cleanup:
-          - '*'
 
 
   ############################
@@ -2662,6 +2692,23 @@ modules:
   ####      Network       ####
   ############################
 
+  - name: libidn2-static
+    # TODO: add libunistring dependency?
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/libidn/libidn2-2.3.3.tar.gz
+        sha256: f3ac987522c00d33d44b323cae424e2cffcb4c63c6aa6cd1376edacbf1c36eb0
+        x-checker-data:
+          type: anitya
+          project-id: 5597
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/libidn/libidn2-$version.tar.gz
+    cleanup:
+      - '*'
+
   - name: axel-static
     build-options: *musl-static-build-options
     config-opts:
@@ -2852,23 +2899,6 @@ modules:
           project-id: 5128
           stable-only: true
           url-template: https://github.com/rfc1036/whois/archive/v$version/who-is-$version.tar.gz
-    modules:
-      - name: libidn2-static
-        # TODO: add libunistring dependency?
-        build-options: *musl-static-build-options
-        config-opts:
-          - --disable-shared
-        sources:
-          - type: archive
-            url: https://ftp.gnu.org/gnu/libidn/libidn2-2.3.3.tar.gz
-            sha256: f3ac987522c00d33d44b323cae424e2cffcb4c63c6aa6cd1376edacbf1c36eb0
-            x-checker-data:
-              type: anitya
-              project-id: 5597
-              stable-only: true
-              url-template: https://ftp.gnu.org/gnu/libidn/libidn2-$version.tar.gz
-        cleanup:
-          - '*'
 
   - name: wol-static
     build-options: *musl-static-build-options
