@@ -611,6 +611,9 @@ modules:
           project-id: 882
           stable-only: true
           url-template: https://ftp.gnu.org/gnu/gdbm/gdbm-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/SUBDIRS =/ s/po //' Makefile.{am,in}
     cleanup:
       - '*'
 
@@ -3336,6 +3339,9 @@ modules:
           project-id: 5128
           stable-only: true
           url-template: https://github.com/rfc1036/whois/archive/v$version/who-is-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/install:/ s/ install-pos//' Makefile
 
   - name: wol-static
     build-options: *musl-static-build-options
@@ -3813,6 +3819,9 @@ modules:
     modules:
       - name: libnewt-static
         build-options: *musl-static-build-options
+        config-opts:
+          - --without-tcl
+          - --without-python
         sources:
           - type: archive
             url: https://releases.pagure.org/newt/newt-0.52.21.tar.gz
@@ -3824,8 +3833,13 @@ modules:
               url-template: https://releases.pagure.org/newt/newt-$version.tar.gz
           - type: shell
             commands:
-              - sed -e '/^whiptail:/ s/LIBNEWTSH/LIBNEWT/' -e '/^all:/ s/_snack.$(SOEXT)//'
-                -e '/^install:/ s/install-sh//' -i Makefile.in
+              - |
+                sed -i \
+                -e '/^whiptail:/ s/LIBNEWTSH/LIBNEWT/' \
+                -e '/^all:/ s/_snack.$(SOEXT)//' \
+                -e '/^install:/ s/install-sh//' \
+                -e '/make -C po/d' \
+                Makefile.in
         cleanup:
           - /share/locale
         modules:
@@ -3858,9 +3872,6 @@ modules:
             build-options: *musl-static-build-options
             no-parallel-make: true
             no-make-install: true
-            config-opts:
-              - --with-pcreinc=/usr/include
-              - --with-pcrelib=/usr/lib/x86_64-linux-gnu
             make-args:
               - static
             build-commands:
