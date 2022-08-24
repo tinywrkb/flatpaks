@@ -910,16 +910,7 @@ modules:
   ############################
 
   - name: python
-    # TODO: fix gdbm symbol gdbm_version_cmp locating issue
-   #build-options: *musl-shared-build-options
-    build-options:
-      cppflags: -I/usr/lib/sdk/devenv/include -I/usr/lib/sdk/devenv/include/ncursesw
-      cflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
-      cxxflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
-      ldflags: -fPIC -Bstatic -Wl,--dynamic-linker=/usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1
-      env:
-        - CC=x86_64-linux-musl-gcc
-        - CXX=x86_64-linux-musl-g++
+    build-options: *musl-shared-build-options
     config-opts:
       - --enable-shared
      #- --enable-optimizations
@@ -932,6 +923,7 @@ modules:
       - --with-system-ffi
       # TODO: add libmpdec lib?
      #- --with-system-libmpdec
+      - CPPFLAGS=-I${prefix}/include -I${prefix}/include/ncursesw
     sources:
       - type: archive
         url: https://www.python.org/ftp/python/3.10.6/Python-3.10.6.tar.xz
@@ -947,7 +939,7 @@ modules:
           - rm -r Modules/expat
           - rm -r Modules/_ctypes/{darwin,libffi}*
          #- rm -r Modules/_decimal/libmpdec
-          - rm ${FLATPAK_DEST}/lib/libgdbm.a
+          - sed -i '/ndbm_libs =/ s/\('\''gdbm_compat'\''\)/\1, '\''gdbm'\''/' setup.py
     cleanup:
       - '*'
 
