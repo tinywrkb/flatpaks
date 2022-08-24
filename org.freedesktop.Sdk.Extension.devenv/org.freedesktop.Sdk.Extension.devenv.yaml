@@ -192,6 +192,7 @@ modules:
     build-options: *musl-static-fpic-build-options
     config-opts:
       - --disable-shared
+      - --disable-nls
       - --disable-xz
       - --disable-xzdec
       - --disable-lzmadec
@@ -328,6 +329,76 @@ modules:
     cleanup:
       - '*'
 
+  - name: gpgme-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+    make-args:
+      - CCLD=$(CC) -all-static
+      - CC_FOR_BUILD=$(CC)
+      - CFLAGS_FOR_BUILD=$(CFLAGS)
+      - CPPFLAGS_FOR_BUILD=$(CPPFLAGS)
+      - LDFLAGS_FOR_BUILD=$(LDFLAGS)
+    sources:
+      - type: archive
+        url: https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-1.18.0.tar.bz2
+        sha256: 361d4eae47ce925dba0ea569af40e7b52c645c4ae2e65e5621bf1b6cdd8b0e9e
+        x-checker-data:
+          type: anitya
+          project-id: 1239
+          stable-only: true
+          url-template: https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-$version.tar.bz2
+      - type: shell
+        commands:
+          - sed -i 's/\($(CC_FOR_BUILD)\)/\1 $(CFLAGS_FOR_BUILD)/' doc/Makefile.in
+    cleanup:
+      - '*'
+    modules:
+      - name: libassuan-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+        make-args:
+          - CCLD=$(CC) -all-static
+          - CC_FOR_BUILD=$(CC)
+          - CFLAGS_FOR_BUILD=$(CFLAGS)
+          - CPPFLAGS_FOR_BUILD=$(CPPFLAGS)
+          - LDFLAGS_FOR_BUILD=$(LDFLAGS)
+        sources:
+          - type: archive
+            url: https://gnupg.org/ftp/gcrypt/libassuan/libassuan-2.5.5.tar.bz2
+            sha256: 8e8c2fcc982f9ca67dcbb1d95e2dc746b1739a4668bc20b3a3c5be632edb34e4
+            x-checker-data:
+              type: anitya
+              project-id: 1559
+              stable-only: true
+              url-template: https://gnupg.org/ftp/gcrypt/libassuan/libassuan-$version.tar.bz2
+        cleanup:
+          - '*'
+        modules:
+          - name: libgpg-error-static
+            build-options: *musl-static-build-options
+            config-opts:
+              - --disable-shared
+              - --disable-nls
+            make-args:
+              - CCLD=$(CC) -all-static
+              - CC_FOR_BUILD=$(CC)
+              - CFLAGS_FOR_BUILD=$(CFLAGS)
+              - CPPFLAGS_FOR_BUILD=$(CPPFLAGS)
+              - LDFLAGS_FOR_BUILD=$(LDFLAGS)
+            sources:
+              - type: archive
+                url: https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.45.tar.bz2
+                sha256: 570f8ee4fb4bff7b7495cff920c275002aea2147e9a1d220c068213267f80a26
+                x-checker-data:
+                  type: anitya
+                  project-id: 1628
+                  stable-only: true
+                  url-template: https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-$version.tar.bz2
+            cleanup:
+              - '*'
+
   - name: libffi-static
     # NOTE: python needs -fPIC
     build-options: *musl-static-fpic-build-options
@@ -342,6 +413,23 @@ modules:
           project-id: 1611
           stable-only: true
           url-template: https://github.com/libffi/libffi/releases/download/v$version/libffi-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: libidn2-static
+    # TODO: add libunistring dependency?
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+    sources:
+      - type: archive
+        url: https://ftp.gnu.org/gnu/libidn/libidn2-2.3.3.tar.gz
+        sha256: f3ac987522c00d33d44b323cae424e2cffcb4c63c6aa6cd1376edacbf1c36eb0
+        x-checker-data:
+          type: anitya
+          project-id: 5597
+          stable-only: true
+          url-template: https://ftp.gnu.org/gnu/libidn/libidn2-$version.tar.gz
     cleanup:
       - '*'
 
@@ -456,6 +544,33 @@ modules:
         cleanup:
           - '*'
 
+  - name: tcl-static # depends on zlib
+    build-options: *musl-static-build-options
+    subdir: unix
+    config-opts:
+      - --mandir=${prefix}/share/man
+      - --disable-shared
+      - --enable-threads
+      - --enable-64bit
+    post-install:
+      - ln -sr ${FLATPAK_DEST}/bin/tclsh* ${FLATPAK_DEST}/bin/tclsh
+        # no write permission breaks strip
+      - chmod u+w ${FLATPAK_DEST}/lib/libtcl*
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/sourceforge/tcl/tcl8.6.11-src.tar.gz
+        sha256: 8c0486668586672c5693d7d95817cb05a18c5ecca2f40e2836b9578064088258
+        x-checker-data:
+          type: anitya
+          project-id: 4941
+          stable-only: true
+          url-template: https://downloads.sourceforge.net/sourceforge/tcl/tcl$version-src.tar.gz
+      - type: shell
+        commands:
+          - rm -rf pkgs/sqlite3*
+    cleanup:
+      - '*'
+
   - name: xxhash-static
     build-options: *musl-static-build-options
     no-autogen: true
@@ -498,6 +613,27 @@ modules:
           url-template: https://ftp.gnu.org/gnu/gdbm/gdbm-$version.tar.gz
     cleanup:
       - '*'
+
+  - name: krb5-static
+    build-options: *musl-static-fpic-build-options
+    subdir: src
+    config-opts:
+      - --localstatedir=/var/lib
+      - --sbindir=${prefix}/bin
+      - --enable-static
+      - --disable-shared
+      - --disable-nls
+    sources:
+      - type: archive
+        url: https://kerberos.org/dist/krb5/1.20/krb5-1.20.tar.gz
+        sha256: 7e022bdd3c851830173f9faaa006a230a0e0fdad4c953e85bff4bf0da036e12f
+        x-checker-data:
+          type: html
+          url: https://kerberos.org/dist/
+          version-pattern: Kerberos V5 Release ([\d\.-]+) - current release
+          url-template: https://kerberos.org/dist/krb5/$version/krb5-$version.tar.gz
+    cleanup:
+          - '*'
 
   - name: libevent-static  # depends on openssl
     # TODO: try again to build static lib with cmake
@@ -590,6 +726,34 @@ modules:
     cleanup:
       - '*'
 
+  - name: sqlite-static # depends on readline tcl(util) zlib
+    # NOTE: python needs -fPIC
+    build-options: *musl-static-fpic-build-options
+    config-opts:
+      - --disable-shared
+      - --disable-tcl
+      - --enable-fts3
+      - --enable-fts4
+      - --enable-fts5
+      - --enable-rtree
+    make-args:
+      - LTLINK_EXTRAS=-all-static
+    sources:
+      - type: archive
+        url: https://github.com/sqlite/sqlite/archive/version-3.39.2/sqlite-version-3.39.2.tar.gz
+        sha256: d981f7c1c237e34121176061e3fc5922ca85c9242c7aab0e5a2f19bd5179b5e7
+        x-checker-data:
+         #type: html
+         #url: https://www.sqlite.org/download.html
+         #version-pattern: sqlite-src-([\d]+).zip
+         #url-template: https://www.sqlite.org/2022/sqlite-src-$version.zip
+          type: anitya
+          project-id: 4877
+          stable-only: true
+          url-template: https://github.com/sqlite/sqlite/archive/version-$version/sqlite-version-$version.tar.gz
+    cleanup:
+      - '*'
+
 
   # Libraries: Level3
 
@@ -615,6 +779,30 @@ modules:
         x-checker-data:
           type: gnome
           name: glib
+    cleanup:
+      - '*'
+
+  - name: libsasl-static # depends on gdbm openssl
+    # TODO: evaluate adding dependencies krb5 liblsap mariadb postgresql sqlite
+    build-options: *musl-static-build-options
+    config-opts:
+      - --sbindir=${prefix}/bin
+      - --disable-shared
+      - --disable-sample
+    make-args:
+      - CCLD=$(CC) -all-static
+    sources:
+      - type: archive
+        url: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.28/cyrus-sasl-2.1.28.tar.gz
+        sha256: 7ccfc6abd01ed67c1a0924b353e526f1b766b21f42d4562ee635a8ebfc5bb38c
+        x-checker-data:
+          type: anitya
+          project-id: 13280
+          stable-only: true
+          url-template: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-$version/cyrus-sasl-$version.tar.gz
+      - type: shell
+        commands:
+          - sed -i '/LIBS=/ s/\(-lgdbm\)/\1 -lgdbm_compat/' configure
     cleanup:
       - '*'
 
@@ -2888,23 +3076,6 @@ modules:
   ############################
   ####      Network       ####
   ############################
-
-  - name: libidn2-static
-    # TODO: add libunistring dependency?
-    build-options: *musl-static-build-options
-    config-opts:
-      - --disable-shared
-    sources:
-      - type: archive
-        url: https://ftp.gnu.org/gnu/libidn/libidn2-2.3.3.tar.gz
-        sha256: f3ac987522c00d33d44b323cae424e2cffcb4c63c6aa6cd1376edacbf1c36eb0
-        x-checker-data:
-          type: anitya
-          project-id: 5597
-          stable-only: true
-          url-template: https://ftp.gnu.org/gnu/libidn/libidn2-$version.tar.gz
-    cleanup:
-      - '*'
 
   - name: axel-static
     build-options: *musl-static-build-options
