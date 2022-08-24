@@ -3101,7 +3101,6 @@ modules:
       - --enable-developer
       - --disable-warn-error
     # TODO: enable more features
-     #- --with-gssapi
      #- --with-jemalloc
      #- --with-json-c
      #- --with-libidn2
@@ -3113,6 +3112,7 @@ modules:
       - --enable-doh
       - --enable-fixed-rrset
       - --enable-full-report
+      - --with-gssapi
       - --with-libnghttp2
       - --with-libxml2
       - --with-openssl
@@ -3138,6 +3138,8 @@ modules:
       - type: shell
         commands:
           - sed -i 's/\(^READLINE_LIBS.*=.*\)/\1 -lncursesw/' $(find . -name Makefile.in)
+          - sed -i '/GSSAPI_LIBS=/ s/\(`.*--libs gssapi`\)/"\1 -lkrb5support -lkrb5_spake -lkrb5_pkinit"/' configure
+          - sed -i '/KRB5_LIBS=/ s/\(`.*--libs krb5`\)/"\1 -lkrb5support -lkrb5_spake -lkrb5_pkinit"/' configure
     cleanup:
       - /lib
     modules:
