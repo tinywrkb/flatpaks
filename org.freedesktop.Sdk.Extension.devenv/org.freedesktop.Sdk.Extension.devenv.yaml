@@ -3160,6 +3160,73 @@ modules:
         cleanup:
           - '*'
 
+  - name: lynx-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-nls
+      - --with-screen=ncursesw
+      - --with-curses-dir=${prefix}
+      - --enable-widec
+    sources:
+      - type: archive
+        url: https://invisible-mirror.net/archives/lynx/tarballs/lynx2.8.9rel.1.tar.gz
+        sha256: a46e4167b8f02c066d2fe2eafcc5603367be0e3fe2e59e9fc4eb016f306afc8e
+        x-checker-data:
+          type: html
+          url: https://lynx.invisible-island.net
+          # TODO: improve matching pattern
+          version-pattern: lynx([\d.]+)
+          url-template: https://invisible-mirror.net/archives/lynx/tarballs/lynx${version}rel.1.tar.gz
+    cleanup:
+      - '*'
+
+  - name: mutt-static
+    build-options: *musl-static-build-options
+    config-opts:
+      # TODO: move mail folder to home
+      - --disable-nls
+      - --enable-autocrypt
+      - --enable-gpgme
+      - --enable-sidebar
+      - --enable-compressed
+      - --enable-pop
+      - --enable-imap
+      - --enable-smtp
+      - --enable-debug
+      - --enable-flock
+      - --enable-mailtool
+      - --enable-hcache
+      - --with-sqlite3
+      - --with-mixmaster
+      - --with-curses=ncursesw
+     #- --with-homespool=
+      - --with-mailpath=/var/mail
+      - --with-gss
+      - --with-zlib
+      - --with-ssl
+      - --with-sasl
+      - --with-gdbm
+      - --with-idn2
+    post-install:
+      - rm -f ${FLATPAK_DEST}/include/ncurses
+    sources:
+      - type: archive
+        url: http://ftp.mutt.org/pub/mutt/mutt-2.2.7.tar.gz
+        sha256: eb13858f58bb369f477bf652d90e9b6aaddd0d610acbea3455049e5efad36df1
+        x-checker-data:
+          type: anitya
+          project-id: 2035
+          stable-only: true
+          url-template: http://ftp.mutt.org/pub/mutt/mutt-$version.tar.gz
+      - type: shell
+        commands:
+          - ln -s ncursesw ${FLATPAK_DEST}/include/ncurses
+          - |
+            sed -i '/^for ac_lib in .* $sasl_libs/,/^done/{ s/\(="-l$ac_lib\)/\1 -lssl -lcrypto -lgdbm -lgdbm_compat/;'\
+            's/=\(-l$ac_lib.*\)/="\1 -lssl -lcrypto -lgdbm -lgdbm_compat"/ }' \
+            configure
+          - sed -i '/GSSAPI_LIBS=/ s/\(--libs gssapi`\)/\1 -lkrb5support -lkrb5_spake -lkrb5_pkinit/' configure
+
   - name: openbsd-netcat-static
     build-options: *musl-static-build-options
     no-autogen: true
