@@ -37,9 +37,12 @@ modules:
         url: http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=3d5db9ebe860
         sha256: 75d5d255a2a273b6e651f82eecfabf6cbcd8eaeae70e86b417384c8f4a58d8d3
       - type: file
-        dest: sources/binutils-2.33.1.tar.xz.tmp
-        url: https://ftp.gnu.org/gnu/binutils/binutils-2.33.1.tar.xz
-        sha256: ab66fc2d1c3ec0359b8e08843c9f33b63e8707efdff5e4cc5c200eae24722cbf
+        dest: sources/binutils-2.35.2.tar.xz.tmp
+        url: https://ftp.gnu.org/gnu/binutils/binutils-2.35.2.tar.xz
+        sha256: dcd5b0416e7b0a9b24bed76cd8c6c132526805761863150a26d016415b8bdc7b
+      - type: file
+        dest: hashes
+        path: binutils-2.35.2.tar.xz.sha1
       - type: file
         dest: sources/gcc-11.2.0.tar.xz.tmp
         url: https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
