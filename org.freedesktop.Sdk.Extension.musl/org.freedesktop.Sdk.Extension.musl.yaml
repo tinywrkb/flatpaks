@@ -11,11 +11,24 @@ build-options:
   ldflags: -L/usr/lib/sdk/musl/lib
   prefix: /usr/lib/sdk/musl
   libdir: /usr/lib/sdk/musl/lib
-  prepend-path: /usr/lib/sdk/musl/bin
+  prepend-path: /usr/lib/sdk/musl/musl-ccache
   prepend-ld-library-path: /usr/lib/sdk/musl/lib
   prepend-pkg-config-path: /usr/lib/sdk/musl/lib/pkgconfig
   strip: true
 modules:
+  - name: prepare-ccache
+    buildsystem: simple
+    build-commands:
+      - |
+        set -e
+        if [ -n "$CCACHE_DIR" ]; then
+          install -dm755 ${FLATPAK_DEST}/musl-ccache
+          for cmp in gcc g++; do
+            ln -s /usr/bin/ccache ${FLATPAK_DEST}/musl-ccache/x86_64-linux-musl-${cmp}
+          done
+        fi
+    cleanup:
+      - '*'
   - name: musl-shared
     build-options: &musl_build_opt
       append-path: /usr/lib/sdk/musl/musl-shared/bin
