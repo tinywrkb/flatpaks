@@ -698,6 +698,26 @@ modules:
     cleanup:
           - '*'
 
+  - name: libarchive-static # depends on acl bzip2 expat lz4 openssl xz zlib zstd
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+      - --disable-bsdcat
+      - --disable-bsdcpio
+      - --disable-bsdtar
+      - --without-xml2
+    sources:
+      - type: archive
+        url: http://www.libarchive.org/downloads/libarchive-3.6.1.tar.xz
+        sha256: 5a411aceb978f43e626f0c2d1812ddd8807b645ed892453acabd532376c148e6
+        x-checker-data:
+          type: anitya
+          project-id: 1558
+          stable-only: true
+          url-template: http://www.libarchive.org/downloads/libarchive-$version.tar.xz
+    cleanup:
+      - '*'
+
   - name: libevent-static  # depends on openssl
     # TODO: try again to build static lib with cmake
     build-options: *musl-static-build-options
@@ -3353,6 +3373,23 @@ modules:
           project-id: 17542
           stable-only: true
           url-template: https://hpjansson.org/chafa/releases/static/chafa-$version-1-x86_64-linux-gnu.tar.gz
+
+  - name: gnome-epub-thumbnailer-static
+    # TODO: should the gdk-pixbuf librsvg loader be statically linked?
+    build-options: *musl-static-build-options
+    # TODO: try droping libs after libarchive change
+    make-args:
+      - LIBS+=-llzma -lz -lssl -lcrypto -lzstd -lbz2
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/gnome-epub-thumbnailer/1.6/gnome-epub-thumbnailer-1.6.tar.xz
+        sha256: b502420d9b02ea0b0fc7986ef5a091a12b2286be14fed9e47594fe9fa0c5898e
+        x-checker-data:
+          type: gnome
+          name: gnome-epub-thumbnailer
+          stable-only: true
+    cleanup:
+      - /share/thumbnailers
 
   - name: libsixel-static
     build-options: *musl-static-build-options
