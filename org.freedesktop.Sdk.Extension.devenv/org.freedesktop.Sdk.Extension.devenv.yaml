@@ -5,6 +5,8 @@ runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 build-extension: true
 separate-locales: false
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.musl
 build-options:
   cflags: -I/usr/lib/sdk/devenv/include
   cxxflags: -I/usr/lib/sdk/devenv/include
