@@ -6,6 +6,7 @@ sdk: org.freedesktop.Sdk
 build-extension: true
 separate-locales: false
 sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
   - org.freedesktop.Sdk.Extension.musl
   - org.freedesktop.Sdk.Extension.rust-musl
 build-options:
@@ -17,7 +18,7 @@ build-options:
   prepend-path: /usr/lib/sdk/devenv/bin
   prepend-ld-library-path: /usr/lib/sdk/devenv/lib
   prepend-pkg-config-path: /usr/lib/sdk/devenv/lib/pkgconfig
-  append-path: /usr/lib/sdk/musl/bin:/usr/lib/sdk/rust-musl/bin
+  append-path: /usr/lib/sdk/golang/bin:/usr/lib/sdk/musl/bin:/usr/lib/sdk/rust-musl/bin
   strip: true
 x-musl-static-build-options: &musl-static-build-options
   cflags: -static
@@ -40,6 +41,16 @@ x-musl-shared-build-options: &musl-shared-build-options
   env:
     - CC=x86_64-linux-musl-gcc
     - CXX=x86_64-linux-musl-g++
+x-golang-offline-build-options: &golang-offline-build-options
+  env:
+    GO111MODULE: off
+    GOVARS: GOBIN=${FLATPAK_DEST}/bin GOPATH=${FLATPAK_BUILDER_BUILDDIR}
+x-golang-online-build-options: &golang-online-build-options
+  build-args:
+    - --share=network
+  env:
+    GO111MODULE: off
+    GOVARS: GOBIN=${FLATPAK_DEST}/bin GOPATH=${FLATPAK_BUILDER_BUILDDIR}
 
 cleanup:
   - /include
@@ -83,6 +94,7 @@ modules:
   #   Images
   #   Network
   #   Processes
+  #   Perl
   #   Python
   #   Security
   #   Shells
@@ -3756,6 +3768,35 @@ modules:
 
 
   ############################
+  ####        Perl        ####
+  ############################
+
+  - name: plenv
+    buildsystem: simple
+    build-commands:
+      - install -dm755 ${FLATPAK_DEST}/{bin,lib/plenv/hooks}
+      - ln -s ../lib/plenv/plenv ${FLATPAK_DEST}/bin/plenv
+      - install -Dm755 libexec/* ${FLATPAK_DEST}/lib/plenv/
+      - install -Dm644 completions/plenv.bash ${FLATPAK_DEST}/share/bash-completion/completions/plenv
+      - install -Dm644 completions/plenv.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/plenv.fish
+      - install -Dm644 completions/plenv.zsh ${FLATPAK_DEST}/share/zsh/site-functions/_plenv
+      - cp -r plenv.d/* ${FLATPAK_DEST}/lib/plenv/hooks/
+    sources:
+      - type: archive
+        url: https://github.com/tokuhirom/plenv/archive/2.3.1/plenv-2.3.1.tar.gz
+        sha256: 12004cfed7ed083911dbda3228a9fb9ce6e40e259b34e791d970c4f335935fa3
+        x-checker-data:
+          type: anitya
+          project-id: 283242
+          stable-only: true
+          url-template: https://github.com/tokuhirom/plenv/archive/$version/plenv-$version.tar.gz
+      - type: shell
+        commands:
+          # TODO: /var/lib/devenv should be added conditionally
+          - sed -i '/^hook_path=/ s#/usr\(/lib/plenv/hooks\)#/var/lib/devenv\1:'${FLATPAK_DEST}'\1#' libexec/plenv
+
+
+  ############################
   ####      Python        ####
   ############################
 
@@ -4390,6 +4431,26 @@ modules:
   ############################
   ####  Shells: Tools    ####
   ############################
+
+  - name: moar
+    build-options: *golang-offline-build-options
+   #build-options: *golang-online-build-options
+    buildsystem: simple
+    # TODO: add aliases for golang build commands
+    build-commands:
+     #- eval ${GOVARS} go get; exit 1 # ONLINE-BUILD
+      - eval ${GOVARS} go install # OFFLINE-BUILD
+      - install -Dm644 moar.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: archive
+        url: https://github.com/walles/moar/archive/v1.9.7/moar-1.9.7.tar.gz
+        sha256: c296a7c5a2a9c84bd5de7a08134af98e1c8065de6ee82e7da5206aa11285bb96
+        x-checker-data:
+          type: anitya
+          project-id: 283347
+          stable-only: true
+          url-template: https://github.com/walles/moar/archive/v$version/moar-$version.tar.gz
+      - moar-go-sources.json # OFFLINE-BUILD, flatpak-go-get-generator.py -o moar-go-sources.json ./
 
   - name: reptyr-static
     build-options: *musl-static-build-options

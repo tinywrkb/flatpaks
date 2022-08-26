@@ -33,10 +33,8 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * bashrc should be more generic, and user bashrc shouldn't break it
 * deal better with overriden HOME and XDG user dirs variables
 * read envvar to select shell (default to bash)
-* add perl env tools
-  * [plenv](https://github.com/tokuhirom/plenv)
-  * [perlbrew](https://github.com/gugod/App-perlbrew)
 * set build cache for rust and golang, and build from source
+* add wayland compositor: sway or/and cage
 
 ### possible failure mapping of sdk path
 * stow: hardcoded perl `use dir`, can be patched
