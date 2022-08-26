@@ -7,6 +7,7 @@ build-extension: true
 separate-locales: false
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.musl
+  - org.freedesktop.Sdk.Extension.rust-musl
 build-options:
   cflags: -I/usr/lib/sdk/devenv/include
   cxxflags: -I/usr/lib/sdk/devenv/include
@@ -16,7 +17,7 @@ build-options:
   prepend-path: /usr/lib/sdk/devenv/bin
   prepend-ld-library-path: /usr/lib/sdk/devenv/lib
   prepend-pkg-config-path: /usr/lib/sdk/devenv/lib/pkgconfig
-  append-path: /usr/lib/sdk/musl/bin
+  append-path: /usr/lib/sdk/musl/bin:/usr/lib/sdk/rust-musl/bin
   strip: true
 x-musl-static-build-options: &musl-static-build-options
   cflags: -static
@@ -133,42 +134,6 @@ modules:
           project-id: 6472
           stable-only: true
           url-template: https://github.com/mesonbuild/meson/releases/download/$version/meson-$version.tar.gz
-    cleanup:
-      - '*'
-
-  - name: patchelf-static
-    build-options: *musl-static-build-options
-    sources:
-      - type: archive
-        url: https://github.com/NixOS/patchelf/archive/0.15.0.tar.gz
-        sha256: 5d1eda9bad4439bb9c0a87fcba198d7c0d372f361e77de41d68d6308062e5000
-        x-checker-data:
-          type: anitya
-          project-id: 2598
-          stable-only: true
-          url-template: https://github.com/NixOS/patchelf/archive/$version.tar.gz
-
-  - name: rust-musl-bin
-    buildsystem: simple
-    build-commands:
-      # TODO: drop listing .so shared libs if not needed
-      - |
-        for f in $(find cargo rustc rust-std-* \( -executable -a -type f \) -o -name '*.so'); do
-          if [ "$(file --brief --mime-type $f)" = "text/x-shellscript" ]; then continue; fi
-          if [[ "$f" == *".so" ]]; then continue; fi
-          echo "Found binary file: $f"
-          patchelf --set-interpreter /usr/lib/sdk/devenv/lib/libc.musl-x86_64.so.1 $f
-        done
-      - ./install.sh --components=cargo,rustc,rust-std-x86_64-unknown-linux-musl --prefix=${FLATPAK_DEST}
-    sources:
-      - type: archive
-        url: https://static.rust-lang.org/dist/rust-1.63.0-x86_64-unknown-linux-musl.tar.gz
-        sha256: 4516f1fa2a0d9ec9176cc734e5faaa0a3d439bd49f75553a484b6c3c6d7905ab
-        x-checker-data:
-          type: anitya
-          project-id: 13280
-          stable-only: true
-          url-template: https://static.rust-lang.org/dist/rust-$version-x86_64-unknown-linux-musl.tar.gz
     cleanup:
       - '*'
 
@@ -1779,6 +1744,18 @@ modules:
           project-id: 18593
           stable-only: true
           url-template: https://github.com/sharkdp/hexyl/releases/download/v$version/hexyl-v$version-x86_64-unknown-linux-musl.tar.gz
+
+  - name: patchelf-static
+    build-options: *musl-static-build-options
+    sources:
+      - type: archive
+        url: https://github.com/NixOS/patchelf/archive/0.15.0.tar.gz
+        sha256: 5d1eda9bad4439bb9c0a87fcba198d7c0d372f361e77de41d68d6308062e5000
+        x-checker-data:
+          type: anitya
+          project-id: 2598
+          stable-only: true
+          url-template: https://github.com/NixOS/patchelf/archive/$version.tar.gz
 
   - name: xdelta3-static
     build-options: *musl-static-build-options
