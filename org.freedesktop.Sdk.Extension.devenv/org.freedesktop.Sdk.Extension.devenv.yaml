@@ -664,6 +664,8 @@ modules:
       - --enable-static
       - --disable-shared
       - --disable-nls
+    make-args:
+      - CFLAGS+=-fcommon
     sources:
       - type: archive
         url: https://kerberos.org/dist/krb5/1.20/krb5-1.20.tar.gz
@@ -672,7 +674,7 @@ modules:
           type: html
           url: https://kerberos.org/dist/
           version-pattern: Kerberos V5 Release ([\d\.-]+) - current release
-          url-template: https://kerberos.org/dist/krb5/$version/krb5-$version.tar.gz
+          url-template: https://kerberos.org/dist/krb5/$version0.$version1/krb5-$version.tar.gz
     cleanup:
           - '*'
 
@@ -1139,6 +1141,9 @@ modules:
   ############################
 
   - name: python
+    # TODO: build missing modules
+    # TODO: build static python lib and disable shared lib
+    # TODO: install to a different prefix, keep it, and install python modules in a venv with relative symlinks
     build-options: *musl-shared-build-options
     config-opts:
       - --enable-shared
@@ -1668,6 +1673,7 @@ modules:
           url-template: https://github.com/neovide/neovide/releases/download/$version/neovide.tar.gz
 
   - name: neovim-static
+    # TODO: add python-pynvim in venv after keeping python packaged
     build-options: *musl-static-build-options
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -3122,6 +3128,7 @@ modules:
 
   - name: bind-static
     # TODO: fix symlink creation in /bin
+    # TODO: binaries are broken
     build-options: *musl-static-build-options
     config-opts:
       - --sbindir=${prefix}/bin
@@ -3982,6 +3989,7 @@ modules:
     # TODO: buildsystem tries to install into /usr
     build-options: *musl-static-build-options
     config-opts:
+      # TODO: set pty group?
       - --enable-static
       - --enable-use-locale
       - --enable-telnet
