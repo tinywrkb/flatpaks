@@ -110,7 +110,6 @@ modules:
       - '*'
 
   - name: musl-libc-shared
-    # TODO: unique loader and lib names, no loader path in shared libs
     buildsystem: simple
     build-commands:
       - install -Dm755 /usr/lib/sdk/musl/x86_64-linux-musl/lib/libc.so ${FLATPAK_DEST}/lib/libc.musl-x86_64.so.1
@@ -925,7 +924,7 @@ modules:
           type: gnome
           name: librsvg
           stable-only: true
-      - librsvg-cargo-sources.json # flatpak-cargo-generator.py Cargo.lock  -o librsvg-cargo-sources.json
+      - librsvg-cargo-sources.json # flatpak-cargo-generator.py Cargo.lock -o librsvg-cargo-sources.json
       - type: file
         dest: cargo
         dest-filename: config
@@ -4433,7 +4432,6 @@ modules:
         commands:
           - sed -i '/install .*reptyr\..*\.1/d;/(MANDIR)\/.*\/man/d' Makefile
 
-
   - name: rush-static-bin
     buildsystem: simple
     build-commands:
@@ -4520,139 +4518,6 @@ modules:
 #       cleanup:
 #         - '*'
 #       modules:
-#         - name: fontconfig-static
-#           # TODO: import flatpak runtime cache patches
-#           buildsystem: meson
-#           build-options: *musl-static-build-options
-#           config-opts:
-#             - --default-library=static
-#             - -Ddoc=disabled
-#             - -Dnls=disabled
-#             - -Dtests=disabled
-#             - -Dtools=disabled
-#             - -Dcache-build=disabled
-#           sources:
-#             - type: archive
-#               url: https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/2.14.0/fontconfig-2.14.0.tar.gz
-#               sha256: 48f5ea2e5038f038adcb8b2bc9e6dd30987ccc962665092657b95f9f6d21a49a
-#               x-checker-data:
-#                 type: anitya
-#                 project-id: 827
-#                 stable-only: true
-#                 url-template: https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/$version/fontconfig-$version.tar.gz
-#           cleanup:
-#             - '*'
-#           modules:
-#             - name: freetype2-static
-#               build-options: *musl-static-build-options
-#               buildsystem: meson
-#               config-opts:
-#                 - --default-library=static
-#                 - -Dbrotli=disabled
-#                 - -Dbzip2=enabled
-#                 - -Dharfbuzz=enabled
-#                 - -Dpng=enabled
-#                 - -Dtests=disabled
-#                 - -Dzlib=enabled
-#               sources:
-#                 - type: archive
-#                   url: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-2.12.1.tar.xz
-#                   sha256: 4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f
-#                   x-checker-data:
-#                     type: anitya
-#                     project-id: 854
-#                     stable-only: true
-#                     url-template: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-$version.tar.xz
-#               cleanup:
-#                 - '*'
-#               modules:
-#                 - name: harfbuzz-static
-#                  #build-options: *musl-static-build-options
-#                   build-options:
-#                     cflags: -static -fno-exceptions -fno-rtti
-#                     cxxflags: -static -fno-exceptions -fno-rtti
-#                     ldflags: -static
-#                     env:
-#                       - CC=x86_64-linux-musl-gcc
-#                       - CXX=x86_64-linux-musl-g++
-#                   buildsystem: meson
-#                   # TODO: add graphite2
-#                   config-opts:
-#                     - --default-library=static
-#                     - -Dglib=disabled
-#                     - -Dgobject=disabled
-#                     - -Dcairo=disabled
-#                     - -Dchafa=disabled
-#                     - -Dicu=disabled
-#                     - -Dgraphite=disabled
-#                     - -Dgraphite2=disabled
-#                     - -Dfreetype=enabled
-#                     - -Dtests=disabled
-#                     - -Dintrospection=disabled
-#                     - -Ddocs=disabled
-#                     - -Dbenchmark=disabled
-#                     - -Dicu_builtin=true
-#                   sources:
-#                     - type: archive
-#                       url: https://github.com/harfbuzz/harfbuzz/releases/download/5.1.0/harfbuzz-5.1.0.tar.xz
-#                       sha256: 2edb95db668781aaa8d60959d21be2ff80085f31b12053cdd660d9a50ce84f05
-#                       x-checker-data:
-#                         type: anitya
-#                         project-id: 1299
-#                         stable-only: true
-#                         url-template: https://github.com/harfbuzz/harfbuzz/releases/download/$version/harfbuzz-$version.tar.xz
-#                   cleanup:
-#                     - '*'
-#                   modules:
-#                     - name: freetype2-noharfbuzz-static
-#                       build-options: *musl-static-build-options
-#                       buildsystem: meson
-#                       config-opts:
-#                         - --default-library=static
-#                         - -Dbrotli=disabled
-#                         - -Dbzip2=enabled
-#                         - -Dharfbuzz=disabled
-#                         - -Dpng=enabled
-#                         - -Dtests=disabled
-#                         - -Dzlib=enabled
-#                       sources:
-#                         - type: archive
-#                           url: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-2.12.1.tar.xz
-#                           sha256: 4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f
-#                           x-checker-data:
-#                             type: anitya
-#                             project-id: 854
-#                             stable-only: true
-#                             url-template: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-$version.tar.xz
-#                       cleanup:
-#                         - '*'
-#         - name: pixman-static
-#           build-options: *musl-static-build-options
-#           buildsystem: meson
-#           config-opts:
-#             - --default-library=static
-#             - -Dloongson-mmi=disabled
-#             - -Dvmx=disabled
-#             - -Darm-simd=disabled
-#             - -Dneon=disabled
-#             - -Diwmmxt=disabled
-#             - -Diwmmxt2=false
-#             - -Dmips-dspr2=disabled
-#             - -Dgnu-inline-asm=disabled
-#             - -Dopenmp=disabled
-#             - -Dgtk=disabled
-#             - -Dlibpng=enabled
-#           sources:
-#             - type: archive
-#               url: https://xorg.freedesktop.org/releases/individual/lib/pixman-0.40.0.tar.gz
-#               sha256: 6d200dec3740d9ec4ec8d1180e25779c00bc749f94278c8b9021f5534db223fc
-#               x-checker-data:
-#                 type: anitya
-#                 project-id: 3648
-#                 stable-only: true
-#                 url-template: https://xorg.freedesktop.org/releases/individual/lib/pixman-$version.tar.gz
-#           cleanup:
-#             - '*'
 #         - name: tllist
 #           buildsystem: meson
 #           sources:
@@ -4705,7 +4570,6 @@ modules:
 #             url-template: https://xkbcommon.org/download/libxkbcommon-$version.tar.xz
 #       cleanup:
 #         - '*'
-#       modules:
 #     - name: scdoc
 #       no-autogen: true
 #       make-args:
