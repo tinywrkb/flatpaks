@@ -471,6 +471,26 @@ modules:
     cleanup:
       - '*'
 
+  - name: libjpeg-turbo-static
+    # NOTE: librsvg needs -fPIC
+    build-options: *musl-static-fpic-build-options
+    buildsystem: cmake
+    config-opts:
+      - -DENABLE_SHARED=OFF
+      - -DENABLE_STATIC=ON
+      - -DWITH_JPEG8=ON
+    sources:
+      - type: archive
+        url: https://downloads.sourceforge.net/sourceforge/libjpeg-turbo/libjpeg-turbo-2.1.4.tar.gz
+        sha256: d3ed26a1131a13686dfca4935e520eb7c90ae76fbc45d98bb50a8dc86230342b
+        x-checker-data:
+          type: anitya
+          project-id: 1648
+          stable-only: true
+          url-template: https://downloads.sourceforge.net/sourceforge/libjpeg-turbo/libjpeg-turbo-$version.tar.gz
+    cleanup:
+      - '*'
+
   - name: openssl-static
     build-options: *musl-static-build-options
     no-make-install: true
@@ -697,7 +717,8 @@ modules:
       - '*'
 
   - name: libpng-static # depends on zlib
-    build-options: *musl-static-build-options
+    # NOTE: librsvg needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --enable-static
     make-args:
@@ -716,7 +737,8 @@ modules:
 
   - name: libxml2-static # depends on ncurses readline xz zlib
     # TODO: test if icu should be enabled
-    build-options: *musl-static-build-options
+    # NOTE: librsvg needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --enable-static
       - --without-python
@@ -733,7 +755,8 @@ modules:
       - '*'
 
   - name: pcre-static # depends on bzip2 readline zlib
-    build-options: *musl-static-build-options
+    # NOTE: librsvg needs -fPIC
+    build-options: *musl-static-fpic-build-options
     config-opts:
       - --disable-shared
     sources:
@@ -848,6 +871,290 @@ modules:
           - sed -i '/LIBS=/ s/\(-lgdbm\)/\1 -lgdbm_compat/' configure
     cleanup:
       - '*'
+
+
+  # Libraries: Level4
+
+  - name: librsvg-static # depends on bzip2 glib2 expat libffi libpng libxml2 pcre
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+      - --enable-pixbuf-loader
+      - --disable-gtk-doc
+      - --disable-introspection
+      - --disable-vala
+    make-args:
+      - CARGO_HOME=$(FLATPAK_BUILDER_BUILDDIR)/cargo
+      - CARGO_RELEASE_ARGS=--release --offline --verbose
+      - LD_LIBRARY_PATH+=:/usr/lib/sdk/musl/x86_64-linux-musl/lib
+      - RUST_TARGET_SUBDIR=x86_64-unknown-linux-musl/release
+     #- CARGO_TARGET_ARGS=--target=x86_64-unknown-linux-musl
+     #- CARGO_BUILD_TARGET=x86_64-unknown-linux-musl
+     #- CARGO_TARGET_x86_64-unknown-linux-musl_LINKER=x86_64-linux-musl-gcc
+     #- RUSTFLAGS=-C target-feature=+crt-static -C linker=x86_64-linux-musl-gcc
+    make-install-args:
+      - CARGO_HOME=$(FLATPAK_BUILDER_BUILDDIR)/cargo
+      - CARGO_RELEASE_ARGS=--release --offline --verbose
+      - LD_LIBRARY_PATH+=:/usr/lib/sdk/musl/x86_64-linux-musl/lib
+      - RUST_TARGET_SUBDIR=x86_64-unknown-linux-musl/release
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/librsvg/2.54/librsvg-2.54.4.tar.xz
+        sha256: ea152a243f6a43c0e036a28c70de3fcbcdea5664c6811c78592bc229ecc24833
+        x-checker-data:
+          type: gnome
+          name: librsvg
+          stable-only: true
+      - librsvg-cargo-sources.json # flatpak-cargo-generator.py Cargo.lock  -o librsvg-cargo-sources.json
+      - type: file
+        dest: cargo
+        dest-filename: config
+        path: librsvg-cargo-config
+    cleanup:
+      - '*'
+    modules:
+      - name: gdk-pixbuf2-static # depends on glib2 libjpeg-turbo libpng
+        # TODO: add depends libtiff and enable loader
+        build-options: *musl-static-build-options
+        buildsystem: meson
+        config-opts:
+          - --default-library=static
+          - -Dpng=enabled
+          - -Dtiff=disabled
+          - -Djpeg=enabled
+         #- -Dbuiltin_loaders=png,jpeg
+          - -Dbuiltin_loaders=all
+          - -Dgtk_doc=false
+          - -Ddocs=false
+          - -Dintrospection=disabled
+          - -Dman=false
+         #- -Drelocatable=false
+          - -Dtests=false
+          - -Dinstalled_tests=false
+          - -Dgio_sniffing=false
+        post-install:
+          - rm -f ${FLATPAK_DEST}/lib/gdk-pixbuf-2.0/2.*/loaders.cache
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/gdk-pixbuf/2.42/gdk-pixbuf-2.42.9.tar.xz
+            sha256: 28f7958e7bf29a32d4e963556d241d0a41a6786582ff6a5ad11665e0347fc962
+            x-checker-data:
+              type: gnome
+              name: gdk-pixbuf
+              stable-only: true
+          - type: shell
+            commands:
+              - sed -i '/subdir(.po.)/d' meson.build
+        cleanup:
+          - '*'
+      - name: pango-static
+        build-options: *musl-static-build-options
+        buildsystem: meson
+        config-opts:
+          - --default-library=static
+          - -Dgtk_doc=false
+          - -Dintrospection=disabled
+          - -Dfontconfig=disabled
+          - -Dlibthai=disabled
+          - -Dcairo=enabled
+          - -Dxft=disabled
+          - -Dfreetype=enabled
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/pango/1.50/pango-1.50.9.tar.xz
+            sha256: 1b636aabf905130d806372136f5e137b6a27f26d47defd9240bf444f6a4fe610
+            x-checker-data:
+              type: gnome
+              name: pango
+              stable-only: true
+        cleanup:
+          - '*'
+        modules:
+          - name: cairo-static
+            build-options: *musl-static-build-options
+            buildsystem: meson
+            config-opts:
+              - --default-library=static
+              - -Dfontconfig=enabled
+              - -Dfreetype=enabled
+              - -Dgl-backend=disabled
+              - -Dpng=enabled
+              - -Dxcb=disabled
+              - -Dxlib=disabled
+              - -Dxlib-xcb=disabled
+              - -Dxml=disabled
+              - -Dzlib=enabled
+              - -Dtests=disabled
+              - -Dglib=enabled # librsvg linked against cairo-gobject
+              - -Dspectre=disabled
+              - -Dsymbol-lookup=disabled
+              - -Dgtk_doc=false
+            sources:
+              - type: archive
+                url: https://gitlab.freedesktop.org/cairo/cairo/-/archive/1.17.6/cairo-1.17.6.tar.gz
+                sha256: a2227afc15e616657341c42af9830c937c3a6bfa63661074eabef13600e8936f
+                x-checker-data:
+                  type: gnome
+                  name: cairo
+                  # NOTE: 1.17.6 tarball is broken on gnome.org
+                  versions:
+                    '>': 1.17.6
+                  stable-only: true
+            cleanup:
+              - '*'
+            modules:
+              - name: fontconfig-static
+                # TODO: import flatpak runtime cache patches
+                buildsystem: meson
+                build-options: *musl-static-build-options
+                config-opts:
+                  - --default-library=static
+                  - -Ddoc=disabled
+                  - -Dnls=disabled
+                  - -Dtests=disabled
+                  - -Dtools=disabled
+                  - -Dcache-build=disabled
+                sources:
+                  - type: archive
+                    url: https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/2.14.0/fontconfig-2.14.0.tar.gz
+                    sha256: 48f5ea2e5038f038adcb8b2bc9e6dd30987ccc962665092657b95f9f6d21a49a
+                    x-checker-data:
+                      type: anitya
+                      project-id: 827
+                      stable-only: true
+                      url-template: https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/$version/fontconfig-$version.tar.gz
+                cleanup:
+                  - '*'
+                modules:
+                  - name: freetype2-static
+                    build-options: *musl-static-build-options
+                    buildsystem: meson
+                    config-opts:
+                      - --default-library=static
+                      - -Dbrotli=disabled
+                      - -Dbzip2=enabled
+                      - -Dharfbuzz=enabled
+                      - -Dpng=enabled
+                      - -Dtests=disabled
+                      - -Dzlib=enabled
+                    sources:
+                      - type: archive
+                        url: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-2.12.1.tar.xz
+                        sha256: 4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f
+                        x-checker-data:
+                          type: anitya
+                          project-id: 854
+                          stable-only: true
+                          url-template: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-$version.tar.xz
+                    cleanup:
+                      - '*'
+                    modules:
+                      - name: harfbuzz-static
+                       #build-options: *musl-static-build-options
+                        build-options:
+                          cflags: -static -fno-exceptions -fno-rtti
+                          cxxflags: -static -fno-exceptions -fno-rtti
+                          ldflags: -static
+                          env:
+                            - CC=x86_64-linux-musl-gcc
+                            - CXX=x86_64-linux-musl-g++
+                        buildsystem: meson
+                        # TODO: add graphite2
+                        config-opts:
+                          - --default-library=static
+                          - -Dglib=disabled
+                          - -Dgobject=disabled
+                          - -Dcairo=disabled
+                          - -Dchafa=disabled
+                          - -Dicu=disabled
+                          - -Dgraphite=disabled
+                          - -Dgraphite2=disabled
+                          - -Dfreetype=enabled
+                          - -Dtests=disabled
+                          - -Dintrospection=disabled
+                          - -Ddocs=disabled
+                          - -Dbenchmark=disabled
+                          - -Dicu_builtin=true
+                        sources:
+                          - type: archive
+                            url: https://github.com/harfbuzz/harfbuzz/releases/download/5.1.0/harfbuzz-5.1.0.tar.xz
+                            sha256: 2edb95db668781aaa8d60959d21be2ff80085f31b12053cdd660d9a50ce84f05
+                            x-checker-data:
+                              type: anitya
+                              project-id: 1299
+                              stable-only: true
+                              url-template: https://github.com/harfbuzz/harfbuzz/releases/download/$version/harfbuzz-$version.tar.xz
+                        cleanup:
+                          - '*'
+                        modules:
+                          - name: freetype2-noharfbuzz-static
+                            build-options: *musl-static-build-options
+                            buildsystem: meson
+                            config-opts:
+                              - --default-library=static
+                              - -Dbrotli=disabled
+                              - -Dbzip2=enabled
+                              - -Dharfbuzz=disabled
+                              - -Dpng=enabled
+                              - -Dtests=disabled
+                              - -Dzlib=enabled
+                            sources:
+                              - type: archive
+                                url: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-2.12.1.tar.xz
+                                sha256: 4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f
+                                x-checker-data:
+                                  type: anitya
+                                  project-id: 854
+                                  stable-only: true
+                                  url-template: https://download-mirror.savannah.gnu.org/releases/freetype/freetype-$version.tar.xz
+                            cleanup:
+                              - '*'
+              - name: pixman-static
+                build-options: *musl-static-build-options
+                buildsystem: meson
+                config-opts:
+                  - --default-library=static
+                  - -Dloongson-mmi=disabled
+                  - -Dvmx=disabled
+                  - -Darm-simd=disabled
+                  - -Dneon=disabled
+                  - -Diwmmxt=disabled
+                  - -Diwmmxt2=false
+                  - -Dmips-dspr2=disabled
+                  - -Dgnu-inline-asm=disabled
+                  - -Dopenmp=disabled
+                  - -Dgtk=disabled
+                  - -Dlibpng=enabled
+                sources:
+                  - type: archive
+                    url: https://xorg.freedesktop.org/releases/individual/lib/pixman-0.40.0.tar.gz
+                    sha256: 6d200dec3740d9ec4ec8d1180e25779c00bc749f94278c8b9021f5534db223fc
+                    x-checker-data:
+                      type: anitya
+                      project-id: 3648
+                      stable-only: true
+                      url-template: https://xorg.freedesktop.org/releases/individual/lib/pixman-$version.tar.gz
+                cleanup:
+                  - '*'
+          - name: fribidi-static
+            build-options: *musl-static-build-options
+            buildsystem: meson
+            config-opts:
+              - --default-library=static
+              - -Ddocs=false
+              - -Dbin=false
+              - -Dtests=false
+            sources:
+              - type: archive
+                url: https://github.com/fribidi/fribidi/releases/download/v1.0.12/fribidi-1.0.12.tar.xz
+                sha256: 0cd233f97fc8c67bb3ac27ce8440def5d3ffacf516765b91c2cc654498293495
+                x-checker-data:
+                  type: anitya
+                  project-id: 857
+                  stable-only: true
+                  url-template: https://github.com/fribidi/fribidi/releases/download/v$version/fribidi-$version.tar.xz
+            cleanup:
+              - '*'
 
 
   # Libraries: Display server
