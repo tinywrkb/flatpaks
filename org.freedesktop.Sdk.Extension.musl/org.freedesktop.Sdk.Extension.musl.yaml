@@ -42,8 +42,15 @@ modules:
     sources: &musl_sources
       - type: git
         url: https://github.com/richfelker/musl-cross-make
-        branch: master
+        #branch: master
         commit: fe915821b652a7fa37b34a596f47d8e20bc72338
+        x-checker-data:
+          is-main-source: true
+          type: json
+          url: https://api.github.com/repos/richfelker/musl-cross-make/commits?sha=master&per_page=1
+          commit-query: .[].sha
+          version-query: .[].sha[0:8]
+          timestamp-query: .[].commit.committer.date
       - type: file
         dest: sources
         dest-filename: config.sub
