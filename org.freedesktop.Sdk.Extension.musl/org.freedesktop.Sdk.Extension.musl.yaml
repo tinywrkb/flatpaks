@@ -54,9 +54,6 @@ modules:
         url: https://ftp.gnu.org/gnu/binutils/binutils-2.35.2.tar.xz
         sha256: dcd5b0416e7b0a9b24bed76cd8c6c132526805761863150a26d016415b8bdc7b
       - type: file
-        dest: hashes
-        path: binutils-2.35.2.tar.xz.sha1
-      - type: file
         dest: sources/gcc-11.2.0.tar.xz.tmp
         url: https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
         sha256: d08edc536b54c372a1010ff6619dd274c0f1603aa49212ba20f7aa2cda36fa8b
@@ -82,6 +79,8 @@ modules:
         sha256: 7d5b0b6062521e4627e099e4c9dc8248d32a30285e959b7eecaa780cf8cfd4a4
       - type: file
         path: config.mak
+      - type: patch
+        path: musl-cross-make-add-binutils-2.35.2.patch
     cleanup:
       - '*'
   - name: musl-static
