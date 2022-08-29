@@ -2725,6 +2725,98 @@ modules:
           stable-only: true
           url-template: https://github.com/1player/host-spawn/releases/download/$version/host-spawn-x86_64
 
+  - name: podman-tui
+    build-options:
+     #build-args:
+     #  - --share=network
+      env:
+        # TODO: maybe add these as default CGO flags, maybe also dynamic link path
+        - CGO_CFLAGS=-I${FLATPAK_DEST}/include
+        - CGO_LDFLAGS=-static -lgpg-error -lassuan
+    buildsystem: simple
+    # TODO: add aliases for golang build commands
+    build-commands:
+     #- eval ${GOVARS} CGO_CFLAGS="${CGO_CFLAGS}" go get; exit 1 # ONLINE-BUILD
+      - eval ${GOVARS} CGO_CFLAGS="${CGO_CFLAGS}" go install # OFFLINE-BUILD
+    sources:
+      - type: archive
+        url: https://github.com/containers/podman-tui/archive/v0.5.0/podman-tui-0.5.0.tar.gz
+        sha256: c9f32e8a80b8fc5253cf21c289c31da42d62ca41656e491d0a6adc67a1f2f5a7
+        x-checker-data:
+          type: anitya
+          project-id: 283927
+          stable-only: true
+          url-template: https://github.com/containers/podman-tui/archive/v$version/podman-tui-$version.tar.gz
+      - podman-tui-go-sources.json # OFFLINE-BUILD, flatpak-go-get-generator.py -o podman-tui-go-sources.json ./
+    modules:
+      - name: btrfs-progs-static # depends on zstd
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+          - --disable-programs
+          - --disable-backtrace
+          - --disable-documentation
+          - --disable-convert
+          - --disable-zoned
+          - --disable-udev
+          - --disable-python
+          - --disable-lzo
+        sources:
+          - type: archive
+            url: https://mirrors.edge.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v5.19.tar.xz
+            sha256: 1fbcf06e4b2f80e7a127fd687ed4625a5b74fa674fe212c836ff70e0edfcccf9
+            x-checker-data:
+              type: anitya
+              project-id: 227
+              stable-only: true
+              url-template: https://mirrors.edge.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v$version.tar.xz
+        cleanup:
+          - '*'
+      - name: device-mapper-static
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+          - --sbindir=${bindir}
+          - --enable-static_link
+          - --with-staticdir=${bindir}
+        make-args:
+          - device_mapper
+        install-rule: install_device-mapper
+        make-install-args:
+          - INSTALL_TYPE=install_static
+        post-install:
+          - install -Dm644 libdm/libdevmapper.pc ${FLATPAK_DEST}/lib/pkgconfig/devmapper.pc
+          - rm -f ${FLATPAK_DEST}/bin/{dmsetup,dmstats}*
+        sources:
+          - type: archive
+            url: http://mirrors.kernel.org/sourceware/lvm2/LVM2.2.03.16.tgz
+            sha256: e661ece15b5d88d8abe39a4c1e1db2f43e1896f019948bb98b0e15d777680786
+            x-checker-data:
+              type: anitya
+              project-id: 5354
+              stable-only: true
+              url-template: http://mirrors.kernel.org/sourceware/lvm2/LVM2.$version.tgz
+        cleanup:
+          - '*'
+        modules:
+          - name: libaio-static
+            build-options: *musl-static-build-options
+            no-autogen: true
+            make-install-args:
+              - prefix=${FLATPAK_DEST}
+              - ENABLE_SHARED=0
+            sources:
+              - type: archive
+                url: https://pagure.io/libaio/archive/libaio-0.3.113/libaio-libaio-0.3.113.tar.gz
+                sha256: 716c7059703247344eb066b54ecbc3ca2134f0103307192e6c2b7dab5f9528ab
+                x-checker-data:
+                  type: anitya
+                  project-id: 1557
+                  stable-only: true
+                  url-template: https://pagure.io/libaio/archive/libaio-$version/libaio-libaio-$version.tar.gz
+            cleanup:
+              - '*'
+
   - name: podman-remote-static-bin
     buildsystem: simple
     build-commands:
