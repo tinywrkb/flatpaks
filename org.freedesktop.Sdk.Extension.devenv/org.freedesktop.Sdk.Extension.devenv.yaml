@@ -3016,6 +3016,8 @@ modules:
       - --without-libsystemd
       - --without-selinux
       - --without-soup
+    make-args:
+      - CCLD=$(CC) -all-static
     post-install:
       - install -Dm755 ostree-wrapper ${FLATPAK_DEST}/bin/fsw/ostree
     sources:
@@ -3038,7 +3040,10 @@ modules:
               exec "$(dirname "${wrapper_path}")"/ostree "$@"
             fi
     cleanup:
-      - '*'
+      - /etc
+      - /lib/libostree
+      - /lib/ostree
+      - /share/ostree
     modules:
       - name: curl-static # depends on brotli krb5 libidn2 libnghttp2openssl zlib zstd
         build-options: *musl-static-build-options
