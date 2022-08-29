@@ -16,6 +16,7 @@ also be supported.
 An example application, `org.freedesktop.DevEnv`, is used to create a Flatpak instance, with this SDK extension enabled,
 but the extension is mainly intended to be used with Flatpak packaged IDEs.
 
+
 ## TODO
 * helper scripts
   * fix enable-sdks.sh
@@ -33,7 +34,7 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * deal better with overriden HOME and XDG user dirs variables
 * read envvar to select shell (default to bash)
 * set build cache for rust and golang, and build from source
-* access to host manpages
+* access host manpages
 * evaluate setting default flags: fpie, hardening
 * modules to add
   * iso manipulation tools: cdrtools, fuseiso
@@ -61,100 +62,58 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * vimfm: default colors in /etc
 * wtf put group, machineid, passwd, resolv.conf in etc?
 * share: byobu, fish, fzf, kak, kak-lsp, luajit, nnn, nvim, pyenv, ugrep, vifm, vim, zsh
-  * fish: possible workarounds
-    * `fish_complete_path`
-    * `fish_function_path`
-    * `__fish_datadir`
-    ```
-    export fish_function_path=$DEVENV_PATH/share/fish/functions
-    export fish_complete_path=$DEVENV_PATH/share/fish/completions
-    export PATH=$DEVENV_PATH/bin:$PATH
-    export __fish_datadir=$DEVENV_PATH/share
-    export __fish_data_dir=$DEVENV_PATH/share
-    export XDG_DATA_DIRS=$DEVENV_PATH/share:$XDG_DATA_DIRS
-    ```
-    * --filesystem=xdg-config/fish:ro
-    * --filesystem=xdg-data/fish:ro
+
 
 ## How to
 
 **This a bit of ill-formatted mess, sorry.**
 
-fontconfig
-  add to fonts.conf see flatpaks README.md
-  now: <dir>/usr/lib/sdk/devenv/share/fonts/powerline</dir>
-  next: <dir prefix="xdg">fonts/powerline</dir>
-  see also https://gitlab.freedesktop.org/fontconfig/fontconfig/-/commit/6f27f42e6140030715075aa3bd3e5cc9e2fdc6f1
+* fontconfig
+  * add to fonts.conf see flatpaks README.md
+  * now: `<dir>/usr/lib/sdk/devenv/share/fonts/powerline</dir>`
+  * next: `<dir prefix="xdg">fonts/powerline</dir>`
+  * Reference: [fontconfig: Add support for XDG_DATA_DIRS](https://gitlab.freedesktop.org/fontconfig/fontconfig/-/commit/6f27f42e6140030715075aa3bd3e5cc9e2fdc6f1)
 
-easily enable after entering a sandbox
-  add override for envvar
-    `$ flatpak override --user --env=ENABLE_DEVENV=/usr/lib/sdk/devenv/bin/enable-development-environment`
-  enter sandbox and then use envvar to run shell
-    `$ $ENABLE_DEVENV`
+* easily enable after entering a sandbox
+  * add override for envvar
+    ```
+    $ flatpak override --user --env=ENABLE_DEVENV=/usr/lib/sdk/devenv/bin/enable-development-environment
+    ```
+  * enter sandbox and then use envvar to run shell: `$ $ENABLE_DEVENV`
 
-enter a sandbox with enabled shell
-  set envvar in host shell
-    `$ export fpde=/usr/lib/sdk/devenv/bin/enable-development-environment`
-  enter sandbox
-    `$ flatpak run --command=$fpde org.freedesktop.Sdk//21.08`
+* enter a sandbox with enabled shell
+  * set envvar in host shell
+    ```
+    $ export fpde=/usr/lib/sdk/devenv/bin/enable-development-environment
+    ```
+  * enter sandbox: `$ flatpak run --command=$fpde org.freedesktop.Sdk//21.08`
 
-enable by default, only works with actual apps, not runtimes
-  add persist override
-    `$ flatpak override --user --persist=. FLATPAK_ID`
-  enter sandbox
-    `$ flatpak run FLATPAK_ID`
-  create .bashrc
-    `$ echo 'source $ENABLE_DEVENV' > .bashrc`
+* enable by default, only works with actual apps, not runtimes
+  * add persist override:  `$ flatpak override --user --persist=. FLATPAK_ID`
+  * enter sandbox: `$ flatpak run FLATPAK_ID`
+  * create .bashrc: `$ echo 'source $ENABLE_DEVENV' > .bashrc`
 
-terminfo: use updated db
-  optional as it's already set by the enable.sh script
-  if added to an app packaging, must use quotes like the example
-  - '--env=TERMINFO_DIRS=/usr/lib/sdk/devenv/share/terminfo:'
+* terminfo: use updated db
+  * optional as it's already set by the enable.sh script
+  * if added to an app packaging, must use quotes like the example
+    ```
+    - '--env=TERMINFO_DIRS=/usr/lib/sdk/devenv/share/terminfo:'
+    ```
 
-### permissions
-
-ssh
-  --filesystem=xdg-config/ssh:ro
-  my secret store for storing keys, needed due to symlinks from xdg-config/ssh
-    --filesystem=~/.user/hiddendots/openssh:ro
-  this is the location of my ssh-agent's socket, and likely not needed anymore with new flatpak releases
-    --filesystem=xdg-run/ssh-agent:ro
-  this might be already enabled, it only used by gnome-keyring's agent, and basically bind mounts bind-mounts the xdg-run/ssh-auth
-    --socket=ssh-auth
-  for app/sandbox specific setting, like automatically added known hosts
-    --persist=.ssh
-  only needed with older than flatpak 1.11.1 https://github.com/flatpak/flatpak/commit/0e0e98e7ef0498946d8172ac6d266679434aab6a
-    --env=SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent/sock
-  when using non-default ssh config folder, explictly set IdentityFile
+* ssh
+  * when using non-default ssh config folder, explictly set IdentityFile
+    ```
     Host *
       IdentityFile ~/.config/ssh/id_rsa
       IdentityFile ...
+    ```
 
-gnupg
-  --filesystem=xdg-config/gnupg:ro
-code
-  --filesystem=~/projects
-ccache
-  --filesystem=xdg-cache/ccache
-byobu
-  --filesystem=xdg-config/byobu/.ssh-agent
-  --filesystem=xdg-run/tmux
-flatpak-spawn
-  --talk-name=org.freedesktop.Flatpak
-git
-  --filesystem=xdg-config/git:ro
-nvim
-  --filesystem=xdg-config/nvim:ro
-  --filesystem=xdg-data/nvim:ro
-less
-  new less versions don't need a binary lesskey.bin, source default to XDG_CONFIG_HOME/lesskey,
-  only LESSKEYIN envvar needed for host compat
-  --filesystem=xdg-config/lesskey:ro
-ranger
-  folder must be writable
-  --filesystem=xdg-config/ranger
-dots 
-  --filesystem=~/.user/dots
-  apps must have a connecting symlink to .user if tool's home cannot be set via envvar to ~/.config/...
-    ln -s ../../../.user ~/.var/app/FLATPAK_ID/.user
-    only needed if the tool's config home was mounted with --filesystem=xdg-config/... as ~/.config/... won't be mounted in .var
+* fish: possible workarounds for hardcoded paths
+  ```
+  export fish_complete_path=$DEVENV_PATH/share/fish/completions
+  export fish_function_path=$DEVENV_PATH/share/fish/functions
+  export PATH=$DEVENV_PATH/bin:$PATH
+  export __fish_datadir=$DEVENV_PATH/share
+  export __fish_data_dir=$DEVENV_PATH/share
+  export XDG_DATA_DIRS=$DEVENV_PATH/share:$XDG_DATA_DIRS
+  ```

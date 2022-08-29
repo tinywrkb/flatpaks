@@ -4,33 +4,90 @@ runtime-version: '21.08'
 sdk: org.freedesktop.Sdk
 command: devenv
 finish-args:
+# development permissions
+  # devel allow access to profiling syscalls (perf, ptrace,..)
   - --allow=devel
+  # execute code for different architecture than the host
+  - --allow=multiarch
+# permissive host access
+  # this type of permissive permission you might want to globally override
+  # access to all devices means being able to read from and to any host pty
   - --device=all
-  - --device=dri
-  - --env=AUTO_PYENV_ROOT=1
   - --filesystem=home
   - --filesystem=host
+  # unfiltered dbus sessions access
+  - --socket=session-bus
+  - --socket=system-bus
+  # flatpak-spawn can run any host command
+  # explicitly enabled even though it's already covered by --socket=session-bus
+  - --talk-name=org.freedesktop.Flatpak
+# display server
+  - --device=dri
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+# networking
+  - --share=network
+
+# code
+  #- --filesystem=~/projects
+
+# dots
+  # apps must have a connecting symlink to .user if tool's home cannot be set via envvar to ~/.config/...
+  #   `$ ln -s ../../../.user ~/.var/app/FLATPAK_ID/.user`
+  #   only needed if the tool's config folder was mounted with `--filesystem=xdg-config/...` as `~/.config/...` won't be mounted in .var
   - --filesystem=~/.local/bin:ro
   - --filesystem=~/.user/dots:ro
   - --filesystem=~/.user/hiddendots:ro
-  - --filesystem=xdg-cache/broot:ro
-  - --filesystem=xdg-cache/ccache
+
+# bash
   - --filesystem=xdg-config/bash:ro
-  - --filesystem=xdg-config/git:ro
-  - --filesystem=xdg-config/nvim:ro
-  - --filesystem=xdg-config/ranger
-  - --filesystem=xdg-config/ssh:ro
+# broot
+  - --filesystem=xdg-cache/broot:ro
+# ccache
+  - --filesystem=xdg-cache/ccache
+# flatpak
+  # aliases
   - --filesystem=xdg-data/flatpak-run-cli:ro
+# fish
+  - --filesystem=xdg-config/fish:ro
+  - --filesystem=xdg-data/fish:ro
+# git
+  - --filesystem=xdg-config/git:ro
+# gnupg
+  #- --filesystem=xdg-config/gnupg:ro
+# less
+  # new less versions don't need a binary lesskey.bin, source default to XDG_CONFIG_HOME/lesskey,
+  # only LESSKEYIN envvar needed for host compat
+  #- --filesystem=xdg-config/lesskey:ro #
+# neovim
+  - --filesystem=xdg-config/nvim:ro
   - --filesystem=xdg-data/nvim:ro
+# python
+  - --env=AUTO_PYENV_ROOT=1
+# ranger
+  # folder must be writable
+  - --filesystem=xdg-config/ranger
+# ssh
+  - --filesystem=xdg-config/ssh:ro
+  # my secret store for storing keys, needed due to symlinks from xdg-config/ssh
+  #- --filesystem=~/.user/hiddendots/openssh:ro
+  # this is the location of my ssh-agent's socket, and likely not needed anymore with new flatpak releases
+  # --filesystem=xdg-run/ssh-agent:ro
+  # for app/sandbox specific setting, like automatically added known hosts
   - --persist=.ssh
-  - --share=ipc
-  - --share=network
-  - --socket=session-bus
+  # only needed with older than flatpak 1.11.1 https://github.com/flatpak/flatpak/commit/0e0e98e7ef0498946d8172ac6d266679434aab6a
+  #- --env=SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent/sock
+  # TODO: this should be already enabled in recent flatpak releases, check the code
+  # this might be already enabled, it only beeing used by gnome-keyring's agent, and basically bind mounts bind-mounts the xdg-run/ssh-auth
   - --socket=ssh-auth
-  - --socket=system-bus
-  - --socket=wayland
-  - --socket=x11
-  - --talk-name=org.freedesktop.Flatpak
+# terminal multiplexer
+  # byobu
+  #- --filesystem=xdg-config/byobu/.ssh-agent
+  # tmux
+  #- --filesystem=xdg-run/tmux
+
+
 modules:
   - name: devenv
     buildsystem: simple
