@@ -730,6 +730,29 @@ modules:
     cleanup:
       - '*'
 
+  - name: libssh-static # depends on openssl zlib
+    build-options: *musl-static-build-options
+    buildsystem: cmake
+    builddir: true
+    config-opts:
+      # wrong detection of zlib includedir prepend /usr/include before musl includedir
+      - -DZLIB_INCLUDE_DIR=/usr/lib/sdk/devenv/include
+      - -DWITH_GSSAPI=OFF
+      - -DBUILD_SHARED_LIBS=OFF
+      - -DUNIT_TESTING=OFF
+      - -DWITH_EXAMPLES=OFF
+    sources:
+      - type: archive
+        url: https://www.libssh.org/files/0.9/libssh-0.9.6.tar.xz
+        sha256: 86bcf885bd9b80466fe0e05453c58b877df61afa8ba947a58c356d7f0fab829b
+        x-checker-data:
+          type: anitya
+          project-id: 1729
+          stable-only: true
+          url-template: https://www.libssh.org/files/$version0.$version1/libssh-$version.tar.xz
+    cleanup:
+      - '*'
+
   - name: libxml2-static # depends on ncurses readline xz zlib
     # TODO: test if icu should be enabled
     # NOTE: librsvg needs -fPIC
@@ -4579,29 +4602,6 @@ modules:
         commands:
           # workaround for tmate not using pkgconfig
           - sed -i '/^#if defined(HAVE_CURSES_H)/i \#define HAVE_NCURSES_H' tty-term.c
-    modules:
-      - name: libssh-static # depends on openssl zlib
-        build-options: *musl-static-build-options
-        buildsystem: cmake
-        builddir: true
-        config-opts:
-          # wrong detection of zlib includedir prepend /usr/include before musl includedir
-          - -DZLIB_INCLUDE_DIR=/usr/lib/sdk/devenv/include
-          - -DWITH_GSSAPI=OFF
-          - -DBUILD_SHARED_LIBS=OFF
-          - -DUNIT_TESTING=OFF
-          - -DWITH_EXAMPLES=OFF
-        sources:
-          - type: archive
-            url: https://www.libssh.org/files/0.9/libssh-0.9.6.tar.xz
-            sha256: 86bcf885bd9b80466fe0e05453c58b877df61afa8ba947a58c356d7f0fab829b
-            x-checker-data:
-              type: anitya
-              project-id: 1729
-              stable-only: true
-              url-template: https://www.libssh.org/files/$version0.$version1/libssh-$version.tar.xz
-        cleanup:
-          - '*'
 
   - name: tmux-static
     build-options: *musl-static-build-options
