@@ -30,11 +30,20 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * investigate the possiblity to keep extension accessible after update, maybe bindfs mount
 * see other useful tools @ https://github.com/agarrharr/awesome-cli-apps
 * drop musl shared lib, move next to users
-* bashrc should be more generic, and user bashrc shouldn't break it
 * deal better with overriden HOME and XDG user dirs variables
 * read envvar to select shell (default to bash)
 * set build cache for rust and golang, and build from source
-* add wayland compositor: sway or/and cage
+* access to host manpages
+* evaluate setting default flags: fpie, hardening
+* modules to add
+  * iso manipulation tools: cdrtools, fuseiso
+  * filesystems fuse tools: at least for dos/fat, ext2/3/4, overlayfs
+  * partioning tools to operate on raw disk images
+  * process monitor to keep track of in-sandbox processes: btop, htop
+  * fonts for terminal emulator: noto-vf
+  * stringsext
+* choose a better extension name
+* move to a dedicated repo and add ci to build and publish via oci registry
 
 ### possible failure mapping of sdk path
 * stow: hardcoded perl `use dir`, can be patched

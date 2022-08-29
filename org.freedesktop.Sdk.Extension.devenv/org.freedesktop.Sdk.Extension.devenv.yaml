@@ -32,6 +32,10 @@ x-musl-static-build-options: &musl-static-build-options
   env:
     - CC=x86_64-linux-musl-gcc
     - CXX=x86_64-linux-musl-g++
+# TODO: consider overriding pkgconf envvars
+   #- PKG_CONFIG_LIBDIR=
+   #- PKG_CONFIG_PATH=/lib/pkgconfig:/share/pkgconfig
+   #- PKG_CONFIG_SYSROOT_DIR=/usr/lib/sdk/devenv
 x-musl-static-fpic-build-options: &musl-static-fpic-build-options
   cflags: -static -fPIC
   cxxflags: -static -fPIC
