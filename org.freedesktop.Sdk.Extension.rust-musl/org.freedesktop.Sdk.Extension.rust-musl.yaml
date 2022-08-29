@@ -95,7 +95,7 @@ modules:
         dest-filename: enable.sh
         commands:
           - |
-            SDKPATH=/usr/lib/sdk/devenv
+            SDKPATH=/usr/lib/sdk/rust-musl
             export PATH=${SDKPATH}/bin:$PATH
             if [ -z "$LD_LIBRARY_PATH" ]; then
               export LD_LIBRARY_PATH=${SDKPATH}/lib
