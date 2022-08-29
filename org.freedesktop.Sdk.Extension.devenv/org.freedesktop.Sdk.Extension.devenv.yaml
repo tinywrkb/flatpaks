@@ -6,7 +6,7 @@ sdk: org.freedesktop.Sdk
 build-extension: true
 separate-locales: false
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.golang
+  - org.freedesktop.Sdk.Extension.go-musl
   - org.freedesktop.Sdk.Extension.musl
   - org.freedesktop.Sdk.Extension.rust-musl
 build-options:
@@ -18,8 +18,13 @@ build-options:
   prepend-path: /usr/lib/sdk/devenv/bin
   prepend-ld-library-path: /usr/lib/sdk/devenv/lib
   prepend-pkg-config-path: /usr/lib/sdk/devenv/lib/pkgconfig
-  append-path: /usr/lib/sdk/golang/bin:/usr/lib/sdk/musl/bin:/usr/lib/sdk/rust-musl/bin
+  append-path: /usr/lib/sdk/go-musl/bin:/usr/lib/sdk/musl/bin:/usr/lib/sdk/rust-musl/bin
   strip: true
+  env:
+    - GO111MODULE=off
+    - GOVARS=
+      GOBIN=${FLATPAK_DEST}/bin
+      GOPATH=${FLATPAK_BUILDER_BUILDDIR}
 x-musl-static-build-options: &musl-static-build-options
   cflags: -static
   cxxflags: -static
@@ -41,16 +46,6 @@ x-musl-shared-build-options: &musl-shared-build-options
   env:
     - CC=x86_64-linux-musl-gcc
     - CXX=x86_64-linux-musl-g++
-x-golang-offline-build-options: &golang-offline-build-options
-  env:
-    GO111MODULE: off
-    GOVARS: GOBIN=${FLATPAK_DEST}/bin GOPATH=${FLATPAK_BUILDER_BUILDDIR}
-x-golang-online-build-options: &golang-online-build-options
-  build-args:
-    - --share=network
-  env:
-    GO111MODULE: off
-    GOVARS: GOBIN=${FLATPAK_DEST}/bin GOPATH=${FLATPAK_BUILDER_BUILDDIR}
 
 cleanup:
   - /include
@@ -4433,8 +4428,9 @@ modules:
   ############################
 
   - name: moar
-    build-options: *golang-offline-build-options
-   #build-options: *golang-online-build-options
+   #build-options:
+   #  build-args:
+   #    - --share=network
     buildsystem: simple
     # TODO: add aliases for golang build commands
     build-commands:
