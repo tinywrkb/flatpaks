@@ -2975,6 +2975,106 @@ modules:
   ###  Files: Filesystems  ###
   ############################
 
+  - name: ostree-static
+    build-options: *musl-static-build-options
+    config-opts:
+      - --disable-shared
+      - --libexec=${prefix}/lib
+      - --disable-glibtest
+      - --disable-gtk-doc
+      - --disable-gtk-doc-html
+      - --disable-http2
+      - --disable-introspection
+      - --disable-rofiles-fuse
+      - --enable-man
+      - --with-curl
+      - --without-avahi
+      - --without-libmount
+      - --without-libsystemd
+      - --without-selinux
+      - --without-soup
+    post-install:
+      - install -Dm755 ostree-wrapper ${FLATPAK_DEST}/bin/fsw/ostree
+    sources:
+      - type: archive
+        url: https://github.com/ostreedev/ostree/releases/download/v2022.5/libostree-2022.5.tar.xz
+        sha256: 914c4d993bc111d7dd30ae9721b6ffe8ab56eb1fd6e81b097b09f400cc1b053f
+        x-checker-data:
+          type: anitya
+          project-id: 10899
+          stable-only: true
+          url-template: https://github.com/ostreedev/ostree/releases/download/v$version/libostree-$version.tar.xz
+      - type: script
+        dest-filename: ostree-wrapper
+        commands:
+          - |
+            if [ -n "$DEVENV_OSTREE_PREFER_HOST" ]; then
+              host-spawn ostree "$@"
+            else
+              fsw_path="$(dirname "$(realpath "$0")")"
+              exec "$(dirname "${wrapper_path}")"/ostree "$@"
+            fi
+    cleanup:
+      - '*'
+    modules:
+      - name: curl-static # depends on brotli krb5 libidn2 libnghttp2openssl zlib zstd
+        build-options: *musl-static-build-options
+        # TODO: add more depends brotli libpsl libssh2
+        # TODO: explicit features
+        # TODO: remove executables and move to libraries section
+        config-opts:
+          - --disable-shared
+          - --disable-ldap
+          - --disable-ldaps
+          - --disable-manual
+          - --enable-ipv6
+          - --enable-threaded-resolver
+         #- --with-gssapi # TODO: fix gssapi detection
+          - --with-libssh # TODO: drop this after enabling libssh2
+          - --with-openssl
+          - --without-brotli
+          - --without-libpsl
+          - --without-libssh2
+        sources:
+          - type: archive
+            url: https://curl.se/download/curl-7.84.0.tar.gz
+            sha256: 3c6893d38d054d4e378267166858698899e9d87258e8ff1419d020c395384535
+            x-checker-data:
+              type: anitya
+              project-id: 381
+              stable-only: true
+              url-template: https://curl.se/download/curl-$version.tar.gz
+        cleanup:
+          - '*'
+      - name: e2fsprogs-static
+        # NOTE: includes linux-utils' libblkid and libuuid, can be disabled
+        build-options: *musl-static-build-options
+        config-opts:
+          - --disable-shared
+          - --sbindir=${bindir}
+          - --disable-nls
+          - --disable-debugfs
+          - --disable-defrag
+          - --disable-fsck
+          - --disable-fuse2fs
+          - --disable-imager
+          - --disable-resizer
+          - --disable-uuidd
+        install-rule: install-libs
+        make-install-args:
+          - subs
+        sources:
+          - type: archive
+            url: https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.46.5/e2fsprogs-1.46.5.tar.gz
+            sha256: 0786fadd77421e04b21f3a79513c5d8d9232f82eb8bea68f3af46f2d98bdd889
+            x-checker-data:
+              type: anitya
+              project-id: 646
+              stable-only: true
+              url-template: https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v$version/e2fsprogs-$version.tar.gz
+        cleanup:
+          - '*'
+
   - name: sshfs-static
     build-options: *musl-static-build-options
     buildsystem: meson
