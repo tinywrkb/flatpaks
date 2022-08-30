@@ -9,6 +9,7 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.go-musl
   - org.freedesktop.Sdk.Extension.musl
   - org.freedesktop.Sdk.Extension.rust-musl
+  - org.freedesktop.Sdk.Extension.sccache
 build-options:
   cflags: -I/usr/lib/sdk/devenv/include
   cxxflags: -I/usr/lib/sdk/devenv/include
@@ -18,7 +19,7 @@ build-options:
   prepend-path: /usr/lib/sdk/devenv/bin
   prepend-ld-library-path: /usr/lib/sdk/devenv/lib
   prepend-pkg-config-path: /usr/lib/sdk/devenv/lib/pkgconfig
-  append-path: /usr/lib/sdk/go-musl/bin:/usr/lib/sdk/musl/bin:/usr/lib/sdk/rust-musl/bin
+  append-path: /usr/lib/sdk/go-musl/bin:/usr/lib/sdk/musl/bin:/usr/lib/sdk/rust-musl/bin:/usr/lib/sdk/sccache/bin
   strip: true
   env:
     - GO111MODULE=off
@@ -26,6 +27,10 @@ build-options:
       HOME=${FLATPAK_BUILDER_BUILDDIR}
       CARGO_HOME=${FLATPAK_BUILDER_BUILDDIR}/cargo
       LD_LIBRARY_PATH+=:/usr/lib/sdk/musl/x86_64-linux-musl/lib
+    - SCCACHE_BIN=/usr/lib/sdk/sccache/bin/sccache
+    - SCCACHE_DIR=/run/ccache/sccache
+    # TODO: this is cache dir specific, maybe file a ticket upstream for in-cachedir config
+    - SCCACHE_CONF=/run/ccache/sccache/config
     - GOVARS=
       GOBIN=${FLATPAK_DEST}/bin
       GOPATH=${FLATPAK_BUILDER_BUILDDIR}
@@ -121,6 +126,7 @@ modules:
           install -dm755 ${FLATPAK_DEST}/bin
           ln -s /usr/bin/ccache ${FLATPAK_DEST}/bin/x86_64-linux-musl-gcc
           ln -s /usr/bin/ccache ${FLATPAK_DEST}/bin/x86_64-linux-musl-g++
+          install -Dm755 ${SCCACHE_BIN} ${FLATPAK_DEST}/bin/rustc
         fi
     cleanup:
       - '*'
