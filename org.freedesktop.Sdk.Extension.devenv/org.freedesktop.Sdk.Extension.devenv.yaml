@@ -22,6 +22,9 @@ build-options:
   strip: true
   env:
     - GO111MODULE=off
+    - CARGO_VARS=
+      HOME=${FLATPAK_BUILDER_BUILDDIR}
+      CARGO_HOME=${FLATPAK_BUILDER_BUILDDIR}/cargo
     - GOVARS=
       GOBIN=${FLATPAK_DEST}/bin
       GOPATH=${FLATPAK_BUILDER_BUILDDIR}
