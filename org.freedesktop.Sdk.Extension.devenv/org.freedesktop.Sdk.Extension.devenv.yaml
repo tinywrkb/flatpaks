@@ -2423,6 +2423,28 @@ modules:
           stable-only: true
           url-template: https://github.com/walles/riff/releases/download/$version/riff-$version-x86_64-linux
 
+  - name: stringsext
+    buildsystem: simple
+    build-options: *musl-static-build-options
+    build-commands:
+      - eval ${CARGO_VARS} cargo fetch
+      - eval ${CARGO_VARS} cargo build --release
+      - install -Dm755 target/x86_64-unknown-linux-musl/release/stringsext -t ${FLATPAK_DEST}/bin/
+    sources:
+      - type: archive
+        url: https://gitlab.com/getreu/stringsext/-/archive/v2.3.4/stringsext-v2.3.4.tar.gz
+        sha256: 1555ba43db2398426daf9c670b654b2699d7476346bded5007a241db778e3471
+        x-checker-data:
+          type: anitya
+          project-id: 284481
+          stable-only: true
+          url-template: https://gitlab.com/getreu/stringsext/-/archive/v$version/stringsext-v$version.tar.gz
+      - stringsext-cargo-sources.json # flatpak-cargo-generator.py Cargo.lock -t -o stringsext-cargo-sources.json
+      - type: file
+        dest: .cargo
+        dest-filename: config
+        path: cargo-musl-config
+
   - name: tokei-static-bin
     buildsystem: simple
     build-commands:

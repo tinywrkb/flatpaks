@@ -42,7 +42,6 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
   * partioning tools to operate on raw disk images
   * process monitor to keep track of in-sandbox processes: btop, htop
   * fonts for terminal emulator: noto-vf
-  * stringsext
 * choose a better extension name
 * move to a dedicated repo and add ci to build and publish via oci registry
 
