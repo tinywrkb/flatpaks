@@ -2434,6 +2434,11 @@ modules:
           stable-only: true
           url-template: https://github.com/walles/riff/releases/download/$version/riff-$version-x86_64-linux
 
+  - name: sccache-static
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 ${SCCACHE_BIN} -t ${FLATPAK_DEST}/bin/
+
   - name: stringsext
     buildsystem: simple
     build-options: *musl-static-build-options
