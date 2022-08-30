@@ -4000,6 +4000,57 @@ modules:
   ####     Processes      ####
   ############################
 
+  - name: btop-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-args:
+      - CXX:=$(CXX)
+      - STATIC=true
+    make-install-args:
+      - PREFIX=${FLATPAK_DEST}
+    post-install:
+      - mv ${FLATPAK_DEST}/bin/btop{,-sandbox}
+    sources:
+      - type: archive
+        url: https://github.com/aristocratos/btop/archive/v1.2.9/btop-1.2.9.tar.gz
+        sha256: 0f8c3434a9c4c132a34415a9cc4f048595b8a4d1a94e94223ac3a795e1c16531
+        x-checker-data:
+          type: anitya
+          project-id: 253331
+          stable-only: true
+          url-template: https://github.com/aristocratos/btop/archive/v$version/btop-$version.tar.gz
+    cleanup:
+      - /share/applications
+      - /share/icons
+
+  - name: htop-static
+    build-options: *musl-static-build-options
+    config-opts:
+      # TODO: revisit features
+      - --enable-static
+      - --enable-unicode
+      - --enable-affinity
+      - --disable-unwind
+      - --disable-hwloc
+      - --disable-capabilities
+      - --disable-delayacct
+      - --disable-sensors
+    post-install:
+      - mv ${FLATPAK_DEST}/bin/htop{,-sandbox}
+    sources:
+      - type: archive
+        url: https://github.com/htop-dev/htop/releases/download/3.2.1/htop-3.2.1.tar.xz
+        sha256: 5a17121cf1c69d2f2e557c0b29d45a2c353ab983f644742e1c2e4ece15aa6cbb
+        x-checker-data:
+          type: anitya
+          project-id: 1332
+          stable-only: true
+          url-template: https://github.com/htop-dev/htop/releases/download/$version/htop-$version.tar.xz
+    cleanup:
+      - /share/applications
+      - /share/icons
+      - /share/pixmaps
+
   - name: psmisc-static
     build-options: *musl-static-build-options
     config-opts:
@@ -4894,6 +4945,7 @@ modules:
               rm{,dir}trash trash{,-{empty,list,put,restore,rm}}
               pacman sudo
               amixer aplay ncpamixer njconnect playerctl)
+              btop htop
         for cmd in ${cmds[@]}; do
           ln -s ../host-spawn ${FLATPAK_DEST}/bin/fsw/${cmd}
         done

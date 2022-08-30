@@ -28,7 +28,7 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * investigate broken host tmux sessions
 * add tarball generation script
 * test portability, needs to work when switching to /var/lib
-* investigate the possiblity to keep extension accessible after update, maybe bindfs mount
+* investigate the possiblity to keep extension accessible after update
 * see other useful tools @ https://github.com/agarrharr/awesome-cli-apps
 * drop musl shared lib, move next to users
 * deal better with overriden HOME and XDG user dirs variables
@@ -39,7 +39,6 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
   * iso manipulation tools: cdrtools, fuseiso
   * filesystems fuse tools: at least for dos/fat, ext2/3/4, overlayfs
   * partioning tools to operate on raw disk images
-  * process monitor to keep track of in-sandbox processes: btop, htop
   * fonts for terminal emulator: noto-vf
 * choose a better extension name
 * move to a dedicated repo and add ci to build and publish via oci registry
