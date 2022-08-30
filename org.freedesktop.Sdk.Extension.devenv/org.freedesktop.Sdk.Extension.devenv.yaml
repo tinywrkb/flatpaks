@@ -904,20 +904,12 @@ modules:
       - --disable-gtk-doc
       - --disable-introspection
       - --disable-vala
-    make-args:
+    make-args: &librsvg-make-args
+      - HOME=$(FLATPAK_BUILDER_BUILDDIR)
       - CARGO_HOME=$(FLATPAK_BUILDER_BUILDDIR)/cargo
-      - CARGO_RELEASE_ARGS=--release --offline --verbose
       - LD_LIBRARY_PATH+=:/usr/lib/sdk/musl/x86_64-linux-musl/lib
       - RUST_TARGET_SUBDIR=x86_64-unknown-linux-musl/release
-     #- CARGO_TARGET_ARGS=--target=x86_64-unknown-linux-musl
-     #- CARGO_BUILD_TARGET=x86_64-unknown-linux-musl
-     #- CARGO_TARGET_x86_64-unknown-linux-musl_LINKER=x86_64-linux-musl-gcc
-     #- RUSTFLAGS=-C target-feature=+crt-static -C linker=x86_64-linux-musl-gcc
-    make-install-args:
-      - CARGO_HOME=$(FLATPAK_BUILDER_BUILDDIR)/cargo
-      - CARGO_RELEASE_ARGS=--release --offline --verbose
-      - LD_LIBRARY_PATH+=:/usr/lib/sdk/musl/x86_64-linux-musl/lib
-      - RUST_TARGET_SUBDIR=x86_64-unknown-linux-musl/release
+    make-install-args: *librsvg-make-args
     sources:
       - type: archive
         url: https://download.gnome.org/sources/librsvg/2.54/librsvg-2.54.4.tar.xz
@@ -928,7 +920,7 @@ modules:
           stable-only: true
       - librsvg-cargo-sources.json # flatpak-cargo-generator.py Cargo.lock -o librsvg-cargo-sources.json
       - type: file
-        dest: cargo
+        dest: .cargo
         dest-filename: config
         path: librsvg-cargo-config
     cleanup:
