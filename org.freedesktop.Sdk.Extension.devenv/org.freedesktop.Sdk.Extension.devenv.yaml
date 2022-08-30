@@ -25,6 +25,7 @@ build-options:
     - CARGO_VARS=
       HOME=${FLATPAK_BUILDER_BUILDDIR}
       CARGO_HOME=${FLATPAK_BUILDER_BUILDDIR}/cargo
+      LD_LIBRARY_PATH+=:/usr/lib/sdk/musl/x86_64-linux-musl/lib
     - GOVARS=
       GOBIN=${FLATPAK_DEST}/bin
       GOPATH=${FLATPAK_BUILDER_BUILDDIR}
