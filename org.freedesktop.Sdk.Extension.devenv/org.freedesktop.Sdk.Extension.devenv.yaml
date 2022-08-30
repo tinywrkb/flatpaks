@@ -5037,8 +5037,8 @@ modules:
         cmds=(buildah flatpak lxc podman skopeo
               rm{,dir}trash trash{,-{empty,list,put,restore,rm}}
               pacman sudo
-              amixer aplay ncpamixer njconnect playerctl)
-              btop htop
+              amixer aplay ncpamixer njconnect playerctl
+              btop htop)
         for cmd in ${cmds[@]}; do
           ln -s ../host-spawn ${FLATPAK_DEST}/bin/fsw/${cmd}
         done
