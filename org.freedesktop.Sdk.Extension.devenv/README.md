@@ -34,7 +34,6 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * deal better with overriden HOME and XDG user dirs variables
 * read envvar to select shell (default to bash)
 * evaluate building golang and rust modules from source
-* access host manpages
 * evaluate setting default flags: fpie, hardening
 * modules to add
   * iso manipulation tools: cdrtools, fuseiso
