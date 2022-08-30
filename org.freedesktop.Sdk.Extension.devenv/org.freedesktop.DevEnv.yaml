@@ -30,7 +30,19 @@ finish-args:
   - --share=network
 
 # code
-  #- --filesystem=~/projects
+  - --filesystem=~/projects
+  # ccache
+  - --filesystem=xdg-cache/ccache
+  # gocache
+  - --filesystem=xdg-cache/go-build
+  #- --filesystem=xdg-cache/gocache
+  #- --env=GOCACHE=~/.cache/gocache
+  # sccache
+  - --filesystem=xdg-cache/sccache
+  - --env=SCCACHE_BIN=/usr/lib/sdk/sccache/bin/sccache
+  #- --env=SCCACHE_DIR=~/.cache/sccache
+  - --env=SCCACHE_CONF=~/.cache/sccache/config
+  - --env=RUSTC_WRAPPER=sccache
 
 # dots
   # apps must have a connecting symlink to .user if tool's home cannot be set via envvar to ~/.config/...
