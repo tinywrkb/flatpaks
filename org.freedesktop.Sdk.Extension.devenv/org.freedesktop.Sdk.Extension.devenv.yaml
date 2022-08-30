@@ -2439,7 +2439,7 @@ modules:
     build-commands:
       - install -Dm755 ${SCCACHE_BIN} -t ${FLATPAK_DEST}/bin/
 
-  - name: stringsext
+  - name: stringsext-static
     buildsystem: simple
     build-options: *musl-static-build-options
     build-commands:
@@ -2566,24 +2566,51 @@ modules:
           stable-only: true
           url-template: https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz
 
-  - name: github-hub-shared-bin
+# - name: github-hub-shared-bin
+#   buildsystem: simple
+#   build-commands:
+#     - install -Dm755 bin/hub -t ${FLATPAK_DEST}/bin/
+#     - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
+#     - install -Dm644 etc/hub.bash_completion.sh ${FLATPAK_DEST}/share/bash-completion/completions/hub
+#     - install -Dm644 etc/hub.fish_completion ${FLATPAK_DEST}/share/fish/vendor_completions.d/hub.fish
+#     - install -Dm644 etc/hub.zsh_completion ${FLATPAK_DEST}/share/zsh/site-functions/_hub
+#     - cp -a share/vim ${FLATPAK_DEST}/share/
+#   sources:
+#     - type: archive
+#       url: https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz
+#       sha256: 74d95fdfb3c78c8af4e2025b04b916ad905ab99a361778500d58269847c7922d
+#       x-checker-data:
+#         type: anitya
+#         project-id: 5368
+#         stable-only: true
+#         url-template: https://github.com/github/hub/releases/download/v$version/hub-linux-amd64-$version.tgz
+
+  - name: github-hub-static
     buildsystem: simple
+    build-options:
+     #build-args:
+     #  - --share=network
+      env:
+        - CGO_ENABLED=0
     build-commands:
-      - install -Dm755 bin/hub -t ${FLATPAK_DEST}/bin/
+     #- eval ${GOVARS} CGO_CFLAGS="${CGO_CFLAGS}" go get; exit 1 # ONLINE-BUILD
+      - eval ${GOVARS} CGO_CFLAGS="${CGO_CFLAGS}" go install # OFFLINE-BUILD
+      - mv ${FLATPAK_DEST}/bin/{github-hub-static,hub}
       - install -Dm644 share/man/man1/* -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 etc/hub.bash_completion.sh ${FLATPAK_DEST}/share/bash-completion/completions/hub
       - install -Dm644 etc/hub.fish_completion ${FLATPAK_DEST}/share/fish/vendor_completions.d/hub.fish
       - install -Dm644 etc/hub.zsh_completion ${FLATPAK_DEST}/share/zsh/site-functions/_hub
-      - cp -a share/vim ${FLATPAK_DEST}/share/
+      - cp -r share/vim ${FLATPAK_DEST}/share/
     sources:
       - type: archive
-        url: https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz
-        sha256: 74d95fdfb3c78c8af4e2025b04b916ad905ab99a361778500d58269847c7922d
+        url: https://github.com/github/hub/archive/v2.14.2/hub-2.14.2.tar.gz
+        sha256: e19e0fdfd1c69c401e1c24dd2d4ecf3fd9044aa4bd3f8d6fd942ed1b2b2ad21a
         x-checker-data:
           type: anitya
           project-id: 5368
           stable-only: true
-          url-template: https://github.com/github/hub/releases/download/v$version/hub-linux-amd64-$version.tgz
+          url-template: https://github.com/github/hub/archive/v$version/hub-2.14.2.tar.gz
+      - github-hub-go-sources.json # OFFLINE-BUILD, flatpak-go-get-generator.py -o github-hub-go-sources.json ./
 
   - name: gitlab-cli-static-bin
     buildsystem: simple
@@ -2786,7 +2813,7 @@ modules:
           stable-only: true
           url-template: https://github.com/1player/host-spawn/releases/download/$version/host-spawn-x86_64
 
-  - name: podman-tui
+  - name: podman-tui-static
     build-options:
      #build-args:
      #  - --share=network
@@ -2799,6 +2826,7 @@ modules:
     build-commands:
      #- eval ${GOVARS} CGO_CFLAGS="${CGO_CFLAGS}" go get; exit 1 # ONLINE-BUILD
       - eval ${GOVARS} CGO_CFLAGS="${CGO_CFLAGS}" go install # OFFLINE-BUILD
+      - mv ${FLATPAK_DEST}/bin/podman-tui{-static,}
     sources:
       - type: archive
         url: https://github.com/containers/podman-tui/archive/v0.5.0/podman-tui-0.5.0.tar.gz
@@ -3658,14 +3686,60 @@ modules:
     cleanup:
       - /bin/libsixel-config
 
-  - name: sic-shared-bin
+# - name: sic-shared-bin
+#   buildsystem: simple
+#   build-commands:
+#     - install -Dm755 convert sic -t ${FLATPAK_DEST}/bin/
+#     - install -Dm644 sic.bash ${FLATPAK_DEST}/share/bash-completion/completions/sic
+#     - install -Dm644 sic.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/sic.fish
+#     - install -Dm644 _sic ${FLATPAK_DEST}/share/zsh/site-functions/_sic
+#   sources:
+#     - type: archive
+#       strip-components: 0
+#       url: https://github.com/foresterre/sic/releases/download/v0.20.0/sic-0.20.0-x86_64-unknown-linux-gnu.zip
+#       sha256: dd75ef69e5495939ac81af93a29aea9228eb09f7f0c7757c1cf501ec0eb92f30
+#       x-checker-data:
+#         type: anitya
+#         project-id: 268144
+#         stable-only: true
+#         url-template: https://github.com/foresterre/sic/releases/download/v$version/sic-$version-x86_64-unknown-linux-gnu.zip
+#     - type: archive
+#       strip-components: 0
+#       url: https://github.com/foresterre/sic/releases/download/v0.20.0/shell_completions.zip
+#       sha256: 45dbbc2af3eb18ae05d8aeeff748a15a052fb2fc3b4ca703c193df8aa0b0ee0b
+#       x-checker-data:
+#         type: anitya
+#         project-id: 268144
+#         stable-only: true
+#         url-template: https://github.com/foresterre/sic/releases/download/v$version/shell_completions.zip
+#     - type: script
+#       # get ranger-sixel working without imagemagick
+#       dest-filename: convert
+#       commands:
+#         # infile -geometry wxh sixel:-
+#         - exec sic --input "${1%\[0\]}" --resize "${3%x*}" "${3#*x}" --output-format
+#           BMP 2>/dev/null | img2sixel -
+
+  - name: sic-static
     buildsystem: simple
+    build-options: *musl-static-build-options
     build-commands:
-      - install -Dm755 convert sic -t ${FLATPAK_DEST}/bin/
+      - eval ${CARGO_VARS} cargo fetch
+      - eval ${CARGO_VARS} cargo build --release
+      - install -Dm755 target/x86_64-unknown-linux-musl/release/sic -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 convert -t ${FLATPAK_DEST}/bin/
       - install -Dm644 sic.bash ${FLATPAK_DEST}/share/bash-completion/completions/sic
       - install -Dm644 sic.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/sic.fish
       - install -Dm644 _sic ${FLATPAK_DEST}/share/zsh/site-functions/_sic
     sources:
+      - type: archive
+        url: https://github.com/foresterre/sic/archive/v0.20.0/sic-0.20.0.tar.gz
+        sha256: 77f2dca3788eeedbfd0af67e0e0ac78b6cddfe3f826075cbeaf30b60019fb09b
+        x-checker-data:
+          type: anitya
+          project-id: 268144
+          stable-only: true
+          url-template: https://github.com/foresterre/sic/archive/v$version/sic-$version.tar.gz
       - type: archive
         strip-components: 0
         url: https://github.com/foresterre/sic/releases/download/v0.20.0/shell_completions.zip
@@ -3675,15 +3749,11 @@ modules:
           project-id: 268144
           stable-only: true
           url-template: https://github.com/foresterre/sic/releases/download/v$version/shell_completions.zip
-      - type: archive
-        strip-components: 0
-        url: https://github.com/foresterre/sic/releases/download/v0.20.0/sic-0.20.0-x86_64-unknown-linux-gnu.zip
-        sha256: dd75ef69e5495939ac81af93a29aea9228eb09f7f0c7757c1cf501ec0eb92f30
-        x-checker-data:
-          type: anitya
-          project-id: 268144
-          stable-only: true
-          url-template: https://github.com/foresterre/sic/releases/download/v$version/sic-$version-x86_64-unknown-linux-gnu.zip
+      - sic-cargo-sources.json # flatpak-cargo-generator.py Cargo.lock -t -o sic-cargo-sources.json
+      - type: file
+        dest: .cargo
+        dest-filename: config
+        path: cargo-musl-config
       - type: script
         # get ranger-sixel working without imagemagick
         dest-filename: convert
@@ -4167,19 +4237,41 @@ modules:
           url-query: '"https://github.com/pyenv/pyenv-virtualenv/archive/" + $version
             + "/pyenv-virtualenv-" + $version + ".tar.gz"'
 
-  - name: pyflow-shared-bin
+# - name: pyflow-shared-bin
+#   buildsystem: simple
+#   build-commands:
+#     - install pyflow -Dm755 -t ${FLATPAK_DEST}/bin/
+#   sources:
+#     - type: file
+#       url: https://github.com/David-OConnor/pyflow/releases/download/0.3.1/pyflow
+#       sha256: 0f1bc273af07fb7a3c46ca84302403b41b8ea6787e62c79adb04a4674b87edf5
+#       x-checker-data:
+#         type: anitya
+#         project-id: 47970
+#         stable-only: true
+#         url-template: https://github.com/David-OConnor/pyflow/releases/download/$version/pyflow
+
+  - name: pyflow-static
     buildsystem: simple
+    build-options: *musl-static-build-options
     build-commands:
-      - install pyflow -Dm755 -t ${FLATPAK_DEST}/bin/
+      - eval ${CARGO_VARS} cargo fetch
+      - eval ${CARGO_VARS} cargo build --release
+      - install -Dm755 target/x86_64-unknown-linux-musl/release/pyflow -t ${FLATPAK_DEST}/bin/
     sources:
-      - type: file
-        url: https://github.com/David-OConnor/pyflow/releases/download/0.3.1/pyflow
-        sha256: 0f1bc273af07fb7a3c46ca84302403b41b8ea6787e62c79adb04a4674b87edf5
+      - type: archive
+        url: https://github.com/David-OConnor/pyflow/archive/0.3.1/pyflow-0.3.1.tar.gz
+        sha256: 36be46aaebf7bc77d2f250b3646024fb1f2f04d92113d3ce46ea5846f7e4c4f4
         x-checker-data:
           type: anitya
           project-id: 47970
           stable-only: true
-          url-template: https://github.com/David-OConnor/pyflow/releases/download/$version/pyflow
+          url-template: https://github.com/David-OConnor/pyflow/archive/$version/pyflow-$version.tar.gz
+      - pyflow-cargo-sources.json # flatpak-cargo-generator.py Cargo.lock -t -o pyflow-cargo-sources.json
+      - type: file
+        dest: .cargo
+        dest-filename: config
+        path: cargo-musl-config
 
 
   ############################
@@ -4713,7 +4805,7 @@ modules:
   ####  Shells: Tools    ####
   ############################
 
-  - name: moar
+  - name: moar-static
    #build-options:
    #  build-args:
    #    - --share=network
@@ -4722,6 +4814,7 @@ modules:
     build-commands:
      #- eval ${GOVARS} go get; exit 1 # ONLINE-BUILD
       - eval ${GOVARS} go install # OFFLINE-BUILD
+      - mv ${FLATPAK_DEST}/bin/moar{-static,}
       - install -Dm644 moar.1 -t ${FLATPAK_DEST}/share/man/man1/
     sources:
       - type: archive
