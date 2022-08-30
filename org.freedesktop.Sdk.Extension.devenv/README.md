@@ -33,7 +33,7 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
 * drop musl shared lib, move next to users
 * deal better with overriden HOME and XDG user dirs variables
 * read envvar to select shell (default to bash)
-* set build cache for rust and golang, and build from source
+* evaluate building golang and rust modules from source
 * access host manpages
 * evaluate setting default flags: fpie, hardening
 * modules to add

@@ -30,10 +30,15 @@ build-options:
     - SCCACHE_BIN=/usr/lib/sdk/sccache/bin/sccache
     - SCCACHE_DIR=/run/ccache/sccache
     # TODO: this is cache dir specific, maybe file a ticket upstream for in-cachedir config
+    # NOTE: config file documentation @ https://github.com/mozilla/sccache/blob/main/docs/Configuration.md
     - SCCACHE_CONF=/run/ccache/sccache/config
+    # NOTE: gocache size cannot be capped, see https://github.com/golang/go/issues/29561
+    # XDG_CACHE_HOME is set for a sane default when GOCACHE is empty
     - GOVARS=
       GOBIN=${FLATPAK_DEST}/bin
       GOPATH=${FLATPAK_BUILDER_BUILDDIR}
+      XDG_CACHE_HOME=${FLATPAK_BUILDER_BUILDDIR}/cache
+      GOCACHE=$(if [ -n "$CCACHE_DIR" ]; then echo /run/ccache/gocache; fi;)
 x-musl-static-build-options: &musl-static-build-options
   cflags: -static
   cxxflags: -static
