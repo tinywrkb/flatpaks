@@ -88,6 +88,7 @@ modules:
   #   Packaging: Buildsystems
   #   Libraries
   #   Packaging: Python
+  #   Packaging: Tools
   #   Archive
   #   Binary
   #   Clipboard
@@ -1596,6 +1597,52 @@ modules:
 
 
   ############################
+  ####  Packaging: Tools  ####
+  ############################
+
+# - name: go-md2man-static
+#   # TODO: enable this after packaging is modernized and stops using GO111MODULE
+#   build-options:
+#    #build-args:
+#    #  - --share=network
+#     env:
+#       - CGO_ENABLED=0
+#   buildsystem: simple
+#   # TODO: add aliases for golang build commands
+#   build-commands:
+#    #- eval ${GOVARS} ${GOVARS_EXTRA} CGO_CFLAGS="${CGO_CFLAGS}" go get; exit 1 # ONLINE-BUILD
+#     - eval ${GOVARS} ${GOVARS_EXTRA} CGO_CFLAGS="${CGO_CFLAGS}" go install # OFFLINE-BUILD
+#     - mv ${FLATPAK_DEST}/bin/go-md2man{-static,}
+#   sources:
+#     - type: archive
+#       url: https://github.com/cpuguy83/go-md2man/archive/v2.0.2/go-md2man-2.0.2.tar.gz
+#       sha256: 2f52e37101ea2734b02f2b54a53c74305b95b3a9a27792fdac962b5354aa3e4a
+#       x-checker-data:
+#         type: anitya
+#         project-id: 14461
+#         stable-only: true
+#         url-template: https://github.com/cpuguy83/go-md2man/archive/v$version/go-md2man-$version.tar.gz
+#     - go-md2man-go-sources.json # OFFLINE-BUILD, flatpak-go-get-generator.py -o go-md2man-go-sources.json ./
+
+  - name: md2roff-static
+    build-options: *musl-static-build-options
+    no-autogen: true
+    make-install-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://github.com/nereusx/md2roff/archive/55a4828ad53df974740412099dc9005c54fa18a0/md2roff-55a4828ad53df974740412099dc9005c54fa18a0.tar.gz
+        sha256: 30c61087b647482a651408f94234242ebb89e415725b79d9cc7e5ff1ecc05433
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/nereusx/md2roff/commits?sha=master&per_page=1
+          version-query: .[].sha
+          timestamp-query: .[].commit.committer.date
+          url-query: '"https://github.com/nereusx/md2roff/archive/" + $version
+            + "/md2roff-" + $version + ".tar.gz"'
+
+
+  ############################
   ####       Archive      ####
   ############################
 
@@ -2440,8 +2487,8 @@ modules:
       - install -Dm755 ${SCCACHE_BIN} -t ${FLATPAK_DEST}/bin/
 
   - name: stringsext-static
-    buildsystem: simple
     build-options: *musl-static-build-options
+    buildsystem: simple
     build-commands:
       - eval ${CARGO_VARS} cargo fetch
       - eval ${CARGO_VARS} cargo build --release
@@ -2586,12 +2633,12 @@ modules:
 #         url-template: https://github.com/github/hub/releases/download/v$version/hub-linux-amd64-$version.tgz
 
   - name: github-hub-static
-    buildsystem: simple
     build-options:
      #build-args:
      #  - --share=network
       env:
         - CGO_ENABLED=0
+    buildsystem: simple
     build-commands:
      #- eval ${GOVARS} CGO_CFLAGS="${CGO_CFLAGS}" go get; exit 1 # ONLINE-BUILD
       - eval ${GOVARS} CGO_CFLAGS="${CGO_CFLAGS}" go install # OFFLINE-BUILD
@@ -3534,6 +3581,32 @@ modules:
           stable-only: true
           url-template: https://github.com/Genivia/ugrep/archive/v$version/ugrep-$version.tar.gz
 
+  - name: vgrep-static-bin
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 vgrep -t ${FLATPAK_DEST}/bin/
+     #- go-md2man docs/vgrep.1.md docs/vgrep.1
+      - md2roff docs/vgrep.1.md > docs/vgrep.1
+      - install -Dm755 docs/vgrep.1 -t ${FLATPAK_DEST}/share/man/man1/
+    sources:
+      - type: file
+        dest-filename: vgrep
+        url: https://github.com/vrothberg/vgrep/releases/download/v2.6.1/vgrep_2.6.1_Linux_x86_64
+        sha256: f5b42491d27e972f57a81295cf6ccf86b8e2bd28799271e6ee0fbceb46911875
+        x-checker-data:
+          type: anitya
+          project-id: 106097
+          stable-only: true
+          url-template: https://github.com/vrothberg/vgrep/releases/download/v$version/vgrep_${version}_Linux_x86_64
+      - type: archive
+        url: https://github.com/vrothberg/vgrep/archive/v2.6.1/vgrep-2.6.1.tar.gz
+        sha256: 61ffc1dc7445bd890a25a8bb733f7b33dc4de45388ae51c87db484def1c6f391
+        x-checker-data:
+          type: anitya
+          project-id: 106097
+          stable-only: true
+          url-template: https://github.com/vrothberg/vgrep/archive/v$version/vgrep-$version.tar.gz
+
 
   ############################
   ####  Files: Trashcan   ####
@@ -3721,8 +3794,8 @@ modules:
 #           BMP 2>/dev/null | img2sixel -
 
   - name: sic-static
-    buildsystem: simple
     build-options: *musl-static-build-options
+    buildsystem: simple
     build-commands:
       - eval ${CARGO_VARS} cargo fetch
       - eval ${CARGO_VARS} cargo build --release
@@ -3833,6 +3906,7 @@ modules:
           - sed -i '/KRB5_LIBS=/ s/\(`.*--libs krb5`\)/"\1 -lkrb5support -lkrb5_spake -lkrb5_pkinit"/' configure
     cleanup:
       - /lib
+      - '*' # TODO: remove after fixing the module
     modules:
       - name: libnghttp2-static
         build-options: *musl-static-build-options
@@ -4252,8 +4326,8 @@ modules:
 #         url-template: https://github.com/David-OConnor/pyflow/releases/download/$version/pyflow
 
   - name: pyflow-static
-    buildsystem: simple
     build-options: *musl-static-build-options
+    buildsystem: simple
     build-commands:
       - eval ${CARGO_VARS} cargo fetch
       - eval ${CARGO_VARS} cargo build --release
@@ -4294,24 +4368,53 @@ modules:
           stable-only: true
           url-template: https://github.com/rfjakob/gocryptfs/releases/download/v$version/gocryptfs_v${version}_linux-static_amd64.tar.gz
 
-  - name: gpg-tui-shared-bin
+# - name: gpg-tui-shared-bin
+#   buildsystem: simple
+#   build-commands:
+#     - install -Dm755 gpg-tui -t ${FLATPAK_DEST}/bin/
+#     - install -Dm644 man/*.1 -t ${FLATPAK_DEST}/share/man/man1/
+#     - install -Dm644 man/*.5 -t ${FLATPAK_DEST}/share/man/man5/
+#     - install -Dm644 completions/gpg-tui.bash ${FLATPAK_DEST}/share/bash-completion/completions/gpg-tui
+#     - install -Dm644 completions/gpg-tui.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/gpg-tui.fish
+#     - install -Dm644 completions/_gpg-tui ${FLATPAK_DEST}/share/zsh/site-functions/_gpg-tui
+#   sources:
+#     - type: archive
+#       url: https://github.com/orhun/gpg-tui/releases/download/v0.9.1/gpg-tui-0.9.1-x86_64-unknown-linux-gnu.tar.gz
+#       sha256: 6a2dec4cc19a374d8d0742af709cf92153766383778a1e207d139427ae29e96c
+#       x-checker-data:
+#         type: anitya
+#         project-id: 236270
+#         stable-only: true
+#         url-template: https://github.com/orhun/gpg-tui/releases/download/v$version/gpg-tui-$version-x86_64-unknown-linux-gnu.tar.gz
+
+  - name: gpg-tui-static
+    # TODO: enable back static-pie after getting musl libc built with pie
+    build-options: *musl-static-build-options
     buildsystem: simple
     build-commands:
-      - install -Dm755 gpg-tui -t ${FLATPAK_DEST}/bin/
+      - eval ${CARGO_VARS} cargo fetch
+      - eval ${CARGO_VARS} cargo build --release
+      - install -Dm755 target/x86_64-unknown-linux-musl/release/gpg-tui -t ${FLATPAK_DEST}/bin/
       - install -Dm644 man/*.1 -t ${FLATPAK_DEST}/share/man/man1/
       - install -Dm644 man/*.5 -t ${FLATPAK_DEST}/share/man/man5/
+      - mkdir completions && OUT_DIR=completions target/x86_64-unknown-linux-musl/release/gpg-tui-completions
       - install -Dm644 completions/gpg-tui.bash ${FLATPAK_DEST}/share/bash-completion/completions/gpg-tui
       - install -Dm644 completions/gpg-tui.fish ${FLATPAK_DEST}/share/fish/vendor_completions.d/gpg-tui.fish
       - install -Dm644 completions/_gpg-tui ${FLATPAK_DEST}/share/zsh/site-functions/_gpg-tui
     sources:
       - type: archive
-        url: https://github.com/orhun/gpg-tui/releases/download/v0.9.1/gpg-tui-0.9.1-x86_64-unknown-linux-gnu.tar.gz
-        sha256: 6a2dec4cc19a374d8d0742af709cf92153766383778a1e207d139427ae29e96c
+        url: https://github.com/orhun/gpg-tui/archive/v0.9.1/gpg-tui-0.9.1.tar.gz
+        sha256: 876d9dd34e575c230fc63558e5974830b71a4c092a885526dfdbc19aba31c610
         x-checker-data:
           type: anitya
           project-id: 236270
           stable-only: true
-          url-template: https://github.com/orhun/gpg-tui/releases/download/v$version/gpg-tui-$version-x86_64-unknown-linux-gnu.tar.gz
+          url-template: https://github.com/orhun/gpg-tui/archive/v$version/gpg-tui-$version.tar.gz
+      - gpg-tui-cargo-sources.json # flatpak-cargo-generator.py Cargo.lock -t -o gpg-tui-cargo-sources.json
+      - type: file
+        dest: .cargo
+        dest-filename: config
+        path: gpg-tui-cargo-config
 
   - name: paperkey-static
     build-options: *musl-static-build-options
