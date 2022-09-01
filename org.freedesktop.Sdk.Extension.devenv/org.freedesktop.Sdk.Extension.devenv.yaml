@@ -489,7 +489,6 @@ modules:
 
   - name: openssl-static
     build-options: *musl-static-build-options
-    no-make-install: true
     config-opts:
       - --libdir=lib
       - --openssldir=/etc/ssl
@@ -498,8 +497,7 @@ modules:
       - enable-ec_nistp_64_gcc_128
       - linux-x86_64
       - -Wa,--noexecstack
-    build-commands:
-      - make install_sw
+    install-rule: install_sw
     sources:
       - type: archive
         url: https://www.openssl.org/source/openssl-1.1.1q.tar.gz
