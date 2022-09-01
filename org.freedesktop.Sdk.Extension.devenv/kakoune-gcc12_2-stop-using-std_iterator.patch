@@ -1,0 +1,145 @@
+From 1529cfb2c2ce2247747cce5eadcc93dcee570e0e Mon Sep 17 00:00:00 2001
+From: Johannes Altmanninger <aclopte@gmail.com>
+Date: Thu, 19 May 2022 18:15:20 +0200
+Subject: [PATCH] Stop using deprecated std::iterator
+
+As reported in #4615 and others, GCC 12.1 emits deprecation warnings
+because we use std::iterator. Replace it with the modern equivalent.
+
+Closes #4615
+---
+ src/parameters_parser.hh |  8 +++++++-
+ src/ranges.hh            | 34 ++++++++++++++++++++++++++++------
+ src/regex.hh             |  7 ++++++-
+ src/string_utils.hh      |  8 +++++++-
+ 4 files changed, 48 insertions(+), 9 deletions(-)
+
+diff --git a/src/parameters_parser.hh b/src/parameters_parser.hh
+index afc2c7dc6c..69fa88eb7e 100644
+--- a/src/parameters_parser.hh
++++ b/src/parameters_parser.hh
+@@ -80,8 +80,14 @@ struct ParametersParser
+     // a non empty StringView value if the switch took an argument.
+     Optional<StringView> get_switch(StringView name) const;
+ 
+-    struct iterator : std::iterator<std::forward_iterator_tag, String>
++    struct iterator
+     {
++        using difference_type = ptrdiff_t;
++        using value_type = String;
++        using pointer = String*;
++        using reference = String&;
++        using iterator_category = std::forward_iterator_tag;
++
+         iterator(const ParametersParser& parser, size_t index)
+             : m_parser(parser), m_index(index) {}
+ 
+diff --git a/src/ranges.hh b/src/ranges.hh
+index a86b9e2bae..2f9e9a2107 100644
+--- a/src/ranges.hh
++++ b/src/ranges.hh
+@@ -122,9 +122,14 @@ struct FilterView
+ {
+     using RangeIt = IteratorOf<Range>;
+ 
+-    struct Iterator : std::iterator<std::forward_iterator_tag,
+-                                    typename std::iterator_traits<RangeIt>::value_type>
++    struct Iterator
+     {
++        using difference_type = ptrdiff_t;
++        using value_type = typename std::iterator_traits<RangeIt>::value_type;
++        using pointer = value_type*;
++        using reference = value_type&;
++        using iterator_category = std::forward_iterator_tag;
++
+         Iterator(Filter& filter, RangeIt it, RangeIt end)
+             : m_it{std::move(it)}, m_end{std::move(end)}, m_filter{&filter}
+         {
+@@ -180,9 +185,14 @@ struct EnumerateView
+ {
+     using RangeIt = IteratorOf<Range>;
+ 
+-    struct Iterator : std::iterator<std::forward_iterator_tag,
+-                                    typename std::iterator_traits<RangeIt>::value_type>
++    struct Iterator
+     {
++        using difference_type = ptrdiff_t;
++        using value_type = typename std::iterator_traits<RangeIt>::value_type;
++        using pointer = value_type*;
++        using reference = value_type&;
++        using iterator_category = std::forward_iterator_tag;
++
+         Iterator(size_t index, RangeIt it)
+             : m_index{index}, m_it{std::move(it)} {}
+ 
+@@ -317,8 +327,14 @@ struct SplitView
+                                          std::pair<IteratorOf<Range>, IteratorOf<Range>>,
+                                          ValueTypeParam>;
+ 
+-    struct Iterator : std::iterator<std::forward_iterator_tag, ValueType>
++    struct Iterator
+     {
++        using difference_type = ptrdiff_t;
++        using value_type = ValueType;
++        using pointer = ValueType*;
++        using reference = ValueType&;
++        using iterator_category = std::forward_iterator_tag;
++
+         Iterator(RangeIt pos, const RangeIt& end, Element separator, Element escaper)
+          : done{pos == end}, pos{pos}, sep{pos}, end(end), separator{std::move(separator)}, escaper{std::move(escaper)}
+         {
+@@ -486,8 +502,14 @@ struct ConcatView
+     using ValueType = typename std::common_type_t<typename std::iterator_traits<RangeIt1>::value_type,
+                                                   typename std::iterator_traits<RangeIt2>::value_type>;
+ 
+-    struct Iterator : std::iterator<std::forward_iterator_tag, ValueType>
++    struct Iterator
+     {
++        using difference_type = ptrdiff_t;
++        using value_type = ValueType;
++        using pointer = ValueType*;
++        using reference = ValueType&;
++        using iterator_category = std::forward_iterator_tag;
++
+         static_assert(std::is_convertible<typename std::iterator_traits<RangeIt1>::value_type, ValueType>::value, "");
+         static_assert(std::is_convertible<typename std::iterator_traits<RangeIt2>::value_type, ValueType>::value, "");
+ 
+diff --git a/src/regex.hh b/src/regex.hh
+index bd32f2d8cf..5b0ab7fc61 100644
+--- a/src/regex.hh
++++ b/src/regex.hh
+@@ -45,8 +45,13 @@ struct MatchResults
+         bool matched = false;
+     };
+ 
+-    struct iterator : std::iterator<std::bidirectional_iterator_tag, SubMatch, size_t, SubMatch*, SubMatch>
++    struct iterator
+     {
++        using difference_type = size_t;
++        using value_type = SubMatch;
++        using pointer = SubMatch*;
++        using reference = SubMatch;
++        using iterator_category = std::bidirectional_iterator_tag;
+         using It = typename Vector<Iterator, MemoryDomain::Regex>::const_iterator;
+ 
+         iterator() = default;
+diff --git a/src/string_utils.hh b/src/string_utils.hh
+index 1c2d40767f..b2dc3d3004 100644
+--- a/src/string_utils.hh
++++ b/src/string_utils.hh
+@@ -68,8 +68,14 @@ String expand_tabs(StringView line, ColumnCount tabstop, ColumnCount col = 0);
+ 
+ struct WrapView
+ {
+-    struct Iterator : std::iterator<std::forward_iterator_tag, StringView>
++    struct Iterator
+     {
++        using difference_type = ptrdiff_t;
++        using value_type = StringView;
++        using pointer = StringView*;
++        using reference = StringView&;
++        using iterator_category = std::forward_iterator_tag;
++
+         Iterator(StringView text, ColumnCount max_width);
+ 
+         Iterator& operator++();

@@ -2012,6 +2012,10 @@ modules:
           project-id: 17726
           stable-only: true
           url-template: https://github.com/mawww/kakoune/releases/download/v$version/kakoune-$version.tar.bz2
+      - type: patch
+        path: kakoune-gcc12_2-stop-using-std_iterator.patch
+      - type: patch
+        path: kakoune-gcc12_2-validate-alpha-constexpr-function.patch
     modules:
       - name: kak-lsp-static-bin
         buildsystem: simple
