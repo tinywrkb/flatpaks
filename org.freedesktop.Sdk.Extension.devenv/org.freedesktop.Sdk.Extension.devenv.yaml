@@ -920,7 +920,6 @@ modules:
     make-args: &librsvg-make-args
       - HOME=$(FLATPAK_BUILDER_BUILDDIR)
       - CARGO_HOME=$(FLATPAK_BUILDER_BUILDDIR)/cargo
-      - LD_LIBRARY_PATH+=:/usr/lib/sdk/musl/x86_64-linux-musl/lib
       - RUST_TARGET_SUBDIR=x86_64-unknown-linux-musl/release
     make-install-args: *librsvg-make-args
     sources:
