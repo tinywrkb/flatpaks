@@ -26,7 +26,6 @@ build-options:
     - CARGO_VARS=
       HOME=${FLATPAK_BUILDER_BUILDDIR}
       CARGO_HOME=${FLATPAK_BUILDER_BUILDDIR}/cargo
-      LD_LIBRARY_PATH+=:/usr/lib/sdk/musl/x86_64-linux-musl/lib
     - SCCACHE_BIN=/usr/lib/sdk/sccache/bin/sccache
     - SCCACHE_DIR=/run/ccache/sccache
     # TODO: this is cache dir specific, maybe file a ticket upstream for in-cachedir config
