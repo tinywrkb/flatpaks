@@ -45,6 +45,8 @@ but the extension is mainly intended to be used with Flatpak packaged IDEs.
   * fonts for terminal emulator: noto-vf
 * choose a better extension name
 * move to a dedicated repo and add ci to build and publish via oci registry
+* test mold with cgo apps
+* explictly disable cgo where it's possible
 
 ### possible failure mapping of sdk path
 * stow: hardcoded perl `use dir`, can be patched
