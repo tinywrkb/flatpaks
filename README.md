@@ -26,7 +26,7 @@ mkdir build
    Replace `manifest.yaml` with the path to application manifest.
 ```
 flatpak-builder --install --user --force-clean \
-  --state-dir=build/flatpak-builder \
+  --state-dir=build/flatpak-builder --install-deps-from=flathub \
   --repo=build/flatpak-repo build/flatpak-target \
   manifest.yaml
 ```
